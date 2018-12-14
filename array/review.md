@@ -40,6 +40,153 @@ power subsets corresponds to n-bit from 0 to 1111...1
 max overlap
 714. Best Time to Buy and Sell Stock with Transaction Fee
 dp
+900. RLE Iterator
+count of numbers, number...
+use a pointer to record the current head
+
+926. Flip String to Monotone Increasing
+min number of flips
+if choose i as the mid point, we need flip all 1 in front, and all zeros behind
+so left to right scan to get number of 1s
+right to left scan to get number of 0s
+
+48. Rotate Image
+swap and reverse
+
+729. My Calendar I
+double booking
+we need a sorted array of intervals and using binary search to find the one to add
+731. My Calendar II
+tripe booking
+The key is to use double booking to create overlaps and to see the new added one overlaps with current overlap
+732. My Calendar III: k booking
+if we mark the start a new event, and end minus an event, then accumulate all until the ending is the k event. If we choose the max, we can iterate until the end.
+segment tree: build a tree with cnt, start +1, end -1, the same idea
+```cpp
+class MyCalendarThree {
+    map<int, int> timeline;
+public:
+    int book(int s, int e) {
+        timeline[s]++; // 1 new event will be starting at [s]
+        timeline[e]--; // 1 new event will be ending at [e];
+        int ongoing = 0, k = 0;
+        for (pair<int, int> t : timeline)
+            k = max(k, ongoing += t.second);
+        return k;
+    }
+};
+```
+62. Unique Paths-dp problem
+39. Combination Sum
+no duplicates, all combinations sum to target, number can be reused
+dfs with backtracking
+```cpp
+    void helper(vector<int>& nums,int target,vector<vector<int>>& res,vector<int> tmp,int pos)
+    {
+        if(target==0) {res.push_back(tmp);return;}
+        if(target<0) {return;}
+        //solved solution?
+        for(int i=pos;i<nums.size();i++)
+        {
+            //tmp.clear();
+            tmp.push_back(nums[i]);
+            helper(nums,target-nums[i],res,tmp,i);//since it allows duplicates, use i here
+            tmp.pop_back();
+        }
+    }
+```
+40. Combination Sum II
+each number can only be used once
+```cpp
+    void helper(vector<int>& nums,int target,vector<vector<int>>& res,vector<int> tmp,int pos)
+    {
+        if(target==0) {res.push_back(tmp);return;}
+        if(target<0) {return;}
+        //solved solution?
+        for(int i=pos;i<nums.size();i++)
+        {
+            //tmp.clear();
+            if(i && nums[i]==nums[i-1]&&i>pos) continue;
+            tmp.push_back(nums[i]);
+            helper(nums,target-nums[i],res,tmp,i+1);//since it does not allows duplicates, use i here
+            tmp.pop_back();
+        }
+    }
+```
+216. Combination Sum III
+use 1 to 9, and k numbers to sum to n
+```cpp
+void backtrack(vector<vector<int>> &result, vector<int> &path, int start, int k, int target)
+{
+    if(target==0 && k==0) //we reach a good solution
+    {
+        result.push_back(path);
+        return;
+    }
+    for(int i=start; i<=10-k && i<=target; i++)
+    {
+        path.push_back(i);
+        backtrack(result,path,i+1,k-1,target-i);//reduce a smaller problem k-1
+        path.pop_back(); //after trial, go back to another
+    }
+}
+```
+377. Combination Sum IV
+get the number of combinations. number can be repeated
+knapsack with repetition
+
+64. Minimum Path Sum
+in matrix, dp problem,
+59. Spiral Matrix II
+fill the matrix from 1 to n^2
+need to get: how many loops, and each loop how to iterate
+621. Task Scheduler
+given a list of tasks and requirement, return the min number of intervals needed
+somewhat similar to the playlist
+choose the most frequent char and divide it into k interval with n period
+and put other inside, the min time is (k-1)*n
+however when n is smaller than the period, we need suppress non-necessary idle
+
+718. Maximum Length of Repeated Subarray
+straightforward: sliding window to find max overlap
+however, dp is the right way to find the largest common substr
+
+611. Valid Triangle Number
+a+b>c
+sort first and then fix two a and b, find c
+
+873. Length of Longest Fibonacci Subsequence
+dp mixed with array tech, fixed i, i+1, and derive i+2
+
+153. Find Minimum in Rotated Sorted Array
+binary search
+
+795. Number of Subarrays with Bounded Maximum
+subarrays: for example 1,2,3 is a subarray, then it has [1],[1,2],[2],[2,3],[3],[1,2,3] total 6=1+2+3
+using two pointers: 
+
+289. Game of Life
+state change at the same time: generally needs another copy for changes, but we can use bit in original to do in-place
+
+11. Container With Most Water
+this is a stack problem.
+principle: 
+each element must be pushed and poped once
+increasing or decreasing order: depending on the question. 
+For this question, when a lower bar comes, it shall be considered as the highest bar to contain water if using it as the right bar. So we need keep the stack increasing.
+
+560. Subarray Sum Equals K
+accumulate sum and find cumsum-k if exist
+using hashmap
+
+915. Partition Array into Disjoint Intervals
+two parts, so that all elements in left < all elements in right
+left and right problem: two directions to get the max
+
+
+
+
+
 
 
 
