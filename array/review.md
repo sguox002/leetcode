@@ -183,6 +183,75 @@ using hashmap
 two parts, so that all elements in left < all elements in right
 left and right problem: two directions to get the max
 
+945. Minimum Increment to Make Array Unique
+sort and add, greedy
+
+870. Advantage Shuffle
+Given two arrays A and B of equal size, the advantage of A with respect to B is the number of indices i for which A[i] > B[i].
+Return any permutation of A that maximizes its advantage with respect to B.
+greedy: if there is higher, use the smallest, if no, use the smallest.
+sort it in multiset, if chosen then we remove it
+
+162. Find Peak Element
+num[i]>nums[i-1] && nums[i]>nums[i+1] naively by adding two padding INT_MIN
+linear scan: only need compare nums[i]>nums[i+1] and that is the peak. (since nums[i-1]<nums[i] is the reverse of nums[i]>nums[i+1].)
+binary search: we reduce the problem size by finding a mid, and mid+1
+linear scan can find all local peaks, binary search can just find one.
+
+792. Number of Matching Subsequences
+find number of words in dict is subsequence of S
+making a hashmap of s (the char vs the list of its index, can also use 26 char vector). Then greedy choose the first matching one
+
+670. Maximum Swap
+Given a non-negative integer, you could swap two digits at most once to get the maximum valued number. Return the maximum valued number you could get.
+greedy: ith digit compare with its behind max. if less, swap
+
+80. Remove Duplicates from Sorted Array II
+inplace remove duplicates, allowing at most 2 duplicates. sorted.
+two pointers: a[i]>a[j-2] then add it in
+
+73. Set Matrix Zeroes
+Inplace set its row and col to be zero.
+just collect all zero's row and columns and set them to be zeros
+
+105. Construct Binary Tree from Preorder and Inorder Traversal
+in order: left node right
+preorder: node left right
+so we can get the root from the preorder first, and split the left and right from in-order
+and then recursively solve the subproblems.
+
+120. Triangle
+min path sum, dp as min path sum.
+
+106. Construct Binary Tree from Inorder and Postorder Traversal
+similar to 105
+
+775. Global and Local Inversions
+i<j, A[i]>A[j] calls global inversion, j=i+1 is called local inversion
+check if local inversion == global inversion. The array is 0-N-1
+Apparently we only have local inversion, that means if we compare with 0,1,...N-1 and we only see local inversions.
+
+713. Subarray Product Less Than K
+similar to sum, if product >k then remove the oldest one.
+
+74. Search a 2D Matrix
+row sorted. next row > previous row
+2d search using the property. start from the bottom left
+
+228. Summary Ranges
+sorted array, summary of ranges, merge into ranges
+
+56. Merge Intervals
+classical: sort the interval, and iterate and merge always to the back, and update the back
+
+825. Friends Of Appropriate Ages
+
+209. Minimum Size Subarray Sum
+Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead.
+common practice: when sum>=s we keep shrinking the range from the left side
+
+
+
 
 
 
