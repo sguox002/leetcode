@@ -250,6 +250,31 @@ classical: sort the interval, and iterate and merge always to the back, and upda
 Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead.
 common practice: when sum>=s we keep shrinking the range from the left side
 
+63. Unique Paths II-dp
+34. Find First and Last Position of Element in Sorted Array-equal range
+33. Search in Rotated Sorted Array-binary search
+954. Array of Doubled Pairs
+if we can arrange it 2*A[i]=A[i+1]
+using multiset to store negative and positive separately
+229. Majority Element II
+find all elements appearing >n/3 times
+hashmap
+
+55. Jump Game
+array number is the max steps you can jump, find if we can reach the last.
+max steps we can reach at i, and also we must be able to reach i (reach>=i)
+
+79. Word Search
+dfs at any starting position. we need mark visited position first and then restore
+
+31. Next Permutation
+the next bigger permutation. from right to left, choose the first smaller one with larger one behind it, swap
+918. Maximum Sum Circular Subarray
+two cases: if the max is inside, and if the min is inside
+907. Sum of Subarray Minimums
+for each element we find a window which A[i] is the min.
+
+
 
 
 
