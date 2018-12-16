@@ -55,4 +55,55 @@ Find the index of pre[a+1] in post, then we know the left subtree should be cons
 A complete binary tree is a binary tree in which every level, except possibly the last, is completely filled, and all nodes are as far left as possible.
 complete binary tree can use array, and each one has strict index 2*n+1 and 2*n+2 for parent node n
 
+94. Binary Tree Inorder Traversal- iterative
+left node right
+put the node in stack and goes to left until no left, and then pop, go to the right
+
+865. Smallest Subtree with all the Deepest Nodes
+Return the node with the largest depth such that it contains all the deepest nodes in its subtree.
+calculate each node's depth
+
+508. Most Frequent Subtree Sum
+a subtree sum=root+leftsum+rightsum
+create a map
+
+655. Print Binary Tree
+a way to display the tree
+
+144. Binary Tree Preorder Traversal-iterative
+node, left, right
+keep pushing the right into stack
+
+684. Redundant Connection (**)
+undirected graph
+remove an edge to make it a tree
+this is not so straightforward
+using disjoint set to combine into n-ary tree.
+if we found the vertices of an edge belongs to the same parent, the edge is redundant.
+```cpp
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n=edges.size();
+        vector<int> parents(2*n);
+        for(int i=0;i<2*n;i++) parents[i]=i;
+        for(int i=0;i<n;i++)
+        {
+            int f=edges[i][0],t=edges[i][1];
+            if(find(parents,f)==find(parents,t)) return edges[i];
+            else parents[find(parents,f)]=find(parents,t);
+        }
+        return vector<int>(2);
+    }
+    int find(vector<int>& parent,int f)
+    {
+        while(f!=parent[f]) f=parent[f];
+        return f;
+    }
+```
+
+230. Kth Smallest Element in a BST
+inorder traversal
+
+623. Add One Row to Tree
+add a row of value at the given depth
+
 
