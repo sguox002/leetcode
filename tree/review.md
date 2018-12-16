@@ -136,7 +136,107 @@ dfs with tracing
 ```
 Note: we need pop twice to remove the left and right node to go back to the root.
 
+671. Second Minimum Node In a Binary Tree
+Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this tree has exactly two or zero sub-node. If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes.
+Given such a binary tree, you need to output the second minimum value in the set made of all the nodes' value in the whole tree.
+If no such second minimum value exists, output -1 instead.
+traversal and put in a min heap. (does not use the fact provided in the question)
+the root is the min, we just need to find the first one who is bigger than the root.
 
+235. Lowest Common Ancestor of a Binary Search Tree
+R>node>L, the node is the parent
+node>R, goes to left
+node<L: goes to right
+
+101. Symmetric Tree (**)
+note: it only needs left and right subtree under root to be symmetric
+check if node is the same and left's left=right's right,  and left's right=right's left and this is recursively true
+
+437. Path Sum III (**)
+this is called range sum. 
+first we need use any node as the starting since it can be the range start. (recursively using all nodes)
+second, for starting with a given node, we start from 0 and do dfs to search all path sum = target sum.
+```cpp
+    int pathSum(TreeNode* root, int sum) {
+        //for each node do the dfs search to check the path sum
+        //traversal all nodes, do dfs search
+        if(!root) return 0;
+        int cnt=dfs_sum(root,sum,0);
+        cnt+=pathSum(root->left,sum);
+        cnt+=pathSum(root->right,sum);
+        return cnt;        
+    }
+    int dfs_sum(TreeNode* root,int sum,int prevsum) //inorder, preorder or post-order are all depth first search
+    {
+        if(!root) return 0;
+        prevsum+=root->val;
+        return (prevsum==sum)+dfs_sum(root->left,sum,prevsum)+dfs_sum(root->right,sum,prevsum);
+    }
+```    
+
+572. Subtree of Another Tree
+check if s is a subtree of t.
+node=node, left subtree=left subtree, right subtree=right subtree
+again two recursive problem:
+recursively check all subtree with t
+another: recursively check two trees are the same
+```cpp
+    bool isSubtree(TreeNode* s, TreeNode* t) {
+      if(!s && !t) return 1;
+      if(!s && t) return 0;
+      if(is_same(s,t)) return 1;
+      return isSubtree(s->left,t) || isSubtree(s->right,t);
+    }
+    
+    bool is_same(TreeNode *s, TreeNode* t)
+    {
+        if(!s && !t) return 1;
+        if((!s && t) || (s&&!t)) return 0;
+        if(s->val!=t->val) return 0;
+        return is_same(s->left,t->left) && is_same(s->right,t->right);
+    }
+```
+
+110. Balanced Binary Tree
+check if tree left and right height difference <=1
+one recursive: the height of a tree
+
+501. Find Mode in Binary Search Tree
+most frequency element, allows duplicate
+left <=node, right>=node
+in order traversal will give the number of duplicate number
+using a map to record element vs frequency
+
+112. Path Sum
+from root to leaf sum to target
+dfs 
+
+111. Minimum Depth of Binary Tree
+dfs to get the shortest path
+
+687. Longest Univalue Path
+the path may or may not go through the root. (distance=number of edges)
+again two recursive problem
+- in the left subtree
+- in the right subtree
+- with the root involved: left=root=right, then add left side length and right side length
+```cpp
+    int longestUnivaluePath(TreeNode* root) {
+        if(!root) return 0;
+        int maxleft=0,maxright=0,maxlen=0;
+        if(root->left) maxleft=longestUnivaluePath(root->left);//+(root->val==root->left->val);
+        if(root->right) maxright=longestUnivaluePath(root->right);//+(root->val==root->right->val);
+        if(root->left && root->right && root->val==root->left->val && root->val==root->right->val)
+        maxlen=helper(root->left,root->val)+helper(root->right,root->val);
+        return max(maxlen,max(maxleft,maxright));
+    }
+    int helper(TreeNode* root,int val)
+    {
+        if(!root || root->val!=val) return 0;
+        //if(root->val==val) return 1;
+        return 1+max(helper(root->left,val),helper(root->right,val));
+    }
+```
 
 
 
