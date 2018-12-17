@@ -139,6 +139,40 @@ remove c++ comments
 regular expression: 
 vector of a string to a string using copy to stringstream.
 
+556. Next Greater Element III
+using the same digits
+next permutation or greedy to swap the first smaller with first larger (reverse direction)
+
+43. Multiply Strings
+simple
+71. Simplify Path
+. current dir
+.. upper dir
+use a stack or vector to record the actual path
+
+5. Longest Palindromic Substring--dp
+3. Longest Substring Without Repeating Characters
+for all substring ending at i. the substring without duplicate. two pointer.
+
+165. Compare Version Numbers
+note string compare is not sufficient since it allows leading zeros. we need convert to int and then convert to string.
+read from a string using some delim and copy back to another output stringstream. getline can accept delim
+
+    string sentence = "And I feel fine...";
+    istringstream iss(sentence);
+    copy(istream_iterator<string>(iss),
+         istream_iterator<string>(),
+         ostream_iterator<string>(cout, "\n"));
+       
+91. Decode Ways--dp
+468. Validate IP Address
+validate ipv4 or ipv6
+
+151. Reverse Words in a String
+common trick using stringstream to convert to vector
+
+8. String to Integer (atoi)
+
 
 
 
