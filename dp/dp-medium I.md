@@ -214,7 +214,9 @@ dp[j-2] is the profit before we buy at jth day (sell at two days ago)
         return dp[n+1];
     }
 ```
-Note the j iteration shall from i. cannot remember why is this
+no operation dp[i-1]
+sell on ith day: dp[j-2]+price[i-2]-price[j-2]. why on jth day buy in, the profit is dp[j-2] (two days ago)
+Note the j iteration shall from i. 
 
 813. Largest Sum of Averages
 partition the list into at most k parts and make the sum of average the max.
@@ -661,11 +663,262 @@ Note: the two cases may overlap, so second case we need take the min
 ```
 63. Unique Paths II-easy
 673. Number of Longest Increasing Subsequence
+solving two dp problem at the same time: find the longest subsequence, remembering the number of path to each of the longest subsequence
+```cpp
+    int findNumberOfLIS(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0) return 0;
+        vector<int> dp(n,1),cnt(n,1);//each number itself is a increasing subsequence
+        //cnt is the count of largest subsequence, dp is the length
+        for(int i=1;i<n;i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(nums[i]>nums[j]) 
+                {
+                    //dp[i]=max(dp[i],dp[j]+1);
+                    if(dp[i]==dp[j]+1) cnt[i]+=cnt[j]; //j is the max, this is important!!!
+                    if(dp[i]<dp[j]+1) //the new max
+                    {
+                        dp[i]=dp[j]+1;
+                        cnt[i]=cnt[j];//update the max
+                    }
+                }
+            }
+        }
+        //copy(dp.begin(),dp.end(),ostream_iterator<int>(cout," "));
+        int maxlen=*max_element(dp.begin(),dp.end());
+        int ans=0;
+        for(int i=0;i<n;i++) if(dp[i]==maxlen) ans+=cnt[i];
+        return ans;
+    }
+```    
+
+787. Cheapest Flights Within K Stops
+define dp[i,k] is the min cost from start to j with at most k stops
+the key is we add one stop j: dp[j,k-1]+price[i,j] to minimize the cost
+```cpp
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        //int dp[n][n][K+1];
+        vector<vector<int>> prices(n,vector<int>(n,INT_MAX)),dp(n,vector<int>(K+1,INT_MAX));
+        for(int i=0;i<flights.size();i++) 
+        {
+            if(flights[i][0]==src) dp[flights[i][1]][0]=flights[i][2];
+            prices[flights[i][0]][flights[i][1]]=flights[i][2];
+        }
+        for(int k=0;k<=K;k++) dp[src][k]=0;
+        for(int k=1;k<=K;k++)
+        {
+            //add one stop based on previous k-1 stop
+            for(int j=0;j<n;j++)
+            {
+                if(src==j) continue;
+                for(int m=0;m<n;m++)
+                {
+                    if(dp[m][k-1]!=INT_MAX && prices[m][j]!=INT_MAX)
+                    dp[j][k]=min(dp[j][k],dp[m][k-1]+prices[m][j]);
+                }
+            }
+        }
+        return dp[dst][K]==INT_MAX?-1:dp[dst][K];
+    }
+```    
+
+898. Bitwise ORs of Subarrays
+for all subarray, bit or of all elements, return number of possible results
+for input ABC
+A
+A|B, B
+A|B|C, B|C,C
+so we take two set, one for final one for intermediate
+```cpp
+    int subarrayBitwiseORs(vector<int>& A) {
+        unordered_set<int> ms,tmp;
+        for(int i=0;i<A.size();i++)
+        {
+            if(i && A[i]==A[i-1]) continue;
+            unordered_set<int> tt;
+            for(auto it=tmp.begin();it!=tmp.end();it++)
+                tt.insert(*it|A[i]);
+            tt.insert(A[i]);
+            tmp=tt;
+            ms.insert(tmp.begin(),tmp.end());
+        }
+        return ms.size();
+    }
+```
+
+221. Maximal Square
+finding the max square with all 1s
+similar to histogram but we uses dp
+keep updating the height on each row.
+keep updating its max range at j (left and right) using the height as the min height (this could be obtained using left max and right min dp process)
+
+```cpp
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if(matrix.size()==0) return 0;
+        int m=matrix.size(),n=matrix[0].size();
+        vector<int> left(n),right(n,n),height(n);
+        int max_area=0;
+        for(int i=0;i<m;i++)
+        {
+            int curr_left=0,curr_right=n;
+            for(int j=0;j<n;j++) height[j]=(matrix[i][j]=='1')?(height[j]+1):0;
+            for(int j=0;j<n;j++)
+            {
+                if(matrix[i][j]=='0') {curr_left=j+1;left[j]=0;}
+                else left[j]=max(curr_left,left[j]);
+            }
+            for(int j=n-1;j>=0;j--)
+            {
+                if(matrix[i][j]=='0') {curr_right=j;right[j]=n;} //not inclusive
+                else right[j]=min(right[j],curr_right);
+            }
+            for(int j=0;j<n;j++)
+            {
+                max_area=max(max_area,min(height[j],(right[j]-left[j])));
+            }
+        }
+        return max_area*max_area;
+    }
+```
+
+576. Out of Boundary Path
+quite a few similar problems. using recursion
+```cpp    
+    int dp[50][50][51];
+    Solution() {memset(dp,-1,sizeof(dp));}
+    int findPaths(int m, int n, int N, int i, int j) {
+        if(i<0 || i>=m || j<0 ||j>=n)  return 1;
+        if(N<=0) return 0;
+        if(dp[i][j][N]!=-1) return dp[i][j][N];
+        int mod=1e9+7;
+        dp[i][j][N]=findPaths(m,n,N-1,i-1,j)%mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i+1,j)%mod;dp[i][j][N]%=mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i,j-1)%mod;dp[i][j][N]%=mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i,j+1)%mod;dp[i][j][N]%=mod;
+        return dp[i][j][N];
+    }
+```
+
+152. Maximum Product Subarray
+largest product subarray
+when a negative is involved, max becomes min, min becomes max
+```cpp
+    int maxProduct(vector<int>& nums) {
+        //max times negative becomes min, min*negative becomes max
+        int imax=nums[0],imin=nums[0];
+        int ans=imax;
+        for(int i=1;i<nums.size();i++)
+        {
+            if(nums[i]<0) swap(imax,imin);
+            imax=max(imax*nums[i],nums[i]);
+            imin=min(imin*nums[i],nums[i]);
+            ans=max(ans,imax);
+        }
+        return ans;
+    }
+```
+322. Coin Change-min number
+classical knapsack with repetition: the amount shall be in outer loop
+```cpp
+    int coinChange(vector<int>& coins, int amount) {
+        //knapsack with repetitive
+        int n=coins.size();
+        vector<int> dp(amount+1,amount+1);//min number for amount with number of different coins
+        //since coins can be repeated, the coins shall be inside loop
+        dp[0]=0;
+        for(int w=1;w<=amount;w++)
+        {
+            for(int i=1;i<=coins.size();i++)
+            {
+                //choose or not choose
+                int m=coins[i-1];
+                if(w>=m) dp[w]=min(dp[w],dp[w-m]+1);
+            }
+        }
+        return dp[amount]==amount+1?-1:dp[amount];
+    }
+ ```
+ 837. New 21 Game
+ this is like climbing stairs, there are more than two methods to reach a stair
+ 
+ ```cpp
+     double new21Game(int N, int K, int W) {
+        //this is like climbing stairs. ith position can be obtained
+        //dp[i]=sum(dp[j])/W j=i-1 to i-W
+        if(N>=K+W || K==0) return 1.0;
+        vector<double> dp(K+1); //dp[i] is the probability to reach i points
+        dp[0]=1.0;
+        //dp[i]=sum(dp[j])/W for j=i-1 to i-w
+        double wsum=0;
+
+        for(int i=1;i<=K;i++)
+        {
+            if(i<=W) dp[i]=wsum+=dp[i-1]/W;
+            else {dp[i]=wsum+=(dp[i-1]-dp[i-W-1])/W;}
+        }
+        //copy(dp.begin(),dp.end(),ostream_iterator<double>(cout," "));
+        double ans=0;
+        for(int i=K-1;i>=max(K-W,0);i--)
+        {
+            int d=K-1-i;
+            int len=min(W-d,N-K+1);
+            ans+=len*dp[i]/W;
+        }
+        return ans;
+    }
+```
+
+464. Can I Win
+It is important to get the problem right: the two player adds to the same sum, and who reach the target first wins
+number chosen cannot be reused.
+- use bitset to indicate number used or not
+- subtract target
+- who reaches 0 wins
+- if other wins, then we lose
+- store solved solutions
+```cpp
+    bool canIWin(int m,int sum,int status)
+    {
+        if(sum<=0) return 0; //already to the dead end, but still did not win
+        if(win.count(status)) return 1;
+        if(lose.count(status)) return 0;
+        for(int i=1;i<=m;i++)
+        {
+            int bit=1<<i;
+            if(status & bit) continue; //already solved, need the solved results recorded
+            bool res=canIWin(m,sum-i,status|bit);
+            if(!res) //surely win, why use ! since it is the even times.
+            {
+                win.insert(status);
+                return 1;
+            }
+        }
+        lose.insert(status);//after all trials, cannot win
+        return 0;
+    }
+```
+
+5. Longest Palindromic Substring
+just naive soluion
+try all position and expand
+
+523. Continuous Subarray Sum
+target: multiples of K
+accumulate sum (prefix sum). the prefix sum shall %k has the same value
+
+91. Decode Ways
+A-Z decode as 1-26
+given a digit string, return number of decoding ways
+only have two options:
+the number itself 
+the number combine with previous digit
 
 
 
 
-
+ 
 
 
 
