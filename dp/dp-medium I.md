@@ -214,7 +214,465 @@ dp[j-2] is the profit before we buy at jth day (sell at two days ago)
         return dp[n+1];
     }
 ```
-Note the j iteration shall from i. 
+Note the j iteration shall from i. cannot remember why is this
+
+813. Largest Sum of Averages
+partition the list into at most k parts and make the sum of average the max.
+assuming dp[i,k] is the max sum of average for list len=i, and k groups, then we check every j to add one more group
+dp[i][k]=max(dp[i][k],dp[j][k-1]+double(A[i]-A[j])/(i-j));
+
+764. Largest Plus Sign
+in four directions, using dp to get the largest radius (including itself)
+then the larget radius is the min of the 4 directions
+
+688. Knight Probability in Chessboard
+at most k moves, the probability that the knight in the board
+8 directions, out of board is 0, stay in board is 1
+
+dp[k, i, j]=sum(dp[k-1,m,n)/8 m,n is the next 8 possible directions
+we can effectively remove the k dimension
+```cpp
+    double knightProbability(int N, int K, int r, int c) {
+        int moves[][2]={{-2,-1},{-2,1},{-1,2},{-1,-2},{1,-2},{1,2},{2,-1},{2,1}};
+        vector<vector<double>> dp(N,vector<double>(N,1)); //inside the board is all 1
+        
+        for(int k=0;k<K;k++) //k steps, shall have a k dimension
+        {
+            vector<vector<double>> curr(N,vector<double>(N));//=dp;
+            for(int i=0;i<N;i++)
+            {
+                for(int j=0;j<N;j++)
+                {
+                    for(int d=0;d<8;d++)
+                    {
+                        int ii=i+moves[d][0];
+                        int jj=j+moves[d][1];
+                        if(ii>=0 && ii<N && jj>=0 && jj<N) curr[i][j]+=dp[ii][jj]; //previous times dp
+                    }
+                }
+            }
+            dp=curr; //update dp, dp is actually previous state
+        }
+        //cout<<dp[r][c];
+        return double(dp[r][c])/pow(8.0,K);
+    }
+```
+
+698. Partition to K Equal Sum Subsets
+knapsack without repetition, need take k-1 times and mark those already used
+- sort in descending order will make it faster
+- dfs to choose the elements
+```cpp
+   bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int sum=accumulate(nums.begin(),nums.end(),0);
+        if(sum%k) return 0;
+        int target=sum/k;
+        multiset<int,greater<int>> myset(nums.begin(),nums.end(),greater<int>());
+        multiset<int,greater<int>>::iterator it=myset.begin();
+        if(*it>target) return 0;
+        for(int i=0;i<k-1;i++) //the last loop is not needed
+        {
+            it=myset.begin();
+            if(*it==target) {myset.erase(it);continue;}
+            int t=target-*it;
+            myset.erase(it);
+            bool res=helper(myset,t);
+            if(!res) return 0;
+        }
+        return 1;
+    }
+    bool helper(multiset<int,greater<int>>& mset,int target)
+    {
+        auto it=mset.find(target);
+        if(it!=mset.end()) {mset.erase(it);return 1;}
+        //fix one element and search for other
+        for(it=mset.begin();it!=mset.end();it++)
+        {
+            if(*it>target) continue;
+            int t=target-*it;
+            int val=*it;
+            mset.erase(it);
+            if(helper(mset,t)) return 1;
+            mset.insert(val); //cannot find it restore this value
+        }
+        return 0;
+    }
+```
+300. Longest Increasing Subsequence
+dp[i] is the max length subsequence ending at i.
+if(nums[j]<nums[i]) dp[i]=max(dp[i],dp[j]+1);
+
+
+279. Perfect Square
+again knapsack problem with repetition, the selection is 1^2, 2^2, 3^2....n^2
+```cpp
+    int numSquares(int n) {
+        int target=sqrt(n);
+        vector<int> dp(n+1);
+        for(int w=1;w<=n;w++)
+        {
+            dp[w]=INT_MAX;
+            for(int i=1;i<=sqrt(w);i++)
+            {
+                dp[w]=min(dp[w],dp[w-i*i]+1);
+            }
+        }
+        return dp[n];
+    }
+```
+416. Partition Equal Subset Sum
+knapsack without repetition. so iteration on elements shall be outside
+then solve all the smaller problems
+```cpp
+       vector<vector<int>> dp(target+1,vector<int>(n+1));
+        for(int i=1;i<=n;i++)
+        {
+            int wi=nums[i-1];
+            for(int w=1;w<=target;w++)
+            {
+                dp[w][i]=dp[w][i-1]; //do not choose wi
+                if(w>=wi) dp[w][i]=max(dp[w-wi][i-1]+wi,dp[w][i]); //choose wi
+            }
+        }
+```
+
+474. Ones and Zeroes
+with m 0s and n 1s, get the max number of string in dictionary
+knapsack with more complexity
+- calculate each string's 0 and 1
+- solve subproblem of i 0s and j 1s
+- cannot repeat the string, so string iteration shall in the outer loop
+```cpp
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        int len=strs.size();
+        vector<vector<int>>num10(len,vector<int>(2));
+        for(int i=0;i<len;i++)
+        {
+            for(int j=0;j<strs[i].size();j++) num10[i][0]+=strs[i][j]-'0';
+            num10[i][1]=strs[i].size()-num10[i][0];
+        }
+        vector<vector<vector<int>>> dp(len+1,vector<vector<int>>(m+1,vector<int>(n+1)));
+        for(int i=1;i<=len;i++)
+        {
+            int ones=num10[i-1][0],zeros=num10[i-1][1];
+            for(int j=0;j<=m;j++) //zeros
+            {
+                for(int k=0;k<=n;k++) //ones
+                {
+                    dp[i][j][k]=dp[i-1][j][k];
+                    if(j>=zeros && k>=ones) dp[i][j][k]=max(dp[i][j][k],dp[i-1][j-zeros][k-ones]+1);
+                }
+            }
+        }
+        return dp[len][m][n];
+    }
+```
+120. Triangle
+min path sum
+
+375. Guess Number Higher or Lower II
+when guess wrong, you need pay that amount
+min cost to ensure win
+- minmax problem, get the max to ensure win and then get the min of all the max
+- when we pick a number k, it splits into [left, k-1] and [k+1,right] the cost is num[k]+max(dp[left,k-1],dp[k+1,right])
+- 1st dimension depends on k+1 and second dimension depends on k-1 so first using reverse iteration and 2nd use normal iteration
+```cpp
+    int getMoneyAmount(int n) {
+        //pick a number k it always split it into two regions (1,k-1) (k+1,n)
+        vector<vector<int>> dp(n+1,vector<int>(n+1));
+        
+        for(int r=2;r<=n;r++) //right
+        {
+            for(int l=r-1;l>0;l--) //left
+            {
+                int gmin=INT_MAX;        
+                for(int k=l+1;k<r;k++) //choose k from {l+1,r-1} need at least 3 numbers
+                {
+                    int tmax=k+max(dp[l][k-1],dp[k+1][r]);
+                    gmin=min(gmin,tmax);
+                }
+                dp[l][r]=gmin==INT_MAX?l:gmin;//in case of one element
+            }
+        }
+        return dp[1][n];
+    }
+```
+
+376. Wiggle Subsequence
+return the max length of the wiggling subsequence
+- by tracking the number of down and ups
+- when num[i]>num[i-1], we increase up, up[i]=dn[i-1]+1 (since the two are dependent)
+- when num[i]<num[i-1], we increase down
+- equal case: no change
+- final answer shall be the max of up and down ending at the last element
+
+264. Ugly Number II
+only has factor of 2,3,5, find the nth ugly number
+iteratively find the next ugly number, it shall be the min of previous *2 *3 *5
+use 3 pointers i: *2, j *3, k: *5 represents the current 3 min ugly number.
+```cpp
+    int nthUglyNumber(int n) {
+        vector<int> dp(n);
+        dp[0]=1;
+        int i=0,j=0,k=0;
+        for(int m=1;m<n;m++)
+        {
+            dp[m]=min(dp[i]*2,min(dp[j]*3,dp[k]*5));
+            if(dp[m]==dp[i]*2) i++;
+            if(dp[m]==dp[j]*3) j++;
+            if(dp[m]==dp[k]*5) k++;
+        }
+        return dp[n-1];
+    }
+```
+808. Soup Servings
+- make things easy, divide by 25
+- then options are, A4B0, A3B1, A2B2, A1B3
+- A tends to be used up first, so when A is large, the probability is 1
+- recursive is fine
+```cpp
+    double soupServings(int N) {
+        int n=(N+24)/25;
+        if(n>200) return 1.0;
+        vector<vector<double>> dp(n+1,vector<double>(n+1));
+        return helper(n,n,dp);
+    }
+    double helper(int m,int n,vector<vector<double>>& dp)
+    {
+        if(m<=0 && n>0) return 1.0;
+        if(m<=0 && n<=0) return 0.5;
+        if(m>0 && n<=0) return 0.0;
+        if(dp[m][n]>0) return dp[m][n];
+        return dp[m][n]=0.25*(helper(m-4,n,dp)+helper(m-3,n-1,dp)+helper(m-2,n-2,dp)+helper(m-1,n-3,dp));
+    }
+```
+
+935. Knight Dialer
+Get the number of different numbers given n presses.
+just list next numbers for all given number.
+this is similar to 688. knight probability
+dp[k,i] is the number of different path using k presses, i the number ending at k times (or starting is also fine)
+```cpp
+    int knightDialer(int N) {
+       vector<vector<int>> adj={{4,6},{8,6},{7,9},{4,8},{3,9,0},{},{1,7,0},{2,6},{1,3},{4,2}} ;
+        int mod=1e9+7;
+        vector<vector<int>> dp(N,vector<int>(10));
+        for(int i=0;i<10;i++) dp[0][i]=1; //each digit can be one
+        for(int k=1;k<N;k++)
+        {
+            for(int i=0;i<10;i++)
+            {
+                for(int j=0;j<adj[i].size();j++) 
+                {
+                    dp[k][i]+=dp[k-1][adj[i][j]];
+                    dp[k][i]%=mod;
+                }
+            }
+        }
+        int ans=0;
+        for(int i=0;i<10;i++) ans+=dp[N-1][i],ans%=mod;
+        return ans;
+    }
+```
+213. House Robber II
+circular, this is two house robber 1 problem
+```cpp
+   int rob(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0) return 0;
+        if(n==1) return nums[0];
+        return max(helper(nums,0,n-1),helper(nums,1,n));
+    }
+    int helper(vector<int>& nums, int l, int r)
+    {
+        vector<int> dp(r+1);
+        //dp[i]=max(dp[i-1],dp[i-2]+a[i])
+        //(l==r) return nums[l];
+        dp[l]=nums[l],dp[l+1]=max(nums[l+1],nums[l]);
+        for(int i=l+2;i<r;i++)
+        {
+            dp[i]=max(dp[i-1],dp[i-2]+nums[i]);
+        }
+        return dp[r-1];
+    }
+```
+
+790. Domino and Tromino Tiling
+we have I shape and L shape, to build 2*N tile, what is the number of combinations
+this is actually hard.
+we have two shapes ending: one is flat at the end and one is L shaped at the end
+g(i) represents the number of combinations ending with flat
+u(i) represents the number of combinations ending with L shape
+
+```cpp
+    int numTilings(int N) 
+    {
+        vector<long long> g(N+1),u(N+1);
+        int mod=1000000007;
+        g[0]=0; g[1]=1; g[2]=2;
+        u[0]=0; u[1]=1; u[2]=2;
+        
+        for(int i=3;i<=N;i++)
+        {
+            u[i] = (u[i-1] + g[i-1]           )   %mod;
+            g[i] = (g[i-1] + g[i-2] + 2*u[i-2])   %mod;
+        }
+        return g[N]%mod;
+    }
+```    
+368. Largest Divisible Subset
+find the largest subset which Si%Sj=0 (they are a part of geometric series)
+dp with backtracking ability, we need the previous 
+dp with a bit complexity
+```cpp
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0) return vector<int>();
+        sort(nums.begin(),nums.end());
+        
+        vector<int> dp(n,1); //l
+        vector<int> prev(n,-1);
+        for(int i=1;i<n;i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(nums[i]%nums[j]==0) 
+                {
+                    dp[i]=max(dp[i],dp[j]+1);
+                    if(dp[i]==dp[j]+1) prev[i]=j;
+                }
+            }
+        }
+        int ind=max_element(dp.begin(),dp.end())-dp.begin();
+        vector<int> ans;
+        while(ind>=0)
+        {
+            ans.push_back(nums[ind]);
+            ind=prev[ind];
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+```
+95. Unique Binary Search Trees II
+dp with backtracking. combine with left and right
+```cpp
+    vector<TreeNode*> genTree(int start,int end)
+    {
+        vector<TreeNode*> ans;
+        if(start>end) {ans.push_back(NULL);return ans;}
+        //if(start==end) return vector<TreeNode*>(1,new TreeNode(start));
+        for(int i=start;i<=end;i++)
+        {
+            vector<TreeNode*> left=genTree(start,i-1);
+            vector<TreeNode*> right=genTree(i+1,end);
+            //combine the left right, note left or right could be empty
+
+            for(int l=0;l<left.size();l++)
+            {
+                for(int r=0;r<right.size();r++)
+                {
+                    TreeNode *root=new TreeNode(i);    
+                    root->left=left[l];
+                    root->right=right[r];
+                    ans.push_back(root);
+                }
+            }
+        }
+        return ans;
+    }
+```    
+
+139. Word Break
+break the word into dictionary words
+iterate and break the problem into a word + a smaller subproblem.
+direct dp:
+we mark the possible cut positions and when we iterate more, we check [j, i] if is also a word in the dict.
+```cpp
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> ms(wordDict.begin(),wordDict.end());
+        vector<bool> dp(s.size()+1);
+        dp[0]=1; //empty s
+        for(int i=1;i<=s.size();i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(dp[j])
+                {
+                    if(ms.count(s.substr(j,i-j))) {dp[i]=1;break;}
+                }
+            }
+        }
+        return dp[s.size()];
+    }
+```
+
+467. Unique Substrings in Wraparound String
+- ending with different char guarantee the uniqueness.
+- ending with a char, with a length, the substring is fixed (since it is always abcde...zabcd...z
+```cpp
+    int findSubstringInWraproundString(string p) {
+        int n=p.size();
+        vector<int> dp(26);
+        int maxlen=1;
+        for(int i=0;i<n;i++)
+        {
+            int ind=p[i]-'a';
+            if(i&& (p[i]==p[i-1]+1 || p[i]+25==p[i-1])) maxlen++;
+            else maxlen=1;
+            dp[ind]=max(dp[ind],maxlen);
+        }
+        return accumulate(dp.begin(),dp.end(),0);
+    }
+```
+801. Minimum Swaps To Make Sequences Increasing
+two arrays, swap at the same position to make both array sorted
+two cases:
+A[i]>A[i-1] && B[i]>B[i-1]: no swap, then i-1 no swap, swap then swap i-1
+A[i]>B[i-1] && B[i]>A[i-1]: no swap, then swap i-1. swap i, then no swap i-1
+Note: the two cases may overlap, so second case we need take the min
+```cpp
+    int minSwap(vector<int>& A, vector<int>& B) {
+        int n=A.size();
+        vector<int> swap(n,INT_MAX),no_swap(n,INT_MAX); 
+        //swap(n) represent min swap when we swap n
+        //no_swap(n) represent min swaps when we do not swap n
+        swap[0]=1; //if we swap 0
+        no_swap[0]=0;
+        for(int i=1;i<n;i++)
+        {
+            if(A[i-1]<A[i] && B[i-1]<B[i]) //adding a[i] still sorted
+            {
+                //if we swap i, we also need swap i-1
+                swap[i]=swap[i-1]+1;
+                //if we do not swap i, we also not swap i-1
+                no_swap[i]=no_swap[i-1];
+            }
+            if(A[i-1]<B[i] && B[i-1]<A[i]) //not sorted, or sorted (there is overlapping with previous condition)
+            {
+                //if we swap i, we shall not swap i-1
+                swap[i]=min(swap[i],no_swap[i-1]+1);
+                //if we not swap i, we need swap i-1
+                no_swap[i]=min(no_swap[i],swap[i-1]);
+            }
+        }
+        return min(swap[n-1],no_swap[n-1]);
+    }
+```
+63. Unique Paths II-easy
+673. Number of Longest Increasing Subsequence
+
+
+
+
+
+
+
+
+- 
+
+
+
 
 
 
