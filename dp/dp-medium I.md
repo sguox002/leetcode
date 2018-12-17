@@ -171,8 +171,50 @@ Note: it also includes climbing stairs, if we have multiple methods to reach i, 
     }
 ```    
 
+718. Maximum Length of Repeated Subarray
+larget common substr
+```cpp
+    int findLength(vector<int>& A, vector<int>& B) {
+        int m=A.size(), n=B.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        int res=INT_MIN;
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(A[i-1]==B[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+                res=max(res,dp[i][j]);
+            }
+        }
+        return res;
+    }
+```
 
+309. Best Time to Buy and Sell Stock with Cooldown
+after sell, you have to rest one day before buy stock
+on ith day,
+if we sell, the profit is dp[j-2]+price[i-2]-price[j-2] (buy at jth day, at least two days before ith day)
+if we not sell, the profit is dp[i-1]
+note: price[i-2] and price[j-2] is the price at ith and jth day (since we add two guarding elements)
+dp[j-2] is the profit before we buy at jth day (sell at two days ago)
 
+```cpp
+    int maxProfit(vector<int>& prices) {
+        int n=prices.size();
+        if(n<2) return 0;
+        vector<int> dp(n+2); //dp[i] is the max profit on ith day, adding two guarding
+        if(prices[1]>prices[0]) dp[3]=prices[1]-prices[0];
+        for(int i=4;i<n+2;i++)
+        {
+            for(int j=i;j>=2;j--)
+            {
+                dp[i]=max(dp[i],max(dp[i-1],dp[j-2]+prices[i-2]-prices[j-2]));
+            }
+        }
+        return dp[n+1];
+    }
+```
+Note the j iteration shall from i. 
 
 
 
