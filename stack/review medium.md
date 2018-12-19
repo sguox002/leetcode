@@ -405,6 +405,33 @@ Given a non-negative integer num represented as a string, remove k digits from t
 greedy: remove the first peak digit for k times
 stack: keeping the stack increasing order, when a smaller one comes, pop previous until we got k
 
+907. Sum of Subarray Minimums
+Given an array of integers A, find the sum of min(B), where B ranges over every (contiguous) subarray of A.
+method 1: since each number could be the min, we need just calculate the window for each number and get the sum (left*right*A[i])
+```cpp
+    int sumSubarrayMins(vector<int>& A) {
+        int mod=1e9+7;
+        //each element can appear many times
+        //for element i, we have a window size which A[i] is the minimum
+        vector<int> win(A.size());
+        int ans=0;
+        for(int i=0;i<A.size();i++)
+        {
+            int l=i,r=i;
+            while(A[r+1]>A[i] && r<A.size()-1) r++;
+            while(l>0 && A[l-1]>=A[i]) l--;
+            ans+=((((r-i+1)*(i-l+1))%mod)*A[i])%mod;
+            ans%=mod;
+        }
+        return ans;
+    }
+```    
+method 2: this is another classical stack using monotone increasing sequence
+We push the number in stack, the elements in stack are all smaller than it. When a number is larger just pushed in, when a number smaller, we need pop all larger ones and we get its left. 
+
+880. Decoded String at Index
+The string keeps repeating and growing, another problem on this.
+cannot hold the string for only finding the kth char.
 
 
 
