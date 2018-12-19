@@ -320,6 +320,92 @@ O(n) solution: push into the stack, only when the new comer is negative will col
     }
 ```
 
+853. Car Fleet
+cars running along the same lane at different speed and different positions, when catched up, the two cars bumps together to one fleet. At the destination, get the number of fleets.
+method 1: calculate the time for each car to reach the destination. Sort it according to the positions. Reversely check if ith car needs less time than i+1 car, then the two cars merges to a fleet.
+method 2: stack. We put the farthest car into stack, when the next car comes and uses less time, pop the old one. The remaining in the stack will be the number of fleets. (almost the same as method 1 and stack is not really necessary)
+
+385. Mini Parser
+deserialize the nested integers.
+```cpp
+    NestedInteger deserialize(istringstream &in) {
+        int number;
+        if (in >> number)  return NestedInteger(number);
+        in.clear();//clear error flag (not a number)
+        in.get();//get a char
+        NestedInteger list;
+        while (in.peek() != ']') 
+        {
+            list.add(deserialize(in));
+            if (in.peek() == ',')
+                in.get();
+        }
+        in.get();
+        return list;
+    }
+```
+150. Evaluate Reverse Polish Notation
+The operator follows the two numbers.
+["4", "13", "5", "/", "+"] means: 4+(13/5)
+using  a stack: 
+if seen an operator, pop the two numbers, calculate it and push back for further evalulation
+```cpp
+   int evalRPN(vector<string>& tokens) {
+        stack<string> st;
+        st.push(tokens[0]);
+        int i=1;
+        int ans;
+        while(i<tokens.size())
+        {
+            if(tokens[i]=="+" || tokens[i]=="-" || tokens[i]=="*" || tokens[i]=="/")
+            {
+                int b=stoi(st.top());st.pop();
+                int a=stoi(st.top());st.pop();
+                if(tokens[i]=="+") st.push(to_string(a+b));
+                else if(tokens[i]=="-") st.push(to_string(a-b));
+                else if(tokens[i]=="*") st.push(to_string(a*b));
+                else if(tokens[i]=="/") st.push(to_string(a/b));
+            }
+            else st.push(tokens[i]);
+            i++;
+        }
+        return stoi(st.top());
+    }
+```
+71. Simplify Path
+. current dir
+.. previous dir
+using a stack
+
+456. 132 Pattern (**)
+this is a classical stack problem. It needs looking for a peak like feature (i<j<k && Ai<A[k]<A[j])
+Keeping the numbers in stack, maintaining an increasing order.
+when the number coming is smaller, we poped all those larger ones. Then we found a peak here. The only constraint is the new number shall be larger than the 
+```cpp
+    bool find132pattern(vector<int>& nums) {
+       //using a monotonic increasing queue
+        //to guarantee S1<S2
+        int s1=INT_MAX;
+        stack<int> st;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(nums[i]>s1) return 1;
+            while(!st.empty() && nums[i]<st.top())
+            {
+                s1=st.top();st.pop();
+            }
+            st.push(nums[i]);
+        }
+        return 0;
+    }
+```
+
+402. Remove K Digits
+Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
+greedy: remove the first peak digit for k times
+stack: keeping the stack increasing order, when a smaller one comes, pop previous until we got k
+
+
 
 
 
