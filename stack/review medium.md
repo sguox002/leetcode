@@ -162,6 +162,166 @@ root left right, so we process root first, then we push its right and process it
 The key here is: we subtract the time used by other function from the start on the stack top.
 
 341. Flatten Nested List Iterator
+This problem is very confusing.
+The class NestedInteger: it could be a single integer, or a list of Nested Integers for example 5, [5], [4,[5,[6]]
+Needs to build an iterator class for a vector of nested integer.
+NestedInteger:
+isInteger: the nested integer is a single integer
+getInteger: only works for single integer NestedInteger
+getList: only works for non-single integer nested integer (since a nestedInteger is also a vector of nestedInteger
+
+The iterator shall:
+- be able to navigate the vector
+- when the node is non-single integer node, we need expand the iterator.
+- using the stack to pop the composite node iterator and replace with its inside iterator ( a list of iterator)
+- using begin and end, then we do not need save iterator for each element
+
+173. Binary Search Tree Iterator
+in order traversal.
+starting from root, we need push all its left
+when pop one, we need push its right
+```cpp
+class BSTIterator {
+    //use a stack to keep all the parent nodes
+    stack<TreeNode*> s;
+    void update(TreeNode *root)
+    {
+        while(root){s.push(root);root=root->left;}
+    }
+public:
+    BSTIterator(TreeNode *root) {
+        update(root);
+    }
+
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        return !s.empty();
+    }
+
+    /** @return the next smallest number */
+    int next() {
+        //get the top of the stack, it is always the leftmost node
+        TreeNode *node=s.top();s.pop();
+        update(node->right);
+        return node->val;
+    }
+};
+```
+901. Online Stock Span
+stock span is defined as: from today, number of consecuative days  (previous) prices<=today's price.
+Typical stack problem since we need old data.
+When prices is higher, we need pop out those smaller ones, so we are maintaining a decreasing stack.
+
+394. Decode String
+s = "3[a]2[bc]", return "aaabcbc".
+s = "3[a2[c]]", return "accaccacc".
+s = "2[abc]3[cd]ef", return "abcabccdcdcdef"
+natural thinking: we push the [] in stack and then we evaluate the most innerside first. Each string inside [] is also a subproblem. We need to assemble to get a bigger problem.
+The complexity is the inner string keeps expanding.
+A often used method is: when we meet the first [, we leave the remaining as a subproblem. So expanding is always the latter part
+
+```cpp
+    string helper(int& pos, string s) {
+        int num=0;
+        string word = "";
+        for(;pos<s.size(); pos++) 
+        {
+            char cur = s[pos];
+            if(cur == '[') 
+            {
+                string curStr = helper(++pos, s);
+                for(;num>0;num--) word += curStr;
+            } 
+            else if (cur >= '0' && cur <='9') 
+                num = num*10 + cur - '0';
+            else if (cur == ']') 
+                return word;
+            else     // Normal characters
+                word += cur;
+        }
+        return word;
+    }
+```
+
+103. Binary Tree Zigzag Level Order Traversal
+level order traversal and then reverse all even rows (without stack)
+using stack to reverse can also be fine (this is an important function of stack)
+
+331. Verify Preorder Serialization of a Binary Tree
+preorder: root, left, right. Null is represented as #
+method 1: when we see a non-null node, it must add two nodes. When we see # it just add itself. (A null root will has only one #)
+We can count non-null nodes and +2, adding any node -1, the whole shall be 0
+method 2: using stack O(n), push each once and pop once. 
+When we meet a #, keep poping until it is not #. Then pop the non-null node. That means the node # # is replace with a #, indicating the node is fully explored and absorbed as a null node #. At the end, each node shall be explored and leaving a # only in the stack.
+
+"9,3,4,#,#,12,#,#,2,#,6,#,#"
+
+stack status
+
+char   stack
+'9':   '9'  
+'3':   '3','9'
+'4':   '4','3','9'
+'#':   '#','4','3','9'
+'#':   '#','3','9'
+'12':  'n', '#', '3','9'
+'#':   '#','1', '#', '3','9'
+'#':   '#','3','9' -> '#','9'
+'2':   '2', '#','9'
+'#':   '#', '2', '#','9'
+'6':   '6', '#', '2','#','9'
+'#':   '#', '6', '#', '2','#','9'
+'#':   '#', '2','#','9' -> '#','9' -> '#'
+Stack is hard to understand!!!
+
+735. Asteroid Collision
+Find out the state of the asteroids after all collisions. If two asteroids meet, the smaller one will explode. If both are the same size, both will explode. Two asteroids moving in the same direction will never meet.
+The right ones trying to go right, and the left ones trying to go left.
+O(n) solution: push into the stack, only when the new comer is negative will collide
+- at the end, all the negative star has to be on the left, and all the positive star has to be on the right.
+- from the left, a negative star will pass through if no positive star on the left;
+- keep track of all the positive stars moving to the right, the right most one will be the 1st confront the challenge of any future negative star.
+- if it survives, keep going, otherwise, any past positive star will be exposed to the challenge, by being popped out of the stack.
+
+```cpp
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        vector<int> ret;
+        if (asteroids.size() == 0) {
+            return ret;
+        }
+        
+        stack<int> st;
+        for (int i = 0; i < asteroids.size(); i++) 
+        {
+            int curr = asteroids[i];
+            bool skip = false;
+            while (!st.empty() && (st.top() > 0 && curr < 0)) 
+            {
+                int t1 = st.top(); st.pop();
+                int t2 = asteroids[i];
+                if (t1 + t2 == 0) 
+                {
+                    skip = true;
+                    break;
+                } 
+                else if (abs(t1) > abs(t2)) curr = t1;
+                else curr = t2;
+            }
+            if (!skip) st.push(curr);
+        }
+        
+        while (!st.empty()) 
+        {
+            ret.emplace(ret.begin(), st.top());
+            st.pop();
+        }
+        
+        return ret;
+    }
+```
+
+
+
 
 
 
