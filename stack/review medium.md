@@ -378,27 +378,29 @@ if seen an operator, pop the two numbers, calculate it and push back for further
 using a stack
 
 456. 132 Pattern (**)
-this is a classical stack problem. It needs looking for a peak like feature (i<j<k && Ai<A[k]<A[j])
-Keeping the numbers in stack, maintaining an increasing order.
-when the number coming is smaller, we poped all those larger ones. Then we found a peak here. The only constraint is the new number shall be larger than the 
+
+this is a classical stack problem. It needs looking for a peak like feature (i<j<k && Ai<A[k]<A[j]).
+Suppose we want to find a 123 sequence with s1 < s2 < s3, we just need to find s3, followed by s2 and s1. Now if we want to find a 132 sequence with s1 < s3 < s2, we need to switch up the order of searching. we want to first find s2, followed by s3, then s1.
+More precisely, we keep track of highest value of s3 for each valid (s2 > s3) pair while searching for a valid s1 candidate to the left. Once we encounter any number on the left that is smaller than the largest s3 we have seen so far, we know we found a valid sequence, since s1 < s3 implies s1 < s2.
+
 ```cpp
     bool find132pattern(vector<int>& nums) {
-       //using a monotonic increasing queue
-        //to guarantee S1<S2
-        int s1=INT_MAX;
+        //from right side to left and keep in stack
         stack<int> st;
-        for(int i=0;i<nums.size();i++)
+        int s3=INT_MIN;
+        for(int i=nums.size()-1;i>=0;i--)
         {
-            if(nums[i]>s1) return 1;
-            while(!st.empty() && nums[i]<st.top())
+            if(nums[i]<s3) return 1;
+            else while(st.size() && nums[i]>st.top())
             {
-                s1=st.top();st.pop();
+                s3=st.top();st.pop();
             }
             st.push(nums[i]);
         }
         return 0;
     }
 ```
+Note: the program gets the max s2 and s3 (s2>s3) pairs from right to left. 
 
 402. Remove K Digits
 Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
