@@ -280,6 +280,131 @@ It is very hard to understand the question. Let me explain:
 Given a list of allowed triplets, the pyramid is built layer by layer, each triangle (upper layer node with its adjacent lower layer two nodes) must be in the allowed list. 
 The question is: given the bottom layer and the allowed list, can we build the pyramid? (all the way to the top).
 
+So the solution is:
+get the possible string for upper layer and recursively solve each problem.
+we can build a map with two chars with the other char. Building all kinds of combinations from lower layer can use dfs.
+
+638. Shopping Offers
+this is more like a dp or knapsack problem
+
+337. House Robber III
+dp problem
+
+199. Binary Tree Right Side View
+bfs the last one is the anwer
+
+851. Loud and Rich
+N people
+richer: richer(x,y) means x is richer than y, only a subset is provided.
+quite[x] is the quiteness of person x
+find the person with money >= person x and is the loudest. 
+for n people, that is n problems.
+example: [[1,0],[2,1],[3,1],[3,7],[4,3],[5,3],[6,3]], quiet = [3,2,5,4,6,1,7,0]
+for person 0:
+who is richer than him? 1
+who is richer than 1? 2,3
+who is richer than 2,3? 4,5,6
+7 is less rich than 3 but not sure if 7 is richer than 1, so the anwer is 5 (who is loudest)
+
+just build a map for each person with a list of richer person. and do dfs.
+```cpp
+    unordered_map<int, vector<int>> richer2;
+    vector<int> res;
+    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
+        for (auto v : richer) richer2[v[1]].push_back(v[0]);
+        res = vector<int> (quiet.size(), -1);
+        for (int i = 0; i < quiet.size(); i++) dfs(i, quiet);
+        return res;
+    }
+
+    int dfs(int i, vector<int>& quiet) {
+        if (res[i] >= 0) return res[i];
+        res[i] = i;
+        for (int j : richer2[i]) if (quiet[res[i]] > quiet[dfs(j, quiet)]) res[i] = res[j];
+        return res[i];
+    }
+```
+
+494. Target Sum
+with + and - for each number, find number of ways to get target sum S.
+can be a dp or recursion with memoization
+Note the S shall be in the range of [-m, m] where m is the accumulate sum.
+each number has +/- two selections, the complexity would be O(2^N) without the memoization to avoid repeatedly solving overlapped subproblems.
+
+```cpp
+    int findTargetSumWays(vector<int>& nums, int S) {
+        int n=nums.size();
+        int m=accumulate(nums.begin(),nums.end(),0);
+        if(m<abs(S)) return 0;
+        vector<unordered_map<int,int>> status(n);
+        return helper(nums,S,0,status,m);
+    }
+    int helper(vector<int>& nums,int target,int cur_pos,vector<unordered_map<int,int>>& status,int offset)
+    {
+        if(cur_pos==nums.size()) return target?0:1;
+        //(status[cur_pos][target+offs]>=0) return status[cur_pos][target+offset];
+        if(status[cur_pos].count(target+offset)) return status[cur_pos][target+offset];
+        int res=0;
+        res+=helper(nums,target-nums[cur_pos],cur_pos+1,status,offset);//it overflows target+/-num
+        res+=helper(nums,target+nums[cur_pos],cur_pos+1,status,offset);
+        status[cur_pos][target+offset]=res;
+        return res;
+    }
+```    
+
+863. All Nodes Distance K in Binary Tree
+given a node find all nodes in distance K
+One method: build a graph and bfs. To build the graph, the tree parent needs to be passed in recursive traversal.
+
+394. Decode String
+stack, recursion problem.
+The subproblem is:
+the first non-repeated string
+the repeat number [
+the to be repeated string (subproblem since it may contain [] again)
+]
+
+This effectively avoid the problem to do it first in the stack and expand the string which make the problem really complicated.
+```cpp
+    string decodeString(const string& s, int& i) {
+        string res;
+        while (i < s.length() && s[i] != ']') 
+        {
+            if (!isdigit(s[i])) res += s[i++];
+            else 
+            {
+                int n = 0;
+                while (i < s.length() && isdigit(s[i])) n = n * 10 + s[i++] - '0';
+                i++; // '['
+                string t = decodeString(s, i);
+                i++; // ']'
+                while (n-- > 0) res += t;
+            }
+        }
+        return res;
+    }
+```
+
+934. Shortest Bridge
+two islands, the shortest bridge (4 direction connection)
+dfs to two parties and calculate the mutual distance and get the min
+note the distance is not sqrt distance
+
+802. Find Eventual Safe States
+given a directed graph, starting from some node if we can reach a terminal node (not a cycle)
+the node is called safe node, return all the safe nodes.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
