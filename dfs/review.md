@@ -180,6 +180,113 @@ The following code is used for finding the area of one connected region
     }
 ```    
 
+547. Friend Circles
+disjoint set could be perfect for this
+if M[i,j]==1 then we merge i and j
+
+for dfs: if M(i,j)==1 then we need dfs from i and dfs from j. the two are a group. That means we shall iterate on the person instead of the edges, hence coloring on the matrix is not good. instead we shall use the person if visited.
+
+The relation matrix is symmetric. and can we only need to use half? The answer is no, since when we found i relates with j, j could relates with people ahead of i. so We need iterate on all people.
+```cpp
+    int findCircleNum(vector<vector<int>>& M) {
+        int num_cycle=0;
+        vector<bool> visited(M.size());
+        for(int i=0;i<M.size();i++) //for each person
+        {
+            if(!visited[i]) dfs(M,i,visited),num_cycle++;
+        }
+        return num_cycle;
+    }
+    void dfs(vector<vector<int>>& M,int node,vector<bool>& visited)
+    {
+        for(int i=0;i<M.size();i++) //shall start from 0 instead of from node
+        {
+            if(M[node][i] && !visited[i]) visited[i]=1,dfs(M,i,visited);
+        }
+    }
+```
+
+529. Minesweeper
+given a minesweeper and a click on (i,j) return the next status
+if click on M, then change to x, game over
+if click on E, change to B and reveal all its adjacent empty cell. If the empty cell has mines adjacent, change to the number of mines.
+adjacent is 8 directions.
+dfs with 8 directions
+
+```cpp
+    void reveal(vector<vector<char>>& board, int x, int y){
+         int dir[][2]={{0,1},{0,-1},{1,0},{-1,0},{1,1},{1,-1},{-1,1},{-1,-1}};
+        int m=board.size(),n=board[0].size();
+        if(board[x][y] == 'E')
+        {
+            //search 8 adjacent squares
+            int count = 0;
+            for(int i=0;i<8;i++)
+            {
+                int tx=x+dir[i][0],ty=y+dir[i][1];
+                if(tx>=0 && tx<m && ty>=0 && ty<n && board[tx][ty]=='M') count++;
+            }
+            if(count>0) board[x][y] = '0'+count;
+            else
+            {
+                board[x][y] = 'B';
+                for(int i=0;i<8;i++)
+                {
+                    int tx=x+dir[i][0],ty=y+dir[i][1];
+                    if(tx>=0 && tx<m && ty>=0 && ty<n) reveal(board,tx,ty);
+                }
+            }
+        }
+    }
+```
+
+947. Most Stones Removed with Same Row or Columns
+stones share same row or column are  in a connected group. 
+we can only remove a stone when stone has >1 stones in a group, leaving one stone at each group. 
+So the max number of stones we can remove is N-num_groups
+disjoint set is perfect for this.
+let's try dfs way.
+we can use dfs with coloring
+Note: the input is the coordinates for the n stones. The coordinate could be much larger than n. So build a grid is pretty naive.
+```cpp
+    int removeStones(vector<vector<int>>& stones) {
+        int num_groups=0;
+        int n=stones.size();
+        vector<bool> visited(n);
+        for(int i=0;i<n;i++)
+        {
+            if(!visited[i]) dfs(stones,i,visited),num_groups++;
+        }
+        return n-num_groups;
+    }
+    
+    void dfs(vector<vector<int>>& stones,int i,vector<bool>& visited)
+    {
+        visited[i]=1;
+        for(int j=0;j<stones.size();j++)
+        {
+            if(visited[j]) continue;
+            if(stones[i][0]==stones[j][0] || stones[i][1]==stones[j][1])
+            {
+                dfs(stones,j,visited);
+            }
+        }
+    }
+```
+The above solution is much slower than using disjoint set (140ms vs 40ms). Since we use a loop to find all those nodes sharing coordinates, this could be reduced using a hashmap.
+
+756. Pyramid Transition Matrix
+It is very hard to understand the question. Let me explain:
+Given a list of allowed triplets, the pyramid is built layer by layer, each triangle (upper layer node with its adjacent lower layer two nodes) must be in the allowed list. 
+The question is: given the bottom layer and the allowed list, can we build the pyramid? (all the way to the top).
+
+
+
+
+
+
+
+
 
 
 
