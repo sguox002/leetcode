@@ -393,7 +393,83 @@ note the distance is not sqrt distance
 802. Find Eventual Safe States
 given a directed graph, starting from some node if we can reach a terminal node (not a cycle)
 the node is called safe node, return all the safe nodes.
+so: a node start, it must goes to a terminal for all paths. If any path fails (cycle) it is not a safe node.
+if the path contains any non-safe node, it is not safe either.
 
+visited can also use coloring, they are equivalent, but coloring is more efficient.
+```cpp
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        //dfs to see if it can walk to a terminal (all paths)
+        vector<int> ans;
+        vector<int> safenodes(graph.size(),-1);
+        for(int i=0;i<graph.size();i++)
+        {
+            unordered_set<int> visited;
+            if(isSafeNode(graph,i,visited,safenodes)) ans.push_back(i);
+        }
+        return ans;
+    }
+    
+    bool isSafeNode(vector<vector<int>>& graph,int start,unordered_set<int> visited,vector<int>& safenodes)
+    {
+        //all paths reaches to terminal. If one case fail, then fail
+        //failed case: we had a cycle
+        //we need add memoization 
+        if(safenodes[start]>-1) return safenodes[start];
+        if(graph[start].size()==0) {return 1;} //cannot mark it as safe if only one path is safe
+        if(visited.count(start)) {return 0;} //
+        for(int i=0;i<graph[start].size();i++)
+        {
+            visited.insert(start);
+            if(!isSafeNode(graph,graph[start][i],visited,safenodes)) 
+            {
+                //all visited nodes shall mark as not safe
+                safenodes[start]=0;
+                return 0;
+            }
+            visited.erase(start);
+        }
+        safenodes[start]=1;
+        return 1;
+    }
+```
+
+785. Is Graph Bipartite?
+edge only occurs between different parties but not inside.
+two coloring: a->b we color a as 0 and b as 1, then b->c we color c as 1... if we found no conflicts it is two parites.
+
+0: Haven't been colored yet.
+1: Blue.
+-1: Red.
+For each node,
+
+If it hasn't been colored, use a color to color it. Then use the other color to color all its adjacent nodes (DFS).
+If it has been colored, check if the current color is the same as the color that is going to be used to color it.
+```cpp
+    bool isBipartite(vector<vector<int>>& graph) {
+        //use coloring 0: not color, 1, -1
+        int n=graph.size(); //num of nodes
+        vector<int> color(n); 
+        for(int i=0;i<n;i++)
+        {
+            if(!color[i] && !dfs(graph,i,color,1)) return 0;
+        }
+        return 1;
+    }
+    bool dfs(vector<vector<int>>& graph,int i,vector<int>& color,int nc)
+    {
+        if(color[i]) return color[i]==nc;
+        color[i]=nc;
+        for(int j=0;j<graph[i].size();j++)
+        {
+            if(!dfs(graph,graph[i][j],color,-nc)) return 0; //adjacent reverse color
+        }
+        return 1;
+    }
+```
+
+
+    
 
 
 
