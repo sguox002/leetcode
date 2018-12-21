@@ -145,6 +145,44 @@ dfs or recursive. reduce to sub problem with target-root on left sub or right su
 111. Minimum Depth of Binary Tree
 similar for max depth 1+min(left height,right height)
 
+959. Regions Cut By Slashes
+upsample and do dfs
+need at least upsample to 3x3, otherwise connected region will be separated.
+
+841. Keys and Rooms
+N rooms, and each room has a list of keys to open other rooms
+check if we can open all rooms,initially at room 0
+that is dfs, we need check all possible keys and see if all rooms are visited.
+bfs is also ok. 
+use set or other mechanism to record visited.
+
+513. Find Bottom Left Tree Value
+Given a binary tree, find the leftmost value in the last row of the tree
+if right height is bigger, find in right subtree
+else find in left subtree
+
+515. Find Largest Value in Each Tree Row
+can use hash map for each layer and get the max using traversal (any order)
+
+695. Max Area of Island
+dfs and count the number and mark it as different color
+dfs is much simpler than bfs.
+The following code is used for finding the area of one connected region
+
+```cpp
+    int dfs(vector<vector<int>>& grid,int i,int j)
+    {
+        int m=grid.size(),n=grid[0].size();
+        if(i<0 || j<0 || i>=m || j>=n) return 0;
+        if(grid[i][j]!=1) return 0;
+        grid[i][j]=2;
+       return dfs(grid,i-1,j)+dfs(grid,i+1,j)+dfs(grid,i,j-1)+dfs(grid,i,j+1)+1;
+    }
+```    
+
+
+
+
 
 
 
