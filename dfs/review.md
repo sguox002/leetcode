@@ -1,4 +1,4 @@
-```dfs is generally recursive, reducing to similar subproblems
+dfs is generally recursive, reducing to similar subproblems
 generally involves push and pop a new path
 generally uses coloring to indicate visited nodes
 dfs/bfs/disjoint set sometimes can be all used for similar problems
