@@ -468,6 +468,141 @@ If it has been colored, check if the current color is the same as the color that
     }
 ```
 
+491. Increasing Subsequences
+typical backtracking problem
+
+```cpp
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> myv;
+        helper(nums,0,ans,myv);//no need loop here, often made mistakes here
+
+        return ans;
+    }
+    
+    void helper(vector<int>& nums,int ind,vector<vector<int>>& res,vector<int>& v)
+    {
+        if(v.size()>1) res.push_back(v);
+        unordered_set<int> visited;
+        for(int i=ind;i<nums.size();i++)
+        {
+            if((!v.size() || nums[i]>=v.back()) && !visited.count(nums[i]))
+            {
+                v.push_back(nums[i]);
+                helper(nums,i+1,res,v);//i+1 instead ind+1
+                v.pop_back();
+                visited.insert(nums[i]);
+            }
+        }
+    }
+```
+use reference to push and pop the last element and try new path
+
+129. Sum Root to Leaf Numbers
+each path represents a number and add all path
+backtracking
+```cpp
+    void sumtree(TreeNode* root,long long num,long long & sum)
+    {
+        //root is valid
+        num=num*10+root->val;
+        if(root->left) sumtree(root->left,num,sum);//if root is leaf will call twice
+        if(root->right) sumtree(root->right,num,sum);
+        if(!root->left && !root->right) {sum+=num;return;}
+    }
+```
+using value passing so no need to push/pop
+
+114. Flatten Binary Tree to Linked List
+arrange the tree in preorder
+inplace: we can do different order.
+we have two subproblem, flatten the left and flatten the right and then connect using the root as root->left->right
+The linked list generally uses the reverse sequence right->left->root
+ie. we first flatten the right subtree, then left subtree, finally the root, root->right connects the right first and now the root becomes the top node. The top node is null first.
+```cpp
+    void flatten(TreeNode* root) {
+        TreeNode* prev=0;
+        helper(root,prev);
+    }
+    void helper(TreeNode* root, TreeNode*& prev)
+    {
+        if(!root) return;
+        helper(root->right,prev);
+        helper(root->left,prev);
+        root->right=prev;
+        root->left=0;
+        prev=root;
+    }
+```
+we have to use reference passing since the change of prev shall carry to the next step.
+
+886. Possible Bipartition
+disliked person cannot be in the same group
+use coloring. three state 0: not assigned, 1/-1
+build the input to ajacent matrix.
+
+```cpp
+    bool possibleBipartition(int N, vector<vector<int>>& dislikes) {
+        vector<int> color(N);
+        vector<vector<int>> adj(N);
+        for(int i=0;i<dislikes.size();i++)
+        {
+            adj[dislikes[i][0]-1].push_back(dislikes[i][1]-1);
+            adj[dislikes[i][1]-1].push_back(dislikes[i][0]-1);
+        }
+        for(int i=0;i<N;i++)
+        {
+            if(!color[i] && !dfs(adj,i,color,1)) return 0;
+        }
+        return 1;
+    }
+    bool dfs(vector<vector<int>>& adj,int i,vector<int>& color,int nc)
+    {
+        if(color[i]) return nc==color[i];
+        color[i]=nc;
+        for(int j=0;j<adj[i].size();j++) //adj[i] could be empty
+        {
+            int node=adj[i][j];
+            if(color[node] && color[node]!=-nc) return 0;
+            if(!color[node] && !dfs(adj,node,color,-nc)) return 0;
+        }
+        return 1;
+    }
+```
+Note: the precheck color[node]!=-nc is critical: since the following condition only checks non-set colors. if already set, we need check if it is the color we expected. otherwise it is 0. If it is same color, we need continue checking (cannot return)
+
+200. Number of Islands
+disjoint set also ok
+4 direction. use coloring and dfs
+```cpp
+    int numIslands(vector<vector<char>>& grid) {
+        int ans=0;
+        for(int i=0;i<grid.size();i++)
+        {
+            for(int j=0;j<grid[0].size();j++)
+            {
+                if(grid[i][j]=='1') dfs(grid,i,j),ans++;
+            }
+        }
+        return ans;
+    }
+    void dfs(vector<vector<char>>& grid,int i,int j)
+    {
+        if(i<0 ||j<0 ||i>=grid.size()||j>=grid[0].size()) return;
+        if(grid[i][j]=='1')
+        {
+            grid[i][j]='2';
+            dfs(grid,i-1,j);
+            dfs(grid,i+1,j);
+            dfs(grid,i,j-1);
+            dfs(grid,i,j+1);
+        }
+    }
+```
+
+
+
+
 
     
 
