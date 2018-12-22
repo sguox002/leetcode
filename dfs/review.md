@@ -600,6 +600,84 @@ disjoint set also ok
     }
 ```
 
+473. Matchsticks to Square
+using sticks with different length to form a square
+You have to use all the sticks once
+
+first calculate the side length, which is the target sum.
+dfs to get the target
+```cpp
+    bool dfs(vector<int>& sticks,int target,int start_ind,unordered_set<int>& visited)
+    {
+        if(target==0) return 1;
+        if(target<0) return 0;
+        for(int i=start_ind;i<sticks.size();i++)
+        {
+            if(visited.count(i)) continue;
+            visited.insert(i);
+            if(dfs(sticks,target-sticks[i],i+1,visited)) return 1;
+            visited.erase(i); //put them back if failed
+        }
+        return 0;
+    }
+```
+if path fail, we need pop back the node visited.
+
+542. 01 Matrix
+find the nearest distance to 0 for each cell
+bfs for each non zero cell.
+
+576. Out of Boundary Paths
+recursive or dp
+
+332. Reconstruct Itinerary
+The nice thing about DFS is it tries a path, and if that's wrong (i.e. path does not lead to solution), DFS goes one step back and tries another path. It continues to do so until we've found the correct path (which leads to the solution). You need to always bear this nice feature in mind when utilizing DFS to solve problems.
+
+In this problem, the path we are going to find is an itinerary which:
+
+uses all tickets to travel among airports
+preferably in ascending lexical order of airport code
+Keep in mind that requirement 1 must be satisfied before we consider 2. If we always choose the airport with the smallest lexical order, this would lead to a perfectly lexical-ordered itinerary, but pay attention that when doing so, there can be a "dead end" somewhere in the tickets such that we are not able visit all airports (or we can't use all our tickets), which is bad because it fails to satisfy requirement 1 of this problem. Thus we need to take a step back and try other possible airports, which might not give us a perfectly ordered solution, but will use all tickets and cover all airports.
+
+Thus it's natural to think about the "backtracking" feature of DFS. We start by building a graph and then sorting vertices in the adjacency list so that when we traverse the graph later, we can guarantee the lexical order of the itinerary can be as good as possible. When we have generated an itinerary, we check if we have used all our airline tickets. If not, we revert the change and try another ticket. We keep trying until we have used all our tickets.
+
+good to know what backtracking is: try a solution, if failure, abandom it and try next.
+
+Adjacent matrix: always sort the nodes (using multiset can sort it automatically)
+```cpp
+    bool dfs(unordered_map<string,multiset<string>>& mp,string node,multiset<pair<string,string>>& to_visit,vector<string>& ans)
+    {
+        if(to_visit.size()==0) return 1;//visited all
+        if(mp[node].size()==0) return 0;//dead end
+        
+        for(auto it=mp[node].begin();it!=mp[node].end();it++)
+        {
+            string next=*it;
+            pair<string,string> p=make_pair(node,next);
+            auto it1=to_visit.find(p);
+            if(it1!=to_visit.end())
+            {
+                to_visit.erase(it1);//remove this edge
+                ans.push_back(next);
+                if(dfs(mp,next,to_visit,ans)) {return 1;}
+                to_visit.insert(p);//put back this edge if failed
+                ans.pop_back();
+            }
+        }
+        return 0;
+    }
+```    
+
+133. Clone Graph
+when clone the graph, those pointers are invalidated and they shall point to new nodes
+mapping pointers to id, id to pointer then we can rebuild the relation
+
+98. Validate Binary Search Tree
+straightforward: in order traversal and see if they are sorted. Or we do not need extra space for this.
+must be surrounded by x, boundary o does not count.
+union find, by connecting all boundary cells to a parent.
+dfs: we only need to find those regions attached to the 4 boundaries and they shall not change. other nodes all change to x
+
 
 
 
