@@ -678,46 +678,14 @@ must be surrounded by x, boundary o does not count.
 union find, by connecting all boundary cells to a parent.
 dfs: we only need to find those regions attached to the 4 boundaries and they shall not change. other nodes all change to x
 
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+753. Cracking the Safe
+n boxes with n digits password using k digits only (from 0 to k-1)
+the min length of input to guarantee opening it. (auto match the password)
+the string shall contain all possible combinations of the k digits
+and we shall combine these combinations with the largest common. 123, 231 shall be combined as 1231
+Note each digit can be repeated: so the total combination is k^n (k max is 10, n max is 4, k^n max is 4096)
+greedy choice: 
+two digits: 00, 01, 11, 10-->00110. every time only the last n-1 digits are reserved and append a new digit in reversed way, ie. from k-1 to 0
+if we try from 0 to k-1: 00, 01, 10, 11-->001011, which is 6, not the smallest one. 
+if a cycle is seen, continue next.
 
