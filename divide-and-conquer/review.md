@@ -180,6 +180,34 @@ return all possibility of combinations
 
 dfs: try +-* at each position and split into two half and evaluate the results
 
- 
+327. Count of Range Sum 
+ Lower and upper bound, count the number of range sums in this range.
+ - naive: prefix sum and check each difference O(N^2)
+ - divide and conquer: divide the array at m, then we have three cases
+ 1. range sum in left array
+ 2. range sum in right array
+ 3. range sum with first index in left array and 2nd index in right array
+ 1 and 2 are sub-problem and shall be solved using recursion. 
+ how to approach 3?
+ - we can do prefix sum for right and postfix sum for left and add together we get the subarray sum. Again this is O(N^2)
+ - an important fact of problem 3: the index i<j is automatically guaranteed and we do not need to keep the ordering of left and right array. We can sort (merge sort) to find ->O(nlogn)
+j is the first index satisfy sums[j] - sums[i] > upper and
+k is the first index satisfy sums[k] - sums[i] >= lower.
+Then the number of sums in [lower, upper] is j-k
+
+218. The Skyline Problem
+given a list of buildings: (x1,x2, y): means from x1 to x2 it is height y.
+return the outer skyline
+naive: check each building and updates the height (keep the max). when the x-axis is long, this could be a lot.
+improvement: we can just record the turning point value
+https://briangordon.github.io/2014/08/the-skyline-problem.html
+that we’re able to scan through the critical points and consider only the “active” set of rectangles at each critical point, an interesting opportunity presents itself. Our current solution can be written as:
+
+for each critical point c  c.y gets the height of the tallest rectangle over c
+This is no longer obviously O(n2). If we can somehow calculate the height of the tallest rectangle over c in faster than O(n) time, we have beaten our O(n2) algorithm. Fortunately, we know about a data structure which can keep track of an active set of integer-keyed objects and return the highest one in O(logn) time: a heap.
+
+Our final solution, then, in O(nlogn) time, is as follows. First, sort the critical points. Then scan across the critical points from left to right. When we encounter the left edge of a rectangle, we add that rectangle to the heap with its height as the key. When we encounter the right edge of a rectangle, we remove that rectangle from the heap. (This requires keeping external pointers into the heap.) Finally, any time we encounter a critical point, after updating the heap we set the height of that critical point to the value peeked from the top of the heap.
+
+
  
 
