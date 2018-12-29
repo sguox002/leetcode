@@ -1,7 +1,6 @@
 338. Counting Bits
 
-given a number get all number of 1s in binary for each one
-
+given a number get all number of 1s in binary for each one.
 dp[i]=dp[i/2]+i&1
 
 877. Stone Game
