@@ -1,13 +1,9 @@
-338. Counting Bits
+338. Counting Bits<br/>
+given a number get all number of 1s in binary for each one.<br/> dp[i]=dp[i/2]+i&1
 
-given a number get all number of 1s in binary for each one.
-dp[i]=dp[i/2]+i&1
-
-877. Stone Game
-
-a list of numbers, picking from either end. who wins
-
-we pick positive, the other pick negative, maximize the score. (for the other player it is the same)
+877. Stone Game<br/>
+a list of numbers, picking from either end. who wins<br/>
+we pick positive, the other pick negative, maximize the score. (for the other player it is the same)<br/>
 
 ```cpp
     int helper(vector<int>& piles,vector<vector<int>>& dp,int l,int r)
@@ -18,95 +14,65 @@ we pick positive, the other pick negative, maximize the score. (for the other pl
         return dp[l][r];
     }
 ```
-931. Minimum Falling Path Sum
-
+931. Minimum Falling Path Sum<br/>
 element + min(previous row closest three sum)
 
-647. Palindromic Substrings
+647. Palindromic Substrings<br/>
+dp[i,j] is the number of p-string for S(i...j)<br/>
+self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]<br/>
+iterate i reverse, j normal<br/>
 
-dp[i,j] is the number of p-string for S(i...j)
+413. Arithmetic Slices<br/>
+dp[i] means the number of arithmetic slices ending with A[i]<br/>
+dp[i]=dp[i-1]+1 if it satisfy arithmetic<br/>
+answer is the accumulation<br/>
 
-self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
-
-iterate i reverse, j normal
-
-413. Arithmetic Slices
-
-dp[i] means the number of arithmetic slices ending with A[i]
-
-dp[i]=dp[i-1]+1 if it satisfy arithmetic
-
-answer is the accumulation
-
-712. Minimum ASCII Delete Sum for Two Strings
-
+712. Minimum ASCII Delete Sum for Two Strings<br/>
 edit distance dp[i,j]
 
-714. Best Time to Buy and Sell Stock with Transaction Fee
+714. Best Time to Buy and Sell Stock with Transaction Fee<br/>
+dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) for j=0 to i-1<br/>
+sell or not sell on ith day<br/>
 
-dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) for j=0 to i-1
-
-sell or not sell on ith day
-
-646. Maximum Length of Pair Chain
-
-sort the chain according to its start.
-
+646. Maximum Length of Pair Chain<br/>
+sort the chain according to its start.<br/>
 dp[i] is the number of longest chain for ith pair, it shall be the previous chain+1
 
-343. Integer Break
+343. Integer Break<br/>
+make the product the largest.<br/>
+j*(i-j) vs j*dp[i-j], break into j and i-j two numbers<br/>
 
-make the product the largest.
-
-j*(i-j) vs j*dp[i-j], break into j and i-j two numbers
-
-638. Shopping Offers
-
+638. Shopping Offers<br/>
 better using recursive for this
 
-357. Count Numbers with Unique Digits
-
-dp[i] is the number from 10^(i-1) 10^i
-
-first digit: 1-9
-
-second digit: 0-9 but cannot use previous digit, 9
-
+357. Count Numbers with Unique Digits<br/>
+dp[i] is the number from 10^(i-1) 10^i<br/>
+first digit: 1-9<br/>
+second digit: 0-9 but cannot use previous digit, 9<br/>
 9*9*8*7.....
 
-486. Predict the Winner
+486. Predict the Winner<br/>
+same as 877, but we can use direct dp max(num[l]-dp[l+1,r],num[r]-dp[l,r-1])<br/>
+l: reverse iteration, r normal iteration<br/>
 
-same as 877, but we can use direct dp max(num[l]-dp[l+1,r],num[r]-dp[l,r-1])
+650. 2 Keys Keyboard<br/>
+copy all and paste two operations<br/>
+dp[i]=dp[j]+i/j if i%j==0. paste j for i/j times, find the max j.<br/>
 
-l: reverse iteration, r normal iteration
-
-650. 2 Keys Keyboard
-
-copy all and paste two operations
-
-dp[i]=dp[j]+i/j if i%j==0. paste j for i/j times, find the max j.
-
-392. Is Subsequence
-
-dp: by deleting char to see if we can reach to the other string
-
+392. Is Subsequence<br/>
+dp: by deleting char to see if we can reach to the other string<br/>
 greedy: always match the first char using two pointers
 
-62. Unique Paths
+62. Unique Paths<br/>
 easy
 
-494. Target Sum
-using + and - to reach the target sum. how many ways?
-
+494. Target Sum<br/>
+using + and - to reach the target sum. how many ways?<br/>
 negative sum N and positive sum P
-
-P+N=target
-
-P-N=total so P=(S+T)/2
-
-it reduces to get the number of ways to reach a new target sum.
-
-and it is a knapsack problem without repetition
+- P+N=target
+- P-N=total so P=(S+T)/2
+it reduces to get the number of ways to reach a new target sum.<br/>
+and it is a knapsack problem without repetition<br/>
 ```cpp
     int findTargetSumWays(vector<int>& nums, int S) {
         //P-N=T, P+N=S P=(S+T)/2 T is the total
@@ -132,15 +98,12 @@ and it is a knapsack problem without repetition
     }
 ```
 
-740. Delete and Earn
+740. Delete and Earn<br/>
+delete num[i] and earn points num[i] and the same time delete num[i]-1 and num[i]+1. max the points<br/>
+this is house robber with duplicates (if there are a lot of value=nums[i]). So we use bucket sort (bucket distance is 1)<br/>
 
-delete num[i] and earn points num[i] and the same time delete num[i]-1 and num[i]+1. max the points
-
-this is house robber with duplicates (if there are a lot of value=nums[i]). So we use bucket sort (bucket distance is 1)
-
-516. Longest Palindromic Subsequence
-
-again can convert to edit distance. by reversing the string we are looking for the largest common subsequence.
+516. Longest Palindromic Subsequence<br/>
+again can convert to edit distance. by reversing the string we are looking for the largest common subsequence.<br/>
 
 ```cpp
     int longestPalindromeSubseq(string s) {
@@ -165,19 +128,14 @@ again can convert to edit distance. by reversing the string we are looking for t
     }
 ```
 
-64. Minimum Path Sum
+64. Minimum Path Sum<br/>
+from top left to bottom right<br/>
+dp[i][j]=min(dp[i-1][j],dp[i][j-1])+grid[i][j];<br/>
 
-from top left to bottom right
-
-dp[i][j]=min(dp[i-1][j],dp[i][j-1])+grid[i][j];
-
-96. Unique Binary Search Trees
-
-using node 1 to n, get the number of unique BST
-
-if i is the root, we have 1 to i-1 in the left and i+1 to n in the right. both are subproblem.
-
-The number is dp[i]=sum(dp[j-1]*dp[i-j]) j from 1 to i
+96. Unique Binary Search Trees<br/>
+using node 1 to n, get the number of unique BST<br/>
+if i is the root, we have 1 to i-1 in the left and i+1 to n in the right. both are subproblem.<br/>
+The number is dp[i]=sum(dp[j-1]*dp[i-j]) j from 1 to i<br/>
 ```cpp
     int numTrees(int n) {
         vector<int> dp(n+1);
@@ -193,13 +151,11 @@ The number is dp[i]=sum(dp[j-1]*dp[i-j]) j from 1 to i
         return dp[n];
     }
 ```
-377. Combination Sum IV
 
-give a target, get the number of combinations that sums to the target
-
-knapsack with repetition: for smaller target, we shall iterate over all the numbers.
-
-Note: it also includes climbing stairs, if we have multiple methods to reach i, we need sum them up.
+377. Combination Sum IV<br/>
+give a target, get the number of combinations that sums to the target<br/>
+knapsack with repetition: for smaller target, we shall iterate over all the numbers.<br/>
+Note: it also includes climbing stairs, if we have multiple methods to reach i, we need sum them up.<br/>
 
 ```cpp
     int combinationSum4(vector<int>& nums, int target) {
@@ -217,9 +173,8 @@ Note: it also includes climbing stairs, if we have multiple methods to reach i, 
     }
 ```    
 
-718. Maximum Length of Repeated Subarray
-
-larget common substr
+718. Maximum Length of Repeated Subarray<br/>
+larget common substr<br/>
 
 ```cpp
     int findLength(vector<int>& A, vector<int>& B) {
@@ -238,14 +193,13 @@ larget common substr
     }
 ```
 
-309. Best Time to Buy and Sell Stock with Cooldown
-
-after sell, you have to rest one day before buy stock
-on ith day,
-if we sell, the profit is dp[j-2]+price[i-2]-price[j-2] (buy at jth day, at least two days before ith day)
-if we not sell, the profit is dp[i-1]
-note: price[i-2] and price[j-2] is the price at ith and jth day (since we add two guarding elements)
-dp[j-2] is the profit before we buy at jth day (sell at two days ago)
+309. Best Time to Buy and Sell Stock with Cooldown<br/>
+after sell, you have to rest one day before buy stock<br/>
+on ith day:<br/>
+if we sell, the profit is dp[j-2]+price[i-2]-price[j-2] (buy at jth day, at least two days before ith day)<br/>
+if we not sell, the profit is dp[i-1]<br/>
+note: price[i-2] and price[j-2] is the price at ith and jth day (since we add two guarding elements)<br/>
+dp[j-2] is the profit before we buy at jth day (sell at two days ago)<br/>
 
 ```cpp
     int maxProfit(vector<int>& prices) {
@@ -267,28 +221,21 @@ no operation dp[i-1]
 sell on ith day: dp[j-2]+price[i-2]-price[j-2]. why on jth day buy in, the profit is dp[j-2] (two days ago)
 Note the j iteration shall from i. 
 
-813. Largest Sum of Averages
-
-partition the list into at most k parts and make the sum of average the max.
-
-assuming dp[i,k] is the max sum of average for list len=i, and k groups, then we check every j to add one more group
-
+813. Largest Sum of Averages<br/>
+partition the list into at most k parts and make the sum of average the max.<br/>
+assuming dp[i,k] is the max sum of average for list len=i, and k groups, then we check every j to add one more group<br/>
 dp[i][k]=max(dp[i][k],dp[j][k-1]+double(A[i]-A[j])/(i-j));
 
-764. Largest Plus Sign
+764. Largest Plus Sign<br/>
+in four directions, using dp to get the largest radius (including itself)<br/>
+then the larget radius is the min of the 4 directions<br/>
 
-in four directions, using dp to get the largest radius (including itself)
+688. Knight Probability in Chessboard<br/>
+at most k moves, the probability that the knight in the board<br/>
+8 directions, out of board is 0, stay in board is 1<br/>
+dp[k, i, j]=sum(dp[k-1,m,n)/8 m,n is the next 8 possible directions<br/>
+we can effectively remove the k dimension<br/>
 
-then the larget radius is the min of the 4 directions
-
-688. Knight Probability in Chessboard
-
-at most k moves, the probability that the knight in the board
-
-8 directions, out of board is 0, stay in board is 1
-
-dp[k, i, j]=sum(dp[k-1,m,n)/8 m,n is the next 8 possible directions
-we can effectively remove the k dimension
 ```cpp
     double knightProbability(int N, int K, int r, int c) {
         int moves[][2]={{-2,-1},{-2,1},{-1,2},{-1,-2},{1,-2},{1,2},{2,-1},{2,1}};
@@ -314,10 +261,8 @@ we can effectively remove the k dimension
     }
 ```
 
-698. Partition to K Equal Sum Subsets
-
+698. Partition to K Equal Sum Subsets<br/>
 knapsack without repetition, need take k-1 times and mark those already used
-
 - sort in descending order will make it faster
 - dfs to choose the elements
 
@@ -357,16 +302,13 @@ knapsack without repetition, need take k-1 times and mark those already used
         return 0;
     }
 ```
-300. Longest Increasing Subsequence
+300. Longest Increasing Subsequence<br/>
+dp[i] is the max length subsequence ending at i.<br/>
+if(nums[j]<nums[i]) dp[i]=max(dp[i],dp[j]+1);<br/>
 
-dp[i] is the max length subsequence ending at i.
-
-if(nums[j]<nums[i]) dp[i]=max(dp[i],dp[j]+1);
-
-
-279. Perfect Square
-
+279. Perfect Square<br/>
 again knapsack problem with repetition, the selection is 1^2, 2^2, 3^2....n^2
+
 ```cpp
     int numSquares(int n) {
         int target=sqrt(n);
@@ -382,11 +324,9 @@ again knapsack problem with repetition, the selection is 1^2, 2^2, 3^2....n^2
         return dp[n];
     }
 ```
-416. Partition Equal Subset Sum
-
-knapsack without repetition. so iteration on elements shall be outside
-
-then solve all the smaller problems
+416. Partition Equal Subset Sum<br/>
+knapsack without repetition. so iteration on elements shall be outside<br/>
+then solve all the smaller problems<br/>
 ```cpp
        vector<vector<int>> dp(target+1,vector<int>(n+1));
         for(int i=1;i<=n;i++)
@@ -400,14 +340,13 @@ then solve all the smaller problems
         }
 ```
 
-474. Ones and Zeroes
-
-with m 0s and n 1s, get the max number of string in dictionary
-
-knapsack with more complexity
+474. Ones and Zeroes<br/>
+with m 0s and n 1s, get the max number of string in dictionary<br/>
+knapsack with more complexity<br/>
 - calculate each string's 0 and 1
 - solve subproblem of i 0s and j 1s
 - cannot repeat the string, so string iteration shall in the outer loop
+
 ```cpp
     int findMaxForm(vector<string>& strs, int m, int n) {
         int len=strs.size();
@@ -433,19 +372,16 @@ knapsack with more complexity
         return dp[len][m][n];
     }
 ```
-120. Triangle
-
+120. Triangle<br/>
 min path sum
 
-375. Guess Number Higher or Lower II
-
-when guess wrong, you need pay that amount
-
-min cost to ensure win
-
+375. Guess Number Higher or Lower II<br/>
+when guess wrong, you need pay that amount<br/>
+min cost to ensure win<br/>
 - minmax problem, get the max to ensure win and then get the min of all the max
 - when we pick a number k, it splits into [left, k-1] and [k+1,right] the cost is num[k]+max(dp[left,k-1],dp[k+1,right])
 - 1st dimension depends on k+1 and second dimension depends on k-1 so first using reverse iteration and 2nd use normal iteration
+
 ```cpp
     int getMoneyAmount(int n) {
         //pick a number k it always split it into two regions (1,k-1) (k+1,n)
@@ -468,22 +404,18 @@ min cost to ensure win
     }
 ```
 
-376. Wiggle Subsequence
-return the max length of the wiggling subsequence
-
+376. Wiggle Subsequence<br/>
+return the max length of the wiggling subsequence<br/>
 - by tracking the number of down and ups
 - when num[i]>num[i-1], we increase up, up[i]=dn[i-1]+1 (since the two are dependent)
 - when num[i]<num[i-1], we increase down
 - equal case: no change
 - final answer shall be the max of up and down ending at the last element
 
-264. Ugly Number II
-
-only has factor of 2,3,5, find the nth ugly number
-
-iteratively find the next ugly number, it shall be the min of previous *2 *3 *5
-
-use 3 pointers i: *2, j *3, k: *5 represents the current 3 min ugly number.
+264. Ugly Number II<br/>
+only has factor of 2,3,5, find the nth ugly number<br/>
+iteratively find the next ugly number, it shall be the min of previous *2 *3 *5<br/>
+use 3 pointers i: *2, j *3, k: *5 represents the current 3 min ugly number.<br/>
 ```cpp
     int nthUglyNumber(int n) {
         vector<int> dp(n);
@@ -499,12 +431,12 @@ use 3 pointers i: *2, j *3, k: *5 represents the current 3 min ugly number.
         return dp[n-1];
     }
 ```
-808. Soup Servings
-
+808. Soup Servings<br/>
 - make things easy, divide by 25
 - then options are, A4B0, A3B1, A2B2, A1B3
 - A tends to be used up first, so when A is large, the probability is 1
 - recursive is fine
+
 ```cpp
     double soupServings(int N) {
         int n=(N+24)/25;
@@ -522,15 +454,12 @@ use 3 pointers i: *2, j *3, k: *5 represents the current 3 min ugly number.
     }
 ```
 
-935. Knight Dialer
+935. Knight Dialer<br/>
+Get the number of different numbers given n presses.<br/>
+just list next numbers for all given number.<br/>
+this is similar to 688. knight probability<br/>
+dp[k,i] is the number of different path using k presses, i the number ending at k times (or starting is also fine)<br/>
 
-Get the number of different numbers given n presses.
-
-just list next numbers for all given number.
-
-this is similar to 688. knight probability
-
-dp[k,i] is the number of different path using k presses, i the number ending at k times (or starting is also fine)
 ```cpp
     int knightDialer(int N) {
        vector<vector<int>> adj={{4,6},{8,6},{7,9},{4,8},{3,9,0},{},{1,7,0},{2,6},{1,3},{4,2}} ;
@@ -554,9 +483,8 @@ dp[k,i] is the number of different path using k presses, i the number ending at 
     }
 ```
 
-213. House Robber II
-
-circular, this is two house robber 1 problem
+213. House Robber II<br/>
+circular, this is two house robber 1 problem<br/>
 ```cpp
    int rob(vector<int>& nums) {
         int n=nums.size();
@@ -578,12 +506,9 @@ circular, this is two house robber 1 problem
     }
 ```
 
-790. Domino and Tromino Tiling
-
-we have I shape and L shape, to build 2*N tile, what is the number of combinations
-
-this is actually hard.
-
+790. Domino and Tromino Tiling<br/>
+we have I shape and L shape, to build 2*N tile, what is the number of combinations<br/>
+this is actually hard.<br/>
 we have two shapes ending: one is flat at the end and one is L shaped at the end
 - g(i) represents the number of combinations ending with flat
 - u(i) represents the number of combinations ending with L shape
@@ -604,13 +529,10 @@ we have two shapes ending: one is flat at the end and one is L shaped at the end
         return g[N]%mod;
     }
 ```    
-368. Largest Divisible Subset
-
-find the largest subset which Si%Sj=0 (they are a part of geometric series)
-
-dp with backtrace ability, we need keep the previous information.
-
-dp with a bit complexity
+368. Largest Divisible Subset<br/>
+find the largest subset which Si%Sj=0 (they are a part of geometric series)<br/>
+dp with backtrace ability, we need keep the previous information.<br/>
+dp with a bit complexity<br/>
 ```cpp
     vector<int> largestDivisibleSubset(vector<int>& nums) {
         int n=nums.size();
@@ -641,9 +563,8 @@ dp with a bit complexity
         return ans;
     }
 ```
-95. Unique Binary Search Trees II
-
-dp with backtracking. combine with left and right
+95. Unique Binary Search Trees II<br/>
+dp. combine with left and right
 ```cpp
     vector<TreeNode*> genTree(int start,int end)
     {
@@ -671,15 +592,11 @@ dp with backtracking. combine with left and right
     }
 ```    
 
-139. Word Break
-
-break the word into dictionary words
-
-iterate and break the problem into a word + a smaller subproblem.
-
-direct dp:
-
-we mark the possible cut positions and when we iterate more, we check [j, i] if is also a word in the dict.
+139. Word Break<br/>
+break the word into dictionary words<br/>
+iterate and break the problem into a word + a smaller subproblem.<br/>
+direct dp:<br/>
+we mark the possible cut positions and when we iterate more, we check [j, i] if is also a word in the dict.<br/>
 ```cpp
     bool wordBreak(string s, vector<string>& wordDict) {
         unordered_set<string> ms(wordDict.begin(),wordDict.end());
@@ -699,9 +616,10 @@ we mark the possible cut positions and when we iterate more, we check [j, i] if 
     }
 ```
 
-467. Unique Substrings in Wraparound String
+467. Unique Substrings in Wraparound String<br/>
 - ending with different char guarantee the uniqueness.
 - ending with a char, with a length, the substring is fixed (since it is always abcde...zabcd...z
+
 ```cpp
     int findSubstringInWraproundString(string p) {
         int n=p.size();
@@ -717,14 +635,13 @@ we mark the possible cut positions and when we iterate more, we check [j, i] if 
         return accumulate(dp.begin(),dp.end(),0);
     }
 ```
-801. Minimum Swaps To Make Sequences Increasing
-
-two arrays, swap at the same position to make both array sorted
-
-two cases:
+801. Minimum Swaps To Make Sequences Increasing<br/>
+two arrays, swap at the same position to make both array sorted<br/>
+two cases:<br/>
 - A[i]>A[i-1] && B[i]>B[i-1]: no swap, then i-1 no swap, swap then swap i-1
 - A[i]>B[i-1] && B[i]>A[i-1]: no swap, then swap i-1. swap i, then no swap i-1
 - Note: the two cases may overlap, so second case we need take the min
+
 ```cpp
     int minSwap(vector<int>& A, vector<int>& B) {
         int n=A.size();
@@ -755,9 +672,8 @@ two cases:
 ```
 63. Unique Paths II-easy
 
-673. Number of Longest Increasing Subsequence
-
-solving two dp problem at the same time: find the longest subsequence, remembering the number of path to each of the longest subsequence
+673. Number of Longest Increasing Subsequence<br/>
+solving two dp problem at the same time: find the longest subsequence, remembering the number of path to each of the longest subsequence<br/>
 ```cpp
     int findNumberOfLIS(vector<int>& nums) {
         int n=nums.size();
@@ -787,11 +703,10 @@ solving two dp problem at the same time: find the longest subsequence, rememberi
     }
 ```    
 
-787. Cheapest Flights Within K Stops
+787. Cheapest Flights Within K Stops<br/>
+define dp[i,k] is the min cost from start to j with at most k stops<br/>
+the key is we add one stop j: dp[j,k-1]+price[i,j] to minimize the cost<br/>
 
-define dp[i,k] is the min cost from start to j with at most k stops
-
-the key is we add one stop j: dp[j,k-1]+price[i,j] to minimize the cost
 ```cpp
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
         vector<vector<int>> prices(n,vector<int>(n,INT_MAX)),dp(n,vector<int>(K+1,INT_MAX));
@@ -818,15 +733,14 @@ the key is we add one stop j: dp[j,k-1]+price[i,j] to minimize the cost
     }
 ```    
 
-898. Bitwise ORs of Subarrays
+898. Bitwise ORs of Subarrays<br/>
+for all subarray, bit or of all elements, return number of possible results<br/>
+for input ABC<br/>
+A<br/>
+A|B, B<br/>
+A|B|C, B|C,C<br/>
+so we take two set, one for final one for intermediate<br/>
 
-for all subarray, bit or of all elements, return number of possible results
-
-for input ABC
-A
-A|B, B
-A|B|C, B|C,C
-so we take two set, one for final one for intermediate
 ```cpp
     int subarrayBitwiseORs(vector<int>& A) {
         unordered_set<int> ms,tmp;
@@ -844,15 +758,11 @@ so we take two set, one for final one for intermediate
     }
 ```
 
-221. Maximal Square
-
-finding the max square with all 1s
-
-similar to histogram but we uses dp
-
-keep updating the height on each row.
-
-keep updating its max range at j (left and right) using the height as the min height (this could be obtained using left max and right min dp process)
+221. Maximal Square<br/>
+finding the max square with all 1s<br/>
+similar to histogram but we uses dp<br/>
+keep updating the height on each row.<br/>
+keep updating its max range at j (left and right) using the height as the min height (this could be obtained using left max and right min dp process)<br/>
 
 ```cpp
     int maximalSquare(vector<vector<char>>& matrix) {
@@ -883,9 +793,8 @@ keep updating its max range at j (left and right) using the height as the min he
     }
 ```
 
-576. Out of Boundary Path
-
-quite a few similar problems. using recursion
+576. Out of Boundary Path<br/>
+quite a few similar problems. using recursion<br/>
 ```cpp    
     int dp[50][50][51];
     Solution() {memset(dp,-1,sizeof(dp));}
@@ -902,11 +811,9 @@ quite a few similar problems. using recursion
     }
 ```
 
-152. Maximum Product Subarray
-
-largest product subarray
-
-when a negative is involved, max becomes min, min becomes max
+152. Maximum Product Subarray<br/>
+largest product subarray<br/>
+when a negative is involved, max becomes min, min becomes max<br/>
 ```cpp
     int maxProduct(vector<int>& nums) {
         //max times negative becomes min, min*negative becomes max
@@ -922,9 +829,8 @@ when a negative is involved, max becomes min, min becomes max
         return ans;
     }
 ```
-322. Coin Change-min number
-
-classical knapsack with repetition: the amount shall be in outer loop
+322. Coin Change-min number<br/>
+classical knapsack with repetition: the amount shall be in outer loop<br/>
 ```cpp
     int coinChange(vector<int>& coins, int amount) {
         //knapsack with repetitive
@@ -944,9 +850,8 @@ classical knapsack with repetition: the amount shall be in outer loop
         return dp[amount]==amount+1?-1:dp[amount];
     }
  ```
- 837. New 21 Game
-
-this is like climbing stairs, there are more than two methods to reach a stair
+837. New 21 Game<br/>
+this is like climbing stairs, there are more than two methods to reach a stair<br/>
  
  ```cpp
      double new21Game(int N, int K, int W) {
@@ -975,11 +880,9 @@ this is like climbing stairs, there are more than two methods to reach a stair
     }
 ```
 
-464. Can I Win
-
+464. Can I Win<br/>
 It is important to get the problem right: the two player adds to the same sum, and who reach the target first wins
-number chosen cannot be reused.
-
+number chosen cannot be reused.<br/>
 - use bitset to indicate number used or not
 - subtract target
 - who reaches 0 wins
@@ -1008,22 +911,17 @@ number chosen cannot be reused.
     }
 ```
 
-5. Longest Palindromic Substring
+5. Longest Palindromic Substring<br/>
+just naive soluion<br/>
+try all position and expand<br/>
 
-just naive soluion
+523. Continuous Subarray Sum<br/>
+target: multiples of K<br/>
+accumulate sum (prefix sum). the prefix sum shall %k has the same value<br/>
 
-try all position and expand
-
-523. Continuous Subarray Sum
-
-target: multiples of K
-
-accumulate sum (prefix sum). the prefix sum shall %k has the same value
-
-91. Decode Ways
-
-A-Z decode as 1-26
-given a digit string, return number of decoding ways
+91. Decode Ways<br/>
+A-Z decode as 1-26<br/>
+given a digit string, return number of decoding ways<br/>
 only have two options:
 - the number itself 
 - the number combine with previous digit
