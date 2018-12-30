@@ -63,10 +63,22 @@ generally needs two pointers or dp[i,j] to indicate the start and end
 932 palindromic substrings<br/>
 dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
 
+132. Palindrome partitioning
+min cuts
+at each i location using odd expansion and even expansion
+
+
 ### ending with a[i]
 some problems generally defines dp[i] as the answer ending at ith element, for example subsequences. This is often the most widely used techinque to approach dp problems.
 
 933. arithmetic slices<br/>
+
+446. arithmetic slices II-subsequence
+dp[i][d]: ending at i and difference is d.
+since d could be negative to positive a large range. using hashmap is more suitable
+another constraints: len>=3
+use a trick: for len=1, dp=0, len=2, dp=1, then we just add the previous dp>=1
+
 
 300. longest increasing subsequence<br/>
 dp[i] is the max length subsequence ending at i.
@@ -118,6 +130,7 @@ add one stop to see if we could reduce prices
 
 ### need some preprocessing
 some problems could be much easier if we preprocess it first such as sorting, convert to other data structure
+some min-max can be converted so that problem is more clear.
 
 936 max length of pair chain<br/>
 sort first according to start
@@ -134,6 +147,22 @@ using hashset to avoid duplicates
 6. continuous subarray sum<br/>
 multiple of K
 prefix sum and %k the same results
+
+354. russian doll
+sort the envelop first and then compare with previous
+
+410 split array minimize the largest sum
+split into m parts
+do the prefix sum (accumulation) and it is sorted.
+the largest sum is between the largest element and the total sum.
+then we can use binary search to reach m parts.
+This is a typical indirect dp approach
+
+517. Super Washing Machines
+target is to make every machine the same.
+so we subtract the average
+every machine then need give its load to its right.
+the max is then the max of peak abs and the element abs.
 
 ### knapsack problem
 knapsack involves choosing from candidates, with or without repetition
@@ -176,6 +205,11 @@ simple math
 264. ugly number II<br/>
 *2 *3 *5 and tracking the current min
 
+321 create max number from two array
+select from i, n-i digits each from each array
+then each subproblem is a greedy choice from each array
+then merge sort the two choices
+
 ### climing stairs
 the idea behind climbing stairs is that if we have several methods to reach i, the total method is the sum of all.
 
@@ -206,6 +240,47 @@ min of the max for all kinds of problems
 121. guess number higher or lower II<br/>
 
 
+### two string
+generally two string needs two pointers to match s1[0..i] and s2[0..j]
+
+10 regular expression matching
+44. wildcard matching
+
+### recursive + memoization
+sometimes bottom up dp is hard to approach, recursive+memoization will be more suitable.
+memoization table is equivalent to dp, however sometimes we need think of some other data structures
+
+140. word break II
+assuming the back is a word and the previous is then a subproblem to solve
+then combine to get the answer
+
+312. burst balloons
+add two 1 to guard the array (one in the head and one in the end)
+reverse thinking: we are assumming l, i and r are the leftover after some bursting, then the subproblem is 0 to l-1 and r+1 to need
+
+403 frog jump
+k+1, k, k-1 steps three subproblem with starting position and steps
+combine the two: start and next as a key in hashmap
+
+472. Concatenated Words
+sort the words first since only long words can be combined by shorter words
+save the processed words in hash map and dp 
+
+514. Freedom Trail
+starting position
+clockwise and counter-clockwise two options
+greedy will not work to choose current min, we need global min
+need use dfs + memoization. memoization need records the start position and previous char
+backtracking to try every path.
+
+546. Remove Boxes
+either remove the group first or leave them for a while to connect a longer group
+
+
+### other
+466. Count The Repetitions
+repeating number could be very large
+in this case, generally you need detect the repeating cycle and skip those repeating cycles
 
 
 
