@@ -76,3 +76,69 @@ In this problem, we set two boundaries, saying i and j, and we move the i and j 
     }
 ```
 
+858. Mirror Reflection
+reflection by expanding the rect in 2 directions and problem becomes a simple gcd problem
+
+781. Rabbits in Forest
+In a forest, each rabbit has some color. Some subset of rabbits (possibly all of them) tell you how many other rabbits have the same color as them. Those answers are placed in an array.
+
+Return the minimum number of rabbits that could be in the forest.
+For rabits with same colors, the answers must be the same. However, when the total amount of that same answer exceeds  'that answer + 1', there must be a new color. (say [3,3,3,3,3], the first four 3s indicates 4 rabits with the same color. The 5th 3 must represent a new color that contains 4 other rabits). We only calculate the amount of rabits with the same color once. Hashmap is used to record the frequency of the same answers. Once it exceeds the range, we clear the frequency and calculate again.
+
+If x+1 rabbits have same color, then we get x+1 rabbits who all answer x.
+now n rabbits answer x.
+If n % (x + 1) == 0, we need n / (x + 1) groups of x + 1 rabbits.
+If n % (x + 1) != 0, we need n / (x + 1) + 1 groups of x + 1 rabbits.
+
+the number of groups is math.ceil(n / (x + 1)) and it equals to (n + x) / (x + 1) , which is more elegant.
+
+672. Bulb Switcher II
+flips all lights
+flips all odd lights
+flip all even lights
+flip all 3k+1 lights
+here are three important observations:
+
+For any operation, only odd or even matters, i.e. 0 or 1. Two same operations equal no operation.
+The first 3 operations can be reduced to 1 or 0 operation. For example, flip all + flip even = flip odd. So the result of the first 3 operations is the same as either 1 operation or original.
+The solution for n > 3 is the same as n = 3.
+For example, 1 0 0 ....., I use 0 and 1 to represent off and on.
+The state of 2nd digit indicates even flip; The state of 3rd digit indicates odd flip; And the state difference of 1st and 3rd digits indicates 3k+1 flip.
+In summary, the question can be simplified as m <= 3, n <= 3. I am sure you can figure out the rest easily.
+
+12. Integer to Roman
+```cpp
+    string intToRoman(int num) {
+        string s;
+        char digit[4]={0}; //store the digits in decimal
+        char roman[]={'I','V','X','L','C','D','M'};
+        int val[]={1,5,10,50,100,500,1000};
+
+        //start from the msb digit
+        int start_indx=6; //1000
+        for(int i=1000;i>=1;i/=10,start_indx-=2)
+        {
+            int digit=num/i;
+            if(!digit) continue;
+            if(digit<4) s.append(digit,roman[start_indx]);
+            else if(digit<5) s=s+roman[start_indx]+roman[start_indx+1];
+            else if(digit<9) {s+=roman[start_indx+1];s.append(digit-5,roman[start_indx]);}
+            else s=s+roman[start_indx]+roman[start_indx+2];
+            num-=digit*i;
+        }
+        return s;
+    }
+```
+
+869. Reordered Power of 2
+store the digits in sorted order string
+and then we iterate all 2^n to get same string
+check if the two string equal
+
+343. Integer Break
+see dp
+
+357. Count Numbers with Unique Digits
+from 0 to 10^n get the number of unique digits
+9*9*8*7*6...
+
