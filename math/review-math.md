@@ -115,3 +115,79 @@ Given a non-empty integer array of size n, find the minimum number of moves requ
 
 sum + m * (n - 1) = x * n
 x = minNum + m
+
+598. Range Addition II
+        //seems to find the most overlapped region
+        //since it always covers the (0,0), we only need track the right bottom point
+        //it is the min of all the x and min of all the y
+        
+268. Missing Number
+0 to n, one is missing.
+xor 1 to n and identical one goes to 0
+
+628. Maximum Product of Three Numbers
+sort the array. It may contains negatives.
+sort the whole array which is O(nlogn)
+just find the min 2 and max 3 which is O(n)
+```java
+    public int maximumProduct(int[] nums) {
+        int max1 = Integer.MIN_VALUE, max2 = Integer.MIN_VALUE, max3 = Integer.MIN_VALUE, min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
+        for (int n : nums) {
+            if (n > max1) {
+                max3 = max2;
+                max2 = max1;
+                max1 = n;
+            } else if (n > max2) {
+                max3 = max2;
+                max2 = n;
+            } else if (n > max3) {
+                max3 = n;
+            }
+
+            if (n < min1) {
+                min2 = min1;
+                min1 = n;
+            } else if (n < min2) {
+                min2 = n;
+            }
+        }
+        return Math.max(max1*max2*max3, max1*min1*min2);
+    }
+```
+
+836. Rectangle Overlap
+        //x1-x2 interval and x3-x4 interval shall overlap
+        //y1-y2 interval and y3-y4 interval shall overlap
+rec1[0]<rec2[2] && rec2[0]<rec1[2] && rec1[1]<rec2[3] && rec2[1]<rec1[3];
+
+202. Happy Number
+A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
+detect a cycle using hashset
+
+415. Add Strings
+reverse and add
+
+231. Power of Two
+n&(n-1)
+
+326. Power of Three
+3^k is factor of 3^max 
+
+9. Palindrome Number
+convert to string and reverse to see if equal
+
+66. Plus One
+MSB is at the front, so we add from the end
+
+263. Ugly Number
+only has 2,3,5 factor
+recursive or iterative dividing 2,3,5 until is 1
+
+645. Set Mismatch
+1 to n, one number is changed to another number. find the missing number
+The idea is based on:
+(1 ^ 2 ^ 3 ^ .. ^ n) ^ (1 ^ 2 ^ 3 ^ .. ^ n) = 0
+Suppose we change 'a' to 'b', then all but 'a' and 'b' are XORed exactly 2 times. The result is then
+0 ^ a ^ b ^ b ^ b = a ^ b
+Let c = a ^ b, if we can find 'b' which appears 2 times in the original array, 'a' can be easily calculated by a = c ^ b.
+
