@@ -154,6 +154,108 @@ use two pointer to alternate, odd even odd even, odd's next is even, even's next
     }
 ```
 
+24. Swap Nodes in Pairs
+const space, must swap nodes instead of values
+```cpp
+    ListNode* swapPairs(ListNode* head) {
+        ListNode *ptr=head;
+        ListNode *curr=head,*next,*nextnext,*prev=0;
+        if(head && head->next) head=head->next;
+        while(ptr && ptr->next)
+        {
+            //swap ptr and ptr->next
+            curr=ptr;
+            next=ptr->next;
+            nextnext=ptr->next->next;
+
+            curr->next->next=curr;
+			curr->next=nextnext;
+			curr=next; //note the second time pair switch is incorrect!!! the previous node's next shall be modified
+            if(prev) prev->next=curr;
+            
+            //advance to next next node
+			prev=curr->next;
+            ptr=nextnext; //this invalidates above assignment!
+        }
+        return head;
+    }
+```
+
+109. Convert Sorted List to Binary Search Tree
+balance tree
+traverse and store the value and recursively build the tree (divide by half)
+```cpp
+    TreeNode* sortedListToBST(ListNode* head) {
+        vector<int> nums;
+        while(head){nums.push_back(head->val);head=head->next;}
+        int n=nums.size();
+        if(!n) return 0;
+        int left=0,right=n-1;
+        int mid=(left+right+1)/2;
+        //each root shall be the mid value of the current section
+        TreeNode* root=new TreeNode(nums[mid]);
+        insert(root,nums,0,mid-1);
+        insert(root,nums,mid+1,right);
+        return root;
+    }
+    void insert(TreeNode* root,vector<int>& nums,int l,int r)
+    {
+        if(r<l) return;//exit condition
+        int mid=(l+r+1)/2;
+        int val=nums[mid];
+        TreeNode *node=new TreeNode(val);
+        if(val<=root->val) 
+        {
+            root->left=node;
+            insert(root->left,nums,l,mid-1);
+            insert(root->left,nums,mid+1,r);
+        }
+        else 
+        {
+            root->right=node;
+            insert(root->right,nums,l,mid-1);
+            insert(root->right,nums,mid+1,r);
+            
+        }
+    }
+```
+
+430. Flatten a Multilevel Doubly Linked List
+if it has a child, flatten it
+```cpp
+    Node* flatten(Node* head)
+    {
+        Node* last=0;
+        return helper(head,last);
+    }
+    Node* helper(Node* head,Node*& last) {
+        if(!head) return 0;
+        Node* node=head;
+        while(node)
+        {
+            //cout<<node->val<<endl;
+            if(node->child)
+            {
+                Node* next=node->next;//save the next
+                node->next=helper(node->child,last);
+                node->next->prev=node;
+                node->child=0;
+                last->next=next;
+                if(next) next->prev=last;
+                node=last;
+            }
+            if(!node->next) last=node;
+            node=node->next;
+            
+        }
+        return head;
+    }
+```
+we get the next and last pointer of the child and then connect
+
+147. Insertion Sort List
+insertion sort using const space. cannot use multiset
+Keep a sorted partial list (head) and start from the second node (head -> next), each time when we see a node with val smaller than its previous node, we scan from the head and find the position that the node should be inserted. Since a node may be inserted before head, we create a dummy head that points to head.
 
 
 
