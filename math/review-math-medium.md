@@ -238,3 +238,64 @@ public:
 };
 ```
 
+264. Ugly Number II
+see dp
+
+396. Rotate Function
+```cpp
+    int maxRotateFunction(vector<int>& A) {
+        //this is the inner product of two vectors
+        //derived from the recursive relation F(k)-F(k-1)=Sum(A)-nA(n-k)
+        int sum=0,allsum=0;
+        int n=A.size();
+        for(int i=0;i<n;i++) {sum+=A[i];allsum+=i*A[i];}//F(0) and sum(A)
+        int maxsum=allsum;
+        for(int i=1;i<n;i++)
+        {
+            allsum+=sum-n*A[n-i];
+            if(allsum>maxsum) maxsum=allsum;
+        }
+        return maxsum;
+    }
+```
+
+368. Largest Divisible Subset
+subset numbers all satisfy Si%Sj=0
+dp with backtrace
+
+60. Permutation Sequence
+given number 1 to n, find its kth permutation
+for n elements, it has n! permutations
+we have n on the first, n-1 on the second, so it is reduced to n*sub(n-1)
+we can locate the position for n, n-1, n-2....for each digit
+
+397. Integer Replacement
+if n is even n/=2
+if n is odd n++ or n--
+repeat until n=1, return the min step
+
+binary 01: we subtract 1->00
+binary 11: we add 1->00
+so we can reduce by half sooner
+
+2. Add Two Numbers
+linked list
+
+43. Multiply Strings
+naive approach using hand multiplication
+
+794. Valid Tic-Tac-Toe State
+Players take turns placing characters into empty squares (" ").
+The first player always places "X" characters, while the second player always places "O" characters.
+"X" and "O" characters are always placed into empty squares, never filled ones.
+The game ends when there are 3 of the same (non-empty) character filling any row, column, or diagonal.
+The game also ends if all squares are non-empty.
+No more moves can be played if the game is over.
+
+so
+When turns is 1, X moved. When turns is 0, O moved. rows stores the number of X or O in each row. cols stores the number of X or O in each column. diag stores the number of X or O in diagonal. antidiag stores the number of X or O in antidiagonal. When any of the value gets to 3, it means X wins. When any of the value gets to -3, it means O wins.
+
+When X wins, O cannot move anymore, so turns must be 1. When O wins, X cannot move anymore, so turns must be 0. Finally, when we return, turns must be either 0 or 1, and X and O cannot win at same time.
+
+
+
