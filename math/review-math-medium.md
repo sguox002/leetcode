@@ -142,3 +142,51 @@ see dp
 from 0 to 10^n get the number of unique digits
 9*9*8*7*6...
 
+592. Fraction Addition and Subtraction
+need to find the lcm for all demom
+final results need find the gcd
+
+423. Reconstruct Original Digits from English
+first count those unique letters in each number
+after they decided, minus it from other
+
+319. Bulb Switcher
+n bulbs from 1 to n, from 2 to n toggle all its multiples. Number of lights left.
+A bulb ends up on iff it is switched an odd number of times.
+
+Call them bulb 1 to bulb n. Bulb i is switched in round d if and only if d divides i. So bulb i ends up on if and only if it has an odd number of divisors.
+
+Divisors come in pairs, like i=12 has divisors 1 and 12, 2 and 6, and 3 and 4. Except when i is a square, like 36 has divisors 1 and 36, 2 and 18, 3 and 12, 4 and 9, and double divisor 6. So bulb i ends up on if and only if i is a square.
+
+So just count the square numbers.
+
+313. Super Ugly Number
+just replace k pointers using dp
+
+593. Valid Square
+4 points if form a square
+C(4,2) to calculate the side length, 4 same and 2 same
+
+using hashset to count only two
+
+279. Perfect Squares
+see dp for knapsack
+
+640. Solve the Equation
+find the = and move all x items to left and non-x items to right
+ax=b
+
+670. Maximum Swap
+a greedy choice
+find the right max and swap with the first smaller.
+
+963. Minimum Area Rectangle II
+any four points
+using the side as diagnonal and use the center point and the side length as the key to form a hashmap
+these points are all on a circle.
+
+775. Global and Local Inversions
+if global==local
+only local inversion exists. so the i-A[i] difference cannot be more than 1
+
+
