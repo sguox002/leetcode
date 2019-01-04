@@ -189,4 +189,52 @@ these points are all on a circle.
 if global==local
 only local inversion exists. so the i-A[i] difference cannot be more than 1
 
+223. Rectangle Area
+two rect overlap
+```cpp
+     int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+        int left=max(A,E);
+        int right=min(C,G);
+        int top=max(B,F);
+        int bott=min(D,H);
+        int w=right>left?right-left:0; //extreme case right-left will be wrong!
+        int h=bott>top?bott-top:0;
+        int area=w*h;
+        if(area<0) area=0;
+        int tarea=(C-A)*(D-B)+(G-E)*(H-F);
+        return tarea-area;
+    }
+```
+
+372. Super Pow
+Your task is to calculate a^b mod 1337 where a is a positive integer and b is an extremely large positive integer given in the form of an array.
+```cpp
+/*One knowledge: ab % k = (a%k)(b%k)%k
+Since the power here is an array, we'd better handle it digit by digit.
+One observation:
+a^1234567 % k = (a^1234560 % k) * (a^7 % k) % k = (a^123456 % k)^10 % k * (a^7 % k) % k
+Looks complicated? Let me put it other way:
+Suppose f(a, b) calculates a^b % k; Then translate above formula to using f :
+f(a,1234567) = f(a, 1234560) * f(a, 7) % k = f(f(a, 123456),10) * f(a,7)%k;
+Implementation of this idea: divide and conque
+*/
+class Solution {
+    const int base = 1337;
+    int powmod(int a, int k) //a^k mod 1337 where 0 <= k <= 10
+    {
+        a %= base;
+        int result = 1;
+        for (int i = 0; i < k; ++i)
+            result = (result * a) % base;
+        return result;
+    }
+public:
+    int superPow(int a, vector<int>& b) {
+        if (b.empty()) return 1;
+        int last_digit = b.back();
+        b.pop_back();
+        return powmod(superPow(a, b), 10) * powmod(a, last_digit) % base;
+    }
+};
+```
 
