@@ -191,3 +191,111 @@ Suppose we change 'a' to 'b', then all but 'a' and 'b' are XORed exactly 2 times
 0 ^ a ^ b ^ b ^ b = a ^ b
 Let c = a ^ b, if we can find 'b' which appears 2 times in the original array, 'a' can be easily calculated by a = c ^ b.
 
+367. Valid Perfect Square
+1. n=k*k
+2. binary search
+3. a square number=1+3+5+...
+
+441. Arranging Coins
+n coins to arrange it as 1,2,3,4....
+m(m+1)/2<=n
+
+67. Add Binary
+reverse and add
+
+172. Factorial Trailing Zeroes
+n/2 2s n/5 5s so we need count number of 5s
+
+914. X of a Kind in a Deck of Cards
+count card number for each number and find the gcd>1
+gcd for a list of number is the gcd of the gcd with the numnber
+
+507. Perfect Number
+We define the Perfect Number is a positive integer that is equal to the sum of all its positive divisors except itself.
+brutal force: up to sqrt(n)
+be sure if i==num/i and it counts twice
+
+633. Sum of Square Numbers
+check if a number is sum of two squares
+a^2+b^2=c, we just search one from 1 to sqrt(c/2) for a and once a is fixed we can find b
+
+949. Largest Time for Given Digits
+need to consider the time as a whole. just use all the permutation and get the largest valid time
+
+754. Reach a Number
+You are standing at position 0 on an infinite number line. There is a goal at position target.
+
+On each move, you can either go left or right. During the n-th move (starting from 1), you take n steps.
+
+Return the minimum number of steps required to reach the destination.
+very similar to the dp problem of racing car
+
+Step 0: Get positive target value (step to get negative target is the same as to get positive value due to symmetry).
+Step 1: Find the smallest step that the summation from 1 to step just exceeds or equalstarget.
+Step 2: Find the difference between sum and target. The goal is to get rid of the difference to reach target. For ith move, if we switch the right move to the left, the change in summation will be 2*i less. Now the difference between sum and target has to be an even number in order for the math to check out.
+Step 2.1: If the difference value is even, we can return the current step.
+Step 2.2: If the difference value is odd, we need to increase the step until the difference is even (at most 2 more steps needed).
+Eg:
+target = 5
+Step 0: target = 5.
+Step 1: sum = 1 + 2 + 3 = 6 > 5, step = 3.
+Step 2: Difference = 6 - 5 = 1. Since the difference is an odd value, we will not reach the target by switching any right move to the left. So we increase our step.
+Step 2.2: We need to increase step by 2 to get an even difference (i.e. 1 + 2 + 3 + 4 + 5 = 15, now step = 5, difference = 15 - 5 = 10). Now that we have an even difference, we can simply switch any move to the left (i.e. change + to -) as long as the summation of the changed value equals to half of the difference. We can switch 1 and 4 or 2 and 3 or 5.
+```java
+    public int reachNumber(int target) {
+        target = Math.abs(target);
+        int step = 0;
+        int sum = 0;
+        while (sum < target) {
+            step++;
+            sum += step;
+        }
+        while ((sum - target) % 2 != 0) {
+            step++;
+            sum += step;
+        }
+        return step;
+    }
+```
+
+69. Sqrt(x)
+binary search
+
+400. Nth Digit
+find the nth digit for 1,2,3,....
+one digit: 1-9: 9
+two digit: 10-99: 90
+three digits: 100-999: 900
+accumulate these numbers and using binary search to find the number with nth digit
+
+168. Excel Sheet Column Title
+pay attention to starting index 0
+
+204. Count Primes
+cross out all even numbers
+cross out all multiples
+this is a typical algorithm
+```cpp
+    int countPrimes(int n) {
+        //matlab implementation on primes
+        if(n<3) return 0;
+        vector<bool> primes(n/2,1); //only store odd numbers, the number=2*k+1
+        //note primes[0]=2 instead of 1
+        for(int i=3;i<=sqrt(n);i+=2) //only odd factors
+        {
+            if(primes[(i-1)/2]) 
+                for(int j=i*i;j<n;j+=2*i) {primes[(j-1)/2]=0;}
+        }
+        return accumulate(primes.begin(),primes.end(),0);
+    }
+```
+7. Reverse Integer
+using string, note there is a sign
+
+### medium
+
+
+
+
+
+
