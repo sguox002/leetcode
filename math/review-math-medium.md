@@ -297,5 +297,77 @@ When turns is 1, X moved. When turns is 0, O moved. rows stores the number of X 
 
 When X wins, O cannot move anymore, so turns must be 1. When O wins, X cannot move anymore, so turns must be 0. Finally, when we return, turns must be either 0 or 1, and X and O cannot win at same time.
 
+365. Water and Jug Problem.
+jug x and y, to measure z. we can only use x and y and x+y or x-y
+
+```cpp
+    bool canMeasureWater(int x, int y, int z) {
+        //number theory: coprime: can get any number
+        //has a gcd, then it can only get any number of N*gcd
+        //for example 5,3: 5-3=2, 5-(3-2)=1
+        if(z==x+y || z==x || z==y) return 1;
+        if(!x ||!y) return 0;
+        int g=gcd(x,y);
+        return z%g==0 && z<=x+y;
+    }
+    int gcd(int a,int b)
+    {
+        //using euclid's theory
+        if(!b) return a;
+        return gcd(b,a%b);
+    }
+```
+
+50. Pow(x, n)
+divide and conque, x^n=x^2*x^(n/2)
+
+523. Continuous Subarray Sum
+target sum multiple of k
+prefix sum and put the %k the same value together
+
+910. Smallest Range II
+add +k or -k
+sort it first and then greedy
+
+166. Fraction to Recurring Decimal
+need to find the repeat pattern
+
+866. Prime Palindrome
+find the smallest prime palindrome number >=N
+All palindrome with even digits is multiple of 11.
+So among them, 11 is the only one prime
+if (8 <= N <= 11) return 11
+For other, we consider only palindrome with odd dights.
+
+reduce the number digits by half.
+
+29. Divide Two Integers
+no division
+use subtraction. to speed up the subtraction we can double the divisor
+
+8. String to Integer (atoi)
+```cpp
+    int myAtoi(string str) {
+      long long res=0; //shall have a large container
+	  int sign=1;
+      bool found_sign=0;
+      bool found_digit=0;
+	  for(int i=0;i<str.size();i++)
+	  {
+		  char c=str[i];
+		  if(c=='-') {if(!found_sign) {sign=-1;found_sign=1;}else break;}
+		  else if(c=='+' ) {if(!found_sign) {sign=1;found_sign=1;}else break;}
+		  else if(c>='0' && c<='9') {found_digit=1;res=res*10+c-'0';if(res>INT_MAX) break;}
+		  else if(c==' ' || c=='\t') if(!found_digit && !found_sign) continue;else break;
+		  else break;
+	  }
+	  //overflow error dealing
+	  //if(sign*res>INT_MAX || sign*res<INT_MIN) return 0;
+	  if(res<0) if(sign>0) return INT_MAX;else return INT_MIN;
+	  if(sign*res>INT_MAX) return INT_MAX;
+	  if(sign*res<INT_MIN) return INT_MIN;
+	  return sign*res;
+    }
+```
 
 
