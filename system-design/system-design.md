@@ -100,6 +100,62 @@ sticky sessions: need to keep the session data and use the same server connectio
 
 redundancy: to prevent single point failure.
 RAID tech to backup data. (simultaneously write)
+iSCSI
+
+backup: disk, single point data base, balance loader, regional data center
+query cache: put it in memory, some mechanism to remove oldest data (expiration), compression
+replication: master-master, master-slave (write to master, read from slave)
+n-tier architecture
+master-slave: communication with heart beat
+partion: some rule to partition
+sharding
+database layer also buffered with balance load to eliminate cross-connection between layers
+switch: connecting all to switch and switch shall be duplicated.
+
+more reading:
+“Scalability for Dummies” 
+horizontal scaling
+servers behind load balance: servers shall contain same code base so different server gets same results and does not store any user-related data, like sessions or profile pictures, on local disc or memory. Sessions need to be stored in a centralized data store which is accessible to all your application servers. It can be an external database or an external persistent cache, like Redis. An external persistent cache will have better performance than an external database.
+
+denormalize database
+when database gets bigger, query becomes slower. You can stay with MySQL, and use it like a NoSQL database, or you can switch to a better and easier to scale NoSQL database like MongoDB or CouchDB. Joins will now need to be done in your application code. The sooner you do this step the less code you will have to change in the future.
+
+Cache:
+cached query
+cached object: object binds user sessions (never use the database!)
+fully rendered blog articles
+activity streams
+user<->friend relationships 
+
+asynchronous:
+return immediately and do not block
+
+sharding:
+flickr: now handles more than 1 billion transactions per day, responding in less then a few seconds and can scale linearly at a low cost.
+High availability. If one box goes down the others still operate.
+Faster queries. Smaller amounts of data in each user group mean faster querying.
+More write bandwidth. With no master database serializing writes you can write in parallel which increases your write throughput. Writing is major bottleneck for many websites.
+You can do more work. A parallel backend means you can do more work simultaneously. You can handle higher user loads, especially when writing data, because there are parallel paths through your system. You can load balance web servers, which access shards over different network paths, which are processed by separate CPUs, which use separate caches of RAM and separate disk IO paths to process work. Very few bottlenecks limit your work.
+
+* data are denormalized
+* data are small
+* query is fast
+* parallized
+* high availability
+* no replication: master-slave structure needs replication, write to master needs serialization and is a single point fault.
+
+cons:
+* rebalance data
+* join shards
+* how to partition
+* not well supported, use at own risk
+
+examples:
+http://highscalability.com/flickr-architecture
+
+
+
+
 
 
 
