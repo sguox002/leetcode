@@ -151,12 +151,116 @@ cons:
 * not well supported, use at own risk
 
 examples:
+When it comes to system design, it's incredibly useful to review real-life architectures. As you do this, make sure you:
+
+- Pay attention to what technologies are used. Go ahead and research each new technology and see what problem it solves, what its alternatives are, where it excels, and where it fails.
+- Take note of the common patterns you see, and how they relate to the scalability theory you learned in the previous section.
+- Read through the lessons learned - they are a very quick way to learn from other people's battle scars.
+
 http://highscalability.com/flickr-architecture
 
+uber uses up to thousand microservices
+- It’s great to break up all your monoliths into smaller things. Even the name monolith sounds bad. But microservices have their bad side.
 
+- The time when things are most likely to break is when you change them. Uber is most reliable on the weekends when engineers aren’t making changes even though that’s when Uber is the busiest.
 
+- Everytime you go to change something you risk breaking it. Does it make sense at some point to never touch a microservice? Maybe.
 
+The Good
 
+It’s worth questioning, why are we throwing so much effort into microservices? It’s not by accident, there are a lot of good results.
 
+Microservices allow teams to be formed quickly and run independently. People are being added all the time. Teams need to be formed quickly and put to work on something where they can reason about the boundaries.
 
+Own your own uptime. You run the code that you write. All the service teams are on call for the services they run in production.
 
+Use the best tool for the job. But best in what way? Best to write? Best to run? Best because I know it? Best because there are libraries? When you dig into it, best doesn’t mean a lot.
+
+everything is a RPC call, everything is a tradeoff
+
+Fanout Issues - Tracing
+many repos: one vs more
+all kinds of languages
+
+logging
+load testing
+balance testing
+
+facebook:
+livestream to 800k users simultaneously
+use cases:
+- Needs to be able to serve up millions of simultaneous streams without crashing.
+- Need to be able to support millions of simultaneous viewers on a stream, as well as seamless streams across different devices and service providers around the world.
+
+  - start with http
+  - rtmp: small latency, but need new architecture
+  
+ constraints:
+ - user requests increases sharply and when ending, decrease like a rock, spiky!
+ - a lot of people want to watch the same video Thundering herd problem. 
+  - video are split into 1s segments and stored in cache
+  - pressure on caching
+ - global balance loading
+ 
+ Big Picture Architecture
+This is how a live stream goes from one broadcaster to millions of viewers.
+
+A broadcaster starts a live video on their phone.
+
+The phone sends a RTMP stream to a Live Stream server.
+
+The Live Stream server decodes the video and transcodes to multiple bit rates.
+
+For each bit rate a set of one-second MPEG-DASH segments is continuously produced.
+
+Segments are stored in a datacenter cache.
+
+From the datacenter cache segments are sent to caches located in the points of presence (a PoP cache).
+
+On the view side the viewer receives a Live Story.
+
+The player on their device starts fetching segments from a PoP cache at a rate of one per second.
+
+How to scale:
+Within the PoP there are two layers: a layer of HTTP proxies and a layer of cache.
+Viewers request the segment from a HTTP proxy. The proxy checks if the segment is in cache. If it’s in cache the segment is returned. If it’s not in cache a request for the segment is sent to the datacenter.
+
+Different segments are stored in different caches so that helps with load balancing across different caching hosts.
+
+Protecting The Datacenter From The Thundering Herd
+PoPs Are Still At Risk - Global Load Balancing To The Rescue
+
+You already know how to apply it, so we'll be brief. Don't skip steps, don't make assumptions, start broad and go deep when asked.
+
+Second, keep in mind that system design questions serve as an idea exchange platform. Be prepared for discussions about tradeoffs, about pros and cons. Be prepared to give alternatives, to ask questions, to identify and solve bottlenecks, to go broad or deep depending on your interviewer's preferences.
+
+Don't get defensive: whenever your interviewer challenges your architectural choices, acknowledge that rarely an idea is perfect, and outline the advantages and disadvantages of your choice. Be open to new constraints to pop up during the discussion and to adjust your architecture on the fly.
+
+for the url shortening:
+discuss the bottle neck
+data or database
+
+1. n-tiered 
+application layer
+--one machine first
+- loadbanlace and a a cluster of servers
+
+data layer
+database becomes large
+mysql: why choose mysql
+- fast 
+- replica
+- caching
+
+create the table:
+
+scaling the database:
+vertical scaling:
+horizontal scaling:
+
+load testing
+profiling
+
+You need be familiar with some core technology, some known products
+
+ 
