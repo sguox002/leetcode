@@ -383,6 +383,13 @@ Given two arrays A and B of equal size, the advantage of A with respect to B is 
 
 Return any permutation of A that maximizes its advantage with respect to B.
 Greedy solution: if there is an element in A >B[i], then choose the smallest one. 
+运用田忌赛马的思路，如果A中有相应的higher元素，使用最小的higher元素。否则使用A中最小的元素 :)
+
+767. Reorganize String
+neighboring characters are not the same.
+if the highest freq char appears more than half of the length, we cannot fulfill the requirement.
+Otherwise we divide into k chunks by appending other chars into the chunk.
+
 
 
 
