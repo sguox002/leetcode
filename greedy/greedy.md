@@ -194,14 +194,15 @@ dp[i]=max(dp[i-1],price[i]+max(dp[j]-price[j]-fee)) j=0 to i-1 and this can be u
     }
 ```    
 greedy choice:
-when current price>previous price+fee, perform a transaction, is this a safe move?
-a<b<c<d, and b>a+fee, d>c+fee, then b-a-fee+d-c-fee ==? d-a-fee not really. so this approach is incorrect.
-for example fee is 1, 4,6,8,10, we get 3 using first approach, 5 for 2nd approach.
-we buy at 4, sell at 6 (equiv sell at 5), buy at 6 sell at 8 (equiv sell at 7). In this case we cannot start a new transaction.
-for example 4,6,3,8. buy at 4 sell at 6, profit is 1, buy at 3 sell at 8, profit is 4, total profit is 5. 
-for example 4,6,5,8. buy at 4 sell at 6, profit is 1, buy at 5 sell at 8, profit is 2, total profit is 3. 
-so what is the safe move?
-we shall tolerate some variation, only when price[i]<price[i-1]-fee we can sell at i-1 and buy at i. (i.e the dip shall be deep enough to cover the transaction fee, otherwise it is not worthful).
+when current price>previous price+fee, perform a transaction, is this a safe move?</br>
+a<b<c<d, and b>a+fee, d>c+fee, then b-a-fee+d-c-fee ==? d-a-fee not really. so this approach is incorrect.</br>
+for example fee is 1, 4,6,8,10, we get 3 using first approach, 5 for 2nd approach.</br>
+we buy at 4, sell at 6 (equiv sell at 5), buy at 6 sell at 8 (equiv sell at 7). In this case we cannot start a new transaction.</br>
+for example 4,6,3,8. buy at 4 sell at 6, profit is 1, buy at 3 sell at 8, profit is 4, total profit is 5. </br>
+for example 4,6,5,8. buy at 4 sell at 6, profit is 1, buy at 5 sell at 8, profit is 2, total profit is 3. </br>
+so what is the safe move?</br>
+we shall tolerate some variation, only when price[i]<price[i-1]-fee we can sell at i-1 and buy at i. (i.e the dip shall be deep enough to cover the transaction fee, otherwise it is not worthful). Once we start a transaction, we reduce the problem into a smaller subproblem with the new minimum, which is a typical greedy approach.</br>
+
 ```cpp
     int maxProfit(vector<int>& prices, int fee) {
         //greedy solution
@@ -221,6 +222,97 @@ we shall tolerate some variation, only when price[i]<price[i-1]-fee we can sell 
             }
         }
         return maxprof;
+    }
+```
+The greedy is not so understandable, and most of greedy can be solved using dp approach.
+
+392. Is Subsequence
+check if s is subsequence of t.</br>
+dp approach: by deleting chars from t to see if we can ontain s</br>
+greedy: choose the first matching char in t using two pointers</br>
+```cpp
+    bool isSubsequence(string s, string t) {
+        //use two pointer
+        int i=0,j=0;
+        while(i<s.length() && j<t.length())
+        {
+            while(t[j]!=s[i])
+            {
+                j++;
+                if(j==t.length()) return 0;
+            }
+            i++,j++;
+        }
+        return i==s.length() && j<=t.length();
+    }
+```
+
+452. Minimum Number of Arrows to Burst Balloons
+provided the start coordinate and end coordinate of each balloon along x-axis. Arrows are shot up and burst all the balloons along its path. Return the min number of arrows to burst all the balloons.</br>
+this is to find the overlaps.</br>
+Approach: sort the segments according to its end. If current segment > current end, then we need start a new overlap</br>
+what position should we pick each time? We should shoot as to the right as possible, because since balloons are sorted, this gives you the best chance to take down more balloons. </br>
+ie. greedy choice is to choose the left most segment ending point and shoot all those overlapping balloons.</br>
+this problem is similar to those overlapping interval problems such as double booking, triple booking et al.</br>
+
+```cpp
+    int findMinArrowShots(vector<pair<int, int>>& points) {
+        if(points.size()<2) return points.size();
+        sort(points.begin(),points.end(),cmp);
+        int ans=0;
+        int cur_end=points[0].second;ans++;
+        for(int i=1;i<points.size();i++)
+        {
+            if(points[i].first>cur_end) {cur_end=points[i].second;ans++;}
+        }
+        return ans;
+    }
+```
+
+621. Task Scheduler
+same task needs at least n intervals (adding idle). </br>
+return the number of intervals to complete all tasks </br>
+greedy approach: try to take one from each set of task and add zero or more idles for this to satisfy n intervals. Always take one task from current max task. 
+Assuming the highest frequency is K, then we divide it into k chunks. each chunk will fill one task from each set. (k-1)*(n+1)
+
+First count the number of occurrences of each element.
+Let the max frequency seen be M for element E
+We can schedule the first M-1 occurrences of E, each E will be followed by at least N CPU cycles in between successive schedules of E
+Total CPU cycles after scheduling M-1 occurrences of E = (M-1) * (N + 1) // 1 comes for the CPU cycle for E itself
+Now schedule the final round of tasks. We will need at least 1 CPU cycle of the last occurrence of E. If there are multiple tasks with frequency M, they will all need 1 more cycle.
+Run through the frequency dictionary and for every element which has frequency == M, add 1 cycle to result.
+If we have more number of tasks than the max slots we need as computed above we will return the length of the tasks array as we need at least those many CPU cycles.
+
+For the last point I think you should explain more clearly.
+
+Support we have AAABBBCCDDEF n = 2
+
+No matter how we arrange, we at least have the following schedule:
+
+A cool cool A cool cool A
+In this way, we could replace the first 'cool' with B. then it becomes.
+
+A B cool A B cool A B
+
+With the remain C, we could
+A B C A B C A B
+for the def,
+A B C (D) E A B C (D) F
+we insert at the position of end of each period of A B C. then we could ensure that there would be no collision
+
+```cpp
+    int leastInterval(vector<char>& tasks, int n) {
+        unordered_map<char,int>mp;
+        int count = 0;
+        for(auto e : tasks)
+        {
+            mp[e]++;
+            count = max(count, mp[e]);
+        }
+        
+        int ans = (count-1)*(n+1);
+        for(auto e : mp) if(e.second == count) ans++;
+        return max((int)tasks.size(), ans);
     }
 ```
 
