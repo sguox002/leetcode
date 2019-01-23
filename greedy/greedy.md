@@ -389,12 +389,96 @@ Greedy solution: if there is an element in A >B[i], then choose the smallest one
 neighboring characters are not the same.
 if the highest freq char appears more than half of the length, we cannot fulfill the requirement.
 Otherwise we divide into k chunks by appending other chars into the chunk.
+c++ using priority_queue by removing the highest freq one and followed by the 2nd highest priority one. -1 and put back. A good example to use PQ for this.
 
+```cpp
+    string reorganizeString(string S) {
+        priority_queue<pair<int, char>> pq;
+        int map[26] = { 0 };
+        
+        for (auto c : S) 
+        {
+            if (++map[c-'a'] > (S.size() + 1)/2)
+                return "";
+        }
+        
+        for (int i = 0; i < 26; ++i) 
+        {
+            if (map[i]) pq.push({map[i], i + 'a'});
+        }
+        
+        string ans;
+        while(!pq.empty()) 
+        {
+            pair<int, char> p1, p2;
+            p1 = pq.top(); pq.pop();
+            ans.push_back(p1.second);
+            if (!pq.empty()) 
+            {
+                p2 = pq.top(); pq.pop();
+                ans.push_back(p2.second);
+                if (--p2.first) pq.push(p2);
+            }
+            if (--p1.first) pq.push(p1);
+        }
+        return ans;
+    }
+```    
 
+659. Split Array into Consecutive Subsequences
 
+You are given an integer array sorted in ascending order (may contain duplicates), you need to split them into several subsequences, where each subsequences consist of at least 3 consecutive integers. Return whether you can make such a split.
 
+for each card, either it can be appended to existent, or start a new group or it is a single
 
+```cpp
+    bool isPossible(vector<int>& nums) {
+        unordered_map<int, int> freq, need;
+        for (int num : nums) ++freq[num];
+        for (int num : nums) {
+            if (freq[num] == 0) continue;
+            else if (need[num] > 0) {
+                --need[num];
+                ++need[num + 1];
+            } else if (freq[num + 1] > 0 && freq[num + 2] > 0) {
+                --freq[num + 1];
+                --freq[num + 2];
+                ++need[num + 3];
+            } else return false;
+            --freq[num];
+        }
+        return true;
+    }
+```
 
+948. Bag of Tokens
+given a list of tokens with power[i]. We put the token down, losing the power and gain 1 point. We put the token up, losing one point and gain power[i].
+What the max point we can get with initial power P and 0 points.
+Greedy choice: losing min power to get 1 point and lost 1 point to get the max power.
+sort the power and uses two pointers
+```cpp
+    int bagOfTokensScore(vector<int>& tokens, int P) {
+        //greedy problem: lose min power for point, lose point for max power
+        if(tokens.size()==0) return 0;
+        if(tokens.size()==1) return P>tokens[0];
+        sort(tokens.begin(),tokens.end());
+        int n=tokens.size();
+        int i=0,j=n-1;
+        if(P<tokens[0]) return 0;
+        int maxpoint=0;
+        int points=0,power=P;
+        while(i<j)
+        {
+            while(i<=j && power>=tokens[i]) 
+            {
+                points++;power-=tokens[i];
+                maxpoint=max(maxpoint,points);i++;
+            }
+            if(i<j && points) {points--;power+=tokens[j];j--;}
+        }
+        return maxpoint;
+    }
+```
 
 
 
