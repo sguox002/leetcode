@@ -316,6 +316,74 @@ we insert at the position of end of each period of A B C. then we could ensure t
     }
 ```
 
+881. Boats to Save People
+given a list of person's weight, each boat has a weight limit and 2 person limit. And it is guaranteed that the boat can carry one person.
+return the min number of boats required.
+greedy: sort the weight and use two pointers. If the higher weight + lower weight exceeds, only moves the higher end. The lower weight needs to be waited to be together with other person.
+```cpp
+    int numRescueBoats(vector<int>& people, int limit) {
+        sort(people.begin(),people.end());
+        int i=0,j=people.size()-1;
+        int total=0;
+        while(i<=j)
+        {
+            if(people[i]+people[j]<=limit) {i++;}
+            j--;
+            total++;
+        }
+        return total;
+    }
+```
+
+435. Non-overlapping Intervals
+given a collection of overlapping intervals, return the min number of intervals to remove to make them non-overlapping.
+Actually, the problem is the same as "Given a collection of intervals, find the maximum number of intervals that are non-overlapping." (the classic Greedy problem: Interval Scheduling). With the solution to that problem, guess how do we get the minimum number of intervals to remove? : )
+
+Sorting Interval.end in ascending order is O(nlogn), then traverse intervals array to get the maximum number of non-overlapping intervals is O(n). Total is O(nlogn).
+
+```cpp
+    int eraseOverlapIntervals(vector<Interval>& intervals) {
+        if(intervals.size()==0) return 0;
+        sort(intervals.begin(),intervals.end(),cmp);
+        int ans=0;
+        int cur_end=intervals[0].end;ans++;
+        for(int i=0;i<intervals.size();i++)
+        {
+            if(intervals[i].start>=cur_end) {cur_end=intervals[i].end;ans++;}
+        }
+        return intervals.size()-ans;
+    }
+```
+
+738. Monotone Increasing Digits
+Given a non-negative integer N, find the largest number that is less than or equal to N with monotone increasing digits.
+(digits are sorted)
+greedy: reversely find the inversion. if found an inversion we reduce the previous by 1, thus to propagate the changes forward.
+
+example: 3421->3411->3311->3399
+example: 3431->3421->3321->3399
+example: 144267->144267->144267->143267->133267->13999
+```cpp
+    int monotoneIncreasingDigits(int N) {
+        string n_str = to_string(N);
+        int marker = n_str.size();
+        for(int i = n_str.size()-1; i > 0; i --) {
+            if(n_str[i] < n_str[i-1]) {
+                marker = i;
+                n_str[i-1]--;// = n_str[i-1]-1;
+            }
+        }
+        for(int i = marker; i < n_str.size(); i ++) n_str[i] = '9';
+        return stoi(n_str);
+    }
+```
+
+870. Advantage Shuffle
+Given two arrays A and B of equal size, the advantage of A with respect to B is the number of indices i for which A[i] > B[i].
+
+Return any permutation of A that maximizes its advantage with respect to B.
+Greedy solution: if there is an element in A >B[i], then choose the smallest one. 
+
 
 
 
