@@ -177,9 +177,14 @@ bool cmp(pair<int,int>& a,pair<int,int>& b) {return a.first>b.first || (a.first=
 ```
 
 714. Best Time to Buy and Sell Stock with Transaction Fee
+see dp solution
+dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) j=0 to i-1
+dp[i]=max(dp[i-1],price[i]+max(dp[j]-price[j]-fee)) j=0 to i-1 and this can be updated iteratively and reducing the complexity from O(N^2) to O(N)
 
-
-```
+greedy choice:
+when current price>previous price+fee, perform a transaction, is this a safe move?
+a<b<c<d, then b-a-fee+d-c-fee ==? d-a-fee not really. so this approach is incorrect.
+for example fee is 1, 4,5,6,7, we get 0 using first approach, 2 for 2nd approach.
 
 
 
