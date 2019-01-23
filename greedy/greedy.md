@@ -480,6 +480,81 @@ sort the power and uses two pointers
     }
 ```
 
+649. Dota2 Senate
+two parties. according order, each senate can ban a senator from other party, predict who is the winner.
+greedy: ban its next member from other party since otherwise it will ban a member from your party.
+using two queues: if the member exercises its right, move it to the end of the queue.
+```cpp
+string predictPartyVictory(string senate) {
+        queue<int> q1, q2;
+        int n = senate.length();
+        for(int i = 0; i<n; i++)
+            (senate[i] == 'R')?q1.push(i):q2.push(i);
+        while(!q1.empty() && !q2.empty()){
+            int r_index = q1.front(), d_index = q2.front();
+            q1.pop(), q2.pop();
+            (r_index < d_index)?q1.push(r_index + n):q2.push(d_index + n);
+        }
+        return (q1.size() > q2.size())? "Radiant" : "Dire";
+    }
+```
+
+376. Wiggle Subsequence
+greedy or dp: the first number could be smaller or larger number.
+```cpp
+    int wiggleMaxLength(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int up=1,dn=1;
+        for(int i=1;i<nums.size();i++)
+        {
+            if(nums[i]>nums[i-1]) up=dn+1;
+            if(nums[i]<nums[i-1]) dn=up+1;
+            //cout<<nums[i]<<"\t"<<up<<" "<<dn<<endl;
+        }
+        return max(up,dn);
+    }
+```
+
+842. Split Array into Fibonacci Sequence
+given a string of digits, return the Fib series if not able to return empty string
+each integer fits in a 32 bit
+
+The first two number choice determines the whole string. 
+first number can choose up to 10 digits
+second number can choose up to 10 digits
+and this is a somewhat greedy choice.
+
+backtracking algorithm
+```cpp
+    vector<int> splitIntoFibonacci(string S) {
+        vector<int> nums;
+        backtrack(S, 0, nums);
+        return nums;
+    }
+    bool backtrack(string &S, int start, vector<int> &nums){        
+        int n = S.size();
+        if(start >= n && nums.size()>=3) return 1;
+        int maxSplitSize = (S[start]=='0') ? 1 : 10;
+        for(int i=1; i<=maxSplitSize && start+i<=S.size(); i++)
+        {
+            long long num = stoll(S.substr(start, i));
+            if(num > INT_MAX) return 0;
+            int sz = nums.size();
+            if(sz >= 2 && nums[sz-1]+nums[sz-2] < num) return 0;
+            if(sz<=1 || nums[sz-1]+nums[sz-2]==num)
+            {
+                nums.push_back(num);
+                if(backtrack(S, start+i, nums)) return 1;
+                nums.pop_back();                
+            }
+        }
+        return 0;
+    }
+```
+- num>INT_MAX, return 0, since adding more chars will be meaningless
+- sz>=2 && nums[sz-1]+nums[sz-2]<num why? same reason: if the num is too large, we don't continue since it is wasting time.
+
+
 
 
 
