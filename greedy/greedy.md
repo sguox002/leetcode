@@ -180,11 +180,51 @@ bool cmp(pair<int,int>& a,pair<int,int>& b) {return a.first>b.first || (a.first=
 see dp solution
 dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) j=0 to i-1
 dp[i]=max(dp[i-1],price[i]+max(dp[j]-price[j]-fee)) j=0 to i-1 and this can be updated iteratively and reducing the complexity from O(N^2) to O(N)
-
+```cpp
+    int maxProfit(vector<int>& prices, int fee) {
+        int n=prices.size();
+        vector<int> dp(n);//dp is the max profit ending at ith day
+        int tmax=INT_MIN;
+        for(int i=1;i<n;i++)
+        {
+            tmax=max(tmax,dp[i-1]-prices[i-1]-fee);
+            dp[i]=max(dp[i-1],prices[i]+tmax);
+        }
+        return dp[n-1];
+    }
+```    
 greedy choice:
 when current price>previous price+fee, perform a transaction, is this a safe move?
-a<b<c<d, then b-a-fee+d-c-fee ==? d-a-fee not really. so this approach is incorrect.
-for example fee is 1, 4,5,6,7, we get 0 using first approach, 2 for 2nd approach.
+a<b<c<d, and b>a+fee, d>c+fee, then b-a-fee+d-c-fee ==? d-a-fee not really. so this approach is incorrect.
+for example fee is 1, 4,6,8,10, we get 3 using first approach, 5 for 2nd approach.
+we buy at 4, sell at 6 (equiv sell at 5), buy at 6 sell at 8 (equiv sell at 7). In this case we cannot start a new transaction.
+for example 4,6,3,8. buy at 4 sell at 6, profit is 1, buy at 3 sell at 8, profit is 4, total profit is 5. 
+for example 4,6,5,8. buy at 4 sell at 6, profit is 1, buy at 5 sell at 8, profit is 2, total profit is 3. 
+so what is the safe move?
+we shall tolerate some variation, only when price[i]<price[i-1]-fee we can sell at i-1 and buy at i. (i.e the dip shall be deep enough to cover the transaction fee, otherwise it is not worthful).
+```cpp
+    int maxProfit(vector<int>& prices, int fee) {
+        //greedy solution
+        //only when price[i]<price[i-1]-fee we can start buy at ith day
+        int n=prices.size();
+        if(n<2) return 0;
+        int minimum=prices[0];
+        int maxprof=0;
+        for(int i=1;i<n;i++)
+        {
+            if(prices[i]<minimum) //prices[i-1]-fee
+                minimum=prices[i];
+            else if(prices[i]>minimum+fee)
+            {
+                maxprof+=prices[i]-minimum-fee;
+                minimum=prices[i]-fee;
+            }
+        }
+        return maxprof;
+    }
+```
+
+
 
 
 
