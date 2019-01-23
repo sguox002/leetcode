@@ -85,6 +85,102 @@ how to easily judge if the obstacle is on the way?
 can use a string to include the x and y coordinate and move step by step and stop when we meet an obstacle.
 
 
+921. Minimum Add to Make Parentheses Valid
+cannot just count the ( and ) for example )(. The ( shall have a ) followed. The ) shall have a preceding (. We use a stack for this, removing all those paired.
+```cpp
+    int minAddToMakeValid(string S) {
+        //to make it balanced, the () shall be the same amount
+        //one we have a ) we need have a balanced in its front
+        //once we have a ( we need have a balanced in the behind
+        stack<char> st;
+        int ans=0;
+        for(int i=0;i<S.size();i++)
+        {
+            if(S[i]=='(') st.push(S[i]);
+            else 
+            {
+                if(st.size()) st.pop();
+                else ans++; 
+            }
+        }
+        return ans+st.size();
+    }
+```
+
+using two pointers for the two conditions will save the extra storage using stack
+
+
+861. Score After Flipping Matrix
+a move choose any row or column and toggle its value.
+Each row represents a binary number, return the largest sum of all these numbers.
+greedy choice: 
+the MSB shall all toggles to 1, by toggling the row
+the non-MSB shall have more 1s than 0s. toggling columns
+
+763. Partition Labels
+split the string so that each char only appear in one part.
+straightforward:
+record each char's start and ending position and then merge the segments if they overlap.
+efficient one:
+don't use hashmap but use array for each char and record its ending index. Merging the segments only matters the ending.
+so use two passes:
+```cpp
+    vector<int> partitionLabels(string S) {
+        vector<int> charIdx(26, 0);
+        for(int i = 0; i < S.size(); i++){
+            charIdx[S[i]-'a'] = i;
+        }
+        
+        vector<int> results;
+        
+        int maxIdx = -1, lastIdx = 0;
+        for(int i = 0; i < S.size(); i++){
+            maxIdx = max(maxIdx, charIdx[S[i]-'a']);
+            if(i == maxIdx) {
+                results.push_back(maxIdx - lastIdx + 1);
+                lastIdx = i+1;
+            }
+        }
+        return results;
+    }
+```
+
+406. Queue Reconstruction by Height
+each person has a height and number of person taller or equal to him in front of him.
+reconstruct the queue
+sort the people in descend order but the rank in ascending order, so the same height people is in order. Then insert each lower person.
+This is a greedy choice.
+for example: [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+sort as: [7,0], [7,1], [6,1],[5,0],[5,2],[4,4]
+each step:
+[7,0]
+[7,0], [7,1]
+[7,0],[6,1],[7,1]
+[5,0],[7,0],[6,1],[7,1]
+[5,0],[7,0],[6,1],[5,2],[7,1]
+[5,0],[7,0],[6,1],[5,2],[4,4],[7,1]
+sorting is the key to make sure all member inside the array are taller than current one.
+```cpp
+bool cmp(pair<int,int>& a,pair<int,int>& b) {return a.first>b.first || (a.first==b.first && a.second<b.second);}
+    vector<pair<int, int>> reconstructQueue(vector<pair<int, int>>& people) {
+        //reverse: we sort the highest person first, they are ordered
+        //then the next, 
+        sort(people.begin(),people.end(),cmp); //descending order
+        vector<pair<int,int>> vs;
+        for(int i=0;i<people.size();i++)
+        {
+            vs.insert(vs.begin()+people[i].second,people[i]);
+            for(int i=0;i<vs.size();i++) cout<<"("<<vs[i].first<<" "<<vs[i].second<<") ";cout<<endl;
+        }
+        return vs;
+    }
+```
+
+714. Best Time to Buy and Sell Stock with Transaction Fee
+
+
+```
+
 
 
 
