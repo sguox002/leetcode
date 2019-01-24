@@ -554,6 +554,94 @@ backtracking algorithm
 - num>INT_MAX, return 0, since adding more chars will be meaningless
 - sz>=2 && nums[sz-1]+nums[sz-2]<num why? same reason: if the num is too large, we don't continue since it is wasting time.
 
+134. Gas Station
+a circular circuit with each station gas[i] and cost[i], you are starting at 0. cost[i] is the cost from i to i+1 clockwise
+-. flatten the circle by copying the array
+-. net gas[i]-cost[i]
+-. accumulate a N-window sum. Cannot have any station with accumulate sum to be <0
+
+55. Jump Game
+given a list of max jump steps at each position, check if we can reach the end
+
+greedy vs dp:
+dp is a bottom down, greedy is top down. greedy choose local optimal solution and reach global
+dp makes optimal solution based on previous smaller subproblem optimal solution.
+
+Looking from the end and at each point ahead checking the best possible way to reach the end
+```cpp
+    bool canJump(vector<int>& nums) {
+        int n = nums.size();
+        vector<bool> jump(n,false);
+        jump[n-1]=true;
+        
+        for(int i=n-2;i>=0;i--)
+        {
+            for(int j=0;j<=nums[i] && i+j<n;j++)
+            {
+                if(jump[i+j]==true) 
+                {
+                    jump[i]=true; 
+                    break;
+                }
+            }
+        }
+        
+        return jump[0];
+    }
+```
+greedy:
+```cpp
+    bool canJump(vector<int>& nums) {
+      int n = nums.size(), farest = 0;
+      for(int i = 0;i < n; i++)
+      {
+        if(farest < i) return false;
+        farest = max(i + nums[i], farest);
+      }
+      
+      return true;
+    }
+```
+
+955. Delete Columns to Make Sorted II
+make each row sorted. Once the column is removed, replace it with same char *, and continue to compare.
+
+402. Remove K Digits
+to make the number the smallest.
+for example 1432219, k=3
+greedy choice: remove the first peak digit from left to right
+we can use a stack to find the peak digit to make it O(n)
+note: the accepted submission cannot process string with no peaks correctly. (if there is no peak, it will not delete any digits)
+
+```cpp
+string removeKdigits(string num, int k) {
+        string res;
+        int keep = num.size() - k;
+        for (int i=0; i<num.size(); i++) {
+            while (res.size()>0 && res.back()>num[i] && k>0) {
+                res.pop_back();
+                k--;
+            }
+            res.push_back(num[i]);
+        }
+        res.erase(keep, string::npos);
+        
+        // trim leading zeros
+        int s = 0;
+        while (s<(int)res.size()-1 && res[s]=='0')  s++;
+        res.erase(0, s);
+        
+        return res=="" ? "0" : res;
+    }
+```
+
+910. Smallest Range II
+given an array, each element can be add K or minus K, return the smallest difference between the max and min
+greedy: sort the array, the left side always +k, and the right side always -k. we iterate each element as the left/right and get the min.
+
+or it is equivalent to add 0 or 2K to each element. 
+sort is the key step.
+
 
 
 
