@@ -227,4 +227,44 @@ index difference shall be <=k
     }
 ```
 
-    
+225. Implement Stack using Queues
+only support push to the back and pop to the front
+when we push an element we need pop all front and add back to it
+
+226. Invert Binary Tree
+invert root's left and right and also its subtree
+```cpp
+    TreeNode* invertTree(TreeNode* root) {
+        if(!root) return 0;
+        TreeNode* p=invertTree(root->left);
+        root->left=invertTree(root->right);
+        root->right=p;
+        return root;
+    }
+```
+scalable version: recursive not good for large tree
+using stack for iterative
+using queue for bfs
+
+231. Power of Two
+check if it is power of 2
+power of 2 in binary is 10000000
+x-1 is 0111111
+so x&(x-1)==0
+```cpp
+    bool isPowerOfTwo(int n) {
+        if(n<=0) return 0;
+        return (n&(n-1))==0;
+    }
+```
+possible bugs: 
+& is lower than ==, be sure to add ()
+edge case n<=0, =0 will satisfy the condition too
+
+232. Implement Queue using Stacks
+when we push to a stack, it is on the top, 
+when we pop we need pop the bottom elements
+
+this needs extra storage: another stack, which means we need two stacks
+
+
