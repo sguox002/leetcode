@@ -266,5 +266,107 @@ when we push to a stack, it is on the top,
 when we pop we need pop the bottom elements
 
 this needs extra storage: another stack, which means we need two stacks
+```cpp
+    stack<int> in,out;
+    MyQueue() {
+        
+    }
+    
+    /** Push element x to the back of queue. */
+    void push(int x) {
+        in.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    int pop() {
+        int t=peek();
+        out.pop();
+        return t;
+    }
+    
+    /** Get the front element. */
+    int peek() {
+        if(out.empty())
+        while(in.size())
+        {
+            out.push(in.top());
+            in.pop();
+        }
+        int t=out.top();
+        return t;        
+    }
+    
+    /** Returns whether the queue is empty. */
+    bool empty() {
+        return in.empty() && out.empty();
+    }
+```
+Note: possible bug: only when output is empty we can correctly reverse the stack.
+
+234. Palindrome Linked List
+the approach: use a fast and slow pointer to get the mid point and then compare the first half and second half
+edge case:
+0 node:
+1 node:
+2 nodes:
+Simplest: reverse the linked list and compare with original
+O(1) space: fast and slow and then reverse the 2nd half 
+note: if odd number nodes, fast will be on the last node, for even it is null
+
+```cpp
+    bool isPalindrome(ListNode* head) {
+        if(!head) return 0;
+        if(!head->next) return 1;
+        if(!head->next->next) return head->val==head->next->val;
+        ListNode *fast=head,*slow=head;
+        while(fast && fast->next)
+        {
+            fast=fast->next->next;
+            slow=slow->next;
+        }
+        if(fast) slow=slow->next; //for odd, ignore the mid node
+        fast=head;
+
+        slow=reverselist(slow);
+        //in case fast and slow is the same node
+        //cout<<slow->val<<endl;
+        while(slow->next) //this is a bug: shall be while(slow) since a single node will be skipped
+        {
+            if(fast->val==slow->val)
+            {
+                fast=fast->next;
+                slow=slow->next;
+            }
+            else return 0;
+        }
+        return 1;
+    }
+    ListNode* reverselist(ListNode* head)
+    {
+        //reverse the link
+        ListNode* prev=0;
+        while(head)
+        {
+            ListNode* tmp=head->next;
+            head->next=prev;
+            prev=head;
+            head=tmp;
+        }
+        return prev;
+    }
+    void print(ListNode* head)
+    {
+        while(head)
+        {
+            cout<<head->val<<"->";
+            head=head->next;
+        }
+    }
+```
+possible problem:
+1. empty list is considered to be true
+2. reverse list shall return prev instead of head (it is null)
+
+235. Lowest Common Ancestor of a Binary Search Tree
 
 
