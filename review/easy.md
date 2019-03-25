@@ -369,4 +369,114 @@ possible problem:
 
 235. Lowest Common Ancestor of a Binary Search Tree
 
+power of 2:
+1. num>0
+2. num & num-1 ==0
+
+power of 3
+- num>0
+- keep divide 3 until go to 1
+
+power of 4:
+- num>0
+- even bit is 1 ( num & num-1==0 and num&0x555555 to make sure it is not 2^n)
+
+344. Reverse String
+trivial using two pointer from both end
+
+345. reverse vowels
+```cpp
+    string reverseVowels(string s) {
+        if(s.empty()) return s;
+       int i=0,j=s.size()-1;
+        while(i<j)
+        {
+            if(isvowel(s[i]) && isvowel(s[j])) swap(s[i++],s[j--]);
+            else if(!isvowel(s[i])) i++;
+            else j--;
+        }
+        return s;
+    }
+    bool isvowel(char c)
+    {
+        c=tolower(c);
+        return c=='a'||c=='e' || c=='i' || c=='o' ||c=='u';
+    }
+```
+Note to write the while loop:
+make exclusive 3 conditions, if else if else to let i++ or j-- or i++,j-- so we do not need to worry about i<j inside the while loop. Often that will introduce bugs.
+
+349. Intersection of Two Arrays
+does not allow duplicates
+trivial using hash set
+
+350. Intersection of two arrays II
+allow duplicates
+using hashmap
+if arrays are sorted, we can use two pointer to go up
+
+367. Valid Perfect Square
+no sqrt can be used.
+Appr# 1
+n^2=(n-1)^2+2n-1
+so each n^2 is previous (n-1)^2 add an odd number
+trap: be careful of integer overflow
+Appr# 2: binary search
+n^2<num, l=mid+1
+n^2>num, r=mid-1
+trap: 
+easy to fall into infinite loop.
+divide by 0
+int overflow.
+```cpp
+    bool isPerfectSquare(int num) {
+        int l=0,r=num;
+        while(l<r)
+        {
+            int mid=l+(r-l)/2;
+            long long res=(long long)mid*mid;
+            if(res==num) return 1;
+            if(res<num) l=mid+1;
+            else r=mid-1;
+        }
+        return l*l==num;
+```
+
+371. Sum of Two Integers
+can not use + -
+bit operations: thinking they are binary 
++ -> a^b
+carrier flag: a&b
+
+```cpp
+int getSum(int a, int b) {
+    return b==0? a:getSum(a^b, (a&b)<<1); //be careful about the terminating condition;
+}
+
+or
+
+    int getSum(int a, int b) {
+        if (a == 0) return b;
+        if (b == 0) return a;
+
+        while (b != 0) {
+            int carry = a & (unsigned)b;
+            a = a ^ b;
+            b = (unsigned)carry << 1;
+        }
+
+        return a;
+    }
+    
+```
+Be careful bit operations are on unsigned. running time error will occur for negative number
+
+
+
+    }
+```
+
+
+
+
 
