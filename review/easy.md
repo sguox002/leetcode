@@ -471,10 +471,56 @@ or
 ```
 Be careful bit operations are on unsigned. running time error will occur for negative number
 
+374. Guess number higher or lower
+binary search
+```cpp
+    int guessNumber(int n) {
+       int l=1,r=n;
+        while(l<=r)
+        {
+            int mid=l+(r-l)/2;
+            int t=guess(mid);
+            if(t==0) return mid;
+            if(t>0) l=mid+1;
+            else r=mid-1;
+        }
+        return 0;
+    }
+```    
 
-
+383. Ransom Note
+trivial using hashmap
+```cpp
+    bool canConstruct(string ransomNote, string magazine) {
+       vector<int> mp(26);
+        for(char c: magazine) mp[c-'a']++;
+        for(char c: ransomNote) 
+        {
+            if(mp[c-'a']) mp[c-'a']--;
+            else return 0;
+        }
+        return 1;
     }
 ```
+387. First Unique Character in a String
+appr1: traverse and count the chars, and then find the first char appear once
+appr2: traverse and record first index and count, iterate the map and find the first
+
+389. Find the Difference
+trivial using xor
+iterate on s and t
+there is only one difference, so we can set res=t.back() and one loop is done.
+
+400. Nth Digit
+1 digits 1-9: 9 digits
+2 digits 10-99: 90x2
+3 digits: 100-999: 900x3
+...
+n digits: 9*10^(n-1)*n
+
+so the first we can know how many digits
+and then we know which number
+finally get the nth digit
 
 
 
