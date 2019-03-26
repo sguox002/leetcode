@@ -39,6 +39,7 @@ traps: need make k<n
         return ans;
     }
 ```
+
 be sure to double first so that the bit31 is not doubled.
 
 191. Number of 1 Bits
@@ -525,4 +526,140 @@ finally get the nth digit
 
 
 
+
+448. Find All Numbers Disappeared in an Array
+O(1) space and O(n) time
+eg. [4,3,2,7,8,2,3,1]
+4: we change a[3]: 4,3,2,-7,8,2,3,1
+3: we change a[2]: 4,3,-2,-7,8,2,3,1
+2: we change a[1]: 4,-3,-2,-7,8,2,3,1
+7: we change a[6]: 4,-3,-2,-7,8,2,-3,1
+8: we change a[7]: 4,-3,-2, -7,8,2,-3,-1
+2: we change a[1]: already negative 
+3: we change a[2]: already negative
+1: we change a[0]: -4,-3,-2,-7,8,2,-3,-1
+only the index 4, and 5 are positive, meaning 5 and 6 are not visited.
+this type of question: value and index is the same, we can mark visited as negative. If it is positive, then the index is not seen
+
+```cpp
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        for(int i=0;i<nums.size();i++)
+        {
+            int ind=abs(nums[i])-1;
+            if(nums[ind]>0) nums[ind]*=-1;
+        }
+        vector<int> ans;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(nums[i]>0) ans.push_back(i+1);
+        }
+        return ans;
+    }
+```
+
+453. Minimum Moves to Equal Array Elements
+a move is to increase n-1 element by 1
+get the min number of moves
+
+method: keep the max not changed and increase all others
+assuming the final is all x, the number of move is x-min
+each move we add k-1 into the sum: nx=(n-1)*(x-min)+sum, this is a simple math
+x=sum+(n-1)*min
+steps=x-min=sum+n*min;
+```cpp
+    int minMoves(vector<int>& nums) {
+        long long sum=accumulate(nums.begin(),nums.end(),0LL);
+        long long min0=*min_element(nums.begin(),nums.end());
+        int n=nums.size();
+        //final is x: k=x-min
+        //nx=k*(n-1)+tsum
+        return sum-n*min0;
+    }
+```
+traps:
+- sum may get overflow
+- min will not overflow but min*n will overflow, so use longlong for both.
+
+455. Assign Cookie
+greedy: always assign the cookie to the first person that s>=g
+use two pointers
+```cpp
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        sort(g.begin(),g.end());
+        sort(s.begin(),s.end());
+        int i=0,j=0;
+        int ans=0;
+        while(i<s.size() && j<g.size())
+        {
+            if(s[i]>=g[j]) ans++,j++;
+            i++;
+        }
+        return ans;
+    }
+```    
+
+459. Repeated Substring Pattern
+if we have AA pattern, then we copy it AAAA, and throw the first and end char, we can find the pattern.
+```cpp
+    bool repeatedSubstringPattern(string s) {
+        string ss=s+s;
+        int n=ss.size();
+        //check ss.substr(1) contains s
+        return ss.substr(1,n-2).find(s)!=string::npos;
+    }
+```
+
+461. Hamming Distance
+x and y: number of different bits
+appr#1: use bitset
+appr#2: x^y will get the different ones to set
+
+463. Island Perimeter
+not trivial
+a grid has 4 sides: left,right,top, bottom
+find how many 1 in the map. If without the consideration of surrounding cells, the total perimeter should be the total amount of 1 times 4.
+find how many cell walls that connect with both lands. We need to deduct twice of those lines from total perimeter
+
+```cpp
+int islandPerimeter(vector<vector<int>>& grid) {
+        int count=0, repeat=0;
+        for(int i=0;i<grid.size();i++)
+        {
+            for(int j=0; j<grid[i].size();j++)
+                {
+                    if(grid[i][j]==1)
+                    {
+                        count ++;
+                        if(i!=0 && grid[i-1][j] == 1) repeat++;
+                        if(j!=0 && grid[i][j-1] == 1) repeat++;
+                    }
+                }
+        }
+        return 4*count-repeat*2;
+    }
+```
+475. Heaters
+understanding the problem is more important
+heater positions are given, we are to find the largest distance of heaters
+two ends shall be treated differently. The range is not necessary to be covered.
+each house shall be covered by the nearest heater.
+
+```cpp
+    int findRadius(vector<int>& houses, vector<int>& heaters) {
+        //heater covers min0 to max0 is fine
+        sort(houses.begin(),houses.end());
+        sort(heaters.begin(),heaters.end());
+        int ans=INT_MIN;
+        //each house shall be covered by the nearest heater
+        for(int h: houses)
+        {
+            auto it=upper_bound(heaters.begin(),heaters.end(),h);
+            if(it==heaters.begin()) ans=max(ans,*it-h);
+            else if(it==heaters.end()) ans=max(ans,h-*(it-1));
+            else ans=max(ans,min(*it-h,h-*(it-1)));
+        }
+        return ans;
+    }
+```
+bugs: don't use *--it since --it will always be evaluated first.
 
