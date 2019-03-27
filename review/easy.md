@@ -684,5 +684,120 @@ pretty simple. reset cnt when see 0 increase cnt when see 1
 492. Construct the Rectangle
 requirement: L*W=area, L>=W and L-W shall be minimized
 simple: find the largest factor <=sqrt(n)
+traps: 
+duplicate number, 
+k=0 case, and a lot of duplicates for example [1,1,1,1] k=0
+k<0 case
+To make it easier, k=0 and k>0 two cases
+k=0, we count each number occurance
+k>0, we count value+k (not iterate each will include the value-k)
+need use a hashmap.
 
+538. Convert BST to Greater Tree
+convert node value to original + all other nodes greater than it.
+bst inorder will form a sorted array, and for sorted array this is simple (add a[n+1] to a[n])
+postorder
+```cpp
+    TreeNode* convertBST(TreeNode* root) {
+        int prev=INT_MIN;
+        postorder(root,prev);
+        return root;
+    }
+    void postorder(TreeNode* root,int& prev)
+    {
+        if(!root) return;
+        postorder(root->right,prev);
+        if(prev!=INT_MIN) root->val+=prev;
+        prev=root->val;
+        postorder(root->left,prev);
+    }
+```
+
+541. Reverse String II
+reverse the first k chars every 2k.
+if len<k reverse the whole string
+divide and conque using recursive
+```cpp
+    string reverseStr(string s, int k) {
+        string ans;
+        if(s.empty()) return ans;
+        if(s.size()<k)
+        {
+            reverse(s.begin(),s.end());
+            return s;
+        }
+        reverse(s.begin(),s.begin()+k);
+        ans=s.substr(0,2*k);
+        if(2*k<s.size()) ans+=reverseStr(s.substr(2*k),k);
+        return ans;
+    }
+```
+
+543. Diameter of Binary Tree
+diameter is defined the longest path (edge=node-1) across or not across the root
+this is a good question
+1. pass the root, left depth+right depth
+2. not passing the root, max of the left subtree and the right subtree
+so two problems:
+get the depth of a tree
+get the diameter
+
+recursive approach:
+```cpp
+    int diameterOfBinaryTree(TreeNode* root) {
+        if(!root) return 0;
+        int ans=depth(root->left)+depth(root->right);
+        return max(ans,max(diameterOfBinaryTree(root->left),diameterOfBinaryTree(root->right)));
+        
+    }
+    int depth(TreeNode* root)
+    {
+        if(!root) return 0;
+        return max(depth(root->left),depth(root->right))+1;
+    }
+```
+the above solution will cause stack overflow for a very deep tree.
+1. node is visited multiple times
+2. we can do the depth calculation and do the diameter at the same time
+```cpp
+    int m_maxDia = 0;
+    int diameterOfBinaryTree(TreeNode* root) {
+        GetDepth(root);
+        return m_maxDia;
+    }
+    int GetDepth(TreeNode* n)
+    {
+        if(!n)
+        {
+            return 0;
+        }
+        int left = GetDepth(n->left);
+        int right = GetDepth(n->right);
+        m_maxDia = max(m_maxDia, left + right);
+        return max(left, right) + 1;
+    }
+```
+
+551. Student Attendance Record I
+<=1 A
+no more than two continuous L
+O(N) just scan the string
+cnta is global no reset
+only when char=L increase cntl, other char reset cntl
+
+557. Reverse Words in a String III
+reverse word in sentence
+trivial using stringstream to process word by word
+
+
+
+
+
+
+
+532. K-diff Pairs in an Array
+constraints: needs to be unique, length of array up to 1e4
+naive: O(N^2) search each element for the pairs
+not so straightforward for better algorithm
+hashmap
 
