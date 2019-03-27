@@ -789,15 +789,51 @@ only when char=L increase cntl, other char reset cntl
 reverse word in sentence
 trivial using stringstream to process word by word
 
-
-
-
-
-
-
 532. K-diff Pairs in an Array
 constraints: needs to be unique, length of array up to 1e4
 naive: O(N^2) search each element for the pairs
 not so straightforward for better algorithm
 hashmap
+
+559. Maximum Depth of N-ary Tree
+trivial
+```cpp
+    int maxDepth(Node* root) {
+        if(!root) return 0;
+        int ans=1;
+        for(auto t: root->children)
+            ans=max(ans,1+maxDepth(t));
+        return ans;
+    }
+```
+561. Array Partition I
+make pair of min the sum largest
+sort choose the first
+proof
+
+563. Binary Tree Tilt
+tilt of a tree node is defined as the absolute difference between the sum of all left subtree node values and the sum of all right subtree node values
+The tilt of the whole tree is defined as the sum of all nodes' tilt.
+two problems:
+1. find its left right subtree sum
+2. find its tilt and sum all the tilts
+this is a very good question. We can do the two at the same time.
+one use return, one use passing paramter
+using pre, in or post order traversal
+```cpp
+    int findTilt(TreeNode* root) {
+        int sum=0;
+        tile(root,sum);
+        return sum;
+    }
+    int tile(TreeNode* root,int& sum)
+    {
+        if(!root) return 0;
+        int leftsum=tile(root->left,sum);
+        int rightsum=tile(root->right,sum);
+        sum+=abs(leftsum-rightsum);
+        return root->val+leftsum+rightsum;
+    }
+```
+
 
