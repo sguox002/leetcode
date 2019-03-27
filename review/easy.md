@@ -663,3 +663,26 @@ each house shall be covered by the nearest heater.
 ```
 bugs: don't use *--it since --it will always be evaluated first.
 
+476. Number Complement
+get the highest bit num 1<<bit-1-num 
+pay attention to overflow use 1L<<bit
+
+482. License Key Formatting
+Appr#1
+1 remove non alnum char and convert to upper
+2. reverse count and insert -
+
+Appr#2
+store in a stack and reverse
+
+Appr#3: reverse scan the string and add - in one scan
+this is a important hint since the first is to be decided last
+
+485. Max Consecutive Ones
+pretty simple. reset cnt when see 0 increase cnt when see 1
+
+492. Construct the Rectangle
+requirement: L*W=area, L>=W and L-W shall be minimized
+simple: find the largest factor <=sqrt(n)
+
+
