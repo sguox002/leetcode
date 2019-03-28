@@ -920,3 +920,71 @@ same
 
 
 another approach: sort and compare with original O(nlogn)
+
+628. Maximum Product of Three Numbers
+sort is trivial
+O(n) method: to get the largest 3 and smallest 2 one pass!
+which is a regular method
+```java
+public int maximumProduct(int[] nums) {
+        int max1 = Integer.MIN_VALUE, max2 = Integer.MIN_VALUE, max3 = Integer.MIN_VALUE, min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
+        for (int n : nums) {
+            if (n > max1) {
+                max3 = max2;
+                max2 = max1;
+                max1 = n;
+            } else if (n > max2) {
+                max3 = max2;
+                max2 = n;
+            } else if (n > max3) {
+                max3 = n;
+            }
+
+            if (n < min1) {
+                min2 = min1;
+                min1 = n;
+            } else if (n < min2) {
+                min2 = n;
+            }
+        }
+        return Math.max(max1*max2*max3, max1*min1*min2);
+    }
+```
+
+633. Sum of Square Numbers
+trivial
+643. Maximum Average Subarray I
+trivial but there is a trap
+```cpp
+    double findMaxAverage(vector<int>& nums, int k) {
+        int tsum=0,tmax=INT_MIN;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(i<k) tsum+=nums[i];
+            else {tmax=max(tmax,tsum);tsum+=nums[i];tsum-=nums[i-k];}
+        }
+        tmax=max(tmax,tsum);//last step is very important
+        return double(tmax)/k;
+    }
+```
+the end compare is important
+
+645. Set Mismatch
+find the number appearing twice and the missing number
+eg.[1,2,2,4]
+if we xor 1,2,3,4, we leave 2^3
+if we find the element appear twice, then missing number can be calculated: c=2^3, b=2^3^2=3
+finding the missing number can use cross all elements seen by negative the seens.
+```java
+    public int[] findErrorNums(int[] nums) {
+        int[] ans = new int[2];
+        for(int i = 0; i < nums.length; i++) {
+            int val = Math.abs(nums[i]);
+            ans[1] ^= (i+1) ^ val;
+            if (nums[val-1] < 0) ans[0] = val;
+            else nums[val-1] = -nums[val-1];
+        }
+        ans[1] ^= ans[0];
+        return ans;
+    }
+```    
