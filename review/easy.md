@@ -836,4 +836,87 @@ using pre, in or post order traversal
     }
 ```
 
+566. Reshape the Matrix
+trivial just index calculation
 
+572. Subtree of Another Tree
+contains two problems
+1. if two trees are equal
+2. subtree
+good question
+```cpp
+    bool isSubtree(TreeNode* s, TreeNode* t) {
+        if(!s) return 0; //this is needed to use s->left
+        if(equal(s,t)) return 1;
+        return isSubtree(s->left,t) || isSubtree(s->right,t);
+    }
+    bool equal(TreeNode* s,TreeNode* t)
+    {
+        if(!s && !t) return 1;
+        if(!s || !t) return 0;
+        return s->val==t->val && equal(s->left,t->left) && equal(s->right,t->right);
+    }
+```
+bugs: to avoid runtime error, need add if(!s) return 0, so we can use s->left and s->right
+
+575. Distribute Candies
+greedy: get number of types and return the min(types,n/2)
+
+581. Shortest Unsorted Continuous Subarray
+the min > left max
+the max < right min
+two pointer
+allows duplicate
+O(N)
+implementation is trick
+1. lmax and rmin array is not necessary since we are comparing at the same spot
+2. we can do one pass to get the lmax and rmin
+```cpp
+    int findUnsortedSubarray(vector<int>& nums) {
+        int n = nums.size(), beg = -1, end = -2, min0 = nums[n-1], max0 = nums[0];
+        for (int i=1;i<n;i++) {
+          max0 = max(max0, nums[i]);
+          min0 = min(min0, nums[n-1-i]);
+          if (nums[i] < max0) end = i;
+          if (nums[n-1-i] > min0) beg = n-1-i; 
+        }
+        return end - beg + 1;
+   }
+```
+589. N-ary Tree Preorder Traversal
+append a vector to a vector using insert
+```cpp
+    vector<int> preorder(Node* root) {
+        //node first
+        vector<int> ans;
+        if(!root) return ans;
+        ans.push_back(root->val);
+        for(auto t: root->children)
+        {
+            vector<int> vt=preorder(t);
+            ans.insert(ans.end(),vt.begin(),vt.end());
+        }
+        return ans;
+    }
+```
+or a bit faster which need not return vector
+```cpp
+    vector<int> preorder(Node* root) {
+        //node first
+        vector<int> ans;
+        helper(root,ans);
+        return ans;
+    }
+    void helper(Node* root,vector<int>& ans)
+    {
+        if(!root) return;
+        ans.push_back(root->val);
+        for(auto t: root->children)
+            helper(t,ans);
+    }
+```
+590. N-ary Tree Postorder Traversal
+same
+
+
+another approach: sort and compare with original O(nlogn)
