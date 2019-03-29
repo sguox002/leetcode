@@ -1001,3 +1001,84 @@ using a new array is trivial
 in-place can use the high 8 bit
 
 665. Non-decreasing Array
+
+700. Search in a Binary Search Tree
+trivial
+
+703. Kth Largest Element in a Stream
+priority-queue can maintain the k largest, but access the kth element takes O(K) time
+build a minheap, (Don't confuse the ask: it asks for the kth element in the sorted)
+Note the interface for the constructor using input vector as reference cannot pass the compiler
+
+704. Binary search
+Binary search pay attention:
+1. miss the range
+2. infinite loop
+```cpp
+    int search(vector<int>& nums, int target) {
+        int l=0,r=nums.size()-1;
+        while(l<=r)
+        {
+            int mid=l+(r-l)/2;
+            if(nums[mid]==target) return mid;
+            if(nums[mid]>target) r=mid-1;
+            else l=mid+1;
+        }
+        return -1;
+    }
+```
+The key is: if we use mid+/-1 for next step, then we need evaluate l<=r case
+if we just use mid, then we may falling into infinite loop (for example l and r only differs by 1)
+
+705. Design HashSet
+hashset uses a large prime number modulus.
+a vector of linked list (could use other inner data structure for efficiency)
+hash function: up to 10^4 elements, value range 10^6, collision 100
+to be done later
+
+709. To Lower Case
+trivial
+
+717. 1-bit and 2-bit Characters
+determine if last char is a 1bit char
+every 1 must follow a 1 or 0
+O(N)
+or just check the end
+00: must be true
+110: depends previous
+
+720. Longest Word in Dictionary
+sort the word according to length. if length is the same, sort alphabetically.
+and build a map incrementally and we only need to check if the last char removed exist or not
+```cpp
+bool cmp(string& a,string& b)
+{
+    return a.length()<b.length() || (a.length()==b.length() && a<b);
+}
+class Solution {
+public:
+    string longestWord(vector<string>& words) {
+        sort(words.begin(),words.end(),cmp);
+        unordered_map<string,bool> mp;
+        string ans;
+        for(string w: words)
+        {
+            if(w.size()==1) {mp[w]=1;if(ans.size()<w.size()) ans=w;}
+            else 
+            {
+                string s=w;
+                s.pop_back();
+                if(mp.count(s) && mp[s]) 
+                {
+                    mp[w]=1;
+                    if(ans.size()<w.size()) ans=w;
+                }
+                else mp[w]=0;
+            }
+        }
+        return ans;
+    }
+};
+```
+bugs: don't forget to add the one char into answer
+
