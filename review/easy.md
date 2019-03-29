@@ -1082,3 +1082,112 @@ public:
 ```
 bugs: don't forget to add the one char into answer
 
+724. Find Pivot Index
+pivot index can be the first or the last element. Do not miss that
+```cpp
+    int pivotIndex(vector<int>& nums) {
+        int tsum=accumulate(nums.begin(),nums.end(),0);
+        int prefix=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(prefix==tsum-nums[i]-prefix) return i;
+            prefix+=nums[i];
+        }
+        return -1;
+    }
+```    
+728. Self Dividing Numbers
+trivial
+
+733. Flood Fill
+bfs or dfs to fill the color
+dfs is easier but pay attention to new color is same as old color, will cause infinite loop and shall be treated first.
+
+```cpp
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        //dfs(image,sr,sc,newColor);
+        if(image.size()==0) return image;
+        int c=image[sr][sc];
+        if(c==newColor) return image;
+        dfs(image,sr,sc,newColor,c);
+        return image;
+    }
+    void dfs(vector<vector<int>>& image, int sr, int sc, int nc,int oc)
+    {
+        int m=image.size(),n=image[0].size();
+        if(sr<0 ||sr>=m ||sc<0 ||sc>=n || image[sr][sc]!=oc) return;
+        image[sr][sc]=nc;
+        dfs(image,sr-1,sc,nc,oc);
+        dfs(image,sr+1,sc,nc,oc);
+        dfs(image,sr,sc+1,nc,oc);
+        dfs(image,sr,sc-1,nc,oc);
+    }
+```
+
+744. Find Smallest Letter Greater Than Target
+char a-z but it is wraparound, chars are already sorted
+length up to 10^4
+
+trivial using upper_bound
+
+746. Min Cost Climbing Stairs
+you pay the cost at i and can jump one or two steps. start from 0 or 1 and reach the top at the min cost
+dp program
+dp[i]=min(dp[i-2],dp[i-1])+cost[i]
+final answer is min(dp[n-1],dp[n-2])
+The problem is not well formed, the target is the floor above the last
+so dp[0]=cost[0], dp[1]=cost[1] and final answer is min(dp[n-1],dp[n-2]
+
+747. Largest Number At Least Twice of Others
+O(n) find the max and second max
+pay attention to:
+integer overflow
+
+```cpp
+    int dominantIndex(vector<int>& nums) {
+        int max1=INT_MIN,max2=INT_MIN;
+        int ans=-1;
+        for(int i=0;i<nums.size();i++)
+        {
+            int t=nums[i];
+            if(t>max1) {max2=max1,max1=t;ans=i;}
+            else if(t>max2) max2=t;
+        }
+        if(max1==INT_MIN) return -1;
+        if(max2==INT_MIN) return ans;
+        if(max1>=2*max2) return ans;
+        return -1;
+    }
+```
+748. Shortest Completing Word
+ignore case
+1. convert case
+2. min length of string
+3. first matching word
+
+754. Reach a Number
+starting from 0 reaching target by 1,2,3,4,..... two directions
+greedy choice: 
+first go just beyond target, 1+2+..+n=n*(n+1)/2
+the difference is diff=target-n(n+1)/2, we can negelate some items
+if we negate i, we create a difference of 2i
+so if diff is odd:
+if n+1 is odd: we add n+1 to even and flip a number
+if n+1 is even, we add n+1, n+2 to reach an even
+```cpp
+    int reachNumber(int target) {
+        int i=0;
+        target=abs(target);
+        int sum=0;
+        while(sum<target) sum+=i++;
+        int diff=sum-target;
+        if(diff%2==0) return i-1;
+        else return i+(i%2==0);
+    }
+```
+traps:
+1. negative target
+2. after loop, i is one greater than the last step
+
+
+
