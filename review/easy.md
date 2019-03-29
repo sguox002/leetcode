@@ -976,15 +976,28 @@ if we xor 1,2,3,4, we leave 2^3
 if we find the element appear twice, then missing number can be calculated: c=2^3, b=2^3^2=3
 finding the missing number can use cross all elements seen by negative the seens.
 ```java
-    public int[] findErrorNums(int[] nums) {
-        int[] ans = new int[2];
-        for(int i = 0; i < nums.length; i++) {
-            int val = Math.abs(nums[i]);
-            ans[1] ^= (i+1) ^ val;
-            if (nums[val-1] < 0) ans[0] = val;
-            else nums[val-1] = -nums[val-1];
+    vector<int> findErrorNums(vector<int>& nums) {
+        int dup,miss,res=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            int v=abs(nums[i]);
+            res^=(i+1)^v;
+            //use it as index to negate the value
+            if(nums[v-1]>0) nums[v-1]*=-1;
+            else dup=v;
         }
-        ans[1] ^= ans[0];
-        return ans;
+        miss=res^dup;
+        return {dup,miss};
     }
-```    
+  ```    
+  Note: one loop is a very efficient algorithm. 
+
+653. Two Sum IV - Input is a BST
+trivial using any order traversal and hashmap
+
+661. Image Smoother
+input value: 0-255
+using a new array is trivial
+in-place can use the high 8 bit
+
+665. Non-decreasing Array
