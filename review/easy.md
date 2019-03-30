@@ -1190,4 +1190,19 @@ traps:
 2. after loop, i is one greater than the last step
 
 
+762. Prime Number of Set Bits in Binary Representation
+trivial
+
+766. Toeplitz Matrix
+for a matrix mxn, there are m+n diagonal from top left to bottom right
+think it simple, just compare (i,j) with (i-1,j-1). We don't need to consider index overflow
+
+783. Minimum Distance Between BST Nodes
+trivial using prev and inorder traversal, same as 530
+but I fell into the same trap again.
+prev and ans shall both be global so we need use reference passing
+
+784. Letter Case Permutation
+each char has two options: upper case or lower case 2^n
+we can use recursive approach
 
