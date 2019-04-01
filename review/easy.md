@@ -1206,3 +1206,48 @@ prev and ans shall both be global so we need use reference passing
 each char has two options: upper case or lower case 2^n
 we can use recursive approach
 
+806. Number of Lines To Write String
+trivial, don't forget to add the last line
+
+811. Subdomain Visit Count
+string input
+getline with delim . and space
+getline does not skip white spaces. that is a problem!
+or use some other read (read the whole string and find . is better)
+do not forget to accumulate the counting.
+
+812. Largest Triangle Area
+brutal force
+area of a polygon using points
+can be approved using cross product
+
+819. Most Common Word
+again process strings
+
+819. Most Common Word
+hashmap,
+trap: the last step don't forget to add the remaining word.
+
+821. Shortest Distance to a Character
+mthd1: two passes, first pass to get all positions of the character, and then find offset for each char
+mthd2: from both direction to get the offset and choose the min
+```cpp
+    vector<int> shortestToChar(string S, char C) {
+        int n = S.size();
+        vector<int> res(n, n);
+        int pos = -n;
+        for (int i = 0; i < n; ++i) {
+            if (S[i] == C) pos = i;
+            res[i] = min(res[i], abs(i - pos));
+        }
+        for (int i = n - 1; i >= 0; --i) {
+            if (S[i] == C)  pos = i;
+            res[i] = min(res[i], abs(i - pos));
+        }
+        return res;
+    }
+```
+trick: first we assume the pos is on the far left (must be very far)
+
+
+
