@@ -1249,5 +1249,36 @@ mthd2: from both direction to get the offset and choose the min
 ```
 trick: first we assume the pos is on the far left (must be very far)
 
+824. Goat Latin
+string read
+trivial
+
+830. Positions of Large Groups
+trival, two pointer
+
+832. Flipping an Image
+flip and then invert, trival
+
+836. Rectangle Overlap
+this requires some intuition
+Given 2 segment (left1, right1), (left2, right2), how can we check whether they overlap?
+If these two intervals overlap, it should exist an number x,
+
+left1 < x < right1 && left2 < x < right2
+
+left1 < x < right2 && left2 < x < right1
+
+left1 < right2 && left2 < right1
+
+2d: overlaps at two directions
+
+This is an important approach: if 2D is hard try 1D first. some 2d are just two 1d problem
+
+840. Magic Squares In Grid
+brutal force is trivial
+center is 5, the odd is in the center and even is in the corner
+
+
+
 
 
