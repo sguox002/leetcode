@@ -1279,6 +1279,25 @@ brutal force is trivial
 center is 5, the odd is in the center and even is in the corner
 
 
+437. Path Sum III
+this is not easy at all
+1. we can substract the node value until we reach 0, then we add one path
+2. we have 3 problem: include the root,(type 2) include the left, include the right,(two subproblem) recursively 
+3. for the helper we go down by subtracting the root val (if the root val ==sum then it is also an answer)
+two different recursive problem
+```cpp
+    int pathSum(TreeNode* root, int sum) {
+        if(!root) return 0;
+        return helper(root,sum)+pathSum(root->left,sum)+pathSum(root->right,sum);
+    }
+    int helper(TreeNode* root,int sum)
+    {
+        if(!root) return 0;
+        return (root->val==sum?1:0)+helper(root->left,sum-root->val)+
+            helper(root->right,sum-root->val);
+    }
+```
+
 
 
 
