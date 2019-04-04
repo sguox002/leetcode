@@ -1,14 +1,51 @@
-189. Rotate Array
-approach1: double the array and return begin()+k for n elements
-approach2: k to end and then followed by 0 to k
-approach 3:
-in-place O(1) memory approach:
+###13. Roman Integer
+
+1. way to initialize hashmap
+
+2. reverse direction iteration: if current number < previous number then subtract it
+we can also from other direction
+```cpp
+int romanToInt(string s) 
+{
+    unordered_map<char, int> T = { { 'I' , 1 },
+                                   { 'V' , 5 },
+                                   { 'X' , 10 },
+                                   { 'L' , 50 },
+                                   { 'C' , 100 },
+                                   { 'D' , 500 },
+                                   { 'M' , 1000 } };
+                                   
+   int sum = T[s.back()];
+   for (int i = s.length() - 2; i >= 0; --i) 
+   {
+       if (T[s[i]] < T[s[i + 1]])
+           sum -= T[s[i]];
+       else
+           sum += T[s[i]];
+   }
+   return sum;
+}
+```
+
+###189. Rotate Array, rating 4
+
+approach 1: double the array and return begin()+k for n elements
+
+approach 2: k to end and then followed by 0 to k
+
+approach 3: in-place O(1) memory approach
+
 brutal force: each element's position is known (i+k)%n. we need store the original value to temp
+
 a[0] to a[n-k-1] shift to a[k]-a[n-1]
+
 a[n-k] to a[n-1] move to a[0]-a[k-1]
+
 approach 4:
 first reverse first n-k elements
+
 2nd reverse the last k elements
+
 reverse the whole
 most easy to implement
 
@@ -21,11 +58,16 @@ most easy to implement
         reverse(nums.begin(),nums.end());
     }
 ```
-traps: need make k<n
+traps: need make k<n by k%=n
 
-190. Reverse Bits
+###190. Reverse Bits
+
 1. don't misunderstand the question. It ask reverse, not 1 to 0 and 0 to 1
+
 2. it needs the trailing and leading 0s to fill 32 bit
+
+3. reverse the bits by first double and then add. (useful trick)
+
 ```cpp    
     uint32_t reverseBits(uint32_t n) {
         uint32_t ans=0;
@@ -42,10 +84,10 @@ traps: need make k<n
 
 be sure to double first so that the bit31 is not doubled.
 
-191. Number of 1 Bits
-trivial
+###191. Number of 1 Bits
+trivial, loop or bitset
 
-198. House Robber
+###198. House Robber
 dp[i]=max(dp[i-1],dp[i-2]+a[i])
 boundary: 
 dp[0]=0
@@ -64,7 +106,7 @@ dp[1]=a[1]
 ```
 edge case: n==0 will runtime error
 
-202. Happy Number
+###202. Happy Number
 trivial: detect the cycle or 1
 ```cpp
     bool isHappy(int n) {
@@ -76,13 +118,12 @@ trivial: detect the cycle or 1
             string s=to_string(n);
             n=0;
             for(char c: s) n+=(c-'0')*(c-'0');
-            
         }
         return 1;
     }
 ```
 
-203. Remove Linked List Elements
+###203. Remove Linked List Elements
 practice removing a node
 add a dummy node to avoid head change
 subtle: 
@@ -99,9 +140,7 @@ else prev=curr, curr=curr->next
         while(curr)
         {
             if(curr->val==val)
-            {
                 prev->next=curr->next;
-            }
             else prev=curr;
             curr=curr->next;
         }
@@ -109,9 +148,9 @@ else prev=curr, curr=curr->next
     }
 ```
 
-204. Count Primes
-basic math problem
-n could be very large, pay attention to overflow problem
+###204. Count Primes
+basic math problem: by marking down all its multiples and remaining are all primes. need extra storage to store the flags
+n could be very large, pay attention to overflow problem (even i is int, i*i could overflow)
 ```cpp
     int countPrimes(int n) {
         //range (2 to n-1) counting all 
@@ -131,8 +170,8 @@ n could be very large, pay attention to overflow problem
     }
 ```
 
-205. Isomorphic Strings
-we just map both to abc order
+###205. Isomorphic Strings
+we just map both to abc order. This is a useful trick to have a common mapping
 ```cpp
     bool isIsomorphic(string s, string t) {
         char c='a';
@@ -152,7 +191,7 @@ we just map both to abc order
         return s1==s2;
     }
 ```
-206 reverse linked list
+###206 reverse linked list
 reverse can be done recursively or iteratively
 ```cpp
     ListNode* reverseList(ListNode* head) {
@@ -199,7 +238,9 @@ class Solution {
 }
 ```
 
-217. Contains Duplicate
+another approach is more straightforward by using a prev node. and reverse the curr->next to prev. final answer is the prev. One pass.
+
+###217. Contains Duplicate
 naive: i and j, O(N^2)
 sort: O(nlogn)
 hash: O(n)
@@ -214,7 +255,7 @@ hash: O(n)
         return 0;
     }
 ```
-219. Contains Duplicate II
+###219. Contains Duplicate II
 index difference shall be <=k
 ```cpp
     bool containsNearbyDuplicate(vector<int>& nums, int k) {
@@ -228,11 +269,11 @@ index difference shall be <=k
     }
 ```
 
-225. Implement Stack using Queues
+###225. Implement Stack using Queues
 only support push to the back and pop to the front
 when we push an element we need pop all front and add back to it
 
-226. Invert Binary Tree
+###226. Invert Binary Tree
 invert root's left and right and also its subtree
 ```cpp
     TreeNode* invertTree(TreeNode* root) {
@@ -247,7 +288,7 @@ scalable version: recursive not good for large tree
 using stack for iterative
 using queue for bfs
 
-231. Power of Two
+###231. Power of Two
 check if it is power of 2
 power of 2 in binary is 10000000
 x-1 is 0111111
@@ -262,7 +303,19 @@ possible bugs:
 & is lower than ==, be sure to add ()
 edge case n<=0, =0 will satisfy the condition too
 
-232. Implement Queue using Stacks
+power of 2:
+1. num>0
+2. num & num-1 ==0
+
+power of 3
+- num>0
+- keep divide 3 until go to 1
+
+power of 4:
+- num>0
+- even bit is 1 ( num & num-1==0 and num&0x555555 to make sure it is not 2^n)
+
+###232. Implement Queue using Stacks
 when we push to a stack, it is on the top, 
 when we pop we need pop the bottom elements
 
@@ -304,7 +357,7 @@ this needs extra storage: another stack, which means we need two stacks
 ```
 Note: possible bug: only when output is empty we can correctly reverse the stack.
 
-234. Palindrome Linked List
+###234. Palindrome Linked List
 the approach: use a fast and slow pointer to get the mid point and then compare the first half and second half
 edge case:
 0 node:
@@ -367,25 +420,17 @@ note: if odd number nodes, fast will be on the last node, for even it is null
 possible problem:
 1. empty list is considered to be true
 2. reverse list shall return prev instead of head (it is null)
+3. reverse list in this is more clear.
 
-235. Lowest Common Ancestor of a Binary Search Tree
+###235. Lowest Common Ancestor of a Binary Search Tree
 
-power of 2:
-1. num>0
-2. num & num-1 ==0
 
-power of 3
-- num>0
-- keep divide 3 until go to 1
 
-power of 4:
-- num>0
-- even bit is 1 ( num & num-1==0 and num&0x555555 to make sure it is not 2^n)
-
-344. Reverse String
+###344. Reverse String
 trivial using two pointer from both end
 
-345. reverse vowels
+###345. reverse vowels
+trivial using two pointer
 ```cpp
     string reverseVowels(string s) {
         if(s.empty()) return s;
@@ -404,19 +449,43 @@ trivial using two pointer from both end
         return c=='a'||c=='e' || c=='i' || c=='o' ||c=='u';
     }
 ```
-Note to write the while loop:
+Note how to write the while loop:
 make exclusive 3 conditions, if else if else to let i++ or j-- or i++,j-- so we do not need to worry about i<j inside the while loop. Often that will introduce bugs.
+define clearly when i change and when j changes
 
-349. Intersection of Two Arrays
+###349. Intersection of Two Arrays
 does not allow duplicates
-trivial using hash set
+trivial using hash set. Generally approach create one hash from one, and then create the answer on the fly.
+```cpp
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        unordered_set<int> ms(nums1.begin(),nums1.end());
+        unordered_set<int> ans;
+        for(int n:nums2)
+        {
+            if(ms.count(n)) ans.insert(n);
+        }
+        return vector<int>(ans.begin(),ans.end());
+    }
+```    
 
-350. Intersection of two arrays II
+###350. Intersection of two arrays II
 allow duplicates
 using hashmap
-if arrays are sorted, we can use two pointer to go up
-
-367. Valid Perfect Square
+if arrays are sorted, we can use two pointer to go up.
+similarly build the map on one array (+) and decrease the map using other array
+```cpp
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        unordered_map<int,int> mp;
+        for(int n:nums1) mp[n]++;
+        vector<int> ans;
+        for(int n: nums2)
+        {
+            if(mp[n]) {ans.push_back(n);mp[n]--;}
+        }
+        return ans;
+    }
+```    
+###367. Valid Perfect Square
 no sqrt can be used.
 Appr# 1
 n^2=(n-1)^2+2n-1
@@ -426,7 +495,7 @@ Appr# 2: binary search
 n^2<num, l=mid+1
 n^2>num, r=mid-1
 trap: 
-easy to fall into infinite loop.
+easy to fall into infinite loop (when l+1=r case the mid never change)
 divide by 0
 int overflow.
 ```cpp
