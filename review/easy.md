@@ -26,6 +26,69 @@ int romanToInt(string s)
    return sum;
 }
 ```
+### 169. Majority Element
+using hashmap to count is trivial O(n) in space and time
+sort O(nlogn) and O(1)
+there is a voting algorithm which is used for finding the majority element. O(n) and O(1)
+wiki:
+In its simplest form, the algorithm finds a majority element, if there is one: that is, an element that occurs repeatedly for more than half of the elements of the input. However, if there is no majority, the algorithm will not detect that fact, and will still output one of the elements. A version of the algorithm that makes a second pass through the data can be used to verify that the element found in the first pass really is a majority.
+
+The algorithm will not, in general, find the mode of a sequence (an element that has the most repetitions) unless the number of repetitions is large enough for the mode to be a majority. It is not possible for a streaming algorithm to find the most frequent element in less than linear space, when the number of repetitions can be smal
+
+```cpp
+    int majorityElement(vector<int>& nums) {
+        int major=nums[0],cnt=0;
+        for(int n: nums)
+        {
+            if(n==major) cnt++;
+            else 
+            {
+                cnt--;
+                if(cnt<=0) {major=n;cnt=1;}
+            }
+        }
+        return major;
+    }
+```
+Note: when cnt->0 need reset it to 1
+
+### 229. Majority Element II
+similarly we can use voting algorithm
+since there could be one or two candidates, we need add two counters. Second pass is required to make sure they satisify
+```cpp
+vector<int> majorityElement(vector<int>& nums) {
+    int cnt1 = 0, cnt2 = 0, a=0, b=1;
+    
+    for(auto n: nums){
+        if (a==n) cnt1++;
+        else if (b==n) cnt2++;
+        else if (cnt1==0){
+            a = n;
+            cnt1 = 1;
+        }
+        else if (cnt2 == 0){
+            b = n;
+            cnt2 = 1;
+        }
+        else{
+            cnt1--;
+            cnt2--;
+        }
+    }
+    
+    cnt1 = cnt2 = 0;
+    for(auto n: nums){
+        if (n==a)   cnt1++;
+        else if (n==b)  cnt2++;
+    }
+    
+    vector<int> res;
+    if (cnt1 > nums.size()/3)   res.push_back(a);
+    if (cnt2 > nums.size()/3)   res.push_back(b);
+    return res;
+}
+```
+
 
 ### 189. Rotate Array, rating 4
 
@@ -423,8 +486,22 @@ possible problem:
 3. reverse list in this is more clear.
 
 ### 235. Lowest Common Ancestor of a Binary Search Tree
-
-
+the node is on left or on right or the root is the ancestor
+```cpp
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        //if(!root) return 0;
+        //pq relation: left-left, right-right,left-right, right-left
+        //if(p==root) return 1;
+        //if(q==root) return 2;
+        if(root)
+        {
+        int v=root->val;
+        if(p->val>v && q->val>v) return lowestCommonAncestor(root->right,p,q);
+        if(p->val<v && q->val<v) return lowestCommonAncestor(root->right,p,q);
+        }
+        return root;
+    }
+```    
 
 ### 344. Reverse String
 trivial using two pointer from both end
@@ -458,7 +535,7 @@ does not allow duplicates
 trivial using hash set. Generally approach create one hash from one, and then create the answer on the fly.
 ```cpp
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-        unordered_set<int> ms(nums1.begin(),nums1.end());
+2        unordered_set<int> ms(nums1.begin(),nums1.end());
         unordered_set<int> ans;
         for(int n:nums2)
         {
@@ -512,7 +589,7 @@ int overflow.
         return l*l==num;
 ```
 
-371. Sum of Two Integers
+### 371. Sum of Two Integers
 can not use + -
 bit operations: thinking they are binary 
 + -> a^b
@@ -541,7 +618,7 @@ or
 ```
 Be careful bit operations are on unsigned. running time error will occur for negative number
 
-374. Guess number higher or lower
+### 374. Guess number higher or lower
 binary search
 ```cpp
     int guessNumber(int n) {
@@ -558,7 +635,7 @@ binary search
     }
 ```    
 
-383. Ransom Note
+### 383. Ransom Note
 trivial using hashmap
 ```cpp
     bool canConstruct(string ransomNote, string magazine) {
@@ -572,16 +649,16 @@ trivial using hashmap
         return 1;
     }
 ```
-387. First Unique Character in a String
+### 387. First Unique Character in a String
 appr1: traverse and count the chars, and then find the first char appear once
 appr2: traverse and record first index and count, iterate the map and find the first
 
-389. Find the Difference
+### 389. Find the Difference
 trivial using xor
 iterate on s and t
 there is only one difference, so we can set res=t.back() and one loop is done.
 
-400. Nth Digit
+### 400. Nth Digit
 1 digits 1-9: 9 digits
 2 digits 10-99: 90x2
 3 digits: 100-999: 900x3
@@ -593,10 +670,7 @@ and then we know which number
 finally get the nth digit
 
 
-
-
-
-448. Find All Numbers Disappeared in an Array
+### 448. Find All Numbers Disappeared in an Array
 O(1) space and O(n) time
 eg. [4,3,2,7,8,2,3,1]
 4: we change a[3]: 4,3,2,-7,8,2,3,1
@@ -626,7 +700,7 @@ this type of question: value and index is the same, we can mark visited as negat
     }
 ```
 
-453. Minimum Moves to Equal Array Elements
+### 453. Minimum Moves to Equal Array Elements
 a move is to increase n-1 element by 1
 get the min number of moves
 
@@ -649,7 +723,7 @@ traps:
 - sum may get overflow
 - min will not overflow but min*n will overflow, so use longlong for both.
 
-455. Assign Cookie
+### 455. Assign Cookie
 greedy: always assign the cookie to the first person that s>=g
 use two pointers
 ```cpp
@@ -667,7 +741,7 @@ use two pointers
     }
 ```    
 
-459. Repeated Substring Pattern
+### 459. Repeated Substring Pattern
 if we have AA pattern, then we copy it AAAA, and throw the first and end char, we can find the pattern.
 ```cpp
     bool repeatedSubstringPattern(string s) {
@@ -678,17 +752,17 @@ if we have AA pattern, then we copy it AAAA, and throw the first and end char, w
     }
 ```
 
-461. Hamming Distance
+### 461. Hamming Distance
 x and y: number of different bits
 appr#1: use bitset
 appr#2: x^y will get the different ones to set
 
-463. Island Perimeter
+### 463. Island Perimeter
 not trivial
 a grid has 4 sides: left,right,top, bottom
 find how many 1 in the map. If without the consideration of surrounding cells, the total perimeter should be the total amount of 1 times 4.
 find how many cell walls that connect with both lands. We need to deduct twice of those lines from total perimeter
-
+This is a useful trick: by the iteration we only consider the top and left cell. 
 ```cpp
 int islandPerimeter(vector<vector<int>>& grid) {
         int count=0, repeat=0;
@@ -707,7 +781,8 @@ int islandPerimeter(vector<vector<int>>& grid) {
         return 4*count-repeat*2;
     }
 ```
-475. Heaters
+
+### 475. Heaters
 understanding the problem is more important
 heater positions are given, we are to find the largest distance of heaters
 two ends shall be treated differently. The range is not necessary to be covered.
@@ -732,11 +807,11 @@ each house shall be covered by the nearest heater.
 ```
 bugs: don't use *--it since --it will always be evaluated first.
 
-476. Number Complement
+### 476. Number Complement
 get the highest bit num 1<<bit-1-num 
 pay attention to overflow use 1L<<bit
 
-482. License Key Formatting
+### 482. License Key Formatting
 Appr#1
 1 remove non alnum char and convert to upper
 2. reverse count and insert -
@@ -747,10 +822,10 @@ store in a stack and reverse
 Appr#3: reverse scan the string and add - in one scan
 this is a important hint since the first is to be decided last
 
-485. Max Consecutive Ones
+### 485. Max Consecutive Ones
 pretty simple. reset cnt when see 0 increase cnt when see 1
 
-492. Construct the Rectangle
+### 492. Construct the Rectangle
 requirement: L*W=area, L>=W and L-W shall be minimized
 simple: find the largest factor <=sqrt(n)
 traps: 
@@ -762,7 +837,7 @@ k=0, we count each number occurance
 k>0, we count value+k (not iterate each will include the value-k)
 need use a hashmap.
 
-538. Convert BST to Greater Tree
+### 538. Convert BST to Greater Tree
 convert node value to original + all other nodes greater than it.
 bst inorder will form a sorted array, and for sorted array this is simple (add a[n+1] to a[n])
 postorder
@@ -782,7 +857,7 @@ postorder
     }
 ```
 
-541. Reverse String II
+### 541. Reverse String II
 reverse the first k chars every 2k.
 if len<k reverse the whole string
 divide and conque using recursive
@@ -802,7 +877,7 @@ divide and conque using recursive
     }
 ```
 
-543. Diameter of Binary Tree
+### 543. Diameter of Binary Tree
 diameter is defined the longest path (edge=node-1) across or not across the root
 this is a good question
 1. pass the root, left depth+right depth
@@ -826,8 +901,12 @@ recursive approach:
     }
 ```
 the above solution will cause stack overflow for a very deep tree.
+
 1. node is visited multiple times
-2. we can do the depth calculation and do the diameter at the same time
+
+2. we can do the depth calculation and do the diameter at the same time reducing O(N^2) to O(N) and also stack requirement.
+When stack overflow, almost the same as O(N^2)
+
 ```cpp
     int m_maxDia = 0;
     int diameterOfBinaryTree(TreeNode* root) {
@@ -836,10 +915,7 @@ the above solution will cause stack overflow for a very deep tree.
     }
     int GetDepth(TreeNode* n)
     {
-        if(!n)
-        {
-            return 0;
-        }
+        if(!n) return 0;
         int left = GetDepth(n->left);
         int right = GetDepth(n->right);
         m_maxDia = max(m_maxDia, left + right);
@@ -847,24 +923,24 @@ the above solution will cause stack overflow for a very deep tree.
     }
 ```
 
-551. Student Attendance Record I
+### 551. Student Attendance Record I
 <=1 A
 no more than two continuous L
 O(N) just scan the string
 cnta is global no reset
 only when char=L increase cntl, other char reset cntl
 
-557. Reverse Words in a String III
+### 557. Reverse Words in a String III
 reverse word in sentence
 trivial using stringstream to process word by word
 
-532. K-diff Pairs in an Array
+### 532. K-diff Pairs in an Array
 constraints: needs to be unique, length of array up to 1e4
 naive: O(N^2) search each element for the pairs
 not so straightforward for better algorithm
 hashmap
 
-559. Maximum Depth of N-ary Tree
+### 559. Maximum Depth of N-ary Tree
 trivial
 ```cpp
     int maxDepth(Node* root) {
@@ -875,12 +951,12 @@ trivial
         return ans;
     }
 ```
-561. Array Partition I
+### 561. Array Partition I
 make pair of min the sum largest
 sort choose the first
 proof
 
-563. Binary Tree Tilt
+### 563. Binary Tree Tilt
 tilt of a tree node is defined as the absolute difference between the sum of all left subtree node values and the sum of all right subtree node values
 The tilt of the whole tree is defined as the sum of all nodes' tilt.
 two problems:
@@ -905,10 +981,10 @@ using pre, in or post order traversal
     }
 ```
 
-566. Reshape the Matrix
+### 566. Reshape the Matrix
 trivial just index calculation
 
-572. Subtree of Another Tree
+### 572. Subtree of Another Tree
 contains two problems
 1. if two trees are equal
 2. subtree
@@ -928,10 +1004,10 @@ good question
 ```
 bugs: to avoid runtime error, need add if(!s) return 0, so we can use s->left and s->right
 
-575. Distribute Candies
+### 575. Distribute Candies
 greedy: get number of types and return the min(types,n/2)
 
-581. Shortest Unsorted Continuous Subarray
+### 581. Shortest Unsorted Continuous Subarray
 the min > left max
 the max < right min
 two pointer
@@ -952,7 +1028,9 @@ implementation is trick
         return end - beg + 1;
    }
 ```
-589. N-ary Tree Preorder Traversal
+another approach: sort and compare with original O(nlogn)
+
+### 589. N-ary Tree Preorder Traversal
 append a vector to a vector using insert
 ```cpp
     vector<int> preorder(Node* root) {
@@ -984,16 +1062,14 @@ or a bit faster which need not return vector
             helper(t,ans);
     }
 ```
-590. N-ary Tree Postorder Traversal
+### 590. N-ary Tree Postorder Traversal
 same
 
 
-another approach: sort and compare with original O(nlogn)
-
-628. Maximum Product of Three Numbers
+### 628. Maximum Product of Three Numbers
 sort is trivial
 O(n) method: to get the largest 3 and smallest 2 one pass!
-which is a regular method
+which is a regular method. can be generallized to k max
 ```java
 public int maximumProduct(int[] nums) {
         int max1 = Integer.MIN_VALUE, max2 = Integer.MIN_VALUE, max3 = Integer.MIN_VALUE, min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
@@ -1020,9 +1096,10 @@ public int maximumProduct(int[] nums) {
     }
 ```
 
-633. Sum of Square Numbers
+### 633. Sum of Square Numbers
 trivial
-643. Maximum Average Subarray I
+
+### 643. Maximum Average Subarray I
 trivial but there is a trap
 ```cpp
     double findMaxAverage(vector<int>& nums, int k) {
@@ -1038,7 +1115,7 @@ trivial but there is a trap
 ```
 the end compare is important
 
-645. Set Mismatch
+### 645. Set Mismatch
 find the number appearing twice and the missing number
 eg.[1,2,2,4]
 if we xor 1,2,3,4, we leave 2^3
@@ -1061,25 +1138,25 @@ finding the missing number can use cross all elements seen by negative the seens
   ```    
   Note: one loop is a very efficient algorithm. 
 
-653. Two Sum IV - Input is a BST
+### 653. Two Sum IV - Input is a BST
 trivial using any order traversal and hashmap
 
-661. Image Smoother
+### 661. Image Smoother
 input value: 0-255
 using a new array is trivial
 in-place can use the high 8 bit
 
-665. Non-decreasing Array
+### 665. Non-decreasing Array
 
-700. Search in a Binary Search Tree
+### 700. Search in a Binary Search Tree
 trivial
 
-703. Kth Largest Element in a Stream
+### 703. Kth Largest Element in a Stream
 priority-queue can maintain the k largest, but access the kth element takes O(K) time
 build a minheap, (Don't confuse the ask: it asks for the kth element in the sorted)
 Note the interface for the constructor using input vector as reference cannot pass the compiler
 
-704. Binary search
+### 704. Binary search
 Binary search pay attention:
 1. miss the range
 2. infinite loop
@@ -1099,16 +1176,16 @@ Binary search pay attention:
 The key is: if we use mid+/-1 for next step, then we need evaluate l<=r case
 if we just use mid, then we may falling into infinite loop (for example l and r only differs by 1)
 
-705. Design HashSet
+### 705. Design HashSet
 hashset uses a large prime number modulus.
 a vector of linked list (could use other inner data structure for efficiency)
 hash function: up to 10^4 elements, value range 10^6, collision 100
 to be done later
 
-709. To Lower Case
+### 709. To Lower Case
 trivial
 
-717. 1-bit and 2-bit Characters
+### 717. 1-bit and 2-bit Characters
 determine if last char is a 1bit char
 every 1 must follow a 1 or 0
 O(N)
@@ -1116,7 +1193,7 @@ or just check the end
 00: must be true
 110: depends previous
 
-720. Longest Word in Dictionary
+### 720. Longest Word in Dictionary
 sort the word according to length. if length is the same, sort alphabetically.
 and build a map incrementally and we only need to check if the last char removed exist or not
 ```cpp
@@ -1151,7 +1228,7 @@ public:
 ```
 bugs: don't forget to add the one char into answer
 
-724. Find Pivot Index
+### 724. Find Pivot Index
 pivot index can be the first or the last element. Do not miss that
 ```cpp
     int pivotIndex(vector<int>& nums) {
@@ -1165,10 +1242,10 @@ pivot index can be the first or the last element. Do not miss that
         return -1;
     }
 ```    
-728. Self Dividing Numbers
+### 728. Self Dividing Numbers
 trivial
 
-733. Flood Fill
+### 733. Flood Fill
 bfs or dfs to fill the color
 dfs is easier but pay attention to new color is same as old color, will cause infinite loop and shall be treated first.
 
@@ -1193,13 +1270,19 @@ dfs is easier but pay attention to new color is same as old color, will cause in
     }
 ```
 
-744. Find Smallest Letter Greater Than Target
+### 744. Find Smallest Letter Greater Than Target
 char a-z but it is wraparound, chars are already sorted
 length up to 10^4
 
 trivial using upper_bound
-
-746. Min Cost Climbing Stairs
+```cpp
+    char nextGreatestLetter(vector<char>& letters, char target) {
+        auto it=upper_bound(letters.begin(),letters.end(),target);
+        if(it==letters.end()) return letters[0];
+        return *it;
+    }
+```    
+### 746. Min Cost Climbing Stairs
 you pay the cost at i and can jump one or two steps. start from 0 or 1 and reach the top at the min cost
 dp program
 dp[i]=min(dp[i-2],dp[i-1])+cost[i]
@@ -1207,8 +1290,8 @@ final answer is min(dp[n-1],dp[n-2])
 The problem is not well formed, the target is the floor above the last
 so dp[0]=cost[0], dp[1]=cost[1] and final answer is min(dp[n-1],dp[n-2]
 
-747. Largest Number At Least Twice of Others
-O(n) find the max and second max
+### 747. Largest Number At Least Twice of Others
+O(n) find the max and second max (again)
 pay attention to:
 integer overflow
 
@@ -1228,13 +1311,13 @@ integer overflow
         return -1;
     }
 ```
-748. Shortest Completing Word
+### 748. Shortest Completing Word
 ignore case
 1. convert case
 2. min length of string
 3. first matching word
 
-754. Reach a Number
+### 754. Reach a Number
 starting from 0 reaching target by 1,2,3,4,..... two directions
 greedy choice: 
 first go just beyond target, 1+2+..+n=n*(n+1)/2
