@@ -1,4 +1,4 @@
-###13. Roman Integer
+### 13. Roman Integer
 
 1. way to initialize hashmap
 
@@ -27,7 +27,7 @@ int romanToInt(string s)
 }
 ```
 
-###189. Rotate Array, rating 4
+### 189. Rotate Array, rating 4
 
 approach 1: double the array and return begin()+k for n elements
 
@@ -60,7 +60,7 @@ most easy to implement
 ```
 traps: need make k<n by k%=n
 
-###190. Reverse Bits
+### 190. Reverse Bits
 
 1. don't misunderstand the question. It ask reverse, not 1 to 0 and 0 to 1
 
@@ -84,10 +84,10 @@ traps: need make k<n by k%=n
 
 be sure to double first so that the bit31 is not doubled.
 
-###191. Number of 1 Bits
+### 191. Number of 1 Bits
 trivial, loop or bitset
 
-###198. House Robber
+### 198. House Robber
 dp[i]=max(dp[i-1],dp[i-2]+a[i])
 boundary: 
 dp[0]=0
@@ -106,7 +106,7 @@ dp[1]=a[1]
 ```
 edge case: n==0 will runtime error
 
-###202. Happy Number
+### 202. Happy Number
 trivial: detect the cycle or 1
 ```cpp
     bool isHappy(int n) {
@@ -123,7 +123,7 @@ trivial: detect the cycle or 1
     }
 ```
 
-###203. Remove Linked List Elements
+### 203. Remove Linked List Elements
 practice removing a node
 add a dummy node to avoid head change
 subtle: 
@@ -148,7 +148,7 @@ else prev=curr, curr=curr->next
     }
 ```
 
-###204. Count Primes
+### 204. Count Primes
 basic math problem: by marking down all its multiples and remaining are all primes. need extra storage to store the flags
 n could be very large, pay attention to overflow problem (even i is int, i*i could overflow)
 ```cpp
@@ -170,7 +170,7 @@ n could be very large, pay attention to overflow problem (even i is int, i*i cou
     }
 ```
 
-###205. Isomorphic Strings
+### 205. Isomorphic Strings
 we just map both to abc order. This is a useful trick to have a common mapping
 ```cpp
     bool isIsomorphic(string s, string t) {
@@ -191,7 +191,7 @@ we just map both to abc order. This is a useful trick to have a common mapping
         return s1==s2;
     }
 ```
-###206 reverse linked list
+### 206 reverse linked list
 reverse can be done recursively or iteratively
 ```cpp
     ListNode* reverseList(ListNode* head) {
@@ -240,7 +240,7 @@ class Solution {
 
 another approach is more straightforward by using a prev node. and reverse the curr->next to prev. final answer is the prev. One pass.
 
-###217. Contains Duplicate
+### 217. Contains Duplicate
 naive: i and j, O(N^2)
 sort: O(nlogn)
 hash: O(n)
@@ -255,7 +255,7 @@ hash: O(n)
         return 0;
     }
 ```
-###219. Contains Duplicate II
+### 219. Contains Duplicate II
 index difference shall be <=k
 ```cpp
     bool containsNearbyDuplicate(vector<int>& nums, int k) {
@@ -269,11 +269,11 @@ index difference shall be <=k
     }
 ```
 
-###225. Implement Stack using Queues
+### 225. Implement Stack using Queues
 only support push to the back and pop to the front
 when we push an element we need pop all front and add back to it
 
-###226. Invert Binary Tree
+### 226. Invert Binary Tree
 invert root's left and right and also its subtree
 ```cpp
     TreeNode* invertTree(TreeNode* root) {
@@ -288,7 +288,7 @@ scalable version: recursive not good for large tree
 using stack for iterative
 using queue for bfs
 
-###231. Power of Two
+### 231. Power of Two
 check if it is power of 2
 power of 2 in binary is 10000000
 x-1 is 0111111
@@ -315,7 +315,7 @@ power of 4:
 - num>0
 - even bit is 1 ( num & num-1==0 and num&0x555555 to make sure it is not 2^n)
 
-###232. Implement Queue using Stacks
+### 232. Implement Queue using Stacks
 when we push to a stack, it is on the top, 
 when we pop we need pop the bottom elements
 
@@ -357,7 +357,7 @@ this needs extra storage: another stack, which means we need two stacks
 ```
 Note: possible bug: only when output is empty we can correctly reverse the stack.
 
-###234. Palindrome Linked List
+### 234. Palindrome Linked List
 the approach: use a fast and slow pointer to get the mid point and then compare the first half and second half
 edge case:
 0 node:
@@ -422,14 +422,14 @@ possible problem:
 2. reverse list shall return prev instead of head (it is null)
 3. reverse list in this is more clear.
 
-###235. Lowest Common Ancestor of a Binary Search Tree
+### 235. Lowest Common Ancestor of a Binary Search Tree
 
 
 
-###344. Reverse String
+### 344. Reverse String
 trivial using two pointer from both end
 
-###345. reverse vowels
+### 345. reverse vowels
 trivial using two pointer
 ```cpp
     string reverseVowels(string s) {
@@ -453,7 +453,7 @@ Note how to write the while loop:
 make exclusive 3 conditions, if else if else to let i++ or j-- or i++,j-- so we do not need to worry about i<j inside the while loop. Often that will introduce bugs.
 define clearly when i change and when j changes
 
-###349. Intersection of Two Arrays
+### 349. Intersection of Two Arrays
 does not allow duplicates
 trivial using hash set. Generally approach create one hash from one, and then create the answer on the fly.
 ```cpp
@@ -468,7 +468,7 @@ trivial using hash set. Generally approach create one hash from one, and then cr
     }
 ```    
 
-###350. Intersection of two arrays II
+### 350. Intersection of two arrays II
 allow duplicates
 using hashmap
 if arrays are sorted, we can use two pointer to go up.
@@ -485,7 +485,7 @@ similarly build the map on one array (+) and decrease the map using other array
         return ans;
     }
 ```    
-###367. Valid Perfect Square
+### 367. Valid Perfect Square
 no sqrt can be used.
 Appr# 1
 n^2=(n-1)^2+2n-1
