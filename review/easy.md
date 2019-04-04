@@ -1342,45 +1342,60 @@ traps:
 2. after loop, i is one greater than the last step
 
 
-762. Prime Number of Set Bits in Binary Representation
+### 762. Prime Number of Set Bits in Binary Representation
 trivial
 
-766. Toeplitz Matrix
+### 766. Toeplitz Matrix
 for a matrix mxn, there are m+n diagonal from top left to bottom right
 think it simple, just compare (i,j) with (i-1,j-1). We don't need to consider index overflow
 
-783. Minimum Distance Between BST Nodes
+### 783. Minimum Distance Between BST Nodes
 trivial using prev and inorder traversal, same as 530
 but I fell into the same trap again.
 prev and ans shall both be global so we need use reference passing
 
-784. Letter Case Permutation
+### 784. Letter Case Permutation
 each char has two options: upper case or lower case 2^n
-we can use recursive approach
+we can use recursive approach but the implementation is not trivial
+```cpp
+    vector<string> letterCasePermutation(string S) {
+        vector<string> ans;
+        backtrack(S,0,ans);
+        return ans;
+    }
+    void backtrack(string s,int i,vector<string>& ans)
+    {
+        if(i==s.size()) {ans.push_back(s);return;}
+        backtrack(s,i+1,ans);
+        if(isalpha(s[i]))
+        {
+            s[i]^=32;
+            backtrack(s,i+1,ans);
+        }
+    }
+```    
 
-806. Number of Lines To Write String
+### 806. Number of Lines To Write String
 trivial, don't forget to add the last line
 
-811. Subdomain Visit Count
+### 811. Subdomain Visit Count
 string input
 getline with delim . and space
 getline does not skip white spaces. that is a problem!
 or use some other read (read the whole string and find . is better)
 do not forget to accumulate the counting.
 
-812. Largest Triangle Area
+### 812. Largest Triangle Area
 brutal force
 area of a polygon using points
 can be approved using cross product
 
-819. Most Common Word
+### 819. Most Common Word
 again process strings
-
-819. Most Common Word
 hashmap,
 trap: the last step don't forget to add the remaining word.
 
-821. Shortest Distance to a Character
+### 821. Shortest Distance to a Character
 mthd1: two passes, first pass to get all positions of the character, and then find offset for each char
 mthd2: from both direction to get the offset and choose the min
 ```cpp
@@ -1401,17 +1416,17 @@ mthd2: from both direction to get the offset and choose the min
 ```
 trick: first we assume the pos is on the far left (must be very far)
 
-824. Goat Latin
+### 824. Goat Latin
 string read
 trivial
 
-830. Positions of Large Groups
+### 830. Positions of Large Groups
 trival, two pointer
 
-832. Flipping an Image
+### 832. Flipping an Image
 flip and then invert, trival
 
-836. Rectangle Overlap
+### 836. Rectangle Overlap
 this requires some intuition
 Given 2 segment (left1, right1), (left2, right2), how can we check whether they overlap?
 If these two intervals overlap, it should exist an number x,
@@ -1426,12 +1441,12 @@ left1 < right2 && left2 < right1
 
 This is an important approach: if 2D is hard try 1D first. some 2d are just two 1d problem
 
-840. Magic Squares In Grid
+### 840. Magic Squares In Grid
 brutal force is trivial
 center is 5, the odd is in the center and even is in the corner
+note it also needs satisify it contains all 1 to 9
 
-
-437. Path Sum III
+### 437. Path Sum III
 this is not easy at all
 1. we can substract the node value until we reach 0, then we add one path
 2. we have 3 problem: include the root,(type 2) include the left, include the right,(two subproblem) recursively 
