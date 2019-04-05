@@ -365,3 +365,174 @@ reverse i to end
 34. Find First and Last Position of Element in Sorted Array
 equal-range or lower_bound/upper_bound
 
+79. Word Search
+1. since we have multiple starting position, we can iterate on each element (if first one does not match it return immediately)
+2. at each position do a dfs
+dfs:
+first if out of boundary or the char in the grid does not match the char in the string, return immediately
+second, it should indicate success when we reach the string end
+remember we need always have success or failure two exit.
+if it matches, first mark it as visited by changing it to '*'
+then search its 4 neigborings. Only one fail then try the other
+after 4 directions dones, restore the last grid.
+
+```cpp
+    bool exist(vector<vector<char>>& board, string word) {
+        int m=board.size();
+        if(m==0) return 0;
+        int n=board[0].size();
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(dfs(board,i,j,word,0)) return 1;
+            }
+        }
+        return 0;
+    }
+    bool dfs(vector<vector<char>>& board,int i0,int j0,string word,int ind)
+    {
+        int m=board.size(),n=board[0].size();
+        if(i0<0 || j0<0 || i0>=m || j0>=n || word[ind]!=board[i0][j0]) return 0;
+        if(ind==word.size()-1) return 1;
+        char c=board[i0][j0];
+        board[i0][j0]='*';
+        bool res=0;
+        res=dfs(board,i0-1,j0,word,ind+1);
+        if(!res) res=dfs(board,i0+1,j0,word,ind+1);
+        if(!res) res=dfs(board,i0,j0-1,word,ind+1);
+        if(!res) res=dfs(board,i0,j0+1,word,ind+1);
+        board[i0][j0]=c;
+        return res;
+    }
+```
+one important thing to note: the backtracking will restore all its nodes when function returns. so next time we can still use it.
+
+212. Word Search II
+In this problem we are searching for a list of words. 
+naive approach: We can just iterate above process on each word. This is correct. but it will TLE in below cases:
+a a a a 
+a a a a 
+a a a a 
+a a a a 
+b c d e 
+f g h i 
+j k l m 
+n o p q 
+r s t u 
+v w x y 
+z z z z 
+aaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaab
+aaaaaaaaaaaaaaac
+aaaaaaaaaaaaaaad
+aaaaaaaaaaaaaaae
+aaaaaaaaaaaaaaaf
+aaaaaaaaaaaaaaag
+aaaaaaaaaaaaaaah
+aaaaaaaaaaaaaaai
+aaaaaaaaaaaaaaaj
+aaaaaaaaaaaaaaak
+aaaaaaaaaaaaaaal
+aaaaaaaaaaaaaaam
+aaaaaaaaaaaaaaan
+aaaaaaaaaaaaaaao
+aaaaaaaaaaaaaaap
+aaaaaaaaaaaaaaaq
+aaaaaaaaaaaaaaar
+aaaaaaaaaaaaaaas
+aaaaaaaaaaaaaaat
+aaaaaaaaaaaaaaau
+aaaaaaaaaaaaaaav
+aaaaaaaaaaaaaaaw
+aaaaaaaaaaaaaaax
+aaaaaaaaaaaaaaay
+aaaaaaaaaaaaaaaz
+aaaaaaaaaaaaaaba
+aaaaaaaaaaaaaabb
+aaaaaaaaaaaaaabc
+aaaaaaaaaaaaaabd
+aaaaaaaaaaaaaabe
+aaaaaaaaaaaaaabf
+aaaaaaaaaaaaaabg
+aaaaaaaaaaaaaabh
+aaaaaaaaaaaaaabi
+aaaaaaaaaaaaaabj
+aaaaaaaaaaaaaabk
+aaaaaaaaaaaaaabl
+aaaaaaaaaaaaaabm
+aaaaaaaaaaaaaabn
+aaaaaaaaaaaaaabo
+aaaaaaaaaaaaaabp
+aaaaaaaaaaaaaabq
+
+more efficient way: is from the string algorithm for batch pattern matching using trie data structure. to deal with a lot of patterns
+trie is a very useful data structure and we shall master it.
+data structure-trie node
+functions to build the trie.
+```cpp
+    struct trie_node
+    {
+        bool is_end;
+        vector<trie_node*> child;
+        trie_node(){is_end=0;child=vector<trie_node*>(26);}
+    };
+
+    class trie
+    {
+        trie_node *root;
+    public:
+        trie_node* get_root() {return root;}
+        trie(vector<string>& words)
+        {
+            root=new trie_node();
+            for(string w: words) add_word(w);
+        }
+        void add_word(string w)
+        {
+            trie_node* p=root;
+            for(char c: w)
+            {
+                int ind=c-'a';
+                if(!p->child[ind]) p->child[ind]=new trie_node();
+                p=p->child[ind];
+            }
+            p->is_end=1;
+        }
+    }; 
+    
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        trie* mytrie=new trie(words);
+        trie_node* root=mytrie->get_root();
+        set<string> ans;
+        int m=board.size(),n=board[0].size();
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++)
+                dfs(board, i, j, root, "", ans);
+        
+        return vector<string>(ans.begin(),ans.end());
+    }
+    
+    void dfs(vector<vector<char>>& board, int x, int y, trie_node* root, string word, set<string>& result){
+        if(x<0||x>=board.size()||y<0||y>=board[0].size() || board[x][y]==' ') return;
+        
+        if(root->child[board[x][y]-'a'] != NULL){
+            word=word+board[x][y];
+            root=root->child[board[x][y]-'a']; 
+            if(root->is_end) result.insert(word);
+            char c=board[x][y];
+            board[x][y]=' ';
+            dfs(board, x+1, y, root, word, result);
+            dfs(board, x-1, y, root, word, result);
+            dfs(board, x, y+1, root, word, result);
+            dfs(board, x, y-1, root, word, result);
+            board[x][y]=c;        
+        }
+    }    
+    
+```    
+
+
+   
+
+
