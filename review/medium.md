@@ -362,6 +362,52 @@ reverse i to end
         reverse(nums.begin()+i,nums.end());
     }
 ```    
+
+33. Search in Rotated Sorted Array
+divide and conquer
+first cut by half, the mid will either fall into a sorted segment or not sorted segment
+sorted: regular binary search
+not sorted: a reduced sub problem
+```cpp
+    int search(vector<int>& nums, int target) {
+        if(nums.size()<1) return -1;
+        if(nums.size()==1) return target==nums[0]?0:-1;
+        return find(nums,0,nums.size()-1,target);
+    }
+    int find(vector<int>& nums,int l,int r,int target)
+    {
+        int mid=(l+r)/2;
+
+        if(nums[mid]==target) return mid;
+        if(l>=r) return -1;
+        if(nums[mid]>=nums[l]) //[l..mid] is ordered, need >= since it may cover itself
+        {
+            if(nums[mid]>target) //it could be inside front or after
+            {
+                if(binary_search(nums.begin()+l,nums.begin()+mid,target))
+                    return int(lower_bound(nums.begin()+l,nums.begin()+mid,target)-nums.begin());
+            }
+            return find(nums,mid+1,r,target);
+        }
+        else //[mid,r] is in order
+        {
+            if(nums[mid]<target) //the number is in the front rotated
+            {
+                if(binary_search(nums.begin()+mid+1,nums.end(),target))
+                    return int(lower_bound(nums.begin()+mid+1,nums.end(),target)-nums.begin());
+            }
+            return find(nums,l,mid-1,target);
+        }
+        return -1;
+    }
+```
+1. edge case: empty or less than 2 elements'
+2. exit condition: found or l>=r failure
+3. first decide mid in which segment
+- mid in first segment, target<=num[mid], then target could be in this segment [l,mid] it could also in the other segment
+- mid in second segment: target>num[mid], then it could be in range [l,r] or the other range
+
+
 34. Find First and Last Position of Element in Sorted Array
 equal-range or lower_bound/upper_bound
 
@@ -531,6 +577,10 @@ functions to build the trie.
     }    
     
 ```    
+backtracking now changes a bit
+1. we go 4 directions (in previous if we succeed the other directions are not going
+2. only visited cell is not visited, all other cells are visited.
+
 
 
    
