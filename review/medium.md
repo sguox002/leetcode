@@ -1,3 +1,5 @@
+medium problems are generally not straighforward and need some thinking and convert to simpler problems.
+
 2. Add Two Numbers
 linked list, iterate on both list the same time
 ```cpp
@@ -235,3 +237,131 @@ binary search
 when we divide into two parts [l,mid], [mid,r] there will always one part is sorted.
 if the target falls in the sorted region, it is regular binary search 
 if the target falls in the non-sorted region, and reducing to a sub problem
+
+19. Remove Nth Node From End of List
+
+1. the node could be the head, add a dummy
+2. two passes, first pass to determine number of nodes, second pass to get the n-N node
+3. one pass: fast pointer and slow pointer, let the fast point advance n nodes first and then slow and fast advance.
+first create a dummy node to connect to the head and then process to the node before the selected node, 
+delete it using slow->next=slow->next->next
+```cpp
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummy=new ListNode(0);
+        dummy->next=head;
+        ListNode *fast=dummy,*slow=dummy;
+        for(int i=1;i<=n+1;i++) fast=fast->next;
+        while(fast) fast=fast->next,slow=slow->next;
+        slow->next=slow->next->next;
+        return dummy->next;
+    }
+```
+One pass generally use two pointers to create a condition which makes things easier.
+writing a concise code also reflects clear thought and is important
+
+22. Generate Parentheses
+n pairs
+dfs+ backtracking
+the only constrains is number of ( >= number of ) at any position.
+add a ( when cntleft<n
+add a ) when cntright+1<=cntleft
+```cpp
+    vector<string> generateParenthesis(int n) {
+        vector<string> vs;
+        string ss;
+        dfs(vs,ss,0,0,n);
+        return vs;
+    }
+    void dfs(vector<string>& vs,string ss,int i,int j,int n)
+    {
+        if(i==n && j==n) {vs.push_back(ss);return;}
+        if(i<n) {dfs(vs,ss+'(',i+1,j,n);}
+        if(i>j) {dfs(vs,ss+')',i,j+1,n);}
+    }
+```    
+backtracking or dfs needs clear thought, otherwise will be very complicated and buggy
+
+24. Swap Nodes in Pairs
+add a dummy
+```cpp
+    ListNode* swapPairs(ListNode* head) {
+        if(!head) return head;
+        ListNode* dummy=new ListNode(0);
+        ListNode *next,*prev,*curr;
+        curr=head;prev=dummy;next=head->next;
+        prev->next=curr;
+        while(next)
+        {
+            curr->next=next->next;
+            prev->next=next;
+            next->next=curr;
+            //advance one pair
+            prev=curr;
+            curr=curr->next;
+            if(curr) next=curr->next;
+            else next=0;
+        }
+        return dummy->next;
+    }
+```    
+
+29. Divide Two Integers
+no * / can be used. Basically we need use +- to implement this.
+the quotient could be very large so we need improve efficiency.
+first double the divisor until close to n and get the quotient
+then subtract the scale * divisor and repeat
+```cpp
+    int divide(int dividend, int divisor) {
+        int s1=dividend>=0?1:-1;
+        int s2=divisor>=0?1:-1;
+        long long d1=(long long)s1*dividend;
+        long long d2=(long long)s2*divisor;
+        if(d2>d1) return 0;
+        long long quotient=0;
+        while(d2<=d1)
+        {
+            long long scale=get_scale(d1,d2);
+            quotient+=scale;
+            d1-=scale*d2;
+        }
+        long long ans=s1*s2*quotient;
+        if(ans>INT_MAX || ans<INT_MIN) ans=INT_MAX;
+        return ans;
+    }
+    long long get_scale(long long d1,long long d2)
+    {
+        long long scale=1;
+        while(d2*2<=d1) {d2*=2;scale*=2;}
+        return scale;
+    }
+```
+to avoid overflow use long long for all intermediate
+
+31. Next Permutation
+this is a important algorithm implemented in std
+from end search the first sorted element
+for example 12354, next permutation is 12435
+the step: 
+find the first sorted position reversely, num[i-1]<num[i]
+swap num[i-1] with the first one num[j]>num[i-1] reversely
+reverse i to end
+```cpp
+    void nextPermutation(vector<int>& nums) {
+        if(nums.size()<2) return;
+        int i=nums.size()-1;
+        while(i)
+        {
+            if(nums[i]>nums[i-1]) break;
+            i--;
+        }
+        if(!i) {reverse(nums.begin(),nums.end());return;}
+        //swap i-1 with the smallest >num[i-1]
+        int j=nums.size()-1;
+        while(nums[j]<=nums[i-1]) j--;
+        swap(nums[i-1],nums[j]);
+        reverse(nums.begin()+i,nums.end());
+    }
+```    
+34. Find First and Last Position of Element in Sorted Array
+equal-range or lower_bound/upper_bound
+
