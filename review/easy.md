@@ -26,6 +26,107 @@ int romanToInt(string s)
    return sum;
 }
 ```
+
+### 38. count and say
+Constraints
+N: [1,30]
+1->11
+2->12
+11->21
+That means we count the number of the digit
+```cpp
+    string countAndSay(int n) {
+        string ans="1";
+        string s="1";
+        for(int i=2;i<=n;i++)
+        {
+            int j=0,k=0;
+            char c=s[0];
+            ans.clear();
+            while(j<s.size())
+            {
+                while(j<s.size() && s[j]==s[k]) j++;
+                    ans+=to_string(j-k)+s[k];
+                k=j;
+            }
+            s=ans;
+        }
+        return ans;
+}
+```
+
+Trap:
+1.	While loop need make sure j<s.size() to avoid overflow
+2.	k-j is the number of same digit. This is a two pointer approach
+3.
+
+### 53. max subarray
+Subarray sum
+Constraints: 
+has negatives
+number of elements >=1
+Accumulate the sum, when the sum is negative we need restart from 0
+Since negative will make the sum smaller
+
+Cases:
+Empty
+One element
+All negative
+```cpp
+    int maxSubArray(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int maxsum=INT_MIN;
+        int maxelem=*max_element(nums.begin(),nums.end());
+        if(maxelem<0) return maxelem;
+        int tsum=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(tsum<0) tsum=0;
+            tsum+=nums[i];
+            maxsum=max(maxsum,tsum);
+        }
+        return maxsum;
+}
+```
+
+Divide and conquer or dp solution
+Don’t need consider those edge cases
+Dp[i]=A[i]+(dp[i-1]>0?dp[i-1]:0)
+
+Complexity O(n)
+
+### 58. length of last word
+```cpp
+    int lengthOfLastWord(string s) {
+      stringstream ss(s)  ;
+        string word;
+        while(ss) ss>>word;
+        return word.length();
+    }
+```	
+Nothing special
+
+### 66. plus one
+Digits in array format
+Corner case:
+999
+[]
+
+    vector<int> plusOne(vector<int>& digits) {
+       int cf=1;
+        int n=digits.size();
+        for(int i=n-1;i>=0;i--)
+        {
+            int t=digits[i]+cf;
+            digits[i]=t%10;
+            cf=t/10;
+        }
+        if(cf) digits.insert(digits.begin(),cf);
+        return digits;
+    }
+```
+Digits.size()-1 for empty may get a large number and runtime error
+
 ### 169. Majority Element
 using hashmap to count is trivial O(n) in space and time
 sort O(nlogn) and O(1)
@@ -52,6 +153,449 @@ The algorithm will not, in general, find the mode of a sequence (an element that
 ```
 Note: when cnt->0 need reset it to 1
 
+67. add binary
+Only note we need reverse add
+Edge case:
+One is empty, n-1 will be invalid
+```cpp
+    string addBinary(string a, string b) {
+        string s;
+        int m=a.size(),n=b.size();
+        int i=m-1,j=n-1;
+        int cf=0;
+        while(i>=0 || j>=0)
+        {
+            int t=(i>=0?a[i]-'0':0)+(j>=0?b[j]-'0':0)+cf;
+            s+=t%2+'0';
+            cf=t/2;
+            i--,j--;
+        }
+        if(cf) s+='0'+cf;
+        reverse(s.begin(),s.end());
+        return s;
+    }
+```
+
+69 sqrt(x)
+Find i*i<=x and (i+1)^2<x
+We can use binary search
+Lower boundary is 0
+Higher boundary is x
+
+Note: binary search generally has following problem:
+1.	cannot exit (infinite loop)
+2.	miss the correct result due to incorrect range given
+In our case:
+L==r: we found the correct answer
+L+1==r, we found the i*i<x the closest one
+
+Also x*x may get overflow
+Test edge case
+9
+Large number
+1: cannot pass
+```cpp
+    int mySqrt(int x) {
+        if(x<2) return x;
+        int l=0,r=x;
+        while(l+1<r)
+        {
+            int mid=(l+r)/2;
+            long long t=(long long)mid*mid;
+            if(t==x) return mid;
+            if(t<x) l=mid;
+            else r=mid;
+        }
+        return l;
+	}
+```
+We can also use / to avoid using long long
+
+### 70. climbing stairs
+Dp
+dp[1]=1
+dp[2]=2 //2 steps, 2 1 step two method
+dp[n]=dp[n-1]+dp[n-2]
+
+edge case: n=0,1,2
+```cpp
+    int climbStairs(int n) {
+        if(!n) return 1;
+        if(n==1) return 1;
+        if(n==2) return 2;
+        vector<int> dp(n);
+        dp[0]=1;
+        dp[1]=2;
+        for(int i=2;i<n;i++)
+            dp[i]=dp[i-1]+dp[i-2];
+        return dp[n-1];
+    }
+```
+
+83. Remove Duplicates from Sorted List
+- The head will not change so we do not need the dummy
+- we can keep the val and found the next different node
+-edge case: empty list, one list….
+```cpp
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(!head) return head;
+       ListNode *curr,*next;
+        curr=head;
+        next=curr->next;
+        int val=curr->val;
+        while(next)
+        {
+            while(next && next->val==val) next=next->next;
+            curr->next=next;
+            curr=next;
+            if(next) next=next->next;
+            if(curr) val=curr->val;
+        }
+        return head;
+   }
+```
+Traps:
+1.	empty list
+2.	check if the pointer is null to avoid runtime error
+
+### 88. Merge Sorted Array
+Constraints:
+Need to merge into nums1 instead create a new array
+
+Approach
+Not so straightforward
+Use two pointers
+When an element in num2 to insert, we append it to nums1, and then swap
+Forward is hard
+But reverse merging is much easier since the space is reserved
+```cpp
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int i=m-1,j=n-1,k=m+n-1;
+        while(i>=0 && j>=0)
+        {
+            if(nums1[i]>nums2[j]) {nums1[k--]=nums1[i--];}
+            else nums1[k--]=nums2[j--];
+        }
+        while(j>=0) nums1[k--]=nums2[j--];
+	}
+```
+
+### 100. Same Tree
+```cpp
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(!p && !q) return 1;
+        if(!p || !q) return 0;
+        return p->val==q->val && isSameTree(p->left,q->left) && isSameTree(p->right,q->right);
+    }
+```
+
+Both empty, return 1
+One is empty, return 0
+We shall have two exit condition
+
+### 101. Symmetric Tree
+Not so straightforward
+Consider a node with left and right child
+It is symmetric: left->val==right->val
+We need have two subtree compare
+Subproblem Left->left vs right->right
+Subproblem Left->right vs right->left
+```cpp
+    bool isSymmetric(TreeNode* root) {
+        if(!root) return 1;
+        return isSymmetric(root->left,root->right);
+    }
+    bool isSymmetric(TreeNode* root1,TreeNode* root2)
+    {
+        if(!root1 && !root2) return 1;
+        if(!root1 || !root2) return 0;
+        return root1->val==root2->val &&
+            isSymmetric(root1->left,root2->right) &&
+            isSymmetric(root1->right,root2->left);
+    }
+```
+
+### 104. Maximum Depth of Binary Tree
+```cpp
+    int maxDepth(TreeNode* root) {
+       //traverse to get the max depth 
+        int maxh=0;
+        inorder(root,1,maxh);
+        return maxh;
+    }
+    void inorder(TreeNode* root,int h,int& maxh)
+    {
+        if(!root) return;
+        
+        inorder(root->left,h+1,maxh);
+        maxh=max(h,maxh);
+        inorder(root->right,h+1,maxh);
+    }
+```
+
+### 107. Binary Tree Level Order Traversal II
+```cpp   
+   vector<vector<int>> levelOrderBottom(TreeNode* root) {
+       vector<vector<int>> ans;
+        preorder(root,0,ans);
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+    void preorder(TreeNode* root,int h,vector<vector<int>>& ans)
+    {
+        if(!root) return;
+        if(ans.size()<h+1) ans.push_back({root->val});
+        else ans[h].push_back(root->val);
+        preorder(root->left,h+1,ans);
+        preorder(root->right,h+1,ans);
+    }
+
+### 108. Convert Sorted Array to Binary Search Tree
+Convert to height balanced tree
+Every time we need use the median for the root
+```cpp
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return helper(nums,0,nums.size()-1);
+    }
+    TreeNode* helper(vector<int>& nums,int l,int r)
+    {
+        if(l>r) return 0;
+        int mid=(l+r)/2;
+        TreeNode* root=new TreeNode(nums[mid]);
+        root->left=helper(nums,l,mid-1);
+        root->right=helper(nums,mid+1,r);
+        return root;
+    }
+```
+
+### 110. Balanced Binary Tree
+Check if the depth difference is <=1
+isBalanced: we need compare left vs right
+each subtree we do similar things
+so we have two problem:
+check the depth of a tree
+check if balanced
+This is typical and not so straightforward
+```cpp
+    bool isBalanced(TreeNode* root) {
+       if(!root)  return 1;
+        return abs(height(root->left)-height(root->right))<=1 &&
+            isBalanced(root->left) && isBalanced(root->right);
+    }
+    int height(TreeNode* root)
+    {
+        if(!root) return 0;
+        return max(height(root->left),height(root->right))+1;
+    }
+```
+
+### 111. Minimum Depth of Binary Tree
+```cpp    
+	int minDepth(TreeNode* root) {
+        if(!root) return 0;
+        int minh=INT_MAX;
+        inorder(root,1,minh);
+        return minh;
+    }
+    
+    void inorder(TreeNode* root,int h,int& minh)
+    {
+        //if(!root) return;
+        if(root->left) inorder(root->left,h+1,minh);
+        if(!root->left && !root->right) minh=min(h,minh);
+        if(root->right) inorder(root->right,h+1,minh);
+    }
+```
+//minh only can be evaluated when it is a leaf node.
+
+### 112. Path Sum
+Root to leaf node
+Check if it has such a path
+Edge case: empty tree return false
+```cpp
+    bool hasPathSum(TreeNode* root, int sum) {
+        if(!root) return 0;
+        sum-=root->val;
+        if(!root->left && !root->right) return sum==0;
+        if(root->left && hasPathSum(root->left,sum)) return 1;
+        if(root->right && hasPathSum(root->right,sum)) return 1;
+        return 0;
+    }
+```
+Using preorder traversal, to visit the node first so all path are visited
+
+### 118. Pascal's Triangle
+Straightforward if we use a vector<vector<int>>
+```cpp
+    vector<vector<int>> generate(int numRows) {
+        if(!numRows) return vector<vector<int>>();
+        vector<vector<int>> ans(numRows);
+        for(int i=0;i<numRows;i++)
+        {
+            ans[i].push_back(1);
+            if(i)
+            {
+                for(int j=1;j<i;j++) ans[i].push_back(ans[i-1][j]+ans[i-1][j-1]);
+                ans[i].push_back(1);
+            }
+        }
+        return ans;
+    }
+```
+
+### 119. Pascal's Triangle II
+Only get the kth row
+Constrains: using only O(k) memory
+Note we only use previous line memory in previous example
+So we can reduce it from 2d to 1d
+Since we need use old value we need iterate in reverse order
+```cpp
+    vector<int> getRow(int rowIndex) {
+        vector<int> A(rowIndex+1, 0);
+        A[0] = 1;
+        for(int i=1; i<rowIndex+1; i++)
+            for(int j=i; j>=1; j--)
+                A[j] += A[j-1];
+        return A;
+    }
+```
+
+
+### 121. Best Time to Buy and Sell Stock
+At most one transaction
+Need get the previous min and current max
+Prices[i]-min(prices[j] j from i-1 to 0
+```cpp
+    int maxProfit(vector<int>& prices) {
+        if(prices.size()<2) return 0;
+       int min_price=prices[0],max_price=INT_MIN; 
+        int ans=0;
+        for(int i=1;i<prices.size();i++)
+        {
+            ans=max(ans,max(prices[i]-min_price,0));
+            min_price=min(min_price,prices[i]);
+       }
+        return ans;
+	}
+```
+
+### 122. Best Time to Buy and Sell Stock II
+Perform any times of transaction
+```cpp    
+	int maxProfit(vector<int>& prices) {
+       //accumulate the gain
+        if(prices.size()<2) return 0;
+        int ans=0;
+        for(int i=1;i<prices.size();i++)
+            ans+=max(prices[i]-prices[i-1],0);
+        return ans;
+    }   
+```
+
+### 125. Valid Palindrome
+Two pointer, ignore non-alpha numeric chars
+```cpp    
+	bool isPalindrome(string s) {
+        if(s.empty()) return 1;
+        int i=0,j=s.size()-1;
+        while(i<j)
+        {
+            while(i<j && !isalnum(s[i])) i++;
+            while(i<j && !isalnum(s[j])) j--;
+            if(tolower(s[i])!=tolower(s[j])) return 0;
+            i++,j--;
+        }
+        return 1;
+    }
+```
+
+Trap: 
+empty string, i<j while skipping the chars
+need to know isalnum function
+
+
+### 136. Single Number
+```cpp    
+	int singleNumber(vector<int>& nums) {
+        int ans=0;
+        for(int n: nums) ans^=n;
+        return ans;
+    }
+```
+
+x^x=0
+
+### 141. Linked List Cycle
+Use a fast and a slow. The two pointer must meet somewhere in the cycle
+```cpp
+    bool hasCycle(ListNode *head) {
+        ListNode *fast=head,*slow=head;
+        //while(fast && slow)
+        while(fast && fast->next)
+        {
+            fast=fast->next->next;
+            slow=slow->next;
+            if(fast==slow) return 1;
+        }
+        return 0;
+    }
+```
+
+Trap:
+Use fast and fast->next not null for the condition. Otherwise will cause runtime error
+
+### 155. Min Stack
+A stack and retrieve min in const time
+Need another data structure
+Push update min
+Pop also need update min
+So we need also a stack to keep the min values, a global can be used or not needed
+```cpp
+    stack<int> st,stmin;
+    int min0;
+    MinStack() {
+        min0=INT_MAX;
+    }
+    
+    void push(int x) {
+        st.push(x);
+        min0=min(min0,x);
+        stmin.push(min0);
+    }
+    
+    void pop() {
+        if(st.size())
+        {
+            st.pop();
+            stmin.pop();
+            if(st.size()) min0=stmin.top();//need update min0
+            else min0=INT_MAX;
+         }
+    }
+    
+    int top() {
+        return st.top();
+    }
+    
+    int getMin() {
+        return stmin.top();
+    }
+```
+
+Traps:
+When stack empty we need initialize the min0
+Min0 shall be update when push and pop
+
+### 160. Intersection of Two Linked Lists
+Assume before the intersection each length is a and b
+Common length is c
+For list 1: a+c
+For list 2: b+c
+When the first finished one, wait for the other to finish, then we know the difference of a and b, then we let the first finished one to walk a-b steps and we reach the intersection
+Wrong: we shall wait for the longer one to walk first for lena-lenb and then walk the same time.
+An even smarter approach: when A reaches the end, switch to B, when B reaches the end, switch to A and then the two will meet together.
+
+	
 ### 229. Majority Element II
 similarly we can use voting algorithm
 since there could be one or two candidates, we need add two counters. Second pass is required to make sure they satisify
@@ -503,6 +1047,147 @@ the node is on left or on right or the root is the ancestor
     }
 ```    
 
+### 237. Delete Node in a Linked List
+Only access to that node
+The approach: replace the value of current node to next node’s value and delete next node (so the node cannot be the tail)
+```cpp
+    void deleteNode(ListNode* node) {
+        node->val=node->next->val;
+        node->next=node->next->next;
+    }
+```
+
+### 242. Valid Anagram
+1. same hashmap
+2. sort
+
+### 257. Binary Tree Paths
+Get all path
+Preorder traverse with backtracking
+```cpp
+    vector<string> binaryTreePaths(TreeNode* root) {
+       vector<string> vs;
+        string s;
+        dfs(root,vs,s);
+        return vs;
+    }
+    void dfs(TreeNode* root,vector<string>& vs,string s)
+    {
+        if(!root) return;
+        if(!root->left && !root->right)
+        {
+            s+=to_string(root->val);
+            vs.push_back(s);
+            return;
+        }
+        s+=to_string(root->val)+"->";
+        dfs(root->left,vs,s);
+        dfs(root->right,vs,s);
+    }
+```
+
+### 258. Add Digits
+Try O(1) run time without any loop/recursion
+The problem, widely known as digit root problem, has a congruence formula:
+https://en.wikipedia.org/wiki/Digital_root#Congruence_formula
+
+This is a math problem
+A number can be expressed as sum(Ai*10^i)
+When add its digits sum(Ai)
+We are looking for the digit 
+Sum(Ai*10^i)-sum(Ai)=sum(Ai*9999…) and this %9==0
+So the two numbers has the same remainder if %9
+### 263. Ugly Number
+Very trial except input=0
+
+### 268. Missing Number
+0 to n, one is missing
+Need O(n) time and O(1) memory
+This is not so straightforward. 
+Approach 1: add 0 to n and minus the array sum
+Approach 2: index xor element
+
+
+### 278. First Bad Version
+```cpp    
+	int firstBadVersion(int n) {
+        int l=1,r=n;
+        while(l<r)
+        {
+            int mid=l+(r-l)/2;
+            if(isBadVersion(mid)) r=mid;
+            else l=mid+1;
+        }
+        return l;
+    }
+```
+	
+Trick:
+1.	mid=l+(r-l)/2 to avoid overflow
+2.	l=mid+1 since we need to find bad version, so good version needs not check again
+
+### 283. Move Zeroes
+In-place to move all zeros to array end
+Trivial using two pointers
+
+### 290. Word Pattern
+From a to b and from b to a must both match!
+We can use a third fact:
+Char map to integer
+String map to integer
+```cpp
+bool wordPattern(string pattern, string str) {
+    map<char, int> p2i;
+    map<string, int> w2i;
+    istringstream in(str);
+    int i = 0, n = pattern.size();
+    for (string word; in >> word; ++i) {
+        if (i == n || p2i[pattern[i]] != w2i[word])
+            return false;
+        p2i[pattern[i]] = w2i[word] = i + 1;
+    }
+    return i == n;
+}
+```
+
+Traps:
+Be sure to deal with diff=0 case
+Be sure to deal with null list
+
+
+### 292. Nim Game
+N stones, you can take 1-3 stones each time, determine if I can win
+Theorem: The first one who got the number that is multiple of 4 (i.e. n % 4 == 0) will lost, otherwise he/she will win.
+Proof:
+1.	the base case: when n = 4, as suggested by the hint from the problem, no matter which number that that first player, the second player would always be able to pick the remaining number.
+2.	For 1* 4 < n < 2 * 4, (n = 5, 6, 7), the first player can reduce the initial number into 4 accordingly, which will leave the death number 4 to the second player. i.e. The numbers 5, 6, 7 are winning numbers for any player who got it first.
+3.	Now to the beginning of the next cycle, n = 8, no matter which number that the first player picks, it would always leave the winning numbers (5, 6, 7) to the second player. Therefore, 8 % 4 == 0, again is a death number.
+4.	Following the second case, for numbers between (2*4 = 8) and (3*4=12), which are 9, 10, 11, are winning numbers for the first player again, because the first player can always reduce the number into the death number 8.
+401. Binary Watch
+This is not simple if not thinking right
+Appr#1: backtracing
+Appr#2: generate all possible values
+```cpp
+    vector<string> readBinaryWatch(int num) {
+        vector<string> ans;
+        for(int h=0;h<12;h++)
+        {
+            for(int m=0;m<60;m++)
+            {
+                int t=h*64+m;
+                bitset<10> bs(t);
+                if(bs.count()==num)
+                {
+                    char str[10];
+                    sprintf(str,"%d:%02d",h,m);
+                    ans.push_back(string(str));
+                }
+            }
+        }
+        return ans;
+    }
+```
+
 ### 344. Reverse String
 trivial using two pointer from both end
 
@@ -668,7 +1353,241 @@ n digits: 9*10^(n-1)*n
 so the first we can know how many digits
 and then we know which number
 finally get the nth digit
+```java
+	public int findNthDigit(int n) {
+		int len = 1;
+		long count = 9;
+		int start = 1;
 
+		while (n > len * count) {
+			n -= len * count;
+			len += 1;
+			count *= 10;
+			start *= 10;
+		}
+
+		start += (n - 1) / len;
+		String s = Integer.toString(start);
+		return Character.getNumericValue(s.charAt((n - 1) % len));
+	}
+```
+	
+
+
+### 404. Sum of Left Leaves
+Straightforward: only we need clear the left leaf node
+```cpp
+    int sumOfLeftLeaves(TreeNode* root) {
+        if(!root) return 0;
+        int ans=0;
+        if(root->left && root->left->left==0 && root->left->right==0) ans+=root->left->val;
+        ans+=sumOfLeftLeaves(root->left);
+        ans+=sumOfLeftLeaves(root->right);
+        return ans;
+    }
+```
+
+### 405. Convert a Number to Hexadecimal
+Key: convert to unsigned
+```cpp    
+	string toHex(int num) {
+        if(!num) return "0";
+       unsigned n=num;
+        string ans;
+        while(n)
+        {
+            int t=n%16;
+            if(t<10) ans+=t+'0';else ans+=t-10+'a';
+            n/=16;
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+```
+
+### 409. Longest Palindrome
+Only one char can be odd, all other has to be even
+Count number of odd char, and subtract n-1
+```cpp    
+	int longestPalindrome(string s) {
+        unordered_map<char,int> mp;
+        for(auto c: s) mp[c]++;
+        int odd=0;
+        int ans=0;
+        for(auto t: mp) 
+        {
+            if(t.second%2) {odd++;}
+            ans+=t.second;
+        }
+        if(odd) ans-=odd-1;
+        return ans;
+    }
+```
+
+### 412. Fizz Buzz
+Trivial, no need to say
+
+### 414. Third Maximum Number
+O(N) complexity is required
+Using set or priority-queue can easily do this. But it is (nlogn)
+Basically we need do the three sort ourselves
+2,2,3,1
+2, m1=2
+2, m1=2
+3, m1=3, m2=2
+1, m1=3,m2=2,m3=1
+```cpp
+    int thirdMax(vector<int>& nums) {
+       long long m1=LLONG_MIN,m2=LLONG_MIN,m3=LLONG_MIN;
+        for(int t: nums)
+        {
+            if(m1<t) {m3=m2;m2=m1;m1=t;}
+            else if(t<m1 && m2<t) {m3=m2;m2=t;}
+            else if(t<m2 && m3<t) m3=t;
+        }
+        return m3==LLONG_MIN?m1:m3;
+    }
+```
+
+Traps: int_min cannot be safe since the input could be int_min
+If else if else if has to specify each case clearly to skip equal cases
+
+### 415. Add Strings
+Trivial
+
+### 427. Construct Quad Tree
+Very hard to understand the problem
+Each node has top-left, top-right, bott-left, bott-right 
+
+### 429. N-ary Tree Level Order Traversal
+Simple bfs
+Edge case: input is null
+
+### 434. Number of Segments in a String
+Use stringstream
+Or count the char+space for the segment
+
+### 437. Path Sum III
+this is not easy at all
+1. we can substract the node value until we reach 0, then we add one path
+2. we have 3 problem: include the root,(type 2) include the left, include the right,(two subproblem) recursively 
+3. for the helper we go down by subtracting the root val (if the root val ==sum then it is also an answer)
+two different recursive problem
+```cpp
+    int pathSum(TreeNode* root, int sum) {
+        if(!root) return 0;
+        return helper(root,sum)+pathSum(root->left,sum)+pathSum(root->right,sum);
+    }
+    int helper(TreeNode* root,int sum)
+    {
+        if(!root) return 0;
+        return (root->val==sum?1:0)+helper(root->left,sum-root->val)+
+            helper(root->right,sum-root->val);
+    }
+```
+
+### 438. Find All Anagrams in a String
+
+Using hashmap for a window size
+```cpp
+    vector<int> findAnagrams(string s, string p) {
+       if(p.size()>s.size()) return {};
+        unordered_map<char,int> mp;
+        for(char c: p) mp[c]++;
+        unordered_map<char,int> mp1;
+        vector<int> ans;
+        for(int i=0;i<=s.size()-p.size();i++)
+        {
+            if(!i)
+            {
+                for(int j=0;j<p.size();j++) mp1[s[j]]++;
+            }
+            else
+            {
+                mp1[s[i-1]]--;if(mp1[s[i-1]]==0) mp1.erase(s[i-1]);
+                mp1[s[i+p.size()-1]]++;
+            }
+            if(mp1==mp) ans.push_back(i);
+        }
+        return ans;
+    }
+```
+
+### 441. arrange coin
+Brutal force
+Traps: integer overflow
+```cpp
+    int arrangeCoins(int n) {
+        //k(k-1)/2 to k(k+1)/2
+        long long tsum=0;
+        int i=1;
+        while(tsum<=n) {tsum+=i;i++;}
+        return i-2;
+    }
+```
+
+Math: k*(k+1)/2<=n
+
+### 443. string compression
+O(1) space
+It is not so easy to implement this
+There are quite a few details to pay attention to.
+1.	reach the end, and not processed
+2.	need replace left char
+```cpp
+    int compress(vector<char>& chars) {
+        if(chars.size()<2) return chars.size();
+        int i=0,j=1;
+        char prev=chars[0];
+        int cnt=1;
+        while(j<=chars.size())
+        {
+            if( j==chars.size() || chars[j]!=prev)
+            {
+                chars[i]=prev;
+                if(cnt>=2) 
+                {
+                    string s=to_string(cnt);
+                    for(int k=0;k<s.size();k++) chars[++i]=s[k];
+                }
+                if(j==chars.size()) return i+1;
+                cnt=0;prev=chars[j];i++;
+            }
+            j++;cnt++;
+        }
+        return i+1;
+    }
+```
+
+### 447. Number of Boomerangs
+(I,j,k) distance (I,j) = distance (I,k)
+Points are on the plane
+There are n*(n-1) distances
+Brutal force:
+For each point calculate its distance to all other points and put in a hashmap and calculate the number of combinations. P(n,2)
+```cpp
+    int numberOfBoomerangs(vector<pair<int, int>>& points) {
+        int n=points.size();
+        int ans=0;
+        for(int i=0;i<n;i++)
+        {
+            unordered_map<int,int> mp;
+            for(int j=0;j<n;j++)
+            {
+                if(i==j) continue;
+                int dx=points[i].first-points[j].first;
+                int dy=points[i].second-points[j].second;
+                int dist2=dx*dx+dy*dy;
+                mp[dist2]++;
+            }
+            for(auto t: mp)
+            {
+                if(t.second>1) ans+=t.second*(t.second-1);
+            }
+        }
+        return ans;
+    }
+```
 
 ### 448. Find All Numbers Disappeared in an Array
 O(1) space and O(n) time
@@ -836,6 +1755,109 @@ To make it easier, k=0 and k>0 two cases
 k=0, we count each number occurance
 k>0, we count value+k (not iterate each will include the value-k)
 need use a hashmap.
+
+### 496. Next Greater Element I
+Using stack and hashmap.
+Stack maintains a decreasing sequence
+Each element is pushed once and popped
+```cpp
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+        unordered_map<int,int> mp;
+        for(int i=0;i<nums1.size();i++) mp[nums1[i]]=i;
+        vector<int> ans(nums1.size(),-1);
+        stack<int> st;
+        for(int i=0;i<nums2.size();i++)
+        {
+            if(st.size() && nums2[i]>st.top()) 
+            {
+                while(st.size() && st.top()<nums2[i])
+                {
+                    int t=st.top();
+                    st.pop();
+                    if(mp.count(t)) ans[mp[t]]=nums2[i];
+                }
+            }
+            st.push(nums2[i]);
+        }
+        return ans;
+    }
+```
+
+### 500. Keyboard Row
+Simple using a hashmap char vs group
+
+### 501. Find Mode in Binary Search Tree
+Simple, traversal and get the max and put into hashmap
+
+### 504. Base 7
+1. keep the sign
+2. pay attention to overflow int
+
+### 506. Relative Ranks
+Please understand the problem correctly
+Given the score, get the rank
+Combine with index and sort
+
+### 507. Perfect Number
+Up to 1e8
+Iterate to up to 1e4 (sqrt)
+Edge case: 1 is false since it cannot use itself
+
+### 509. Fibonacci Number
+Since it need 0 to 30, F[N+1] cannot cover N=0, runtime error
+
+Even a trivial task will easily have a bug
+
+### 520. Detect Capital
+Simple:
+First char is lowercase, all need to be lower case
+First char is uppercase, remaining has to be all lower case or uppercase
+Corner case: empty string
+```cpp
+    bool detectCapitalUse(string word) {
+        if(word.empty()) return 1;
+        if(islower(word[0])) //first char is lowercase
+        {
+            for(auto c: word) if(!islower(c)) return 0;
+            return 1;
+        }
+        else
+        {
+            //all capital
+            int cnt=0;
+            for(int i=1;i<word.size();i++)
+                if(islower(word[i])) cnt++;else cnt--;
+            return abs(cnt)==word.size()-1;
+        }
+    }
+```
+
+### 521. Longest Uncommon Subsequence I
+A and B
+If A==B there is no common 
+If A!=B, the longer one is the answer
+
+### 530. Minimum Absolute Difference in BST
+Inorder will form a increasing sequence, neighboring difference is the answer
+```cpp    
+	int getMinimumDifference(TreeNode* root) {
+        int prev=INT_MIN;
+        int mindiff=INT_MAX;
+        inorder(root,mindiff,prev);
+        return mindiff;
+    }
+    void inorder(TreeNode* root,int& mindiff,int& prev)
+    {
+        if(!root) return;
+        inorder(root->left,mindiff,prev);
+        if(prev!=INT_MIN) 
+            mindiff=min(mindiff,root->val-prev);
+        prev=root->val;
+        inorder(root->right,mindiff,prev);
+    }
+```
+
+When passing prev as a value, the algorithm fails, passing as reference, it passes. Why? Since we need to keep the previous as global
 
 ### 538. Convert BST to Greater Tree
 convert node value to original + all other nodes greater than it.
@@ -1147,6 +2169,197 @@ using a new array is trivial
 in-place can use the high 8 bit
 
 ### 665. Non-decreasing Array
+When A(i+1)<A[i]. ie Ai-1<=Ai>Ai+1, we need to replace one to make Ai-1<=Ai<=Ai+1. Greedy choice we shall make Ai+1 as small as possible
+It could be:
+We need replace Ai+1 to be Ai, (when Ai+1<Ai-1)
+Or Ai too large. Need replace Ai with Ai-1 (when Ai+1>Ai-1)
+
+```cpp
+    bool checkPossibility(vector<int>& nums) {
+        int cnt=0;
+        for(int i=1;i<nums.size();i++)
+        {
+            if(nums[i]<nums[i-1])
+            {
+                cnt++;
+                if(i>=2 && nums[i]<nums[i-2]) nums[i]=nums[i-1];
+                else nums[i-1]=nums[i];
+            }
+        }
+        return cnt<=1;
+    }
+```
+
+If previous larger,
+There is no i-2 element, we have no choice but replace Ai-1 with Ai to make it smaller
+If there are i-2 element, and current value <i-2 element, either we change Ai-1 and Ai both to Ai-2 (which changes 2 element) or change Ai to Ai-1 (one element)
+
+### 669. Trim a Binary Search Tree
+Trims all the elements so remaining in the range [L,R]
+This is not so straightforward
+Root to be trimed:  promote the rightmost node in the left subtree to root or the leftmost node in the right subtree to the root. Postorder is more appropriate for this
+Root not to be trimed: root->left=trim(left), root->right=trim(right)
+However, above analysis does not get the point
+If not trimed
+Root value<L, then root and left subtree shall be removed
+Root value >R, then root and right subtree shall be removed
+```cpp
+    TreeNode* trimBST(TreeNode* root, int L, int R) {
+        if(!root) return 0;
+        if(root->val<L) return trimBST(root->right,L,R);
+        if(root->val>R) return trimBST(root->left,L,R);
+        root->left=trimBST(root->left,L,R);
+        root->right=trimBST(root->right,L,R);
+        return root;
+    }
+```
+
+### 671. Second Minimum Node In a Binary Tree
+Only has zero or two children, node value is the smaller of its children
+Return 2nd min
+Observation: root is smallest, children will be >= root
+All the same value, there is no second min
+Appr#1: traverse and find the smallest one > root->val
+```cpp
+    int findSecondMinimumValue(TreeNode* root) {
+        if(!root) return -1;
+        int ans=INT_MAX;
+        traverse(root,root->val,ans);
+        return ans==INT_MAX?-1:ans;
+    }
+    void traverse(TreeNode* root,int v,int& ans)
+    {
+        if(!root) return;
+        if(root->val>v) ans=min(ans,root->val);
+        traverse(root->left,v,ans);
+        traverse(root->right,v,ans);
+    }
+```
+
+### 674. Longest Continuous Increasing Subsequence
+This is for subarray!.
+Trivial, just count, edge case: empty array
+
+### 680. Valid Palindrome II
+For example abca, reverse we get acba
+We either delete b or c
+```cpp    
+	bool validPalindrome(string s) {
+       string rs=s;
+        reverse(rs.begin(),rs.end());
+        if(s==rs) return 1;
+        int n=s.size();
+        for(int i=0;i<s.size();i++)
+        {
+            if(s[i]!=rs[i]) //either delete the char in s or rs
+            {
+                return s.substr(0,i)+s.substr(i+1)==rs.substr(0,n-i-1)+rs.substr(n-i) ||
+                    rs.substr(0,i)+rs.substr(i+1)==s.substr(0,n-i-1)+s.substr(n-i);
+            }
+        }
+        return 1;
+    }
+```
+	
+Be very careful with those index calculations! Very easy to make mistakes
+
+### 682. Baseball Game
+Stack
+
+### 686. Repeated String Match
+1. A and B shall contain the same char to be able to match
+2. B shall maintain the order of A
+Think in another way
+If A and B is OK to match by repeating
+B take one more char from first, whole for several copies, and one or several chars from the last
+b.length/a.length+2 shall be able to cover the string b
+```cpp
+    int repeatedStringMatch(string a, string b) {
+        string as = a;
+        for (int rep = 1; rep <= b.length() / a.length() + 2; rep++, as += a)
+            if (as.find(b) != string::npos) return rep;
+        return -1;
+    }
+```
+	
+Lesson: if it is not easy from one side, try to conquer it from the other side
+
+### 687. Longest Univalue Path
+Not so straightforward
+If cross root, the value is the root val
+If not cross the root, find it in left subtree and right subtree, choose the longest
+1.	final answer if the node number -1
+2.	two recursive question
+
+The following solution is incorrect, what is wrong?
+```cpp
+    int longestUnivaluePath(TreeNode* root) {
+        if(!root) return 0;
+        //if cross the root
+        int len=1+GetPath(root->left,root->val)+GetPath(root->right,root->val);
+        int len1=max(longestUnivaluePath(root->left),longestUnivaluePath(root->right));
+        return max(len,len1)-1;
+    }
+    int GetPath(TreeNode* root,int v) //find the longest path with given value
+    {
+        if(!root) return 0;
+        if(root->val!=v) return 0;
+        return 1+max(GetPath(root->left,v),GetPath(root->right,v)); //add the root
+}
+```
+
+We are only calculating the starting the root value, but we did not keep the global max. we can add a global to get the global max
+But it is still very inefficient since each node is visited multiple times (LongestUnivaluePath will visit each node once
+GetPath will visit its child node another time.
+
+### 690. Employee Importance
+Don’t confuse with the problem
+The id is arbitrary and is not the index
+Convert the vector to hash table first
+
+### 693. Binary Number with Alternating Bits
+```cpp    
+	bool hasAlternatingBits(int n) {
+        if(!n) return 1;
+        int prev=-1;
+        while(n)
+        {
+            int cur=n%2;
+            n/=2;
+            if(cur==prev) return 0;
+            prev=cur;
+        }
+        return 1;
+    }
+```
+
+### 696. Count Binary Substrings
+For example: 1. same amount of 01, 0 and 1 are grouped together
+00110011
+0: 
+00:
+001: 01
+0011: 0011
+00110: 0110x
+001100: 1100
+0011001: 01,1001x
+00110011: 0011, 00110011x
+
+Ending with 0 or 1 we count the 0 or 1
+```cpp
+    int countBinarySubstrings(string s) {
+    int prevRunLength = 0, curRunLength = 1, res = 0;
+    for (int i=1;i<s.length();i++) {
+        if (s[i] == s[i-1]) curRunLength++;
+        else {
+            prevRunLength = curRunLength;
+            curRunLength = 1;
+        }
+        if (prevRunLength >= curRunLength) res++;
+    }
+    return res;        
+    }
+```
 
 ### 700. Search in a Binary Search Tree
 trivial
@@ -1375,6 +2588,54 @@ we can use recursive approach but the implementation is not trivial
     }
 ```    
 
+### 788. Rotated Digits
+Rotate 180
+0,1,8 no change
+2-5, 6-9
+So a number can only contain 0182569, but cannot only have 018
+Other digits are not allowed
+Straightforward:
+```cpp
+    int rotatedDigits(int N) {
+       //not allowed: 347
+        //has to contain at least: 2569
+        unordered_set<int> notallowed({3,4,7}),musthave({2,5,6,9});
+        int ans=0;
+        for(int i=1;i<=N;i++)
+        {
+            int t=i;
+            int flag=0;
+            while(t)
+            {
+                int d=t%10;
+                t/=10;
+                if(notallowed.count(d)) {flag=0;break;}
+                if(musthave.count(d)) flag=1;
+            }
+            ans+=flag;
+        }
+        return ans;
+    }
+```
+
+### 796. rotated string
+Check same histogram
+Check A+A contains B
+```cpp
+    bool rotateString(string A, string B) {
+        //first the two string has the same histogram
+        unordered_map<char,int> ma,mb;
+        for(char c: A) ma[c]++;
+        for(char c: B) mb[c]++;
+        if(ma!=mb) return 0;
+        return (A+A).find(B)!=string::npos;
+    }
+```
+The first check is unnecessary
+
+### 804. Unique Morse Code Words
+Trivial using hashset
+
 ### 806. Number of Lines To Write String
 trivial, don't forget to add the last line
 
@@ -1446,21 +2707,199 @@ brutal force is trivial
 center is 5, the odd is in the center and even is in the corner
 note it also needs satisify it contains all 1 to 9
 
-### 437. Path Sum III
-this is not easy at all
-1. we can substract the node value until we reach 0, then we add one path
-2. we have 3 problem: include the root,(type 2) include the left, include the right,(two subproblem) recursively 
-3. for the helper we go down by subtracting the root val (if the root val ==sum then it is also an answer)
-two different recursive problem
+### 896. Monotonic Array
+Is_sorted for begin to end or from rbegin to rend
+Or use flag_inc and flag_dec to check (using &&
+
+### 897. Increasing Order Search Tree
+Similar to convert BST to linked list
+A node: left will be null, and its right still goes to right
+Root->left
+       |->right
+Now changes to left->root->right
+We need to get the last node of the left subtree (tail)
+For the left subtree, the tail is the root
+For the right subtree, the tail is the tail (or the parent is better)
+So for empty node, we shall return the tail (parent)
+
+### 905. Sort Array By Parity
+Two pointer from both end
 ```cpp
-    int pathSum(TreeNode* root, int sum) {
-        if(!root) return 0;
-        return helper(root,sum)+pathSum(root->left,sum)+pathSum(root->right,sum);
-    }
-    int helper(TreeNode* root,int sum)
-    {
-        if(!root) return 0;
-        return (root->val==sum?1:0)+helper(root->left,sum-root->val)+
-            helper(root->right,sum-root->val);
+    vector<int> sortArrayByParity(vector<int>& A) {
+        int i=0,j=A.size()-1;
+        while(i<j)
+        {
+            if(A[i]%2==0) i++;
+            else if(A[j]%2) j--;
+            else if(A[i]%2 && A[j]%2==0) 
+                swap(A[i++],A[j--]);
+        }
+        return A;
     }
 ```
+	
+Traps: if..else..else if we do not include else we will get wrong logics
+
+### 908. Smallest Range I
+Add any x [-K K] to get the min diff between min and max
+The min can be changed up to min+K
+The max can be changed down to max-K
+
+### 914. X of a Kind in a Deck of Cards
+Hashmap and gcd
+
+Gcd for multiple numbers: intial it as 0
+
+### 917. Reverse Only Letters
+Two pointers
+
+### 929. Unique Email Addresses
+String find
+
+### 933. Number of Recent Calls
+Using deque to remove old calls
+
+### 937. Reorder Log Files
+Arrange string in log, id pair and sort
+
+### 941. Valid Mountain Array
+Climbing from both end and reach at the same spot
+```cpp
+	bool validMountainArray(vector<int>& A) {
+        int n = A.size(), i = 0, j = n - 1;
+        while (i + 1 < n && A[i] < A[i + 1]) i++;
+        while (j > 0 && A[j - 1] > A[j]) j--;
+        return i > 0 && i == j && j < n - 1;
+    }
+```
+
+### 942. DI String Match
+0 to N
+DI
+I from the min 
+D from the max
+Note: the last one is the min
+```cpp
+    vector<int> diStringMatch(string S) {
+       int min0=0,max0=S.size();
+        vector<int> ans;
+        for(char c: S)
+        {
+            if(c=='D') {ans.push_back(max0--);}
+            else ans.push_back(min0++);
+        }
+        ans.push_back(min0);
+        return ans;
+    }
+```
+
+### 944. Delete Columns to Make Sorted
+Delete columns so that all comlumn are sorted
+Just remove all those columns which is not sorted
+
+### 949. Largest Time for Given Digits
+Shall consider the time together and remove those invalid
+4 number only has 4*3*2*1=24 combinations
+Note: it needs two digit output
+
+Next_permutation return bool
+
+### 953. Verifying an Alien Dictionary
+Convert to normal order
+```cpp    
+	bool isAlienSorted(vector<string>& words, string order) {
+        unordered_map<char,char> mp;
+        char t='a';
+        for(char c: order) mp[c]=t++;
+        for(string& s: words)
+        {
+            for(int i=0;i<s.size();i++) s[i]=mp[s[i]];
+        }
+        return is_sorted(words.begin(),words.end());
+    }
+```
+
+### 922. Sort Array By Parity II
+Half odd, half even
+Odd element on odd index
+Even element on even index
+Two pointer from the same end
+```cpp
+    vector<int> sortArrayByParityII(vector<int>& A) {
+       int i=0,j=1;
+        while(i<A.size() && j<A.size())
+        {
+            if(A[i]%2==0) i+=2;
+            else if(A[j]%2) j+=2;
+            else {swap(A[i],A[j]);i+=2,j+=2;}
+        }
+        return A;
+    }
+```
+
+Note: it shall be i<n && j<n instead of ||
+If one pointer reaches the end, that means all are done.
+
+### 925. Long Pressed Name
+Two pointer to counter the char
+But not so easy
+I for name, j for typed
+When a char in name matched with current char in typed, move forward to next char in name
+J keeps going, if the two char does not match, the only case shall be that the char is repeated char in the typed
+
+### 961. N-Repeated Element in Size 2N Array
+Trivial but there is some O(N) solution
+
+### 965. Univalued Binary Tree
+Can indorder with a helper
+Or 
+```cpp
+    bool isUnivalTree(TreeNode* root) {
+        if(root->left)
+        {
+            if(root->val!=root->left->val || !isUnivalTree(root->left))
+                return 0;
+        }
+        if(root->right)
+        {
+            if(root->val!=root->right->val || !isUnivalTree(root->right))
+                return 0;
+        }
+        return 1;
+    }
+```
+
+### 970. Powerful Integers
+X, y>0
+i>=0
+x^i: range from 1 to n-1
+to look for the solution is not good
+think in a different way, try all combinations and save all those good ones
+also x=1 or y=1 are special case
+```cpp    
+	vector<int> powerfulIntegers(int x, int y, int bound) {
+        unordered_set<int> ms;
+        for(int a=1;a<bound;a*=x)
+        {
+            for(int b=1;a+b<=bound;b*=y)
+            {
+                ms.insert(a+b);
+                if(y==1) break;
+            }
+            if(x==1) break;
+        }
+        return vector<int>(ms.begin(),ms.end());
+    }
+```
+
+### 976. Largest Perimeter Triangle
+Only requirement a+b>c
+Sort and do it reverse direction
+
+### 977. Squares of a Sorted Array
+O(nlogn) is trivial
+Use two pointer to get the max of square
+Cannot do in-place
+
+
+
