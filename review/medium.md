@@ -1,7 +1,8 @@
 medium problems are generally not straighforward and need some thinking and convert to simpler problems.
 
-2. Add Two Numbers
-linked list, iterate on both list the same time
+### 2. Add Two Numbers **
+linked list, iterate on both list the same time (number in reversed order)
+
 ```cpp
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
         int cf=0;
@@ -20,7 +21,7 @@ linked list, iterate on both list the same time
     }
 ```    
 
-3. Longest Substring Without Repeating Characters
+### 3. Longest Substring Without Repeating Characters ***
 there are 1 or 2, ...chars similar problems, all can be done using a two pointer window
 when a char appears already in the set, we advance to the char after it.
 ```cpp
@@ -44,7 +45,7 @@ when a char appears already in the set, we advance to the char after it.
     }
 ```
 
-5. Longest Palindromic Substring
+### 5. Longest Palindromic Substring ***
 at every position check two options i,i and i,i+1
 ```cpp
     string longestPalindrome(string s) {
@@ -66,7 +67,7 @@ at every position check two options i,i and i,i+1
     }
 ```
 
-6. ZigZag Conversion
+### 6. ZigZag Conversion **
 nothing special, if we notice the period is N+N-2
 ```cpp
     string convert(string s, int numRows) {
@@ -93,8 +94,9 @@ nothing special, if we notice the period is N+N-2
     }
 ```
 
-8. String to Integer (atoi)
+### 8. String to Integer (atoi) **
 trivial using stringstream
+
 ```cpp
     int myAtoi(string str) {
         stringstream ss(str);
@@ -107,7 +109,7 @@ trivial using stringstream
 ```
 using long long is necessary to avoid overflow
 
-11. Container With Most Water
+### 11. Container With Most Water ****
 two pointers
 shrink the region, then need increase the height
 two heights are bound by the smaller one.
@@ -128,9 +130,10 @@ two heights are bound by the smaller one.
  ```
  
  
-12. Integer to Roman
+### 12. Integer to Roman ***
 it is not easy to use all the rules, but if we write all thousands, hundreds, tens and ones for all combination, this is really simple
 sometimes, if the cases are not much, direct approach could be much simpler
+
 ```cpp
 string intToRoman(int num) {
     string table[4][10] = {{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"},
@@ -150,8 +153,11 @@ string intToRoman(int num) {
 }
 ````
 
-15. 3Sum
+### 15. 3Sum ***
+for sorted array only
 iterate on one and inside is a two pointer problem. This is classical extension to a 2sum problem.
+O(N^2)
+
 ```cpp
     vector<vector<int>> threeSum(vector<int>& nums) {
         sort(nums.begin(),nums.end());
@@ -181,8 +187,9 @@ iterate on one and inside is a two pointer problem. This is classical extension 
         return ans;
     }
 ``` 
-16. 3Sum Closest
+### 16. 3Sum Closest ****
 similar to 15
+
 ```cpp
     int threeSumClosest(vector<int>& nums, int target) {
         sort(nums.begin(),nums.end());
@@ -209,7 +216,7 @@ similar to 15
     }
  ```
  
- 17. Letter Combinations of a Phone Number
+ ### 17. Letter Combinations of a Phone Number *****
  typical dfs+backtracking problem
  ```cpp
      vector<string> mp={"abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"} ;
@@ -232,19 +239,14 @@ similar to 15
     }
 ```
 
-33. Search in Rotated Sorted Array
-binary search
-when we divide into two parts [l,mid], [mid,r] there will always one part is sorted.
-if the target falls in the sorted region, it is regular binary search 
-if the target falls in the non-sorted region, and reducing to a sub problem
-
-19. Remove Nth Node From End of List
+### 19. Remove Nth Node From End of List *****
 
 1. the node could be the head, add a dummy
 2. two passes, first pass to determine number of nodes, second pass to get the n-N node
 3. one pass: fast pointer and slow pointer, let the fast point advance n nodes first and then slow and fast advance.
 first create a dummy node to connect to the head and then process to the node before the selected node, 
 delete it using slow->next=slow->next->next
+
 ```cpp
     ListNode* removeNthFromEnd(ListNode* head, int n) {
         ListNode* dummy=new ListNode(0);
@@ -256,10 +258,11 @@ delete it using slow->next=slow->next->next
         return dummy->next;
     }
 ```
+
 One pass generally use two pointers to create a condition which makes things easier.
 writing a concise code also reflects clear thought and is important
 
-22. Generate Parentheses
+### 22. Generate Parentheses *****
 n pairs
 dfs+ backtracking
 the only constrains is number of ( >= number of ) at any position.
@@ -281,7 +284,7 @@ add a ) when cntright+1<=cntleft
 ```    
 backtracking or dfs needs clear thought, otherwise will be very complicated and buggy
 
-24. Swap Nodes in Pairs
+### 24. Swap Nodes in Pairs ****
 add a dummy
 ```cpp
     ListNode* swapPairs(ListNode* head) {
@@ -305,11 +308,12 @@ add a dummy
     }
 ```    
 
-29. Divide Two Integers
+### 29. Divide Two Integers ****
 no * / can be used. Basically we need use +- to implement this.
 the quotient could be very large so we need improve efficiency.
 first double the divisor until close to n and get the quotient
 then subtract the scale * divisor and repeat
+
 ```cpp
     int divide(int dividend, int divisor) {
         int s1=dividend>=0?1:-1;
@@ -337,7 +341,7 @@ then subtract the scale * divisor and repeat
 ```
 to avoid overflow use long long for all intermediate
 
-31. Next Permutation
+### 31. Next Permutation ****
 this is a important algorithm implemented in std
 from end search the first sorted element
 for example 12354, next permutation is 12435
@@ -345,6 +349,7 @@ the step:
 find the first sorted position reversely, num[i-1]<num[i]
 swap num[i-1] with the first one num[j]>num[i-1] reversely
 reverse i to end
+
 ```cpp
     void nextPermutation(vector<int>& nums) {
         if(nums.size()<2) return;
@@ -363,11 +368,12 @@ reverse i to end
     }
 ```    
 
-33. Search in Rotated Sorted Array
+### 33. Search in Rotated Sorted Array *****
 divide and conquer
 first cut by half, the mid will either fall into a sorted segment or not sorted segment
 sorted: regular binary search
 not sorted: a reduced sub problem
+
 ```cpp
     int search(vector<int>& nums, int target) {
         if(nums.size()<1) return -1;
@@ -408,10 +414,11 @@ not sorted: a reduced sub problem
 - mid in second segment: target>num[mid], then it could be in range [l,r] or the other range
 
 
-34. Find First and Last Position of Element in Sorted Array
+### 4. Find First and Last Position of Element in Sorted Array **
 equal-range or lower_bound/upper_bound
 
-79. Word Search
+### 79. Word Search *****
+
 1. since we have multiple starting position, we can iterate on each element (if first one does not match it return immediately)
 2. at each position do a dfs
 dfs:
@@ -454,7 +461,8 @@ after 4 directions dones, restore the last grid.
 ```
 one important thing to note: the backtracking will restore all its nodes when function returns. so next time we can still use it.
 
-212. Word Search II
+### 212. Word Search II
+this shall be hard.
 In this problem we are searching for a list of words. 
 naive approach: We can just iterate above process on each word. This is correct. but it will TLE in below cases:
 a a a a 
@@ -516,6 +524,7 @@ more efficient way: is from the string algorithm for batch pattern matching usin
 trie is a very useful data structure and we shall master it.
 data structure-trie node
 functions to build the trie.
+
 ```cpp
     struct trie_node
     {
@@ -582,7 +591,129 @@ backtracking now changes a bit
 2. only visited cell is not visited, all other cells are visited.
 
 
+### 48. Rotate Image
+rotate 90 degrees
+first transpose (row becomes col) and then reverse each row
+transpose need to use swap.
 
-   
+```cpp
+    void rotate(vector<vector<int>>& matrix) {
+        for(int i=0;i<matrix.size();i++)
+            for(int j=i+1;j<matrix[0].size();j++) swap(matrix[i][j],matrix[j][i]);
+        for(int i=0;i<matrix.size();i++)
+            reverse(matrix[i].begin(),matrix[i].end());
+    }
+```
+O(N^2)
 
+### 49. Group Anagrams	
+if we sort each word, using hashmap
+this shall be easy
+```cpp
+   vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string,vector<string>> mp;
+        for(string s: strs)
+        {
+            string t=s;
+            sort(s.begin(),s.end());
+            mp[s].push_back(t);
+        }
+        vector<vector<string>> ans;
+        for(auto t: mp) ans.push_back(t.second);
+        return ans;
+        
+    }
+```
+
+### 50. Pow(x, n)	
+x [-100, 100]
+n: integer.
+
+This first confused me. this is a divide and conquer problem
+1. n<0 convert to (1/x)^-n
+2. x^n convert to (x*x)^n/2
+
+```cpp
+    double myPow(double x, int n) {
+        if(n==0) return 1;
+        long long nn=n;
+        if(n<0) {x=1/x;nn=-nn;}
+        return nn%2?x*myPow(x*x,nn/2):myPow(x*x,nn/2);
+    }
+```
+
+1. int negate will overflow so use long long
+2. when we don't know what to do first try divide and conquer 
+
+### 54. Spiral Matrix
+right, down, left, up, everytime it rotates right 90 degrees
+traverse right and increase rowBegin
+traverse down and decrease colEnd
+traverse left and decrease rowEnd
+traverse up increase colStart
+
+Actually this is not easily concluded.
+```cpp
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        if(matrix.empty()) return vector<int>();
+        int m=matrix.size(),n=matrix[0].size();
+        int row_start=0,row_end=m-1,col_start=0,col_end=n-1;
+        vector<int> ans;
+        while(row_start<=row_end && col_start<=col_end)
+        {
+            //right
+            for(int i=col_start;i<=col_end;i++) ans.push_back(matrix[row_start][i]);
+            row_start++;
+            //down
+            for(int i=row_start;i<=row_end;i++) ans.push_back(matrix[i][col_end]);
+            col_end--;
+            //left
+            if(row_start<=row_end)
+            {
+            for(int i=col_end;i>=col_start;i--) ans.push_back(matrix[row_end][i]);
+            row_end--;
+            }
+            //up
+            if(col_start<=col_end)
+            {
+            for(int i=row_end;i>=row_start;i--) ans.push_back(matrix[i][col_start]);
+            col_start++;
+            }
+        }
+        return ans;
+    }
+```
+Inside the while loop we shall guard each path so we won't add already visited nodes
+quite condition: along that direction we have no steps to go
+similar but better in implementation
+```cpp
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        if (matrix.empty()) return {};
+        int m = matrix.size(), n = matrix[0].size();
+        vector<int> spiral(m * n);
+        int u = 0, d = m - 1, l = 0, r = n - 1, k = 0;
+        while (true) {
+            // up
+            for (int col = l; col <= r; col++) spiral[k++] = matrix[u][col];
+            if (++u > d) break;
+            // right
+            for (int row = u; row <= d; row++) spiral[k++] = matrix[row][r];
+            if (--r < l) break;
+            // down
+            for (int col = r; col >= l; col--) spiral[k++] = matrix[d][col];
+            if (--d < u) break;
+            // left
+            for (int row = d; row >= u; row--) spiral[k++] = matrix[row][l];
+            if (++l > r) break;
+        }
+        return spiral;
+    }
+```
+
+	
+
+	
+
+
+	
 
