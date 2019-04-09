@@ -645,7 +645,7 @@ This first confused me. this is a divide and conquer problem
 1. int negate will overflow so use long long
 2. when we don't know what to do first try divide and conquer 
 
-### 54. Spiral Matrix
+### 54. Spiral Matrix ****
 right, down, left, up, everytime it rotates right 90 degrees
 traverse right and increase rowBegin
 traverse down and decrease colEnd
@@ -711,9 +711,125 @@ similar but better in implementation
 ```
 
 	
+### 55. Jump Game *****
+this is a good dp problem
+subproblem: if it can reach ith node
+It depends on previous node
+first the node has to be reachable dp[j], second, i>j+num[j]
+
+```cpp
+    bool canJump(vector<int>& nums) {
+        int n=nums.size();
+        vector<bool> dp(n);
+        dp[0]=1; //the first node is reachable
+        for(int i=1;i<n;i++)
+        {
+            for(int j=i-1;j>=0;j--)
+                if(dp[j] && j+nums[j]>=i) {dp[i]=1;break;}
+        }
+        return dp[n-1];
+    }
+```
+O(N^2)
+
+O(N) solution: we update the largest distance we can reach using current node.
+
+```cpp
+bool canJump(int A[], int n) {
+    int i = 0;
+    for (int reach = 0; i < n && i <= reach; ++i)
+        reach = max(i + A[i], reach);
+    return i == n;
+}
+```	
+	
+### 56. Merge Intervals
+the first step is always sort for interval problem
+we merge all the intervals if the start<the current ending
+```cpp
+    vector<Interval> merge(vector<Interval>& intervals) {
+        if(intervals.size()==0) return {};
+        sort(intervals.begin(),intervals.end(),cmp);
+        vector<Interval> ans;
+        ans.push_back(intervals[0]);
+        for(auto t: intervals)
+        {
+            if(t.start<=ans.back().end) ans.back().end=max(ans.back().end,t.end);
+            else {ans.push_back(t);}
+        }
+        return ans;
+    }
+```
+to avoid missing the last interval, we either modify the last node in vector or add a new node into vector
+
+### 59. Spiral Matrix II
+similarly
+
+```cpp
+    vector<vector<int>> generateMatrix(int n) {
+        int cnt=1;
+        int l=0,r=n-1,u=0,d=n-1;
+        vector<vector<int>> ans(n,vector<int>(n));
+        while(cnt<=n*n)
+        {
+            for(int i=l;i<=r;i++) ans[u][i]=cnt++;
+            if(++u>d) break;
+            for(int i=u;i<=d;i++) ans[i][r]=cnt++;
+            if(--r<l) break;
+            for(int i=r;i>=l;i--) ans[d][i]=cnt++;
+            if(--d<u) break;
+            for(int i=d;i>=u;i--) ans[i][l]=cnt++;
+            if(++l>r) break;
+        }
+        return ans;
+    }
+```
+note in the while shall be cn<=n*n instead of cnt<n*n since we are using cnt++
+
+### 60. Permutation Sequence	
+constraints: n is [1,9] k<n! for 9: 9!=362880, which is relatively large
+divide and conquer
+the permutation
+1+(234)
+2+(134)
+3+(124)
+4+(123)
+
+k=(n-1)!*c1+(n-1)!*c2+.....+Cn-1
+Once we calculate these coefficient we can easily get the digits
+```cpp
+    string getPermutation(int n, int k) {
+        string ans;
+        vector<int> ms(n);
+        for(int i=0;i<n;i++) ms[i]=i+1;
+        k=k-1;
+        while(ms.size())
+        {
+            int f=factorial(n-1);
+            int d=k/f;
+            ans+=ms[d]+'0';
+            ms.erase(ms.begin()+d);
+            k%=f;n--;
+        }
+        return ans;
+    }
+    int factorial(int n)
+    {
+        int ans=1;
+        for(int i=2;i<=n;i++) ans*=i;
+        return ans;
+    }
+```
+note k shall minus 1 to get the correct order.
+
+### 61. Rotate List	
+rotate by k nodes to right
+1. k shall be mod by the number of nodes
+2. first pass to get the number of nodes, second pass do the rotation
+
+
 
 	
-
 
 	
 
