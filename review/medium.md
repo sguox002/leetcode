@@ -414,7 +414,7 @@ not sorted: a reduced sub problem
 - mid in second segment: target>num[mid], then it could be in range [l,r] or the other range
 
 
-### 4. Find First and Last Position of Element in Sorted Array **
+### 34. Find First and Last Position of Element in Sorted Array **
 equal-range or lower_bound/upper_bound
 
 ### 79. Word Search *****
@@ -461,134 +461,6 @@ after 4 directions dones, restore the last grid.
 ```
 one important thing to note: the backtracking will restore all its nodes when function returns. so next time we can still use it.
 
-### 212. Word Search II
-this shall be hard.
-In this problem we are searching for a list of words. 
-naive approach: We can just iterate above process on each word. This is correct. but it will TLE in below cases:
-a a a a 
-a a a a 
-a a a a 
-a a a a 
-b c d e 
-f g h i 
-j k l m 
-n o p q 
-r s t u 
-v w x y 
-z z z z 
-aaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaab
-aaaaaaaaaaaaaaac
-aaaaaaaaaaaaaaad
-aaaaaaaaaaaaaaae
-aaaaaaaaaaaaaaaf
-aaaaaaaaaaaaaaag
-aaaaaaaaaaaaaaah
-aaaaaaaaaaaaaaai
-aaaaaaaaaaaaaaaj
-aaaaaaaaaaaaaaak
-aaaaaaaaaaaaaaal
-aaaaaaaaaaaaaaam
-aaaaaaaaaaaaaaan
-aaaaaaaaaaaaaaao
-aaaaaaaaaaaaaaap
-aaaaaaaaaaaaaaaq
-aaaaaaaaaaaaaaar
-aaaaaaaaaaaaaaas
-aaaaaaaaaaaaaaat
-aaaaaaaaaaaaaaau
-aaaaaaaaaaaaaaav
-aaaaaaaaaaaaaaaw
-aaaaaaaaaaaaaaax
-aaaaaaaaaaaaaaay
-aaaaaaaaaaaaaaaz
-aaaaaaaaaaaaaaba
-aaaaaaaaaaaaaabb
-aaaaaaaaaaaaaabc
-aaaaaaaaaaaaaabd
-aaaaaaaaaaaaaabe
-aaaaaaaaaaaaaabf
-aaaaaaaaaaaaaabg
-aaaaaaaaaaaaaabh
-aaaaaaaaaaaaaabi
-aaaaaaaaaaaaaabj
-aaaaaaaaaaaaaabk
-aaaaaaaaaaaaaabl
-aaaaaaaaaaaaaabm
-aaaaaaaaaaaaaabn
-aaaaaaaaaaaaaabo
-aaaaaaaaaaaaaabp
-aaaaaaaaaaaaaabq
-
-more efficient way: is from the string algorithm for batch pattern matching using trie data structure. to deal with a lot of patterns
-trie is a very useful data structure and we shall master it.
-data structure-trie node
-functions to build the trie.
-
-```cpp
-    struct trie_node
-    {
-        bool is_end;
-        vector<trie_node*> child;
-        trie_node(){is_end=0;child=vector<trie_node*>(26);}
-    };
-
-    class trie
-    {
-        trie_node *root;
-    public:
-        trie_node* get_root() {return root;}
-        trie(vector<string>& words)
-        {
-            root=new trie_node();
-            for(string w: words) add_word(w);
-        }
-        void add_word(string w)
-        {
-            trie_node* p=root;
-            for(char c: w)
-            {
-                int ind=c-'a';
-                if(!p->child[ind]) p->child[ind]=new trie_node();
-                p=p->child[ind];
-            }
-            p->is_end=1;
-        }
-    }; 
-    
-    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
-        trie* mytrie=new trie(words);
-        trie_node* root=mytrie->get_root();
-        set<string> ans;
-        int m=board.size(),n=board[0].size();
-        for(int i=0;i<m;i++)
-            for(int j=0;j<n;j++)
-                dfs(board, i, j, root, "", ans);
-        
-        return vector<string>(ans.begin(),ans.end());
-    }
-    
-    void dfs(vector<vector<char>>& board, int x, int y, trie_node* root, string word, set<string>& result){
-        if(x<0||x>=board.size()||y<0||y>=board[0].size() || board[x][y]==' ') return;
-        
-        if(root->child[board[x][y]-'a'] != NULL){
-            word=word+board[x][y];
-            root=root->child[board[x][y]-'a']; 
-            if(root->is_end) result.insert(word);
-            char c=board[x][y];
-            board[x][y]=' ';
-            dfs(board, x+1, y, root, word, result);
-            dfs(board, x-1, y, root, word, result);
-            dfs(board, x, y+1, root, word, result);
-            dfs(board, x, y-1, root, word, result);
-            board[x][y]=c;        
-        }
-    }    
-    
-```    
-backtracking now changes a bit
-1. we go 4 directions (in previous if we succeed the other directions are not going
-2. only visited cell is not visited, all other cells are visited.
 
 
 ### 48. Rotate Image
@@ -827,7 +699,115 @@ rotate by k nodes to right
 1. k shall be mod by the number of nodes
 2. first pass to get the number of nodes, second pass do the rotation
 
+add a dummy node to point to the head
+add a tail node to point to the end
 
+first traverse to the end to get the tail
+connect the tail to the head
+then traverse n-k steps to get the new head
+
+```cpp
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(!head) return 0;
+        ListNode* dummy=new ListNode(0);
+        ListNode *tail=head;
+        dummy->next=head;
+        int n=1;
+        while(tail->next) {tail=tail->next;n++;}
+        k%=n;
+        if(k==0) return dummy->next;
+        tail->next=head; //connect to the head
+
+        for(int i=0;i<n-k;i++) tail=tail->next;
+        dummy->next=tail->next;
+        tail->next=0;
+        
+        return dummy->next;
+    }
+```
+need pay attention to some details otherwise it is hard to get it correct
+
+
+### 62. Unique Paths
+dp[i,j]=dp[i-1,j]+dp[i,j-1]
+dp[i,j]: unique paths arriving at i,j
+
+the key is the boundary, we add an extra row and column set either dp[0][1] or dp[1][0]=1
+
+```cpp
+    int uniquePaths(int m, int n) {
+        //dp[i,j]=dp[i-1,j]+dp[i,j-1]
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        dp[0][1]=1;
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++) dp[i][j]=dp[i-1][j]+dp[i][j-1];
+        return dp[m][n];
+    }
+```
+
+### 63. Unique Paths II
+dp
+the path number is a Fib sequence and grows very quickly
+m,n<=100
+
+to avoid integer overflow try using long
+```cpp
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        //dp[i,j]=dp[i-1,j]+dp[i,j-1]
+        int m=obstacleGrid.size();
+        if(m==0) return 0;
+        int n=obstacleGrid[0].size();
+        vector<vector<long>> dp(m+1,vector<long>(n+1));
+        dp[0][1]=1;
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++) 
+                if(!obstacleGrid[i-1][j-1]) dp[i][j]=dp[i-1][j]+dp[i][j-1];
+        return dp[m][n];        
+    }
+```
+
+### 64. Minimum Path Sum
+dp:
+dp[i,j]=min(dp[i-1,j],dp[i,j-1])+grid[i,j]
+```cpp
+    int minPathSum(vector<vector<int>>& grid) {
+       if(grid.size()==0) return 0;
+        int m=grid.size(),n=grid[0].size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++)
+                dp[i][j]=min(dp[i-1][j],dp[i][j-1])+grid[i-1][j-1];
+        return dp[m][n];
+    }
+```
+why above is incorrect? since the boundary is incorrect. 
+if we goes the 0th row, dp is the prefix sum, but using above it is the element itself.
+except we set the outer layer to be a very large value (which is a common sense for min)
+we initialize it to be int-max but we need reset dp[0][1] to be 0.
+```cpp
+    int minPathSum(vector<vector<int>>& grid) {
+       if(grid.size()==0) return 0;
+        int m=grid.size(),n=grid[0].size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1,INT_MAX));
+        dp[0][1]=0;
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++)
+                dp[i][j]=min(dp[i-1][j],dp[i][j-1])+grid[i-1][j-1];
+        return dp[m][n];
+    }
+```	
+
+	
+
+	
+	
+
+
+
+
+
+
+	
 
 	
 
