@@ -1,8 +1,34 @@
+### 1. two sum
+trivial using hashmap
+O(n)
+
+### 7. Reverse integer
+using stack is trivial
+can do it without data structure.
+a regular trick
+```cpp
+    int reverse(int x) {
+        if(!x) return 0;
+        long long ans=0;
+        while(x)
+        {
+            ans*=10;
+            int d=x%10;
+            ans+=d;
+            x/=10;
+        }
+        if(ans>INT_MAX || ans<INT_MIN) return 0;
+        return ans;
+    }
+```
+O(logn)
+
+### 9. Palindrome Number
+two pointer, trivial
+
+
 ### 13. Roman Integer
 
-1. way to initialize hashmap
-
-2. reverse direction iteration: if current number < previous number then subtract it
 we can also from other direction
 ```cpp
 int romanToInt(string s) 
@@ -26,6 +52,65 @@ int romanToInt(string s)
    return sum;
 }
 ```
+1. way to initialize hashmap in c++
+
+2. reverse direction iteration: if current number < previous number then subtract it
+
+### 14. Longest Common Prefix
+trivial, 
+
+### 20. Valid Parentheses
+using stack and check if stack is empty when done
+
+### 21. Merge Two Sorted Lists
+using two pointer, regular practice
+```cpp
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode* dummy=new ListNode(0);
+        ListNode* head=dummy;
+        while(l1 && l2)
+        {
+            if(l1->val<l2->val)
+            {
+                head->next=l1;
+                l1=l1->next;
+            }
+            else
+            {
+                head->next=l2;
+                l2=l2->next;
+            }
+            head=head->next;
+        }
+        if(l1) head->next=l1;
+        else head->next=l2;
+        return dummy->next;
+    }
+```
+
+### 26. Remove Duplicates from Sorted Array	
+in place algorithm using two pointer
+
+### 27. Remove Element
+in place, two pointer
+```cpp
+    int removeElement(vector<int>& nums, int val) {
+        int i=0,j=0;
+        while(j<nums.size())
+        {
+            if(nums[j]!=val) nums[i++]=nums[j];
+            j++;
+        }
+        return i;
+    }
+```
+
+### 28. Implement strStr()	
+brutal force or KMP
+
+### 35. Search Insert Position
+sorted array using lower_bound >= the target O(logn)
+
 
 ### 38. count and say
 Constraints
@@ -46,7 +131,7 @@ That means we count the number of the digit
             while(j<s.size())
             {
                 while(j<s.size() && s[j]==s[k]) j++;
-                    ans+=to_string(j-k)+s[k];
+                ans+=to_string(j-k)+s[k];
                 k=j;
             }
             s=ans;
@@ -54,11 +139,22 @@ That means we count the number of the digit
         return ans;
 }
 ```
+while in a while loop generally introduce bugs, we can rewrite:
 
+```cpp
+            int j=0,k=0;
+            while(k<s.size())
+            {
+                if(s[j]!=s[k]) {t+=to_string(k-j)+s[j];j=k;}
+                k++;
+            }
+            if(j<k) t+=to_string(k-j)+s[j];
+```
+			
 Trap:
 1.	While loop need make sure j<s.size() to avoid overflow
 2.	k-j is the number of same digit. This is a two pointer approach
-3.
+3.  don't forget the last section.
 
 ### 53. max subarray
 Subarray sum
@@ -127,33 +223,7 @@ Corner case:
 ```
 Digits.size()-1 for empty may get a large number and runtime error
 
-### 169. Majority Element
-using hashmap to count is trivial O(n) in space and time
-sort O(nlogn) and O(1)
-there is a voting algorithm which is used for finding the majority element. O(n) and O(1)
-wiki:
-In its simplest form, the algorithm finds a majority element, if there is one: that is, an element that occurs repeatedly for more than half of the elements of the input. However, if there is no majority, the algorithm will not detect that fact, and will still output one of the elements. A version of the algorithm that makes a second pass through the data can be used to verify that the element found in the first pass really is a majority.
-
-The algorithm will not, in general, find the mode of a sequence (an element that has the most repetitions) unless the number of repetitions is large enough for the mode to be a majority. It is not possible for a streaming algorithm to find the most frequent element in less than linear space, when the number of repetitions can be smal
-
-```cpp
-    int majorityElement(vector<int>& nums) {
-        int major=nums[0],cnt=0;
-        for(int n: nums)
-        {
-            if(n==major) cnt++;
-            else 
-            {
-                cnt--;
-                if(cnt<=0) {major=n;cnt=1;}
-            }
-        }
-        return major;
-    }
-```
-Note: when cnt->0 need reset it to 1
-
-67. add binary
+### 67. add binary
 Only note we need reverse add
 Edge case:
 One is empty, n-1 will be invalid
@@ -176,7 +246,7 @@ One is empty, n-1 will be invalid
     }
 ```
 
-69 sqrt(x)
+### 69 sqrt(x)
 Find i*i<=x and (i+1)^2<x
 We can use binary search
 Lower boundary is 0
@@ -210,6 +280,12 @@ Large number
 	}
 ```
 We can also use / to avoid using long long
+why we use l=mid and r=mid?
+when mid*mid<x, mid still could be answer, so we cannot skip
+mid*mid>x, mid will not be an answer so r=mid-1 (but if we use this, will get wrong results since it will miss correct result)
+
+when we let l=mid, we will fall into infinite loop when r=l+1, mid=(2l+1)/2=l and this keeps forever.
+so while(l+1<r) to keep the mid changes
 
 ### 70. climbing stairs
 Dp
@@ -595,7 +671,46 @@ When the first finished one, wait for the other to finish, then we know the diff
 Wrong: we shall wait for the longer one to walk first for lena-lenb and then walk the same time.
 An even smarter approach: when A reaches the end, switch to B, when B reaches the end, switch to A and then the two will meet together.
 
+### 167. Two Sum II - Input array is sorted
+two pointer O(N)
+
+### 168. Excel Sheet Column Title
+starting index is 1
+```cpp
+    string convertToTitle(int n) {
+        string s;
+        while(n) {s+=(n-1)%26+'A';n=(n-1)/26;}
+        reverse(s.begin(),s.end());
+        return s;
+    }
+```
 	
+### 169. Majority Element
+using hashmap to count is trivial O(n) in space and time
+sort O(nlogn) and O(1)
+there is a voting algorithm which is used for finding the majority element. O(n) and O(1)
+wiki:
+In its simplest form, the algorithm finds a majority element, if there is one: that is, an element that occurs repeatedly for more than half of the elements of the input. However, if there is no majority, the algorithm will not detect that fact, and will still output one of the elements. A version of the algorithm that makes a second pass through the data can be used to verify that the element found in the first pass really is a majority.
+
+The algorithm will not, in general, find the mode of a sequence (an element that has the most repetitions) unless the number of repetitions is large enough for the mode to be a majority. It is not possible for a streaming algorithm to find the most frequent element in less than linear space, when the number of repetitions can be smal
+
+```cpp
+    int majorityElement(vector<int>& nums) {
+        int major=nums[0],cnt=0;
+        for(int n: nums)
+        {
+            if(n==major) cnt++;
+            else 
+            {
+                cnt--;
+                if(cnt<=0) {major=n;cnt=1;}
+            }
+        }
+        return major;
+    }
+```
+Note: when cnt->0 need reset it to 1
+
 ### 229. Majority Element II
 similarly we can use voting algorithm
 since there could be one or two candidates, we need add two counters. Second pass is required to make sure they satisify
@@ -633,7 +748,20 @@ vector<int> majorityElement(vector<int>& nums) {
 }
 ```
 
-
+### 171. Excel Sheet Column Number
+base 26
+```cpp
+    int titleToNumber(string s) {
+        int res=0;
+        for(int i=0;i<s.size();i++)
+        {
+            res*=26;
+            res+=s[i]-'A'+1;
+        }
+        return res;
+    }
+```
+	
 ### 189. Rotate Array, rating 4
 
 approach 1: double the array and return begin()+k for n elements
@@ -1015,14 +1143,7 @@ note: if odd number nodes, fast will be on the last node, for even it is null
         }
         return prev;
     }
-    void print(ListNode* head)
-    {
-        while(head)
-        {
-            cout<<head->val<<"->";
-            head=head->next;
-        }
-    }
+
 ```
 possible problem:
 1. empty list is considered to be true
@@ -1097,6 +1218,7 @@ When add its digits sum(Ai)
 We are looking for the digit 
 Sum(Ai*10^i)-sum(Ai)=sum(Ai*9999…) and this %9==0
 So the two numbers has the same remainder if %9
+
 ### 263. Ugly Number
 Very trial except input=0
 
@@ -1106,7 +1228,14 @@ Need O(n) time and O(1) memory
 This is not so straightforward. 
 Approach 1: add 0 to n and minus the array sum
 Approach 2: index xor element
-
+```cpp
+    int missingNumber(vector<int>& nums) {
+        //use 0-n to xor the nums
+        int result=0;
+        for(int i=0;i<nums.size();i++) result^=nums[i]^(i+1);
+        return result;
+    }
+```
 
 ### 278. First Bad Version
 ```cpp    
@@ -1163,7 +1292,8 @@ Proof:
 2.	For 1* 4 < n < 2 * 4, (n = 5, 6, 7), the first player can reduce the initial number into 4 accordingly, which will leave the death number 4 to the second player. i.e. The numbers 5, 6, 7 are winning numbers for any player who got it first.
 3.	Now to the beginning of the next cycle, n = 8, no matter which number that the first player picks, it would always leave the winning numbers (5, 6, 7) to the second player. Therefore, 8 % 4 == 0, again is a death number.
 4.	Following the second case, for numbers between (2*4 = 8) and (3*4=12), which are 9, 10, 11, are winning numbers for the first player again, because the first player can always reduce the number into the death number 8.
-401. Binary Watch
+
+### 401. Binary Watch
 This is not simple if not thinking right
 Appr#1: backtracing
 Appr#2: generate all possible values
@@ -1284,7 +1414,7 @@ carrier flag: a&b
 int getSum(int a, int b) {
     return b==0? a:getSum(a^b, (a&b)<<1); //be careful about the terminating condition;
 }
-
+this will have overflow problem.
 or
 
     int getSum(int a, int b) {
@@ -1296,10 +1426,9 @@ or
             a = a ^ b;
             b = (unsigned)carry << 1;
         }
-
         return a;
     }
-    
+  
 ```
 Be careful bit operations are on unsigned. running time error will occur for negative number
 
@@ -1857,7 +1986,8 @@ Inorder will form a increasing sequence, neighboring difference is the answer
     }
 ```
 
-When passing prev as a value, the algorithm fails, passing as reference, it passes. Why? Since we need to keep the previous as global
+When passing prev as a value, the algorithm fails, passing as reference, it passes. Why? 
+Since we need to keep the previous as global
 
 ### 538. Convert BST to Greater Tree
 convert node value to original + all other nodes greater than it.
@@ -2087,6 +2217,105 @@ or a bit faster which need not return vector
 ### 590. N-ary Tree Postorder Traversal
 same
 
+### 594. Longest Harmonious Subsequence
+max-min=1
+```cpp
+    int findLHS(vector<int>& nums) {
+       unordered_map<int,int> mp;
+        for(int n: nums) mp[n]++;
+        int ans=0;
+        for(auto t: mp)
+        {
+            if(mp.count(t.first-1)) ans=max(ans,t.second+mp[t.first-1]);
+            if(mp.count(t.first+1)) ans=max(ans,t.second+mp[t.first+1]);
+        }
+        return ans;
+    }
+```
+
+### 598. Range Addition II	
+trivial
+```cpp
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        //get the minx miny
+        int mx=m,my=n;
+        for(auto t: ops)
+        {mx=min(t[0],mx),my=min(t[1],my);}
+        return mx*my;
+    }
+```
+
+### 599. Minimum Index Sum of Two Lists	
+two hashmap
+```cpp
+    vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
+        unordered_map<string,int> mp1,mp2,mp3;
+        for(int i=0;i<list1.size();i++) mp1[list1[i]]=i;
+        vector<string> ans;
+        int minlen=INT_MAX;
+        for(int i=0;i<list2.size();i++) {
+            mp2[list2[i]]=i;
+            if(mp1.count(list2[i])) 
+            {
+                minlen=min(minlen,mp1[list2[i]]+i);
+                mp3[list2[i]]=mp1[list2[i]]+i;
+            }
+        }
+
+        for(auto t: mp3)
+            if(t.second==minlen) ans.push_back(t.first);
+        return ans;
+    }
+```
+
+### 605. Can Place Flowers	
+```cpp
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        //assuming both ends are empty
+        int m=flowerbed.size();
+        flowerbed.push_back(0);
+        flowerbed.insert(flowerbed.begin(),0);
+        //a zero region of lenght l can support (l-1)/2 flowers
+        int cnt=0;
+        for(int i=0;i<flowerbed.size();i++)
+        {
+            if(flowerbed[i]==0) cnt++;
+            else {n-=(cnt-1)/2;cnt=0;}
+            if(n<=0) break;
+        }
+        if(cnt) n-=(cnt-1)/2;
+        return n<=0;
+        
+    }
+```
+don't forget the last one
+
+### 606. Construct String from Binary Tree	
+```cpp
+    string tree2str(TreeNode* t) {
+        string ans;
+        if(!t) return ans;
+        ans+=to_string(t->val);
+        if(t->right || t->left) ans+="("+tree2str(t->left)+")"; //when 
+        if(t->right) ans+="("+tree2str(t->right)+")";
+        return ans;
+    }
+```
+### 617. Merge Two Binary Trees	
+straightforward
+```cpp
+    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
+        if(!t1 && !t2) return 0;
+        if(!t1) return t2;
+        if(!t2) return t1;
+        t1->val+=t2->val;
+        t1->left=mergeTrees(t1->left,t2->left);
+        t1->right=mergeTrees(t1->right,t2->right);
+        return t1;
+    }
+```
+
+	
 
 ### 628. Maximum Product of Three Numbers
 sort is trivial
@@ -2120,6 +2349,28 @@ public int maximumProduct(int[] nums) {
 
 ### 633. Sum of Square Numbers
 trivial
+
+### 637. Average of Levels in Binary Tree
+any order traversal
+```cpp
+    vector<double> averageOfLevels(TreeNode* root) {
+        unordered_map<int,vector<long long>> mp; //level vs sum,cnt pair
+        preorder(root,0,mp);
+        vector<double> ans(mp.size());
+        for(auto t: mp)
+            ans[t.first]=double(t.second[0])/t.second[1];
+        return ans;
+    }
+    void preorder(TreeNode* root,int h,unordered_map<int,vector<long long>>& mp)
+    {
+        if(!root) return;
+        if(mp.count(h)) mp[h][0]+=root->val,mp[h][1]++;
+        else mp[h]={root->val,1};
+        preorder(root->left,h+1,mp);
+        preorder(root->right,h+1,mp);
+    }
+```
+
 
 ### 643. Maximum Average Subarray I
 trivial but there is a trap
@@ -2360,6 +2611,8 @@ Ending with 0 or 1 we count the 0 or 1
     return res;        
     }
 ```
+### 697 degree of an array
+easy
 
 ### 700. Search in a Binary Search Tree
 trivial
@@ -2394,6 +2647,10 @@ hashset uses a large prime number modulus.
 a vector of linked list (could use other inner data structure for efficiency)
 hash function: up to 10^4 elements, value range 10^6, collision 100
 to be done later
+
+### 706 design hashmap
+
+### 707 design linkedlist
 
 ### 709. To Lower Case
 trivial
@@ -2562,6 +2819,8 @@ trivial
 for a matrix mxn, there are m+n diagonal from top left to bottom right
 think it simple, just compare (i,j) with (i-1,j-1). We don't need to consider index overflow
 
+### 771 jewels and stones
+
 ### 783. Minimum Distance Between BST Nodes
 trivial using prev and inorder traversal, same as 530
 but I fell into the same trap again.
@@ -2707,6 +2966,21 @@ brutal force is trivial
 center is 5, the odd is in the center and even is in the corner
 note it also needs satisify it contains all 1 to 9
 
+### 844. Backspace string compare
+### 849. Maximize distance to closest person
+### 852. Peak index in a mountain array
+### 859. Buddy string
+### 860. Lemon Change
+### 867. Transpose matrix
+### 868. Binary gap
+### 872. leaf similar trees
+### 874. walking robot simulation
+### 876. Middle of the linked list
+### 883. projection area of 3d shape
+### 884. uncommon words from two sentences
+### 888. fair candy swap
+### 892. surface area of 3d shape
+### 893. groups of special equivalent strings
 ### 896. Monotonic Array
 Is_sorted for begin to end or from rbegin to rend
 Or use flag_inc and flag_dec to check (using &&
@@ -2901,5 +3175,19 @@ O(nlogn) is trivial
 Use two pointer to get the max of square
 Cannot do in-place
 
+985
+989
+993
+994
+997
+999
+1002
+1005
+1009
+1010
+1013
+1018
+1021
+1022
 
 
