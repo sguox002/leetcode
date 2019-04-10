@@ -417,50 +417,6 @@ not sorted: a reduced sub problem
 ### 34. Find First and Last Position of Element in Sorted Array **
 equal-range or lower_bound/upper_bound
 
-### 79. Word Search *****
-
-1. since we have multiple starting position, we can iterate on each element (if first one does not match it return immediately)
-2. at each position do a dfs
-dfs:
-first if out of boundary or the char in the grid does not match the char in the string, return immediately
-second, it should indicate success when we reach the string end
-remember we need always have success or failure two exit.
-if it matches, first mark it as visited by changing it to '*'
-then search its 4 neigborings. Only one fail then try the other
-after 4 directions dones, restore the last grid.
-
-```cpp
-    bool exist(vector<vector<char>>& board, string word) {
-        int m=board.size();
-        if(m==0) return 0;
-        int n=board[0].size();
-        for(int i=0;i<m;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                if(dfs(board,i,j,word,0)) return 1;
-            }
-        }
-        return 0;
-    }
-    bool dfs(vector<vector<char>>& board,int i0,int j0,string word,int ind)
-    {
-        int m=board.size(),n=board[0].size();
-        if(i0<0 || j0<0 || i0>=m || j0>=n || word[ind]!=board[i0][j0]) return 0;
-        if(ind==word.size()-1) return 1;
-        char c=board[i0][j0];
-        board[i0][j0]='*';
-        bool res=0;
-        res=dfs(board,i0-1,j0,word,ind+1);
-        if(!res) res=dfs(board,i0+1,j0,word,ind+1);
-        if(!res) res=dfs(board,i0,j0-1,word,ind+1);
-        if(!res) res=dfs(board,i0,j0+1,word,ind+1);
-        board[i0][j0]=c;
-        return res;
-    }
-```
-one important thing to note: the backtracking will restore all its nodes when function returns. so next time we can still use it.
-
 
 
 ### 48. Rotate Image
@@ -797,7 +753,314 @@ we initialize it to be int-max but we need reset dp[0][1] to be 0.
     }
 ```	
 
+### 71. Simplify Path
+constraints:
+1. must start with /
+2. only need one single / any time
+3. . and .. need to be removed
+stack to save each level's directory name, but do not store the /
+storing the slash makes the things complicated.
+
+using stringstream to read with the / as the delim (so the / acts similarly as space)
+```cpp
+    string simplifyPath(string path) {
+        stack<string> st;
+        stringstream ss(path);
+        string w;
+        while(getline(ss,w,'/'))
+        {
+            if(w.empty()) continue;
+            else if(w==".") continue;
+            else if(w=="..") {if(st.size()) st.pop();}
+            else st.push(w);
+        }
+        string ans;
+        while(st.size()) {ans="/"+st.top()+ans;st.pop();}
+        return ans.empty()?"/":ans;
+    }
+```
+
+note .. if stack empty, ignore, otherwise pop, the two condition cannot be combined.
+
 	
+### 73. Set Matrix Zeroes
+if an element is 0,set the row and col to be zero
+using a hashmap to record 0's col and row
+straightforward
+
+```cpp
+    void setZeroes(vector<vector<int>>& matrix) {
+        unordered_set<int> row,col;
+        for(int i=0;i<matrix.size();i++)
+            for(int j=0;j<matrix[0].size();j++)
+                if(!matrix[i][j]) row.insert(i),col.insert(j);
+        for(int r: row) 
+            for(int i=0;i<matrix[0].size();i++) matrix[r][i]=0;
+        for(int c: col)
+            for(int i=0;i<matrix.size();i++) matrix[i][c]=0;
+    }
+```
+
+Can we use O(1) space?
+generally this requires us to do it row by row or col by col
+for example, we use has0 to indicate current row has 0
+we iterate from left to right, check previous row if previous row has zero, we zero the element on the same col.
+at the end we zeros the previous row
+
+if current element is 0, we need set all previous element at the column to be 0
+
+```cpp
+    void setZeroes(vector<vector<int>>& matrix) {
+        int curr=0,prev=0;
+        int m=matrix.size(),n=matrix[0].size();
+        for(int i=0;i<m;i++)
+        {
+            curr=0;
+            for(int j=0;j<n;j++)
+            {
+                if(!matrix[i][j]) 
+                {
+                    curr=1;
+                    for(int k=i-1;k>=0;k--) matrix[k][j]=0;
+                }
+                if(i && !matrix[i-1][j]) matrix[i][j]=0;
+            }
+            if(prev) for(int j=0;j<n;j++) matrix[i-1][j]=0;
+            prev=curr;
+        }
+        if(prev) for(int j=0;j<n;j++) matrix[m-1][j]=0;
+    }
+```	
+
+### 74. Search a 2D Matrix
+row: sorted
+first number is row is greater than the last number in previous row.
+that means the matrix is sorted in 1d array (just like a c 2d array)
+[
+  [1,   3,  5,  7],
+  [10, 11, 16, 20],
+  [23, 30, 34, 50]
+]
+
+```cpp
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        //binary search
+        if(matrix.size()==0) return 0;
+        int m=matrix.size(),n=matrix[0].size();
+        int l=0,r=m*n-1;
+        while(l<=r)
+        {
+            int mid=l+(r-l)/2;
+            int t=matrix[mid/n][mid%n];
+            if(t==target) return 1;
+            if(t<target) l=mid+1;
+            else r=mid-1;
+        }
+        return 0;
+    }
+```
+
+note while(l<=r) we need check l==r case
+
+### 75. Sort Colors
+in-place order red, white and blue
+two pass: count r/w/b and then output the array
+
+one pass algorithm
+using two pointer:
+zero: for the 0's element in the beginning
+two: for the 2's element in the back
+
+all 1s are in the middle
+
+not so easy to write this:
+```cpp
+    void sortColors(vector<int>& nums) {
+        int i=0,j=nums.size()-1;
+        for(int k=0;k<=j;k++)
+        {
+            while(nums[k]==2 && k<j) swap(nums[k],nums[j--]);
+            while(nums[k]==0 && k>i) swap(nums[k],nums[i++]);
+        }
+    }
+```
+The inner side while loop is necessary since we need keep swapping the element at k to its proper position
+only advance to next char when previous elements are all set.
+
+### 77. Combinations
+Given two integers n and k, return all possible combinations of k numbers out of 1 ... n.
+note it needs combination, meaning that permutation does not matter
+so the number of combination is C(n,k)
+fix 1: choose k-1 from 2 to n
+fix 2: choose k-2 from 3 to n
+...
+backtracking
+iterate i from 1 to n
+ iterate j=i+1 to n
+   push the element
+   solve k-1, i+1 problem
+   pop the element
+
+exit condition: k=0, we reach an answer, j>n we are out
+```cpp
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> ans;
+        dfs(n,k,1,{},ans);
+        return ans;
+    }
+    void dfs(int n,int k,int start,vector<int> t,vector<vector<int>>& ans)
+    {
+        if(k==0) {ans.push_back(t);return;}
+        if(start>n) return; //need to be > since start from 1
+        for(int i=start;i<=n;i++)
+        {
+            t.push_back(i);
+            dfs(n,k-1,i+1,t,ans);
+            t.pop_back();
+        }
+    }
+```	
+question: why the ranking is so low?
+passing vector as value increase a lot of time. try as reference.
+also largely decreases the memory requirement.
+
+### 78. Subsets
+subset is: each element has two choices: choose or not choose 2^n
+for 2^n case we have multiple approaches
+1. bit manipulations, from 0 to ffff
+2. iterative,
+[], 2^0
+add 1: [],[1], 2^1
+add 2: [],[1],[2],[1,2] 2^2
+based on previous
+3. backtrack:
+the only difference: there is no exit condition, we can add the vector as result
+```cpp
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> subs;
+        vector<int> sub;
+        subsets(nums, 0, sub, subs);
+        return subs;
+    }
+    void subsets(vector<int>& nums, int i, vector<int>& sub, vector<vector<int>>& subs) {
+        subs.push_back(sub);
+        for (int j = i; j < nums.size(); j++) {
+            sub.push_back(nums[j]);
+            subsets(nums, j + 1, sub, subs);
+            sub.pop_back();
+        }
+    }
+```	
+the intermediate vector can pass by reference or value. reference could be faster
+
+### 79. Word Search *****
+
+1. since we have multiple starting position, we can iterate on each element (if first one does not match it return immediately)
+2. at each position do a dfs
+dfs:
+first if out of boundary or the char in the grid does not match the char in the string, return immediately
+second, it should indicate success when we reach the string end
+remember we need always have success or failure two exit.
+if it matches, first mark it as visited by changing it to '*'
+then search its 4 neigborings. Only one fail then try the other
+after 4 directions dones, restore the last grid.
+
+```cpp
+    bool exist(vector<vector<char>>& board, string word) {
+        int m=board.size();
+        if(m==0) return 0;
+        int n=board[0].size();
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(dfs(board,i,j,word,0)) return 1;
+            }
+        }
+        return 0;
+    }
+    bool dfs(vector<vector<char>>& board,int i0,int j0,string word,int ind)
+    {
+        int m=board.size(),n=board[0].size();
+        if(i0<0 || j0<0 || i0>=m || j0>=n || word[ind]!=board[i0][j0]) return 0;
+        if(ind==word.size()-1) return 1;
+        char c=board[i0][j0];
+        board[i0][j0]='*';
+        bool res=0;
+        res=dfs(board,i0-1,j0,word,ind+1);
+        if(!res) res=dfs(board,i0+1,j0,word,ind+1);
+        if(!res) res=dfs(board,i0,j0-1,word,ind+1);
+        if(!res) res=dfs(board,i0,j0+1,word,ind+1);
+        board[i0][j0]=c;
+        return res;
+    }
+```
+one important thing to note: the backtracking will restore all its nodes when function returns. so next time we can still use it.
+
+### 80. Remove Duplicates from Sorted Array II
+duplicates appears at most twice, do it in-place
+it is no easy to write the following simple code
+```cpp    int removeDuplicates(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int i=0,j=1;
+        int cnt=1;
+        while(j<nums.size())
+        {
+            if(nums[j]!=nums[j-1]) {nums[++i]=nums[j];cnt=1;}
+            else
+            {
+                cnt++;
+                if(cnt<3) nums[++i]=nums[j];
+            }
+            j++;
+        }
+        return i+1;
+    }
+```
+1. ++i instead of i++, if not the first element is replaced
+2. num[j] compare with previous char instead with i%period
+
+this is even better
+```cpp
+int removeDuplicates(vector<int>& nums) {
+    int i = 0;
+    for (int n : nums)
+        if (i < 2 || n > nums[i-2])
+            nums[i++] = n;
+    return i;
+}
+```
+
+### 81. Search in Rotated Sorted Array II
+the array allows duplicates
+
+	
+### 82. Remove Duplicates from Sorted List II
+remove all nodes with same value
+so for a node we need first peek its next to see if current node is duplicate
+1. if there is no prev set, check next
+2. if next is same with curr, it is duplicate, need to remove
+3. if prev value is set, just compare curr with the value
+
+
+
+
+  
+
+
+
+	
+	
+
+
+	
+
+
+
+
+
+
+
 
 	
 	
