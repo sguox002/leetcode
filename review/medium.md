@@ -19,7 +19,9 @@ linked list, iterate on both list the same time (number in reversed order)
         }
         return root;
     }
-```    
+``` 
+* keep adding node when l1 or l2 or cf 
+*. keep the head, add a prev node.   
 
 ### 3. Longest Substring Without Repeating Characters ***
 there are 1 or 2, ...chars similar problems, all can be done using a two pointer window
@@ -417,6 +419,39 @@ not sorted: a reduced sub problem
 ### 34. Find First and Last Position of Element in Sorted Array **
 equal-range or lower_bound/upper_bound
 
+### 43. Multiply string
+the key is to store single digit product in a vector element
+a[i]*b[j] store to res[i+j]
+first reverse the input to satisfy the above condition
+
+```cpp
+    string multiply(string num1, string num2) {
+        //single s[i]*s[j] will contribute to res[i+j] and res[i+j+1]
+        //and then accumulate
+        reverse(num1.begin(),num1.end());
+        reverse(num2.begin(),num2.end());
+        vector<int> res(num1.size()+num2.size());
+        for(int i=0;i<num1.size();i++)
+        {
+            for(int j=0;j<num2.size();j++)
+            {
+                res[i+j]+=(num1[i]-'0')*(num2[j]-'0');
+            }
+        }
+        int cf=0;
+        string ans;
+        for(int i=0;i<res.size();i++)
+        {
+            int d=res[i]+cf;
+            ans+=(d%10)+'0';
+            cf=d/10;
+        }
+        while(ans.size()>1 && ans.back()=='0') ans.pop_back();
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+```	
+note: need to remove all leading 0 except one 0.
 
 
 ### 48. Rotate Image
@@ -589,6 +624,7 @@ we merge all the intervals if the start<the current ending
     }
 ```
 to avoid missing the last interval, we either modify the last node in vector or add a new node into vector
+note need use <= for overlap
 
 ### 59. Spiral Matrix II
 similarly
@@ -1042,37 +1078,171 @@ so for a node we need first peek its next to see if current node is duplicate
 2. if next is same with curr, it is duplicate, need to remove
 3. if prev value is set, just compare curr with the value
 
+### 98. Validate BST
+on the fly compare: inorder traversal and current node > prev
+we have to set the initial prev to a value out of int range.
+```cpp
+    long prev=LONG_MIN;
+    bool isValidBST(TreeNode* root) {
+        if(!root) return 1;
+        bool res=isValidBST(root->left);
+        if(prev!=LONG_MIN) 
+            res=res&&root->val>prev;
+        prev=root->val;
+        res=res&&isValidBST(root->right);
+        return res;
+    }
+```	
+to avoid using the long_min we can use prev as a node pointer which could be better to avoid this kind of bugs.
 
+### 165. Compare Version Numbers
+the key is to convert the string into a int number each segment
+if one string has no more segment, default it to be 0 (so to cover 1.0==1)
+using stringstream to read
+a small trick: replace the delim with space and use >> to read to avoid getline and stoi and read status check.
+
+note: good() is not set when reaching eof (the last one)
+eof(), fail(), bad() 
+
+```cpp
+    int compareVersion(string version1, string version2) {
+		for(int i=0;i<version1.size();i++) if(version1[i]=='.') version1[i]=' ';
+		for(int i=0;i<version2.size();i++) if(version2[i]=='.') version2[i]=' ';
+		int v1=0,v2=0;
+		stringstream s1(version1),s2(version2);
+		while(1)
+		{
+			v1=0,v2=0;
+			s1>>v1;
+			s2>>v2;
+			if(v1>v2) return 1;
+			else if(v1<v2) return -1;
+			else
+			{
+				if(s1.eof() && s2.eof()) return 0;
+				continue;
+			}
+		}
+        return 0;
+    }
+```	
+note: ss>>v will not update v if read fail. so we need initialize it explicitly.
+
+### 199. Binary Tree Right Side View
+inorder traversal, or preorder, the right node is always the last
+using this fact, we store map depth vs element.
+this requires a map to vector conversion which needs extra storage.
+to use a vector directly we need to visit the right node first. (out of order traversal?)
+
+```cpp
+     vector<int> rightSideView(TreeNode *root) {
+        vector<int> res;
+        recursion(root, 1, res);
+        return res;
+    }
+    
+    void recursion(TreeNode *root, int level, vector<int> &res)
+    {
+        if(root==NULL) return ;
+        if(res.size()<level) res.push_back(root->val);
+        recursion(root->right, level+1, res);
+        recursion(root->left, level+1, res);
+    }
+```
+
+	
+
+
+
+### 238. Product of Array Except Self
+two passes: 
+one to get the left product before the element
+2nd pass to get the right product behind the element
+implementation:
+use constant space. use the output array for the lprod and rprod
+need to use long long for the rprod and lprod
+
+```cpp
+    vector<int> productExceptSelf(vector<int>& nums) {
+        //left and right product and then times left and right
+        int len=nums.size();
+        long long left=1,right=1;
+        vector<int> res(len,1);
+        for(int i=1;i<len;i++)
+        {
+            left*=nums[i-1];
+            res[i]*=left;
+        }
+        for(int i=len-2;i>=0;i--)
+        {
+            right*=nums[i+1];
+            res[i]*=right;
+        }
+        return res;
+    }
+```	
+
+### 567. Permutation in String
+direct approach
+get the hashmap of the pattern
+moving to get the window hashmap
+compare each window with the pattern hashmap
+
+for 26 fixed letters, replace hashmap with vector can improve speed
+
+```cpp
+    bool checkInclusion(string s1, string s2) {
+        //check the window's histogram
+        if(s2.size()<s1.size()) return 0;
+        vector<int> mp(26),mp1(26);
+        for(char c: s1) mp[c-'a']++;
+        int wlen=s1.size();
+        
+        for(int i=0;i<s2.size();i++)
+        {
+            if(i<wlen) mp1[s2[i]-'a']++;
+            else 
+            {
+                mp1[s2[i-wlen]-'a']--,mp1[s2[i]-'a']++;
+            }
+            if(mp1==mp) return 1;
+        }
+        return 0;
+    }
+```
+	
+
+
+### 833. Find And Replace in String
+need first sort the indexes
+and then add a segment by segment
+1. sort the indexes array with its index.
+2. combine indexes array with source and target array, which needs more memory
+3. we can also maintain a list of to be replaced and then replace from the right end.
+
+```cpp
+    string findReplaceString(string S, vector<int>& indexes, vector<string>& sources, vector<string>& targets) {
+       int start=0;
+        string ans;
+        vector<vector<int>> mp;
+        for(int i=0;i<indexes.size();i++) mp.push_back({indexes[i],i});
+        sort(mp.begin(),mp.end());
+        
+        for(auto t: mp)
+        {
+            //int ind=indexes[i],len=sources[i].size();
+            int ind=t[0],len=sources[t[1]].size();
+            if(S.substr(ind,len)==sources[t[1]])
+            {
+                ans+=S.substr(start,ind-start)+targets[t[1]];
+                start=ind+len;
+            }
+        }
+        if(start<S.size()) ans+=S.substr(start);
+        return ans;
+    }
+```
+	
 
 
   
-
-
-
-	
-	
-
-
-	
-
-
-
-
-
-
-
-
-	
-	
-
-
-
-
-
-
-	
-
-	
-
-	
-
