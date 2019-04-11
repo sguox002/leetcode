@@ -1243,6 +1243,205 @@ and then add a segment by segment
     }
 ```
 	
+### 93. Restore IP Addresses
+each number shall:
+1. no leading zero
+2. contains 1 to 3 digits
+3. 4 numbers total
+
+dfs to try all combinations
+```cpp
+    vector<string> restoreIpAddresses(string s) {
+        vector<string> ans;
+        if(s.size()<4) return ans;
+        vector<string> num;
+        dfs(s,num,4,0,ans);
+        return ans;
+    }
+    void dfs(string& s,vector<string> ip,int k,int ind,vector<string>& ans)
+    {
+        if(k==0 && ind==s.size()) 
+        {
+            string w;
+            for(int i=0;i<4;i++) w+=ip[i]+".";
+            w.pop_back();
+            ans.push_back(w);
+            return;
+        }
+        if(k<=0 || ind>=s.size()) return;
+        for(int i=ind;i<ind+3;i++)
+        {
+            string w=s.substr(ind,i-ind+1);
+            //cout<<w<<endl;
+            int n=stoi(w);
+            if(n>255) continue;
+            ip.push_back(w);
+            dfs(s,ip,k-1,i+1,ans);
+            ip.pop_back();
+            if(s[ind]=='0') break;
+        }
+    }
+```
+It is very important to think clearly the exit condition: k<=0 || ind>=s.size() either one will terminate it
+	
+### 96. Unique Binary Search Trees
+ number of unique BST store 1 to n
+ 1 to n can be the root
+ when i is the root, 1 to i-1 must be on the left, i+1 to n is on the right, which are two subproblems
+ this is a dp problem
+ dp[i,n]=dp[i-1]*dp[n-i]
+ dp[n]=sum(dp[i-1]*dp[n-i]) i=1 to n
+ with dp[0]=1, dp[1]=1;
+ the final answer is the sum of all the answers
+ 
+ ```cpp
+     int numTrees(int n) {
+        vector<int> dp(n+1);
+        dp[0]=1;
+        dp[1]=1;
+        for(int i=2;i<=n;i++)
+        {
+            for(int j=1;j<=i;j++) //j as the root
+                dp[i]+=dp[j-1]*dp[i-j];
+        }
+        return dp[n];
+    }
+```	
+ 
+ ### 95. Unique Binary Search Trees II
+ dfs+backtracking to get all the trees
+ but implentation is not simple
+ assuming: left will return a vector of trees and right also
+ then the combination is simple
+ the recursive function shall return a vector of trees
+ ```cpp
+     vector<TreeNode*> generateTrees(int n) {
+        if(!n) return {};
+        vector<TreeNode*> ans=dfs(1,n);
+        return ans;
+    }
+    vector<TreeNode*> dfs(int start,int end)
+    {
+        //if(start) return {};
+        vector<TreeNode*> ans;
+        if(start>end) {ans.push_back(NULL);return ans;}
+        for(int i=start;i<=end;i++)
+        {
+            vector<TreeNode*> left=dfs(start,i-1);
+            vector<TreeNode*> right=dfs(i+1,end);
+                
+            for(auto t1: left) //left or right could be empty
+                for(auto t2: right)
+                {
+                    TreeNode* root=new TreeNode(i);
+                    root->left=t1;
+                    root->right=t2;
+                    ans.push_back(root);
+                }
+        }
+        return ans;
+    }
+```
+Note:
+1. start and end, since the subproblem is not limited as 1 to n
+2. new the root shall be inside the left and right combination
+3. The key: we have to add a null tree inside the vector when start>end so empty tree will be able to be included in the combination
+which is in previous problem for zero node the number of tree is 1
+
+### 105. Construct Binary Tree from Preorder and Inorder Traversal *****
+preorder: root left right
+in order: left root right
+so we get the root from the first element in the preorder
+and find the left and right in the inorder sequence
+
+```cpp
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+
+        return helper(preorder,0,preorder.size(),inorder,0,inorder.size());
+    
+    }
+
+    TreeNode* helper(vector<int>& preorder,int i,int j,vector<int>& inorder,int ii,int jj)
+    {
+        // tree        8 4 5 3 7 3
+        // preorder    8 [4 3 3 7] [5]
+        // inorder     [3 3 4 7] 8 [5]
+
+        // 每次从 preorder 头部取一个值 mid，作为树的根节点
+        // 检查 mid 在 inorder 中 的位置，则 mid 前面部分将作为 树的左子树，右部分作为树的右子树
+
+        if(i >= j || ii >= j)
+            return NULL;
+
+        int mid = preorder[i];
+        auto f = find(inorder.begin() + ii,inorder.begin() + jj,mid);
+
+        int dis = f - inorder.begin() - ii;
+
+        TreeNode* root = new TreeNode(mid);
+        root -> left = helper(preorder,i + 1,i + 1 + dis,inorder,ii,ii + dis);
+        root -> right = helper(preorder,i + 1 + dis,j,inorder,ii + dis + 1,jj);
+        return root;
+    }
+```	
+The idea is simple but implementation has some difficulties.
+
+### 106. Construct Binary Tree from Inorder and Postorder Traversal
+inorder: left root right
+postorder: left right root
+so we get the root from the last one of the postorder, and then find the left and right in the inorder
+```cpp
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+		int  n=inorder.size();
+        return helper(0,n,0,n,inorder,postorder);
+    }
+	TreeNode* helper(int i,int j,int ii,int jj,vector<int>& in,vector<int>& post)
+	{
+		if(i>=j || ii>=jj) return 0; //exit condition
+		int root=post[jj-1];
+		auto t=find(in.begin()+i,in.begin()+j,root)-in.begin(); //find the root in inorder sequence
+		int dist=t-i;
+		TreeNode* p=new TreeNode(root);
+		p->left=helper(i,t,ii,ii+dist,in,post);
+		p->right=helper(t+1,j,ii+dist,jj-1,in,post);
+		return p;
+	}
+```
+Be sure to calculate the range of left and right correctly. It is just simple math
 
 
-  
+### 109. Convert Sorted List to Binary Search Tree
+convert it to height balanced tree
+find the middle and left becomes left branch and right becomes right branch
+find middle can use fast/slow scheme
+
+just do it similarly as vector with a head and tail pointer
+```cpp
+    TreeNode* sortedListToBST(ListNode* head) {
+        if(!head) return 0;
+        return toBST(head,0);
+    }
+	TreeNode* toBST(ListNode* head,ListNode* tail)
+	{
+		ListNode *slow=head,*fast=head;
+		if(head==tail) return 0;
+		while(fast!=tail && fast->next!=tail){
+			slow=slow->next;fast=fast->next->next;}
+		TreeNode* root=new TreeNode(slow->val);
+		root->left=toBST(head,slow);
+		root->right=toBST(slow->next,tail);
+		return root;
+	}
+```
+
+### 114. Flatten Binary Tree to Linked List
+in-place
+
+
+
+	
+
+	
+ 
+ 
+ 
