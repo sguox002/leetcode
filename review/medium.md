@@ -1078,6 +1078,76 @@ so for a node we need first peek its next to see if current node is duplicate
 2. if next is same with curr, it is duplicate, need to remove
 3. if prev value is set, just compare curr with the value
 
+### 91. Decode Ways
+*. 0 can only combine with previous digit
+*. combined must be in [1 26]
+dp[i]: number of decoding ways for S[0..i]
+dp[i]=Adp[i-1]+Bdp[i-2]
+dp[i-1]: current digit itself as a decoding ways
+dp[i-2]: current combined with previous as a decoding ways
+
+```cpp
+    int numDecodings(string s) {
+        int n=s.size();
+        if(n==0) return 0;
+        vector<int> dp(n+1);
+        dp[0]=1;
+        dp[1]=s[0]!='0';
+        for(int i=2;i<=n;i++)
+        {
+            if(s[i-1]!='0') dp[i]=dp[i-1];
+            if(s[i-2]!='0' && (s[i-2]-'0')*10+s[i-1]-'0'<=26)
+                dp[i]+=dp[i-2];
+        }
+        return dp[n];
+    }
+```
+it is interesting:
+1. empty string needs return 0
+2. dp[0]=1. otherwise we cannot get correct result.
+3. dp[1]=s[0]!='0'	
+
+### 92. Reverse Linked List II
+reverse m to n
+```cpp
+    ListNode* reverseBetween(ListNode* head, int m, int n) {
+        ListNode* dummy=new ListNode(0);
+        dummy->next=head;
+        ListNode* prev=dummy;
+        int num_node=n-m+1;
+        //stop in front of the node to be reversed m-1
+        while(m-->1) {prev=head;head=head->next;}
+        prev->next=reversen(head,num_node);
+        return dummy->next;
+    }
+    ListNode* reversen(ListNode* head,int n)
+    {
+        if(n==0) return head;
+        ListNode* prev=0;
+        ListNode* next;
+        ListNode* last=head;
+        while(n--)
+        {
+            //cout<<n<<" "<<head->val<<endl;
+            next=head->next;
+            head->next=prev;
+            prev=head;
+            head=next;
+        }
+        last->next=next;
+        return prev;
+    }
+```
+some details
+1. move to in front of the node to be reversed (m n start from 1)
+2. reverse n: need keep first node and last node
+3. dummy as the previous since the head may change
+
+### 94. Binary tree inorder traversal
+recursive is trivial
+iterative just simulate the recursive approach using stack
+iterative approach is needed for scaling purpose or stack overflow.
+
 ### 98. Validate BST
 on the fly compare: inorder traversal and current node > prev
 we have to set the initial prev to a value out of int range.
@@ -1095,6 +1165,198 @@ we have to set the initial prev to a value out of int range.
 ```	
 to avoid using the long_min we can use prev as a node pointer which could be better to avoid this kind of bugs.
 
+### 102. Binary Tree Level Order Traversal
+trivial using queue
+```cpp
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if(!root) return {};
+        queue<TreeNode*> q;
+        q.push(root);
+        vector<vector<int>> ans;
+        while(!q.empty())
+        {
+            int sz=q.size();
+            ans.push_back({});
+            for(int i=0;i<sz;i++)
+            {
+                TreeNode* p=q.front();q.pop();
+                if(p->left) q.push(p->left);
+                if(p->right) q.push(p->right);
+                ans.back().push_back(p->val);
+            }
+        }
+        return ans;
+    }
+```
+can also use preorder traversal (preorder visit the node first) with a depth as the index
+
+### 103. Binary Tree Zigzag Level Order Traversal
+use 102 and then reverse every one row. or do the inverse on the fly since we already know the number of nodes in each layer
+
+### 120. Triangle
+min path sum
+can do in-place if we do it from base to top. this is a dp.
+```cpp
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n=triangle.size();
+        for(int i=n-2;i>=0;i--)
+        {
+            for(int j=0;j<=i;j++) 
+                triangle[i][j]+=min(triangle[i+1][j],triangle[i+1][j+1]);
+        }
+        return triangle[0][0];
+    }
+```	
+### 113. Path Sum II
+find all paths from root to leaf sum to target
+similarly to 103, using preorder backtracking.
+```cpp
+    vector<vector<int>> pathSum(TreeNode* root, int sum) {
+        vector<vector<int>> ans;
+        preorder(root,sum,{},ans);
+        return ans;
+    }
+    void preorder(TreeNode* root,int target,vector<int> vt,vector<vector<int>>& ans)
+    {
+        if(!root) return;
+        vt.push_back(root->val);
+        if(!root->left && !root->right && target==root->val) 
+            ans.push_back(vt);
+        preorder(root->left,target-root->val,vt,ans);
+        //vt.pop_back();
+        preorder(root->right,target-root->val,vt,ans);
+        vt.pop_back();
+    }
+```
+note: 
+* we do not need vt.pop_back() at each recursive call, just pop the root.
+* reference passing can improve the efficiency both time and storage
+time 40ms->16ms
+storage 39M->20M
+
+
+
+### 129. Sum Root to Leaf Numbers
+use preorder traversal
+```cpp
+    int sumNumbers(TreeNode* root) {
+        int sum=0;
+        preorder(root,0,sum);
+        return sum;
+    }
+    void preorder(TreeNode* root,int num,int& sum)
+    {
+        if(!root) return;
+        num=num*10+root->val;
+        if(!root->left && !root->right) {sum+=num;}
+        preorder(root->left,num,sum);
+        preorder(root->right,num,sum);
+    }
+```
+similar questions: find the root to leaf path, binary representation....
+this is a dfs of the tree from left to right.
+
+### 130. Surrounded Regions	
+dfs, union-find problem
+exclude all boundary cells
+dfs: start from all boundary O cells and change to *
+then all other change to x, * change to O
+
+```cpp
+void solve(vector<vector<char>>& board)
+{
+	if(board.size()==0) return;
+	int m=board.size(),n=board[0].size();
+	for(int i=0;i<m;i++) 
+	{
+		if(board[i][0]=='O') dfs(board,i,0);
+		if(board[i][n-1]=='O') dfs(board,i,n-1);
+	}
+	for(int i=1;i<n-1;i++)
+	{
+		if(board[0][i]=='O') dfs(board,0,i);
+		if(board[m-1][i]=='O') dfs(board,m-1,i);
+	}
+	for(int i=0;i<m;i++)
+		for(int j=0;j<n;j++)
+			board[i][j]=board[i][j]=='*'?'O':'X';
+}
+void dfs(vector<vector<char>>& board,int i,int j)
+{
+	if(i<0 || j<0 || i>=board.size() || j>=board[0].size() || board[i][j]!='O') return;
+	board[i][j]='*';
+	dfs(board,i-1,j);
+	dfs(board,i+1,j);
+	dfs(board,i,j-1);
+	dfs(board,i,j+1);
+}
+
+```
+
+### 137. Single Number II
+Given a non-empty array of integers, every element appears three times except for one, which appears exactly once. Find that single one.
+need O(n) time and O(1) storage
+x^x=0
+x^x^x=x
+the unique one appears only once
+
+### 151. Reverse words in a string
+```cpp
+    string reverseWords(string s) {
+       string ans,w;
+        
+        for(char c: s)
+        {
+            if(c==' ')
+            {
+                if(w.size())
+                {
+                    if(ans.empty()) ans=w;
+                    else ans=w+" "+ans;
+                }
+                w.clear();
+            }
+            else w+=c;
+        }
+        if(w.size()) if(ans.empty()) ans=w;else ans=w+" "+ans;
+        return ans;
+    }
+```
+solution is straightforward only remember the last word.
+	
+### 142. Linked List Cycle II
+detect if we have a cycle. if yes find the starting point
+use a slow fast pointer.
+if there is not a cycle, the fast pointer will reach null.
+if there is a cycle with C nodes, the starting line contains L nodes
+the fast and slow nodes will meet in the cycle at a time t:
+the fast pointer traverse 2*t=L+mC+x
+the slow pointer traverse t=L+nC+x
+so 2L+2nc+2x=L+mc+x-->x=(m-2n)C-L, m and n are non-negative integers
+x+L=(m-2n)C means that from x position we walk L steps will meet the pointer starting from head walking L steps
+and that is the solution!
+
+```cpp
+    ListNode *detectCycle(ListNode *head) {
+        if(!head) return 0;
+		ListNode *slow=head,*fast=head;
+        bool iscycle=0;
+		while(fast && fast->next)
+		{
+			fast=fast->next->next;
+			slow=slow->next;
+			if(fast==slow) {iscycle=1;break;}
+		}
+        if(!iscycle) return 0;
+		slow=head;
+		while(fast!=slow) fast=fast->next,slow=slow->next;
+		return slow;
+    }
+```
+	
+
+
+	
 ### 165. Compare Version Numbers
 the key is to convert the string into a int number each segment
 if one string has no more segment, default it to be 0 (so to cover 1.0==1)
@@ -1436,12 +1698,253 @@ just do it similarly as vector with a head and tail pointer
 
 ### 114. Flatten Binary Tree to Linked List
 in-place
+the node is arrange as preorder.
+we can do it in preorder or reverse (postorder).
+this is like the traverse into vector. similar
+
+preorder, prev->right=curr
+```cpp
+	TreeNode* prev=0;
+    void flatten(TreeNode* root) {
+		if(!root) return;
+		if(prev) 
+        {
+            prev->right=root;
+		    prev->left=0;
+        }
+		prev=root;
+		flatten(root->left);
+		flatten(root->right);
+    }
+```	
+Simply check will find bug:
+first root 1, prev now is the root, when visiting the 2nd node, prev's right is destroyed but not yet visited.
+how to fix it?
+we shall do it in a reversed way (reversed preorder so the right branch is already visited)
+```cpp
+	TreeNode* prev=0;
+    void flatten(TreeNode* root) {
+		if(!root) return;
+		flatten(root->right);
+		flatten(root->left);
+		if(prev)
+		{
+			root->right=prev;
+			root->left=0;
+		}
+		prev=root;
+    }
+
+	
+### 116. Populating Next Right Pointers in Each Node	
+You are given a perfect binary tree where all leaves are on the same level, and every parent has two children. The binary tree has the following definition:
+
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+
+Initially, all next pointers are set to NULL.
+Approach: level traverse and we can get its previous node
+another fact: it is a perfect binary tree. we can set its child's next pointer.
+
+```cpp
+    Node* connect(Node* root) {
+        if(!root) return 0;
+		queue<Node*> dq;
+		dq.push(root);
+		while(dq.size())
+		{
+			int sz=dq.size();
+			Node* prev=0;
+			for(int i=0;i<sz;i++)
+			{
+				Node* t=dq.front();dq.pop();
+				if(t->left) dq.push(t->left);
+				if(t->right) dq.push(t->right);
+				if(prev) prev->next=t;
+				prev=t;
+			}
+		}
+		return root;
+    }
+```	
+constant space requirement: (above solution does not consider the fact of perfect binary tree)
+the key observation is: 
+parent:
+parent->left->next=parent->right
+parent->right->next=parent->next->left (parent->next shall be valid)
+
+recursive or we can also have iterative version1
+
+```cpp
+	void connect(TreeLinkNode *root) {
+    if(root == NULL) return;
+        
+    if(root->left) root->left->next = root->right;
+    if(root->right && root->next ) root->right->next = root->next->left;
+
+    connect(root->left);
+    connect(root->right);
+    }
+```
+Buggy: shall do right first before left.
+
+### 117. Populating Next Right Pointers in Each Node II
+not a full tree.
+use the queue can solve it similarly
+O(1) space requirement:
+
+observation:
+if parent has left and right, left->next=right
+if parent has only left or right, we shall search for p->next which has a child
+p->left or right->next=p->next....
+```cpp
+    Node* connect(Node* root) {
+        if(!root) return 0;
+		//it can have 0,1,2 child. 0 child: root is taken care by parent.
+		Node* p=root->next;
+		while(p && (!p->left && !p->right)) p=p->next;
+
+		if(root->left && root->right) 
+		{
+			root->left->next=root->right;//right not processed yet.
+			if(p) root->right->next=p->left?p->left:p->right;
+		}
+		else if(root->left || root->right)
+		{
+			if(p)
+			{
+				if(root->left) root->left->next=p->left?p->left:p->right;
+				else root->right->next=p->left?p->left:p->right;
+			}
+		}
+		connect(root->right);
+		connect(root->left);
+		return root;
+    }
+```
+Note: we shall do right before left so right can point to left***
+
+### 127. Word Ladder
+dictionary contains a list of words
+transform: change one letter
+hit->hot->dot->dog->cog
+        ->lot->log->cog
+shortest transformation: bfs
+consideration: possible cycle
+how to find the word's neighbors: 
+if we try to change each letter to * and compare with dictionary, this needs 26*L times
+
+```cpp
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+		unordered_set<string> dict(wordList.begin(),wordList.end());
+        if(dict.count(endWord)==0) return 0;
+		unordered_set<string> visited;
+		queue<string> q; 
+		q.push(beginWord);
+		int steps=1;
+		while(q.size())
+		{
+			int sz=q.size();
+			for(int i=0;i<sz;i++)
+			{
+				string s=q.front();q.pop();
+				for(int j=0;j<s.size();j++)
+				{
+					char t=s[j];
+					for(char c='a';c<='z';c++)
+					{
+						//if(c==t) continue;
+						s[j]=c;
+						if(s==endWord) return steps+1;
+						if(dict.count(s) && !visited.count(s)){
+							q.push(s);visited.insert(s);}
+					}
+                    s[j]=t;
+				}
+			}
+			steps++;
+		}
+		return 0;
+    }
+```	
+1. need consider the edge case first: the target word is not in dictionary
+2. do not forget to restore the char.	
+
+### 131. Palindrome Partitioning
+dfs backtracking
+at each char position we have different length of palindrome substring
+```cpp
+    vector<vector<string>> partition(string s) {
+        vector<vector<int>> adj=build_list(s);
+		vector<string> vt;
+		vector<vector<string>> ans;
+		dfs(s,0,adj,vt,ans);
+		return ans;
+    }
+	
+	void dfs(string& s,int ind,vector<vector<int>>& adj,vector<string>& vt,vector<vector<string>>& ans)
+	{
+		if(ind==s.size()) {ans.push_back(vt);return;}
+		for(int i=0;i<adj[ind].size();i++)
+		{
+			int len=adj[ind][i];
+			vt.push_back(s.substr(ind,len));
+			dfs(s,ind+len,adj,vt,ans);
+			vt.pop_back();
+		}
+	}
+	vector<vector<int>> build_list(string s)
+	{
+		vector<vector<int>> ans(s.size(),vector<int>(1,1));
+		int start=0,len=0;
+		for(int i=0;i<s.size()-1;i++)
+		{
+			helper(s,i,i,start,len);
+			//if(len>1) ans[start].push_back(len);
+			for(int l=len;l>1;l-=2) ans[start++].push_back(l); 
+			helper(s,i,i+1,start,len);
+			//if(len>1) ans[start].push_back(len);
+			for(int l=len;l>1;l-=2) ans[start++].push_back(l);
+		}
+		return ans;
+	}
+	void helper(string& s,int i,int j,int& start,int& len)
+	{
+		while(i>=0 && j<s.size() && s[i]==s[j]) i--,j++;
+		start=i+1;
+		len=j-i-1;
+	}
+```	
+
+problem:
+1. does not work for abba, for s[1] it did not find bb since it find abba
+2. for a palindrome odd number cabac, it has 1,3,5 (max=5)
+for even xybbyx it has 2,4,6
+modified: the commented part has bugs.
+
+### 133. Clone Graph
+deep copy of the graph
+each node contains a list of neighboring nodes
+approach: a node is copied, but those pointers are invalidated
+
+```cpp
+    Node* cloneGraph(Node* node) {
+        
+    }
+```	
+
+
 
 
 
 	
 
 	
- 
- 
- 
+
+	
+
