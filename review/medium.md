@@ -1931,12 +1931,363 @@ modified: the commented part has bugs.
 deep copy of the graph
 each node contains a list of neighboring nodes
 approach: a node is copied, but those pointers are invalidated
+use a hashmap to record the copied
 
 ```cpp
+	unordered_map<Node*,Node*> copies;
     Node* cloneGraph(Node* node) {
-        
+        if(!node) return 0;
+		if(copies.count(node)==0)
+		{
+			copies[node]=new Node(node->val);
+			for(auto t: node->neighbors)
+				copies[node]->neighbors.push_back(cloneGraph(t));
+		}
+		return copies[node];
     }
 ```	
+
+### 134. Gas Station
+station forms a cycle
+gas[i]: amount of gas at ith station
+cost[i]: gas costed from i to i+1 station
+return the starting index which can travel the round clockwise
+
+analysis:
+gas[i]>=cost[i], reach i+1
+gas[i]+gas[i+1]>=cost[i]+cost[i+1], reach i+2
+....
+sum(gas[j])>=sum(cost[j]) j=i to (i-1+n )%n
+check i from 0 to n-1
+1. at each station prefix sum shall satisfy the condition
+```cpp
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+		int n=gas.size();
+		for(int i=1;i<n;i++) gas[i]+=gas[i-1],cost[i]+=cost[i-1];
+		for(int i=0;i<n;i++)
+		{
+			bool success=1;
+			for(int j=i;j<i+n;j++)
+				if(gas[j]-gas[i]<cost[j]-cost[i]) {success=0;break;}
+			if(success) return i;
+		}
+		return -1;
+    }
+```	
+the above idea is not mature. since we are not able to cover the both end
+1. sum(gas)>=sum(cost) there must be a solution.
+2. we can use the accumulate gas[i]-cost[i] any time the diff<0 we move to next station
+3. if B is the first station we cannot reach then A to B shall be discarded (not including B)
+```cpp
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+		int n=gas.size();
+		int sum=0;
+		for(int i=0;i<n;i++) sum+=gas[i]-cost[i];
+		if(sum<0) return -1;
+		sum=0;
+		int start=0;
+		for(int i=0;i<n;i++)
+		{
+			sum+=gas[i]-cost[i];
+			if(sum<0) {start=i+1;sum=0;} //reset to next stop
+		}
+		return start;
+    }
+
+### 137. Single Number II
+all number except one appears 3 times, the one appears exactly one time.
+required O(N) time and O(1) space
+generalize:
+"Given an array of integers, every element appears k (k > 1) times except for one, which appears p times (p >= 1, p % k != 0). Find that single one."
+typical example:
+k=2, p=1, we use xor to find the single one
+1. we need >=log2(k) counters k=2, 1 counter, k=3 two counters
+2. we need the counter to reset to 0 when it reaches k. (so the non-k element will appear out)
+for example the sequence is 0 and 1, and we counter the 1s (m>=log2(k))
+initial : 0000
+hit first 1: 0001
+hit 2nd 1: 0010
+hit 3rd 1: 0011
+
+for example: k=3, we need 2 bits
+initial 00->01
+add 1:  01->10
+add 1:  10->00
+add 1:  00->00
+add 0: no change
+
+logic true table:
+ab   c      ab/ab
+00	0/1     00/01
+01  0/1     01/10
+10  0/1     10/00
+c=0: a=~c&a 
+
+### 138. Copy List with Random Pointer
+this is similar to deep copy of the graph
+linked list node contains a pointer to randomly point to null or any nodes in the list
+
+first pass: we copy the nodes and make a hashmap the original-copied
+second pass: we update each node's random pointer
+```cpp
+    Node* copyRandomList(Node* head) {
+		unordered_map<Node*,Node*> copies;
+		Node* newhead=0,*p=0,*orig=head;
+		while(head)
+		{
+			Node* t=new Node(head->val,0);
+			if(!newhead) p=newhead=t;
+			else p->next=t;
+			copies[head]=t;
+			head=head->next;
+			p=p->next;
+		}
+		p=newhead;
+		head=orig;
+		while(p && head)
+		{
+			if(head->random) p->random=copies[head->random];
+			p=p->next;
+			head=head->next;
+		}
+		return newhead;
+    }
+```	
+
+above code is buggy.
+p=p->next is not correct and it shall be p=t; (need connect and move to next)
+Node constructor needs 3 parameters (gcc did not give out error)
+
+follow up: O(1) space
+1. make a copy of each node and connect it to original node
+2. assign the random pointer head->next->random=head->random->next
+3. get the copied list
+
+### 139. Word Break
+check if a string can break using words in dictionary
+approach: iterate from 1 to end, split it into left and right. The right is a subproblem.
+```cpp    
+	bool wordBreak(string s, vector<string>& wordDict) {
+		unordered_set<string> dict(wordDict.begin(),wordDict.end());
+		return dfs(s,dict);
+    }
+	bool dfs(string& s,unordered_set<string>& dict)
+	{
+		if(s.size()==0) return 1;
+		for(int i=1;i<=s.size();i++) //len
+		{
+			if(dict.count(s.substr(0,i))
+			{
+				if(dfs(s.substr(i),dict)) return 1;
+			}
+		}
+		return 0;
+	}
+```
+The algorithm complexity: O(N^2).
+TLE for the following case:
+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab"
+["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"]
+
+shall use dp:
+subproblem i: previous j is true, then we check substr i-j if a word
+
+```cpp
+bool wordBreak(string s, unordered_set<string> &dict) {
+        if(dict.size()==0) return false;
+        
+        vector<bool> dp(s.size()+1);
+        dp[0]=true;
+        
+        for(int i=1;i<=s.size();i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(dp[j])
+                {
+                    string word = s.substr(j,i-j);
+                    if(dict.find(word)!= dict.end())
+                    {
+                        dp[i]=true;
+                        break; //next i
+                    }
+                }
+            }
+        }
+        
+        return dp[s.size()];
+    }
+```
+	
+### 143. Reorder List
+find the mid, and reverse the right, and then merge.
+pretty straightforward
+
+### 147. Insertion Sort List
+Algorithm of Insertion Sort:
+
+Insertion sort iterates, consuming one input element each repetition, and growing a sorted output list.
+At each iteration, insertion sort removes one element from the input data, finds the location it belongs within the sorted list, and inserts it there.
+It repeats until no input elements remain.
+```cpp
+    ListNode* insertionSortList(ListNode* head) {
+		if(!head) return 0;
+		ListNode* dummy=new ListNode(0);
+		//dummy->next=head;//this line shall be commented
+		ListNode* p=head,*prev=dummy;
+		p=p->next;
+		while(p)
+		{
+			ListNode* n=p->next;
+			prev=dummy;
+			while(p->val>prev->next->val) prev=prev->next;
+			//insert the node here
+			ListNode* next=prev->next;
+			prev->next=p;
+			p->next=next;
+			p=n;
+		}
+		return dummy->next;
+    }
+```	
+	Note: each time we need terminate the sorted list, otherwise will cause loop and TLE.
+	we can set dummy->next to null and thus we add a null to the end.
+	O(N^2)
+	
+	
+### 148. Sort List
+need O(nlogn) complexity
+merge sort is O(nlogn)
+break the list into half until we only have 1 node in each
+just do it similarly as merge sort for a vector
+stop splitting when there is 1 nodes inside (the find middle will fail)
+
+```cpp
+	ListNode* sortList(ListNode* head){
+		if(!head || !head->next) return head;
+		ListNode *fast=head,*slow=head,*prev=0;
+		while(fast && fast->next)
+			prev=slow,slow=slow->next,fast=fast->next->next;
+		ListNode* right=sortList(slow);
+		prev->next=0; //terminate the left
+		head=sortList(head);
+		return merge(head,right);
+	}
+	ListNode* merge(ListNode* l1,ListNode* l2)
+	{
+		if(!l1) return l2;
+		if(!l2) return l1;
+		ListNode* dummy=new ListNode(0),prev=dummy;
+		while(l1 && l2)
+		{
+			if(l1->val<=l2->val){prev->next=l1;prev=l1,l1=l1->next;}
+			else {prev->next=l2;prev=l2;l2=l2->next;}
+		}
+		if(l1) prev->next=l1;
+		if(l2) prev->next=l2;
+		return dummy->next;
+	}
+```
+
+### 150. Evaluate Reverse Polish Notation
+2,,1,+,3,*
+means: (2+1)*3
+
+trivial using stack
+```cpp
+    int evalRPN(vector<string>& tokens) {
+        stack<int> st;
+        for(string s: tokens)
+        {
+            if(s=="+" ||s=="-" ||s=="*" ||s=="/" )
+            {
+                int num1=st.top();st.pop();
+                int num2=st.top();st.pop();
+                if(s=="+") st.push(num1+num2);
+                if(s=="-") st.push(num2-num1);
+                if(s=="*") st.push(num1*num2);
+                if(s=="/") st.push(num2/num1);
+            }
+            else st.push(stoi(s));
+        }
+        return st.top();
+    }
+```
+
+### 152. Maximum Product Subarray	
+keep the min and max, when we reach a negative, min becomes max, max become min
+this is a dp problem
+imax=max(A[i],A[i]*imax)---this is for local
+imin=min(A[i],A[i]*imin)---this is local product min
+
+local product vs global max product
+```cpp
+    int maxProduct(vector<int>& nums) {
+        int minp=nums[0],maxp=nums[0];
+        int gmax=maxp;
+        for(int i=1;i<nums.size();i++)
+        {
+            int n=nums[i];
+            if(n<0) swap(minp,maxp);
+            minp=min(n,n*minp);//start or continue
+            maxp=max(n,n*maxp);//start or continue
+            gmax=max(gmax,maxp);
+        }
+        return gmax;
+    }
+```
+be sure to set local/gmax all to the first element to avoid complex
+
+### 153. Find Minimum in Rotated Sorted Array
+the min is the pivot point
+linear search find the first non-sorted element O(N)
+binary search O(logn)
+several cases
+l,m in the first part, go to [m,r]
+m,r in the 2nd part, go to [l,m]
+
+```cpp
+    int findMin(vector<int>& nums) {
+		int l=0,r=nums.size()-1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			//l,m in the first part
+			if(nums[m]>nums[l]) l=m+1;
+			else if(nums[m]<nums[r]) r=m-1;
+		}
+		return l;
+    }
+```	
+very buggy. 
+Looking at subarray with index [start,end]. We can find out that
+if the first member is less than the last member, there's no rotation in the array. 
+So we could directly return the first element in this subarray.
+
+If the first element is larger than the last one, then we compute the element in the middle, 
+and compare it with the first element. 
+If value of the element in the middle is larger than the first element, 
+we know the rotation is at the second half of this array. Else, it is in the first half in the array.
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
