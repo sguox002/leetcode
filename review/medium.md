@@ -1299,6 +1299,36 @@ need O(n) time and O(1) storage
 x^x=0
 x^x^x=x
 the unique one appears only once
+using bit log2(K) bits.
+true table to indicate the state change: (so when it adds to 3 it returns to 0)
+a b c | a b
+0 0 0   0 0
+0 1 0   0 1
+1 0 0   1 0
+0 0 1   0 1
+0 1 1   1 0
+1 0 1   0 0
+
+combine all the 1s sum(all 1) and(all 0)
+
+a=a~b~c+~abc
+b=~ab~c+~a~bc
+final answer: a|b 
+karaugh map
+```cpp
+    int singleNumber(vector<int>& nums) {
+        int a=0;
+        int b=0;
+        for(int c:nums){
+            int ta=(~a&b&c)|(a&~b&~c);
+            b=(~a&~b&c)|(~a&b&~c);
+            a=ta;
+        }
+        //we need find the number that is 01,10 => 1, 00 => 0.
+        return a|b;        
+    }
+```
+	
 
 ### 151. Reverse words in a string
 ```cpp
@@ -2268,6 +2298,361 @@ If the first element is larger than the last one, then we compute the element in
 and compare it with the first element. 
 If value of the element in the middle is larger than the first element, 
 we know the rotation is at the second half of this array. Else, it is in the first half in the array.
+
+first, if it is sorted, num[l]<num[r] we know the answer is num[l]
+otherwise, 
+mid in the first part, we can safely move l to m+1
+mid in the 2nd part, we can safely move r to m (not m-1 since it will move out the right part)
+```cpp
+    int findMin(vector<int>& nums) {
+		int l=0,r=nums.size()-1;
+		while(l<r)
+		{
+			if(nums[l]<nums[r]) return nums[l];
+			int m=l+(r-l)/2;
+			if(nums[m]>nums[l]) l=m+1;
+			else r=m;
+		}
+		return nums[l];
+	}
+```
+the num[l][<num[r] will only hit when l<r. but when l>=r it will not hit, so we need return nums[l]
+
+always check when there are only 2 elements (it will check if we will fall into infinite loop or incorrect)
+l=0,r=1,m=0, so we need change nums[m]>nums[l] to nums[m]>=nums[l].
+
+### 162. Find Peak Element
+the two ends are considered to be negative infinity
+return any peak value is fine
+possible trap: 
+int_min for a single element.
+gmax is not necessary the peak element.
+O(N) is trivial
+```cpp
+    int findPeakElement(vector<int>& nums) {
+        if(nums.size()==1) return nums[0];
+		int n=nums.size();
+		if(nums[0]>nums[1]) return nums[0];
+		if(nums[n-1]>nums[n-2]) return nums[n-1];
+		for(int i=1;i<n-1;i++)
+		{
+			if(nums[i]>nums[i-1] && nums[i]>nums[i+1]) return nums[i];
+		}
+		return 0;
+    }
+```	
+better:
+```cpp
+    int findPeakElement(const vector<int> &num) {
+        for(int i = 1; i < num.size(); i ++)
+            if(num[i] < num[i-1]) return i-1;
+        return num.size()-1;
+    }
+```
+	
+binary search O(logn)
+binary search in non-sorted case is very interesting.
+why we can use binary search here?
+the interval [l,r]
+A[l-1]<A[l] && A[r]>A[r+1] (both ends are negative infinity)
+1. A[l]>A[l+1] l is a peak
+2. A[r]>A[r-1] r is a peak
+3. peak in between
+Conclusion: there is at least a peak inside if the condition not changed.
+
+consider mid=(l+r)/2
+if A[m]>A[m+1] right side condition satisfies. we move right to m. r=m
+if A[m]<A[m+1], m+1 shall be the left side, l=m+1
+
+```cpp
+    int findPeakElement(const vector<int> &nums) 
+    {
+        if(nums.size()==1) return 0;
+		int n=nums.size();
+		if(nums[0]>nums[1]) return 0;
+		if(nums[n-1]>nums[n-2]) return n-1;
+		
+		int l= 0,r=n-1;
+        while(l<r){ //l<=r will fall into infinite loop
+            int m=l+(r-l)/2;
+            if(nums[m]<nums[m+1]) l = m + 1;
+			else r=m;
+        }
+        
+        return l;
+    }
+```
+	
+### 179. Largest Number
+combine to form the largest number
+convert to string and compare with string
+[3,30,34,5,9]
+9>5>34>3>30
+string compare 30>3 so it is incorrect
+compare two int:
+ab, ba compare then two strings are same length
+```cpp
+    string largestNumber(vector<int>& nums) {
+        string ans;
+        vector<string> dig;
+        for(int i: nums) dig.push_back(to_string(i));
+        sort(dig.begin(),dig.end(),[](string a,string b){return a+b>b+a;});
+        for(string s: dig) ans+=s;
+		while(ans.size()>1 && ans[0]=='0') ans.erase(ans.begin());//add to avoid multiple 0s
+        return ans;
+    }
+```
+fail with multiple 0
+	
+### 200. Number of Islands
+all surroundings are water
+dfs is simpler. bfs union find are also OK
+
+```cpp
+    int numIslands(vector<vector<char>>& grid) {
+		if(grid.size()==0) return 0;
+		int m=grid.size(),n=grid[0].size();
+		int ans=0;
+		for(int i=0;i<m;i++)
+			for(int j=0;j<n;j++)
+				if(grid[i][j]=='1') {dfs(grid,i,j);ans++;}
+		return ans;
+    }
+	void dfs(vector<vector<char>>& grid,int i,int j)
+	{
+		if(i<0 || j<0 || i>=grid.size() || j>=grid[0].size()) return;
+		if(grid[i][j]=='0') return;
+		grid[i][j]='0';
+		dfs(grid,i-1,j);
+		dfs(grid,i+1,j);
+		dfs(grid,i,j-1);
+		dfs(grid,i,j+1);
+	}
+```
+pretty straightforward
+
+### 201. Bitwise AND of Numbers Range
+naive
+```cpp
+    int rangeBitwiseAnd(int m, int n) {
+		int ans=-1;
+		for(int i=m;i<=n;i++) ans&=i;
+		return ans;
+    }
+```
+however n could be INT_MAX and this will TLE
+when m!=n, we at least have two numbers, the & will get the last bit 0
+and it reduces to subproblem (m/2,n/2)
+```cpp
+	int rangeBitwiseAnd(int m, int n) {
+		return (n > m) ? (rangeBitwiseAnd(m/2, n/2) << 1) : m;
+	}
+```
+
+### 208. Implement Trie (Prefix Tree)
+good practice
+needs a trie node 
+
+```cpp
+	struct TrieNode{
+		bool is_end;
+		vector<TrieNode*> child;
+		TrieNode(){is_end=0;child=vector<TrieNode*>(26);}
+	};
+	TrieNode* root;
+   Trie() {
+       root=new TrieNode;
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+		TrieNode* p=root;
+        for(char c: word)
+		{
+			if(!p->child[c-'a'])
+				p->child[c-'a']=new TrieNode;
+			p=p->child[c-'a'];
+		}
+		p->is_end=1;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+		TrieNode* p=root;
+		for(char c: word)
+		{
+			if(p->child[c-'a']==0) return 0;
+			p=p->child[c-'a'];
+		}
+		return p->is_end;
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        TrieNode* p=root;
+		for(char c: prefix)
+		{
+			if(p->child[c-'a']==0) return 0;
+			p=p->child[c-'a'];
+		}
+		return 1;
+    }
+```	
+
+### 209. Minimum Size Subarray Sum
+min size subarray sum>=s
+1. all positives, so prefix sum is sorted (monotonic increasing)
+2. for position i, we can find the first one with sum>=r and we can get the dist j-i
+using binary search 
+
+can we use window sum? two pointer.
+if sum>s we drop previous
+to avoid problem at the end, we prefer add first
+example: [2,3,1,2,4,3]
+i=0,j=0, sum=2
+i=0,j=1, sum=5
+i=0,j=2, sum=6
+i=0,j=3, sum=8, len=4
+i=1,j=3, sum=6
+i=1,j=4, sum=10 len=4
+i=2,j=4, sum=7, len=3
+i=3,j=4, sum=6, 
+i=3,j=5, sum=9, len=3
+i=4,j=5, sum=7, len=2
+
+O(n) or O(nlogn)
+so add j when sum is less than s
+we keep increasing i until sum<s
+
+
+```cpp
+	int minSubArrayLen(int s, vector<int>& nums) {
+		int n=nums.size();
+		int i=0,j=0;
+		int ans=INT_MAX;
+		int sum=0;
+		while(j<n)
+		{
+			sum+=nums[j++];
+			while(sum>=s) {ans=min(ans,j-i);sum-=nums[i++];} 
+		}
+		return ans==INT_MAX?0:ans;
+	}
+```
+
+### 213. House Robber II
+house in a circle: 0 to n-1 break into 0 to n-2 and 1 to n-1
+rob or not rob
+rob: dp[i-2]+num[i]
+not rob: dp[i-1]
+
+two similar dp problem: 
+note: three states only: three variables are good enough
+note: corner case, 0 or 1 house.
+sometimes using array to store dp is even hard to program.
+
+```cpp
+    int rob(vector<int>& nums) {
+		int n=nums.size();
+        if(n==0) return 0;
+        if(n<2) return nums[0];
+		return max(rob(nums,0,n-1),rob(nums,1,n));
+    }	
+	int rob(vector<int>& nums,int i,int j)
+	{
+		int pre=0,cur=0;
+		
+		for(int k=i;k<j;k++) 
+		{
+			int temp=max(cur,pre+nums[k]);
+			pre=cur;cur=temp;
+		}
+		return cur;
+	}
+```
+
+### 215. Kth Largest Element in an Array
+sorted kth element
+1. sort and get the kth element
+2. multiset to store only k elements (multiset allows duplicates and is minheap)
+```cpp
+    int findKthLargest(vector<int>& nums, int k) {
+        multiset<int> ms;
+		for(int i: nums) 
+		{
+			ms.insert(i);
+			if(ms.size()>k) ms.erase(ms.begin());
+		}
+		return *ms.begin();
+    }
+```
+O(NlogK) time and O(K) storage	
+the minheap insert however is not O(1), it is logK
+O(N) solution is based on selection sort or heap sort
+or use stl: nth_element and/or paritial_sort
+
+### 230. Kth Smallest Element in a BST
+in order traversal
+```cpp
+   int kthSmallest(TreeNode* root, int k) {
+       int ans; 
+       inorder(root,k,ans);
+       return ans;
+    }
+	void inorder(TreeNode* root,int& k,int &ans)
+	{
+		if(!root) return;
+		inorder(root->left,k,ans);
+		if(--k==0) {ans=root->val;return;}
+		inorder(root->right,k,ans);
+        
+	}
+```
+O(N)
+
+binary search in BST O(logn)
+```java
+public int kthSmallest(TreeNode root, int k) {
+      int count = countNodes(root.left);
+      if (k <= count) {
+          return kthSmallest(root.left, k);
+      } else if (k > count + 1) {
+          return kthSmallest(root.right, k-1-count); // 1 is counted as current node
+      }
+      
+      return root.val;
+  }
+  
+  public int countNodes(TreeNode n) {
+      if (n == null) return 0;
+      
+      return 1 + countNodes(n.left) + countNodes(n.right);
+  }
+```
+
+### 236. Lowest Common Ancestor of a Binary Tree
+note it is not BST
+if p and q reside in each branch, then root is the answer
+if they are on left or right, go to left or right then
+but how do we know these information?
+
+the approach
+1. traverse if we found p or q, we return it, otherwise return null
+2. if found left and right, then root is the answer
+3. if found left or right, left or right is the answer
+
+```cpp
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+		if(!root || root==p || root==q) return root;
+		TreeNode* left=lowestCommonAncestor(root->left,p,q);
+		TreeNode* right=lowestCommonAncestor(root->right,p,q);
+		if(left && right) return root;
+		return left?left:right;
+    }
+```
+I have difficulty to write this.
+
+
 
 	
 
