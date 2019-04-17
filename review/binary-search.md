@@ -337,6 +337,94 @@ find the min radius to cover all houses
 sort the heaters and locate the heater for each house. get the smallest difference and get the global max
 
 
+## medium
+
+### 1011. Capacity To Ship Packages Within D Days
+to get the min capacity to have all the weights shipped in D days
+idea: 
+1. the ship can carry one or more. The capacity is limited by the max element and the average Sum/D
+2. the max capacity is limited by the total
+3. we are searching for the capacity so we can divide the weights into D days
+4. for different capacity we may have duplicate days. we are looking for the first capacity which satisfy the D days
+for smaller capacity, it will get more days
+for larger capacity, it will get less days
+so the condition would be 0,0,0...1,1,..1,0,0....0. (wrong)
+actually it shall be 0,0,0,...1,1,.....1 (all <=D is true)
+
+```cpp
+	int shipWithinDays(vector<int>& weights, int D) {
+		int total=accumulate(weights.begin(),weights.end(),0);
+		int mn=max((total+D/2)/D,*max_element(weights.begin(),weights.end()));
+		int l=mn,r=total;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			int days=get_days(weights,m);
+			if(days>D) l=m+1;
+			//else if(days<D) r=m-1;//this shall be removed, check what the problem asks
+			else r=m;
+		}
+		return l;
+	}
+	int get_days(vector<int>& weights,int cap)
+	{
+		//moving sum 
+		int ndays=0,sum=0;
+		for(int w: weights)
+		{
+			if(sum+w<=cap) sum+=w;
+			else
+			{
+				ndays++;
+				sum=w;
+			}
+		}
+		if(sum) ndays++;
+		return ndays;
+	}
+```
+when reaching final [1,1], m=0, l=0 and will cause infinite loop so we need use < in the loop
+check what the problem needs: it needs <=D days! so we need change to <=D r=m
+
+
+### 230. Kth Smallest Element in a BST
+approach 1: inorder traverse and count to O(K)
+approach 2: binary search
+idea:
+1. count left nodes first
+2. if k<num nodes in left, search in the left subtree
+else search for k-1-nleft in the right subtree
+best O(N), up to O(N^2) since node are repeatedly visited.
+```cpp
+    int kthSmallest(TreeNode* root, int k) {
+        int nleft=num_nodes(root->left);
+        if(nleft>=k) return kthSmallest(root->left,k);
+        else if(k>nleft+1) return kthSmallest(root->right,k-1-nleft);
+        return root->val;
+    }
+    int num_nodes(TreeNode* root)
+    {
+        if(!root) return 0;
+        return 1+num_nodes(root->left)+num_nodes(root->right);
+    }
+```
+
+### 981. Time Based Key-Value Store
+store key, value, ts
+get(key,time) to return the key value pair with ts<=time
+multiple values: return the one with largest timestamp
+use a unordered_map<string,map<int,string>> structure and binary search (upper_bound is easier)
+sort by the timestamp. 
+note 1: map has member upper_bound, cannot use algorithm upper_bound
+note 2: if it is mp[key].begin() we need return ""
+
+
+
+  
+
+
+	
+		
 
 	
 
