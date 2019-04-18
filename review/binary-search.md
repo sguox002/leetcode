@@ -686,23 +686,52 @@ with duplicates or without duplicates
 A[m-1]>A[m]<A[m+1].
 1. initial boundary is [0, n-1]
 2. how to shrink the range
-m on the left side: A[m]>=A[l], l=m+1 (this will shift l to the right side and break the invariant)
-m on the right side: A[m]<A[l], r=m
-m+1 can cover the last element
-m-1 can cover the first element
+the left will shift from 0 to the pivot and cannot move any more
+the right will shift from n-1 to the pivot and cannot move any more
+the pivot is a part of the right. so r=m
+we can only compare with the right value, otherwise when left move to pivot and it compare with the right
+the left will shift to the right and miss the range.
+
 3. when to stop? l<r or l<=r? == the invariant does not hold we need use <.
 
 ```cpp
-    int findMin(vector<int>& nums) {
+     int findMin(vector<int>& nums) {
 		int l=0,r=nums.size()-1;
 		while(l<r)
 		{
 			int m=l+(r-l)/2;
-			if(nums[m]>nums[l]) l=m+1;
-			else r=m;
+			if(nums[m]<nums[r]) r=m; //<= also works since there is no duplicate
+			else l=m+1;
 		}
 		return nums[l];
     }
+```	
+
+### 154. Find Minimum in Rotated Sorted Array II
+with duplicates
+the pivot must satisfy A[p-1]>A[p]<=A[p+1]
+if all the same, any position is OK.
+
+1. initial condition is [0, n-1]
+2. similarly we need design how to shrink the range to the pivot
+the special case A[m]==A[r], we need shrink the right by 1 
+
+3. l<r when l==r break the loop
+
+```cpp
+	int findMin(vector<int>& nums) {
+		int l=0,r=nums.size()-1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			if(nums[m]<nums[r]) r=m;
+			else if(nums[m]>nums[r]) l=m+1;
+			else r--;//nums[m]==nums[r], this same thing cannot be the solution
+		}
+		return nums[l];
+	}
+```
+
 
 
 
