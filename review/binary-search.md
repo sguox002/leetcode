@@ -418,7 +418,10 @@ sort by the timestamp.
 note 1: map has member upper_bound, cannot use algorithm upper_bound
 note 2: if it is mp[key].begin() we need return ""
 
-
+### 454. 4Sum II
+4 lists, compute the number of tuples from each list to sum to 0
+approach 1: A+B, C+D form a N^2 hashmap and then find opposite sum
+this is really not a binary search problem. but if we sorted C and D, and we can get it also.
 ### 287. Find the Duplicate Number
 count the number of numbers <=m
 if cnt<=m, indicating m is larger (not in the smaller side) l=m+1
@@ -733,6 +736,409 @@ the special case A[m]==A[r], we need shrink the right by 1
 ```
 
 
+### 528. Random Pick with Weight
+w[i] is the weight of index i
+randomly pick the index proporitional to the weight
+the range is [0,sum]. rand()%(sum+1) will fall into this range.
+if we accumulate the weight, and we can use binary search to find the number.
+
+```cpp
+	vector<long> prefix;
+    Solution(vector<int>& w) {
+		prefix.resize(w.size());
+		prefix[0]=w[0];
+        for(int i=1;i<w.size();i++)
+			prefix[i]=prefix[i-1]+w[i];
+    }
+    
+    int pickIndex() {
+        int r=rand()%prefix.back();//+prefix[0];
+		int ind=upper_bound(prefix.begin(),prefix.end(),r)-prefix.begin();
+		return ind;
+    }
+```	
+the random is from 0 to sum-1 so upper bound is fine
+
+### 436. Find Right Interval
+for each interval, find the minimum right interval's index. If there is no right interval return -1
+right: start>=previous end, minimum is the min of the start position
+approach: store the start position and index and sort. then use each interval's end point to binary search its lower_bound
+
+```cpp
+    vector<int> findRightInterval(vector<Interval>& intervals) {
+        map<int, int> hash;
+        vector<int> res;
+        int n = intervals.size();
+        for (int i = 0; i < n; ++i)
+            hash[intervals[i].start] = i;
+        for (auto in : intervals) {
+            auto itr = hash.lower_bound(in.end);
+            if (itr == hash.end()) res.push_back(-1);
+            else res.push_back(itr->second);
+        }
+        return res;
+    }
+```
+we can use map since there are no duplicate start point
+
+### 162. Find Peak Element	
+good example on binary search
+1. answer lies [0, n-1] since both ends are negative infinity with A[l]>A[l-1] and A[r]>A[r+1]
+2. how to shrink the range
+if A[m]>A[m-1], we keep the left valid if we move l to m.
+if A[m]>A[m+1], we keep the right valid if we move r to m.
+from previous experience we know if we use two different stands, we may miss the correct range.
+A[m]>A[m+1] r=m
+else (A[m]<=A[m+1]) l=m+1
+3. that is from left side we will reach l=peak so break when l==r
+```cpp
+    int findPeakElement(vector<int>& nums) {
+        int l=0,r=nums.size()-1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			if(nums[m]>nums[m+1]) r=m;
+			else l=m+1;
+		}
+		return l;
+	}
+```	
+    
+### 74. Search a 2D Matrix
+the matrix is sorted in c++ storage
+efficiently convert it to a 1D problem O(logN^2)
+```cpp
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if(matrix.empty()) return 0;
+        int m=matrix.size(),n=matrix[0].size();
+        int l=0,r=m*n-1;
+        while(l<=r)
+        {
+            int mid=l+(r-l)/2;
+            int row=mid/n,col=mid%n;
+            int t=matrix[row][col];
+            if(t==target) return 1;
+            if(t<target) l=mid+1;
+            else r=mid-1;
+        }
+        return 0;
+    }
+```
+often to forget that r is defined and again define r for row, very hard to debug!
+
+	
+### 240. Search a 2D Matrix II	
+row is sorted, col is sorted
+
+check if a target exist
+
+from bottom left to top right, use 2d binary search
+for example search 12 in matrix O(m+n)
+
+[
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+]
+18->10->13->6->9->16->12
+```cpp
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+		int m=matrix.size(),n=matrix[0].size();
+		int i=m-1,j=0;
+		while(i>=0 && j<n)
+		{
+			if(matrix[i][j]==target) return 1;
+			if(matrix[i][j]<target) j++;
+			else i--;
+		}
+		return 0;
+	}
+```
+
+### 300. Longest Increasing Subsequence
+approach 1: dp
+dp[i] is the longest increasing subsequence ending with a[i]
+dp[i]=max(dp[i],dp[j]+1) if a[i]>a[j]
+```cpp
+    int lengthOfLIS(vector<int>& nums) {
+		int n=nums.size();
+		vector<int> dp(n,1);
+		int ans=1;
+		for(int i=1;i<n;i++)
+		{
+			for(int j=i-1;j>=0;j--)
+				if(nums[i]>nums[j]) dp[i]=max(dp[i],dp[j]+1);
+			ans=max(ans,dp[i]);
+		}
+		return ans;
+    }
+```
+O(N^2)
+approach 2: binary search
+need build a new data structure so that we can search
+maintain a tail array. if it is larger than all tails, add to the back
+else update the tail
+for example [4,5,6,3]
+add 4, [4]
+add 5, [4,5]
+add 5, [4,5,6]
+add 3, [3,5,6]
+  
+```cpp
+int lengthOfLIS(vector<int>& nums) {
+    vector<int> res;
+    for(int i=0; i<nums.size(); i++) {
+        auto it = lower_bound(res.begin(), res.end(), nums[i]); //>=
+        if(it==res.end()) res.push_back(nums[i]);
+        else *it = nums[i];
+    }
+    return res.size();
+}
+```
+
+### 658. Find K Closest Elements *****
+sorted array given x and k find the elements k closest to x. (k is the number)
+if there is a tie choose the smaller one
+
+1. the answer is contiguous suppose it is a[i] to a[i+k-1]. this is similar to find one of the closest element.
+
+2. binary search i
+
+3. if x-a[mid]>a[mid+k]-x it means a[mid+1] to a[mid+k] is better, so we need have left=mid+1
+
+```cpp
+    vector<int> findClosestElements(vector<int>& A, int k, int x) {
+        int left = 0, right = A.size() - k;
+        while (left < right) {
+            int mid = (left + right) / 2;
+            if (x - A[mid] > A[mid + k] - x)
+                left = mid + 1;
+            else
+                right = mid;
+        }
+        return vector<int>(A.begin() + left, A.begin() + left + k);
+    }
+```
+
+### 497. Random Point in Non-overlapping Rectangles
+a list of axis-aligned rectangle.
+randomly and uniformly point in the covered area
+rects are non-overlapping
+
+x is bounded by  xmin and xmax, but segmented
+y is also bounded by ymin and ymax, but segmented.
+
+approach: 
+1. randomly choose a rect, (using area and sum of all areas
+2. randomly choose a point in the rect
+
+```cpp
+    vector<vector<int>> rects;
+    
+    Solution(vector<vector<int>> rects) : rects(rects) {
+    }
+    
+    vector<int> pick() {
+        int sum_area = 0;
+        vector<int> selected;
+        
+        /* Step 1 - select a random rectangle considering the area of it. */
+        for (auto r : rects) {
+            /*
+             * What we need to be aware of here is that the input may contain
+             * lines that are not rectangles. For example, [1, 2, 1, 5], [3, 2, 3, -2].
+             * 
+             * So, we work around it by adding +1 here. It does not affect
+             * the final result of reservoir sampling.
+             */
+            int area = (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
+            sum_area += area;
+            
+            if (rand() % sum_area < area)
+                selected = r;
+        }
+        
+        /* Step 2 - select a random (x, y) coordinate within the selected rectangle. */
+        int x = rand() % (selected[2] - selected[0] + 1) + selected[0];
+        int y = rand() % (selected[3] - selected[1] + 1) + selected[1];
+        
+        return { x, y };
+    }
+```
+
+### 275. H-Index II	
+citations in sorted order
+each citation is the citation of a researcher's paper.
+H-index: if the research has N papers, h of them have >=h citations, and N-h<=h
+[0,1,3,5,6] h index is 3
+[0,1,2,4,5,6] h index is also 3
+
+this is to find a number to break into two parts. all left <=h and all right<=h.
+if there are multiple h, choose the max one.
+
+
+we are searching pattern 0 0...1,1...1,0,0,... the last true
+what defines a true: if we choose a[m]: h=n-a[m], 
+
+do not misunderstand: max h, minimize the right part.
+
+to find the last true:
+when right side is false, we move to next r=m
+left side even it is 1 we need to move to right, l=m+1
+```cpp
+    int hIndex(vector<int>& citations) {
+        int n=citations.size(),l=0,r=n-1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			if(citations[m]>n-m) r=m; //
+			else l=m+1;
+		}
+		return n-l;
+	}
+```
+for example [0,1,3,5,6]
+m=2, c[m]=3, 3>5-2? false, l->3, r=4
+l=3, 5-(3-1)=3
+
+for example [0,1,2,4,5,6]
+m=2, c[m]=2, 2>6-2 false, l=3,r=5
+m=4, c[m]=5, 5>6-4 true, l=3 r=4
+m=3, c[m]=4, 4>6-3 true, l=3, r=3
+return l=3 6-(3-1)=4 wrong!
+
+as we see we are asking for the right first true position.
+
+```cpp
+    int hIndex(vector<int>& citations) {
+        if (citations.empty()) return 0;
+        int , n = citations.size(),l = 0, r = min(n, citations.back());
+        while (l < r) 
+		{
+            int m = l + (r - l + 1) /2; 
+            if (citations[n-m] >= m) l = m; 
+            else r = m-1;
+        }
+        return r;
+    }
+```
+
+### 209. Minimum Size Subarray Sum
+Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead
+
+approach 1:
+prefix sum will form a sorted array. then we can use two pointer to do a sliding window
+
+```cpp
+    int minSubArrayLen(int s, vector<int>& nums) {
+		for(int i=1;i<nums.size();i++) nums[i]+=nums[i-1];
+		int i=0,j=1;
+		int ans=INT_MAX;
+		while(j<nums.size())
+		{
+			if(nums[j]-nums[i]<s) j++;
+			else
+			{
+				ans=min(ans,j-i);
+				i++;
+			}
+		}
+		return ans==INT_MAX?0:ans;
+    }
+```
+Note above is buggy since it does not cover the first index. (i,j].
+for example [1,2,3,4,5] and s=15. adding a zero ahead can solve the problem
+or we can do it on the fly by moving the old head out
+
+approach 2:
+for each prefix, find the prefix+s (lower_bound) and get the min distance
+
+### 34. Find First and Last Position of Element in Sorted Array
+that is stl::equal_range
+the pattern is 0,0...0,1,..1,0,...0
+we need to find the first 1 and last 1
+
+approach 1: use equal_range or lower_bound /upper_bound
+approach 2: use binary search
+if A[m]>target we need r=m-1 so that we can move to 1
+A[m]<target, we need l=m+1 so that we can move to 1
+we will stop:
+the right goes to the first 1
+the left goes to the last 1
+that is two binary search problem
+
+```cpp
+    vector<int> searchRange(vector<int>& nums, int target) {
+		int n=nums.size(),l=0,r=n-1;
+		int left,right;
+		while(l<r) //find the last one ==target
+		{
+			int m=l+(r-l)/2;
+			if(nums[m]<=target) l=m+1;
+			else r=m;
+		}
+		right=l-1;
+		
+		l=0,r=n-1;
+		while(l<r) //find the first one ==target
+		{
+			int m=l+(r-l)/2;
+			if(nums[m]<target) l=m+1;
+			else r=m-1;
+		}
+		left=l;
+		return {left,right};
+    }
+```	
+buggy
+
+correct:
+```cpp
+vector<int> searchRange(int A[], int n, int target) {
+    int i = 0, j = n - 1;
+    vector<int> ret(2, -1);
+    // Search for the left one, the first true
+    while (i < j)
+    {
+        int mid = (i + j) /2;
+        if (A[mid] < target) i = mid + 1;
+        else j = mid;
+    }
+    if (A[i]!=target) return ret;
+    else ret[0] = i;
+    
+    // Search for the right one
+    j = n-1;  // We don't have to set i to 0 the second time.
+    while (i < j)
+    {
+        int mid = (i + j) /2 + 1;	// Make mid biased to the right
+        if (A[mid] > target) j = mid - 1;  
+        else i = mid;				// So that this won't make the search range stuck.
+    }
+    ret[1] = j;
+    return ret; 
+}
+```
+
+very intersting. the mid can be biased to left or right by adding 1.
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+			
+		
 
 
 
