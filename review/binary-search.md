@@ -419,6 +419,300 @@ note 1: map has member upper_bound, cannot use algorithm upper_bound
 note 2: if it is mp[key].begin() we need return ""
 
 
+### 287. Find the Duplicate Number
+count the number of numbers <=m
+if cnt<=m, indicating m is larger (not in the smaller side) l=m+1
+else m could be an answer so r=m
+
+O(nlogn)
+
+```cpp
+    int findDuplicate(vector<int>& nums) {
+        int l=0,r=nums.size();
+        while(l<r)
+        {
+            int m=l+(r-l)/2;
+            int cnt=0;
+            for(int n: nums)
+                if(n<=m) cnt++;
+            if(cnt<=m) l=m+1;
+            else r=m;
+        }
+        return l;
+    }
+```
+
+O(N) algorithm treating this as a linked list, element value as the next pointer
+try to detect a cycle and find the intersection node.
+
+### 378. Kth Smallest Element in a Sorted Matrix	
+rows and columns are sorted.
+2d matrix
+kth element in sorted order.
+
+approach 1: merge sort 
+approach 2: min heap using priority queue
+first build a min heap from first row (store val,x,y)
+pop the min, and push the next element in the same column.
+the first min is (0,0), the 2nd min is (0,1) or (1,0), the 3rd is (0,2),(1,1),(1,2)
+
+```cpp
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int  n=matrix.size();
+        priority_queue<vector<int>> pq;
+        for(int j=0;j<n;j++) pq.push({-matrix[0][j],0,j});
+        for(int i=0;i<k-1;i++)
+        {
+            vector<int> t=pq.top();
+            pq.pop();
+            int x=t[1],y=t[2];
+            if(x==n-1) continue;
+            pq.push({-matrix[x+1][y],x+1,y});
+        }
+        return -pq.top()[0];
+    }
+```
+this could be O(n^2logn) each insert into the pq, needs logn
+
+binary search:
+similar idea as 287
+we count the number <=mid
+count in a sorted row/col does not need traverse each number
+
+```cpp
+	int kthSmallest(vector<vector<int>>& matrix, int k) {
+		int n=matrix.size();
+		int l=matrix[0][0],r=matrix[n-1][n-1]+1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			int cnt=0;
+			//count number of elements <=mid
+			int c=n-1;
+			for(int r=0;r<n;r++)
+			{
+				while(c && matrix[r][c]>m) c--;
+				cnt+=c+1; //always add 1 or more into it
+			}
+			if(cnt<k) l=m+1;
+			else r=m;
+		}
+		return l;
+	}
+```	
+fail with [[1,2],[3,3]]
+2
+need change while(c>=0 && ... to fix the bug.
+how do we guarantee that lo is an element in the matrix??
+assuming we found a m which satisfy the k, but m is not an element inside
+will move r=m, and keep approaching the element. shrinking the range to 1
+
+so does not matter the number of elements inside, but only matters the range (max-min)
+
+### 392. Is Subsequence
+check if s is subsequence of t
+s is a short string <100
+t is long string ~5e5
+
+approach 1: two pointer, greedy, O(n+m)
+```cpp
+	bool isSubsequence(string s, string t) {
+		int i=0,j=0;
+		while(i<s.size() && j<t.size())
+		{
+			if(s[i]==t[j]) i++;
+			j++;
+		}
+		return i==s.size();
+	}
+```
+
+another approach:
+build 26 char with all its index
+binary search the index to see if we can match an index
+this is good for a lot of incoming s
+```cpp
+	bool isSubsequence(string s, string t) {
+		vector<vector<int>> mp(26);
+		for(int i=0;i<t.size();i++)
+		{
+			int ind=t[i]-'a';
+			mp[ind].push_back(i);
+		}
+		int start=-1;
+		for(char c: s)
+		{
+			vector<int>& vt=mp[c-'a'];
+			int ind=upper_bound(vt.begin(),vt.end(),start)-vt.begin();
+			if(ind==vt.size()) return 0;
+			start=vt[ind];//real index
+		}
+		return 1;
+	}
+```
+
+### 911. Online Election
+given input people, and time of vote
+query the top candidate at time t.
+
+if there is a tie, return the person who has the most recent vote.
+
+approach:
+maintain a data structure for each person, t, and number of votes
+unordered_map<int,vector<int,int>>
+
+```cpp
+	unordered_map<int,vector<int>> mp; //person vs time
+	TopVotedCandidate(vector<int> persons, vector<int> times) {
+		for(int i=0;i<persons.size();i++)
+			mp[persons[i]].push_back(times[i]);
+	}
+	int q(int t) {
+        int recent,mostvoted=0;
+		int ans=0;
+		for(auto tt: mp)
+		{
+			vector<int>& vt=tt.second;
+			int ind=upper_bound(vt.begin(),vt.end(),t)-vt.begin();
+			if(mostvoted<=ind)
+			{
+				if(ind && mostvoted==ind && vt[ind-1]>recent)
+				{
+					recent=vt[ind-1];
+					ans=tt.first;
+				}
+				if(mostvoted<ind)
+				{
+					mostvoted=ind;
+					ans=tt.first;
+					recent=vt[ind-1];
+				}
+			}
+		}
+		return ans;
+    }
+```
+TLE: we shift the work all in the query and it is not reasonable. This function is frequently called.
+
+Improve:
+when building the hashmap we build at each time who is the leader. And query becomes really easy
+
+```cpp
+    map<int, int> m; //time vs leader
+    TopVotedCandidate(vector<int> persons, vector<int> times) {
+        int n = persons.size(), lead = -1;
+        unordered_map<int, int> count; //person vs vote
+        for (int i = 0; i < n; ++i) m[times[i]] = persons[i];
+        for (auto it : m) {
+            if (++count[it.second] >= count[lead])lead = it.second;
+            m[it.first] = lead;
+        }
+    }
+
+    int q(int t) {
+        return (--m.upper_bound(t))-> second;
+    }
+```	
+			
+### 718. Maximum Length of Repeated Subarray
+max length of subarray in two arrays
+approach 1: sliding window match sliding length n+m, each window compare max(n,m)
+approach 2: dp for longest common substring
+approach 3: rolling hash, really hard to understand.
+dp is the way to go
+dp[i,j] is the longest common subarray for A1[0...i-1] and A2[0..j-1]
+when a1[i]==a2[j] then dp[i+1,j+1]=dp[i,j]+1
+
+```cpp
+    int findLength(vector<int>& A, vector<int>& B) {
+		int m=A.size(),n=B.size();
+		vector<vector<int>> dp(m+1,vector<int>(n+1));
+		int ans=0;
+		//boundary: 0th row and 0th col
+		//0th row: empty vs B, 0th col: A vs empty
+		for(int i=1;i<=m;i++)
+		{
+			for(int j=1;j<=n;j++)
+			{
+				if(A[i-1]==B[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+				ans=max(ans,dp[i][j]);
+			}
+		}
+        return ans;
+    }
+```	
+
+### 875. Koko Eating Bananas
+a list of bananas
+eating speed K bananas/hour
+if the pile has less than k bananas, it just finish it and does not eat more
+You have H hours
+return the min K so that it can eat all bananas
+
+Some big piles it may need several hours to finish.
+
+very similar to the ship capacity
+min is the max of max element and average
+max is the total sum
+find the first one satisfying H hours
+
+```cpp
+    int minEatingSpeed(vector<int>& piles, int H) {
+		int l=1,r=accumulate(piles.begin(),piles.end(),0l);
+		while(l<r)
+		{
+			long m=l+(r-l)/2;
+			int hrs=get_time(piles,m);
+			if(hrs>k) l=m+1;
+			else r=m;
+		}
+		return l;
+    }
+	int get_time(vector<int>& piles,int k)
+	{
+		int ans=0;
+		for(int p: piles)
+			ans+=p/k+(p%k!=0);
+		return ans;
+	}
+```
+pay attention to overflow
+
+### 153. Find Minimum in Rotated Sorted Array
+this is a very classic binary search problem.
+the answer lies [0,n-1] inclusive
+
+with duplicates or without duplicates
+A[m-1]>A[m]<A[m+1].
+1. initial boundary is [0, n-1]
+2. how to shrink the range
+m on the left side: A[m]>=A[l], l=m+1 (this will shift l to the right side and break the invariant)
+m on the right side: A[m]<A[l], r=m
+m+1 can cover the last element
+m-1 can cover the first element
+3. when to stop? l<r or l<=r? == the invariant does not hold we need use <.
+
+```cpp
+    int findMin(vector<int>& nums) {
+		int l=0,r=nums.size()-1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			if(nums[m]>nums[l]) l=m+1;
+			else r=m;
+		}
+		return nums[l];
+    }
+
+
+
+
+
+
+	
+
+
+
 
   
 
