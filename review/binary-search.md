@@ -1,4 +1,4 @@
-# bianry search
+# binary search
 
 1. define the ranges and conditions
 
@@ -1125,9 +1125,169 @@ vector<int> searchRange(int A[], int n, int target) {
 very intersting. the mid can be biased to left or right by adding 1.
 
 
+### 33. Search in Rotated Sorted Array
+the target either on the left or right side
+common mistake: compare with a[l] or a[r] to determine side. L will get into right side.
+for example sorted array or shrink to the pivot.
 
+approach 1: find the pivot point and then search in sorted array
+approach 2: directly binary search
 
+a[m]>A[0], it is on the left side
+else m on the left side
 
+a[m]>a[0]:
+ target>a[m]: l=m+1
+ else r=m //target could be on left or right
+else
+	target<=a[m]: r=m
+	else //target could be on left or right
+ 
+```cpp
+	int search(vector<int>& A,int target)
+	{
+		int n=A.size(),l=0,r=n-1;
+        if(!n) return -1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			if(A[m]==target) return m;
+			if(A[l]<=A[m]) //left side sorted
+			{
+				if(target>=A[l] && target<A[m]) //target in [l,m)
+					r=m-1;
+				else //target in (m,r]
+					l=m+1;//why m-1 since target!=A[m]
+			}
+			else //m in right side
+			{
+				if(target>A[m] && target<=A[r]) //target in (m,r]
+					l=m+1;
+				else
+					r=m-1; //target in [l,m)
+			}
+		}
+		return A[l]==target?l:-1;
+	}
+```
+
+note target==A[m] is already removed , so r=m-1	
+if we set r=m we will fall into infinite loop.
+
+### 81. Search in Rotated Sorted Array II
+with duplicates
+approach 1: find the pivot and search in sorted array
+
+```cpp
+    bool search(vector<int>& nums, int target) {
+		int n=nums.size(),l=0,r=n-1;
+		if(!n) return 0;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			if(nums[m]>nums[l]) //[l,m] is sorted
+				l=m+1; 
+			else if(nums[m]<nums[l]) //m is behind the pivot
+				r=m;
+			else //nums[m]==nums[l]
+				l++; //l is not the pivot
+		}
+		int pivot=l;
+		//now search in the sorted array
+		l=0,r=n-1;
+		while(l<=r)
+		{
+			int m=l+(r-l)/2;
+			int rm=(m+pivot)%n;
+			int t=nums[rm];
+			if(t==target) return rm;
+			
+			if(t>target) r=m-1;
+			else l=m+1;
+		}
+		return -1;
+    }
+```
+buggy: why we cannot use nums[l] to compare with [m] 
+since the m is left biased, and for two element it will compare with itself
+
+so change to compare with r.
+but keeps r-- is also problematic. it will miss the range.
+1,1,1,1,1,2,1, do like this the answer is skipped.
+it is problematic.
+
+If we split the array with mi into [lo, mi] and [mi, hi]. If [lo, mi] is not sorted, since we detect [lo, mi] is not sorted by nums[lo] > nums[mi] so nums[lo] cannot be min, min must be within (lo, mi]. If [mi, hi] is not sorted, min must be within (mi, hi] - since we detect [mi, hi] is not sorted by nums[mi] > nums[hi], nums[mi] cannot be min. If they are both sorted, nums[lo] is the min.
+There are 4 kinds of relationship among num[lo], nums[mi], nums[hi]
+
+nums[lo] <= nums[mi] <= nums[hi], min is nums[lo]
+nums[lo] > nums[mi] <= nums[hi], (lo, mi] is not sorted, min is inside
+nums[lo] <= nums[mi] > nums[hi], (mi, hi] is not sorted, min is inside
+nums[lo] > nums[mi] > nums[hi], impossible
+
+correct version to find the pivot with duplicates
+```cpp
+    bool search(vector<int>& nums, int target) {
+		int n=nums.size(),l=0,r=n-1;
+		if(!n) return 0;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+            if(nums[l]<nums[r]) break;
+            if (nums[m] > nums[r])  
+                l = m + 1;
+            else if (nums[m] < nums[l]) 
+                r = m;
+            else
+            {  // nums[lo] <= nums[mi] <= nums[hi] 
+                if(nums[l]==nums[l+1]) l++;
+                if(nums[r]==nums[r-1]) r--;
+            }
+		}
+		int pivot=l;
+        //cout<<pivot;
+		//now search in the sorted array
+		l=0,r=n-1;
+		while(l<=r)
+		{
+			int m=l+(r-l)/2;
+			int rm=(m+pivot)%n;
+			int t=nums[rm];
+			if(t==target) return 1;
+			
+			if(t>target) r=m-1;
+			else l=m+1;
+		}
+		return 0;
+    }
+```
+*. first, only l++ and r-- when tere are duplicates l=l+1 and r=r-1
+*. second, do not use while since it jump the judge l<r
+*. when nums[l]<nums[r] the l to r is sorted shall exit early
+
+approach2: similar to the non-duplicated one
+```cpp
+    bool search(vector<int>& A, int target) {
+		int n=A.size(),lo=0,hi=n-1;
+        if(!n) return 0;
+        int mid = 0;
+        while(lo<hi){
+          mid=(lo+hi)/2;
+          if(A[mid]==target) return true;
+          if(A[mid]>A[hi]){
+              if(A[mid]>target && A[lo] <= target) hi = mid;
+              else lo = mid + 1;
+          }else if(A[mid] < A[hi]){
+              if(A[mid]<target && A[hi] >= target) lo = mid + 1;
+              else hi = mid;
+          }else{
+              hi--;//this could not be the answer so it is safe.
+          }
+          
+    }
+    return A[lo] == target ? true : false;
+  }
+```
+  
 
 
 
