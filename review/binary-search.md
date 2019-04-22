@@ -1288,32 +1288,424 @@ approach2: similar to the non-duplicated one
   }
 ```
   
+## hard
+### 778. Swim in Rising Water
+nxn grid from (0,0) to (n-1,n-1). grid[i,j] is the elevation at (i,j). (consider it is a wall)
+you can go to any 4 directions at no time only when the elevation is <=current elevation.
+at time t: depth of water is t everywhere.
+return the least time to get to bottom right.
 
-
-
-
-
-
-
-
-	
-			
+Analysis: at time t, there shall exist a path from top left to bottom right.
+binary search the first true condition
+0,0,...0,1,1....1
+find a path can use dfs
+range: min and max of the elevation.
+```cpp
+    int swimInWater(vector<vector<int>>& grid) {
+        int n=grid.size(),l=0,r=n*n-1;
+        while(l<r)
+        {
+            int m=l+(r-l)/2;
+            if(dfs(grid,m,0,0)) r=m;
+            else l=m+1;
+            cout<<m<<endl;
+        }
+        return l;
+    }
+    bool dfs(vector<vector<int>>& grid,int d,int i,int j)
+    {
+        int n=grid.size();
+        if(i<0 || j<0 ||i>=n ||j>=n) return 0;
+        
+        if(grid[i][j]>d) return 0;
+        if(i==n-1 && j==n-1) return 1;
+        int t=grid[i][j];
+        grid[i][j]=INT_MAX;
+        bool res=dfs(grid,d,i-1,j)||dfs(grid,d,i+1,j)||dfs(grid,d,i,j-1)||dfs(grid,d,i,j+1);
+        //grid[i][j]=t;//once restored, the dead trials are retried and cause infinite loop
 		
+        return res;
+    }
+```	
+dfs will enter into infinite loop why?
+fix: use a curr=grid, and restore it after a search
+
+### 410. Split Array Largest Sum
+Given an array which consists of non-negative integers and an integer m, you can split the array into m non-empty continuous subarrays. Write an algorithm to minimize the largest sum among these m subarrays.
+so m parts we can get multiple solutions
+equivently we can give the target sum and divide into parts
+min largest sum is the largest single element
+
+convert to equivalent problem. 
+```cpp
+    int splitArray(vector<int>& nums, int m) {
+        long l=*max_element(nums.begin(),nums.end());
+        long r=accumulate(nums.begin(),nums.end(),0l);
+        while(l<r)
+        {
+            long mid=l+(r-l)/2;
+            int nparts=get_numparts(nums,mid);
+            
+            if(nparts>m) l=mid+1; //too small need increase
+            else r=mid;
+        }
+        return l;
+    }
+    int get_numparts(vector<int>& nums,long target)
+    {
+        int ans=0;
+        long sum=0;
+        for(int i: nums)
+        {
+            if(sum+i>target) {sum=0;ans++;}
+            sum+=i;
+        }
+        return ans+(sum!=0);
+    }
+```
+
+668. Kth Smallest Number in Multiplication Table
+this is sorted matrix, row sorted and col sorted.
+height mxn
+similar to 378. only difference is mxn instead of nxn.
+378 has two approaches:
+1. priority queue (min heap and adding current min's next larger element into it.
+multiplication table has a lot of duplicates.
+2. binary search. 
+
+multiplication table at M(i,j)=(i+1)*(j+1)
+so the matrix is symmetric. 
+
+similarly we can use binary search. 
+given the mid value, we count number of elements <=mid
+for a value mid, we may have duplicates. 
+so when cnt>=k it may be an answer r=m
 
 
+```cpp
+    int findKthNumber(int m, int n, int k) {
+		int l=1,r=m*n;
+		while(l<r)
+		{
+			int mid=l+(r-l)/2;
+			int cnt=cntle(mid);
+			if(cnt>=k) r=m;
+			else l=m+1;
+		}
+		return l;
+    }
+	int cntle(int mid,int m,int n) //count numbers <=mid
+	{
+		int ans=0;
+		for(int i=1;i<=m;i++)
+			ans+=min(mid/i,n);
+		return ans;
+	}
 
+```	
 
+### 786. K-th Smallest Prime Fraction
+a list of prime numbers
+for every p<q in the list forms the fraction. return the kth fraction.
 
+similar to multiplication table, but now forms a upper matrix of division table.
+
+every row is sorted from right to left.
+every col is sorted from top to down.
+
+define the search range: min is 1/max, max is 2nd_max/max we can use 1.
+do we use double? bad idea, we need calculate all the combinations. and store in a matrix
+we can use double m and m*denominator to find the divisor
+
+```cpp
+    vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
+		double l=0, r=1;
+		int n=A.size();
+		int p,q;
+		while(l<r)
+		{
+			double m=l+(r-l)/2;
+			int cnt=cntle(A,m,p,q);
+            //cout<<m<<":"<<cnt<<endl;
+			if(cnt>K) r=m;
+			else if(cnt<K) l=m;
+			else return {p,q};
+		}
+        return {p,q};
+    }
+	int cntle(vector<int>& A,double v,int&p,int& q)
+	{
+		int ans=0;
+		int n=A.size();
+		p=0,q=1;
+		for(int i=0;i<n-1;i++) //upper triangle
+		{
+			for(int j=i+1;j<n;j++)
+				if(A[i]<=A[j]*v) //A[i]/A[j]<=v
+				{
+					ans+=n-j;//ith line starts from i+1
+					if(p*A[j]<q*A[i]) {p=A[i],q=A[j];} //p/q<A[i]/A[j]
+					break;
+				}
+		}
+		return ans;
+	}
+```
+
+### 719. Find K-th Smallest Pair Distance
 	
+Given an integer array, return the k-th smallest distance among all the pairs. The distance of a pair (A, B) is defined as the absolute difference between A and B.
+approach 1: find all pair's distance and put in pq
+sort the input, then we have a very similar upper matrix as 785, only difference is subtraction
 
+the distance is sorted in row.
+range 0 to max-min
+```
+    int smallestDistancePair(vector<int>& nums, int k) {
+        sort(nums.begin(),nums.end());
+		int n=nums.size(),l=0,r=nums[n-1]-nums[0];
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			int cnt=cntle(nums,m);
+			if(cnt>=k) r=m;
+			else l=m+1;
+		}
+		return l;
+	}
+	int cntle(vector<int>& nums,int v)
+	{
+		int ans=0;
+		for(int i=0;i<nums.size()-1;i++)
+		{
+			for(int j=nums.size()-1;j>i;j--)
+				if(nums[j]-nums[i]<=v) {ans+=j-i;break;}
+		}
+		return ans;
+	}
+```
 
+### 793. Preimage Size of Factorial Zeroes Function
+k up to 1e9
+0 is depends on the number of factor of 5.
+1x5,2x5,3x5,4x5,5x5, once we have 5^n will has extra 5.
+for n the number of 5 is n/5+n/5^2+n/5^3+....
 
+```cpp
+	int preimageSizeFZF(int K)
+	{
+		long l=0,r=5l*(K+1);
+		while(l<r)
+		{
+			long m=l+(r-l)/2;
+			int cnt=num5_factor(m);
+			if(cnt>=K) r=m;
+			else l=m+1;
+		}
+		int lower=l;
+		l=0,r=5l*(K+1);
+		while(l<=r)
+		{
+			long m=l+(r-l)/2;
+			int cnt=num5_factor(m);
+			//we are looking for the lower range and upper range
+			if(cnt>K) r=m-1;
+			else l=m+1;
+		}
+		return r-lower+1;
+	}
+	long num5_factor(long n)
+	{
+		long ans=0;
+		while(n)
+		{
+			ans+=n/5;
+			n/=5;
+		}
+		return ans;
+	}
+```
+1. upper limit is 5*(k+1) this has more zeros than required
+2. need use long
+3. upper bound search need use <= and l=m+1, r=m-1 to reach the target.
+4. also find the first k and k-1 also gives the same result.
 
-  
+### 363. Max Sum of Rectangle No Larger Than K
+2d matrix, find the max sum of a rectangle in the matrix with sum<=k.
 
+### 483. Smallest Good Base
+find the smallest base for k so that it can be represented all as 1
 
+apparently for n, n-1 satisfy the condition.
+it asks for the smallest.
+
+binary search: we have a base and to see if n can be represented as 1111...
+
+n=x^m+x^m-1+.....+1=(x^(m+1)-1)/(x-1)
+
+n-1=x*(x^m-1+.....1)
+(n-1)/x can be represented as 111...
+n-x^m=(n-1)/x->
+nx-x^(m+1)=n-1->
+x^(m+1)=nx-n+1->
+x^(m+1)-1=n*(x-1)->
+[x^(m+1)-1]/(x-1)=n (actually this is a exponential series and do not need derivation)
+
+search base 2 to n-1
+x^m-1=n(x-1)
+n(x-1)>x^m-1 x is too large (m is variable)
+n(x-1)<x^m-1 x is too small (m is a variable)
+
+so we do not need to check all x, but only the factor of n-1
+for example 13
+candidates are 12's factors, 12, 6, 4, 3, 2
+12: 11
+6: not possible
+4: not possible 
+3: 9+3+1 
+2: not possible
+x^(m-1)<n<x^m 
+iterate from the largest possible m to smallest m.
+when m is fixed. we can binary search the answer.
+
+```cpp
+    string smallestGoodBase(string n) {
+		long num=stol(n);
+		for(int m=log(num+1)/log(2);m>2;m--)
+		{
+			long l=pow(num,1.0/m);
+			long r=pow(num,1.0/(m-1));
+			while(l<=r)
+			{
+				long mid=l+(r-l)/2;
+				long t=0;
+				for(int i=0;i<m;i++) t=t*mid+1;
+				if(num==t) return to_string(mid);
+				if(num<t) r=mid-1;
+				else l=mid+1;
+			}
+		}
+		return to_string(num-1);
+    }
+```
+
+### 862. Shortest Subarray with Sum at Least K	
+if not found return -1
+sum>=K
+it may contain negative, K may be also negative
+1. K is negative, the max element >= K 
+2. K is positive, but numbers include negatives
+can be approached using binary search
+given a length, can we get a sum >=K? using prefix sum.
+note: if answer is not in the range, we cannot find it.
+if answer is not inside, all false. will go to l=n+1
+
+```cpp
+    int shortestSubarray(vector<int>& A, int K) {
+		int tmax=*max_element(A.begin(),A.end());
+        if(tmax>=K) return 1; 
+        if(K<=0) return -1;
+        
+        A.insert(A.begin(),0);
+        for(int i=1;i<A.size();i++) A[i]+=A[i-1];
+		int l=1,r=A.size();
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			bool t=sumge(A,m,K);
+			if(t) r=m;
+			else l=m+1;
+            cout<<l<<" "<<r<<endl;
+		}
+		return l<A.size()?l:-1;
+	}
 	
-		
+	bool sumge(vector<int>& prefix,int m,int target)
+	{
+		bool t=0;
+		for(int i=m;i<prefix.size();i++)
+			if(prefix[i]-prefix[i-m]>=target) {t=1;break;}
+		return t;
+	}
+```
 
-	
+this strategy has problem:
+since it cannot return true for a continuous parts so we cannot guarantee the answer.
+ie there is no monotonically property.
+we shall only search those monotonically increasing part.
+
+sliding window approach.
+for all positives, we can increase the ending pointer until it satisfy sum>=K. and then increase the first pointer
+with negatives inside, this is not valid, since when sum<K increase the first pointer is also an option
+using a deque:
+assuming we store the prefix sum,
+when prefix < the deque back, remove the back, so we maintain a increasing sequence
+when prefix -front >=K we pop front and compare the distance.
+```cpp
+    int shortestSubarray(vector<int> A, int K) {
+        int N = A.size(), res = N + 1;
+        vector<int> B(N + 1, 0);
+        for (int i = 0; i < N; i++) B[i + 1] = B[i] + A[i];
+        deque<int> d;
+        for (int i = 0; i < N + 1; i++) {
+            while (d.size() > 0 && B[i] - B[d.front()] >= K)
+                res = min(res, i - d.front()), d.pop_front();
+            while (d.size() > 0 && B[i] <= B[d.back()]) d.pop_back();
+            d.push_back(i);
+        }
+        return res <= N ? res : -1;
+    }
+```
+which is similar to those stack problems .
+
+https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/discuss/204290/Monotonic-Queue-Summary
+
+### 174. Dungeon Game	
+dp solution
+can also using binary search since it gives 0,0,0.1,1,1,pattern given the initial health
+negatives: losing health
+positives: adding health
+from top left to bottom right
+the range is 0 to -sum(negatives)
+
+### 4. Median of Two Sorted Arrays
+approach 1: merge sort and return the median O(n+m)
+approach 2: binary search
+the median will separate smaller and larger into equal parts
+may contain duplicates, we can count >= at the same time.
+we can count.
+1. first find the target element in the lists to separate less = (n+m-1)/2
+```cpp
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int n=nums1.size(),m=nums2.size();
+		int less
+    }
+
+suppose we cut the A at i and B at j
+left: A[0]....A[i-1], right: A[i]....A[n-1]
+left: B[0]....B[j-1], right: B[j]....A[m-1]
+A[i-1]<=B[j]
+B[j-1]<=A[i]
+median: [max(left)+min(right)]/2
+i+j=n-i+m-j (even)
+i+j=n-i+m-j+1 (odd, put the number in the left side)
+
+searching i in (0,n) where j=(m+n+1)/2-i (this works for even and odd)
+j==0 || i==n || B[j-1]<=A[i] &&
+i==0 || j==m || A[i-1]<=B[j]
+
+binary search:
+j>0 && i<m && B[j-1]>A[i]: i is too small
+i>- && j<n && A[i-1]>B[j]: i is too large
+
+### 927. Three Equal Parts
+approach 1: ignore leading and trailing zeros. divide the 1s into 3 parts.
+O(n) solution
+
+### 710. Random Pick with Blacklist
+given a blacklist in the range [0,N), random shall not include these numbers
+approach 1: effectively reduce the length when rand()%M
+when searching the correct index, (after a blacklist number inserted, all below needs add 1)
+
+approach 2: remap the blacklist to the tail of the numbers
 
