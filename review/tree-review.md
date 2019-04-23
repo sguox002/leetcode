@@ -717,7 +717,11 @@ second, for starting with a given node, we start from 0 and do dfs to search all
     }
 ```    
 
+-------------------------------------------------------------------------------------------------
 ## medium
+-------------------------------------------------------------------------------------------------
+
+## Rating ***
 
 ### 654. Maximum Binary Tree
 
@@ -779,6 +783,28 @@ root val >left root->val<right
 ```	
 note: we can use upper_bound since it satisfy 0,0,...1,1,1,...1 conditions.
 
+### 998. Maximum Binary Tree II
+a maximum tree corresponds to a list of numbers. Now append a value to the list, return the new tree.
+maximum tree: the root > its child
+no duplicates
+
+The value >root, then we need put all previous in its left
+if the value < root, then we need goes to right (since the max is ahead of it and the right array belongs to the right tree)
+
+```cpp
+    TreeNode* insertIntoMaxTree(TreeNode* root, int val) {
+        if(!root) return new TreeNode(val);
+		if(root->val<val)
+		{
+			TreeNode *newnode=new TreeNode(val);
+			newnode->left=root;
+			return newnode;
+		}
+		root->right=insertIntoMaxTree(root->right,val);
+		return root;
+    }
+```	
+ 
 ### 814. Binary Tree Pruning
 
 all 0 and 1, prune all subtree not containing 1
@@ -883,17 +909,27 @@ finally down to a single node.
 				(flipEquiv(root1->left,root2->right) && flipEquiv(root1->right,root2->left);
     }
 ```	
-### 513. Find Bottom Left Tree Value
-
-Given a binary tree, find the leftmost value in the last row of the tree.
-It is easy to give the tree a x and y coordinate.
-another: use the height, if left is taller, find it in left, otherwise in right
-The last row has a depth of 1
 
 ### 515. Find Largest Value in Each Tree Row
 
 bfs or hashmap using layer while traverse
+we don't need hashmap if using preorder traversal.
 
+```cpp
+    vector<int> largestValues(TreeNode* root) {
+		vector<int> ans;
+		preorder(root,1,ans);
+		return ans;
+    }
+	void preorder(TreeNode* root,int h,vector<int>& ans)
+	{
+		if(!root) return;
+		if(h>ans.size()) ans.push_back(root->val);
+		else ans[h-1]=max(ans[h-1],root->val);
+		preorder(root->left,h+1,ans);
+		preorder(root->right,h+1,ans);
+	}
+```	
 ### 889. Construct Binary Tree from Preorder and Postorder Traversal (**)
 
 two arrays
@@ -907,10 +943,111 @@ For two subarrays pre[a,b] and post[c,d], if we want to reconstruct a tree from 
 pre[a+1] is the root node of the left subtree.
 Find the index of pre[a+1] in post, then we know the left subtree should be constructed from pre[a+1, a+idx-c+1] and post[c, idx]
 
+```cpp
+    TreeNode* constructFromPrePost(vector<int>& pre, vector<int>& post) {
+        return helper(pre,0,pre.size(),post,0,post.size());
+    }
+	TreeNode* helper(vector<int>& pre,int l1,int r1,vector<int>& post,int l2,int r2)
+	{
+		if(l1>=r1) return 0;
+		if(l1+1==r1) return new TreeNode(pre[l1]);
+		TreeNode* root=new TreeNode(pre[l1]);
+		int ind=find(post.begin()+l2,post.begin()+r2-1,pre[l1+1])-post.begin();
+		int len=ind-l2+1;
+		root->left=helper(pre,l1+1,l1+len+1,post,l2,l2+len);
+		root->right=helper(pre,l1+len+1,r1,post,l2+len,r2-1);
+		return root;
+	}
+```
+pay attention to the correct range. need make sure length is the same.
+
+### 513. Find Bottom Left Tree Value
+
+Given a binary tree, find the leftmost value in the last row of the tree.
+It is easy to give the tree a x and y coordinate.
+another: use the height, if left is taller, find it in left, otherwise in right
+The last row has a depth of 1
+
+the last row first value.
+in order traverse with depth. Pay attention to the initial value so one node will work.
+
+```cpp
+    int findBottomLeftValue(TreeNode* root) {
+		int ans=0,maxh=-1;
+		inorder(root,0,ans,maxh);
+		return ans;
+    }
+	void inorder(TreeNode* root,int h,int& ans,int& maxh)
+	{
+		if(!root) return;
+		inorder(root->left,h+1,ans,maxh);
+		if(h>maxh) {ans=root->val;maxh=h;}
+		inorder(root->right,h+1,ans,maxh);
+	}
+```	
+
+### 1026. Maximum Difference Between Node and Ancestor
+equivalently max difference of current node with its parents
+so peorder traverse will solve the problem
+```cpp
+	int maxAncestorDiff(TreeNode* root) {
+		int maxdiff=0;
+		int mn=root->val,mx=root->val;
+		preorder(root,mn,mx,maxdiff);
+		return maxdiff;
+	}
+	void preorder(TreeNode* root,int mn,int mx,int& maxdiff)
+	{
+		if(!root) return;
+		maxdiff=max(maxdiff,max(root->val-mn,mx-root->val));
+		mn=min(mn,root->val);
+		mx=max(mx,root->val);
+		preorder(root->left,mn,mx,maxdiff);
+		preorder(root->right,mn,mx,maxdiff);
+	}
+```
+note: root->val-mn cannot guarantee >0 better to add abs.
+
+	
 ### 919. Complete Binary Tree Inserter
 
 A complete binary tree is a binary tree in which every level, except possibly the last, is completely filled, and all nodes are as far left as possible.
 complete binary tree can use array, and each one has strict index 2*n+1 and 2*n+2 for parent node n
+
+complete binary tree is implemented using array.
+Store tree nodes to a list self.tree in bfs order.
+Node tree[i] has left child tree[2 * i + 1] and tree[2 * i + 2]
+
+So when insert the Nth node (0-indexed), we push it into the list.
+we can find its parent tree[(N - 1) / 2] directly.
+
+C++:
+```cpp
+    vector<TreeNode*> tree;
+    CBTInserter(TreeNode* root) {
+        tree.push_back(root);
+        for(int i = 0; i < tree.size();++i) {
+            if (tree[i]->left) tree.push_back(tree[i]->left);
+            if (tree[i]->right) tree.push_back(tree[i]->right);
+        }
+    }
+
+    int insert(int v) {
+        int N = tree.size();
+        TreeNode* node = new TreeNode(v);
+        tree.push_back(node);
+        if (N % 2)
+            tree[(N - 1) / 2]->left = node;
+        else
+            tree[(N - 1) / 2]->right = node;
+        return tree[(N - 1) / 2]->val;
+    }
+
+    TreeNode* get_root() {
+        return tree[0];
+    }
+```
+
 
 ### 94. Binary Tree Inorder Traversal- iterative
 
@@ -921,7 +1058,33 @@ put the node in stack and goes to left until no left, and then pop, go to the ri
 
 Return the node with the largest depth such that it contains all the deepest nodes in its subtree.
 calculate each node's depth
+approach:
+left depth ==right depth root is the one
+left<right, find the one in right
+else find the one in left
 
+It is very easy to write this O(n) into O(n^2). 
+for example:
+```cpp
+	int depth(TreeNode *root) {
+		return !root ? 0 : max(depth(root->left), depth(root->right)) + 1;
+	}
+
+	TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+		int d = depth(root->left) - depth(root->right);
+		return !d ? root : subtreeWithAllDeepest(d > 0 ? root->left : root->right);
+	}
+```
+with some memoization mechanism, the complexity could be reduced. (storing the depth for each node)
+
+One pass O(n) may need some thinking:
+
+```cpp
+    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+        
+    }
+```
+	
 ### 508. Most Frequent Subtree Sum
 
 a subtree sum=root+leftsum+rightsum
