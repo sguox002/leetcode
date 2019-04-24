@@ -1078,21 +1078,103 @@ for example:
 with some memoization mechanism, the complexity could be reduced. (storing the depth for each node)
 
 One pass O(n) may need some thinking:
+make the depth reverse, ie the leaf node is depth 0 and node+1
+use post-order traverse.
 
 ```cpp
     TreeNode* subtreeWithAllDeepest(TreeNode* root) {
-        
+        return helper(root).second;
     }
+	pair<int,TreeNode*> helper(TreeNode* root)
+	{
+		if(!root) return {0,NULL};
+		pair<int,TreeNode*> l=helper(root->left),r=helper(root->right);
+		int d1=l.first,d2=r.first;
+		int d=max(d1,d2)+1;
+		TreeNode* ans;
+		if(d1==d2) ans=root;
+		else if(d1<d2) ans=r.second;
+		else ans=l.second;
+		return {d,ans};
+	}
+	
 ```
 	
 ### 508. Most Frequent Subtree Sum
 
 a subtree sum=root+leftsum+rightsum
 create a map
-
+post order traverse
+```cpp
+    vector<int> findFrequentTreeSum(TreeNode* root) {
+        unordered_map<int,int> mp;
+		helper(root,mp);
+		vector<int> ans;
+		int tmax=0;
+		for(auto it: mp) tmax=max(tmax,it.second);
+		for(auto it: mp) if(it.second==tmax) ans.push_back(it.first);
+		return ans;
+    }
+	int helper(TreeNode* root,unordered_map<int,int>& mp)
+	{
+		if(!root) return 0;
+		int lsum=helper(root->left,mp);
+		int rsum=helper(root->right,mp);
+		int sum=root->val+lsum+rsum;
+		mp[sum]++;
+        return sum;
+	}
+```	
 ### 655. Print Binary Tree
 
 a way to display the tree
+row number is the height of the given binary tree
+column number is odd number
+root is in the center of the two child
+
+approach: we need calculate the left most node and rightmost node. (it asks to output a complete tree format)
+and then each node's position would be determined.
+Note each row actually shall leave all spaces for all previous nodes. 
+h=1: 1
+h=2: 2
+h=3: 4
+h=4: 8, total 2^4-1 nodes
+
+this problem has the following sub problems
+1. get the height
+2. get the width (can be derived directly)
+3. put the node value in its position
+
+
+```cpp
+    vector<vector<string>> printTree(TreeNode* root) {
+		int h=height(root),w=width(root);
+		vector<vector<string>> ans(h,vector<string>(w));
+		helper(ans,root,0,0,w-1);
+		return ans;
+    }
+	
+	int height(TreeNode* root)
+	{
+		if(!root) return 0;
+		return max(height(root->left),height(root->right))+1;
+	}
+	
+	int width(TreeNode* root)
+	{
+		if(!root) return 0;
+		return max(width(root->left),width(root->right))*2+1;
+	}
+	
+	void helper(vector<vector<string>>& ans,TreeNode* root, int depth, int l, int r)
+	{
+		if(!root) return;
+		int mid=l+(r-l)/2;
+		ans[depth][mid]=to_string(root->val);
+		helper(ans,root->left,depth+1,l,mid-1);
+		helper(ans,root->right,depth+1,mid+1,r);
+	}
+```	
 
 ### 144. Binary Tree Preorder Traversal-iterative
 
@@ -1101,7 +1183,8 @@ keep pushing the right into stack
 
 ### 684. Redundant Connection (**)
 
-undirected graph
+undirected graph. this shall not be in the category of tree, it shall be in graph or disjoint set.
+
 remove an edge to make it a tree
 this is not so straightforward
 using disjoint set to combine into n-ary tree.
@@ -1128,13 +1211,79 @@ if we found the vertices of an edge belongs to the same parent, the edge is redu
 
 ### 230. Kth Smallest Element in a BST
 
-inorder traversal
+inorder traversal or binary search
 
+### 988. Smallest String Starting From Leaf
+from leaf to root
+we can start from root and reverse. using preorder traverse
+```cpp
+    string smallestFromLeaf(TreeNode* root) {
+		string ans;
+		helper(root,"",ans);
+		return ans;
+    }
+	void helper(TreeNode* root,string t,string& ans)
+	{
+		if(!root) return;
+		t+='a'+root->val;
+		if(!root->left && !root->right)
+		{
+			reverse(t.begin(),t.end());
+			if(ans.empty()) ans=t;
+			else if(ans>t) ans=t;
+		}
+		helper(root->left,t,ans);
+		helper(root->right,t,ans);
+	}
+	
+```	
 ### 623. Add One Row to Tree
 
-add a row of value at the given depth
-bfs to find the row with the depth and replace the row and add those original as child
+add a row of value at the given depth. root depth is 1. 
+bfs to find the previous row with the depth and replace the row and add those original as child
+left=parent->left
+parent->left=new node(1)
+parent->left->left=left
+right treated the same.
 
+
+```cpp
+    void helper(TreeNode* root, int v, int d, int cd) {
+        if (!root) return;
+        
+        if (cd == d) {
+            TreeNode *savLeft = root->left;
+            root->left = new TreeNode(v);
+            root->left->left = savLeft;
+            
+            TreeNode *savRight = root->right;
+            root->right = new TreeNode(v);
+            root->right->right = savRight;
+            return;
+        }
+        helper(root->left, v, d, cd + 1);
+        helper(root->right, v, d, cd + 1);
+    }
+    TreeNode* addOneRow(TreeNode* root, int v, int d) {
+        if (d == 1) {
+            TreeNode *newRoot = new TreeNode(v);
+            newRoot->left = root;
+            return newRoot;
+        }
+        helper(root, v, d, 2);
+        return root;
+    }
+```	
+
+### 958. Check Completeness of a Binary Tree
+after a null node is found, there is no more nodes in the queue.
+the key is if we found a node we need push its left and right child, does not care if it is empty
+bfs using queue.
+```cpp
+    bool isCompleteTree(TreeNode* root) {
+        
+    }
+```	
 ### 337. House robber III
 
 dynamic with tree
@@ -1148,7 +1297,24 @@ or use left first and then right, with layer index, dfs is fine
 
 basically it needs the rightmost node for each layer
 bfs or dfs to store layer index and the last one in the layer
+preorder traverse gives the desired sequence (not exact, root, right, left and right most node is visited first).
 
+```cpp
+     vector<int> rightSideView(TreeNode *root) {
+        vector<int> res;
+        recursion(root, 1, res);
+        return res;
+    }
+    
+    void recursion(TreeNode *root, int level, vector<int> &res)
+    {
+        if(root==NULL) return ;
+        if(res.size()<level) res.push_back(root->val);
+        recursion(root->right, level+1, res);
+        recursion(root->left, level+1, res);
+    }
+```
+	
 ### 173. Binary Search Tree Iterator
 
 next: next smallest
@@ -1158,8 +1324,8 @@ next smallest is always the leftmost node, so using a stack to store those nodes
 ### 449. Serialize and Deserialize BST
 
 serialize to a string and deserialize the string into a BST
-serialize output to a stringstream
-deserialize input from a stringstream
+serialize output to a stringstream using preorder
+deserialize input from a stringstream using preorder
 use a # speical char for the null node which is more convenient
 the following code uses preorder
 ```cpp
@@ -1187,7 +1353,85 @@ the following code uses preorder
 ### 863. All Nodes Distance K in Binary Tree
 
 find all nodes with distance to k
-one method: convert the tree to an undirectional graph and then using bfs
+one method: convert the tree to an undirectional graph and then using bfs or dfs
+
+```cpp
+     vector<int> distanceK(TreeNode* root, TreeNode* target, int K) {
+        unordered_map<int,vector<int>> adj;
+		build_map(root,adj);
+		queue<int> q;
+		unordered_set<int> visited;
+        q.push(target->val);
+        visited.insert(target->val);
+		int step=K;
+		vector<int> ans;
+        
+		while(step && q.size())
+		{
+			int sz=q.size();
+            for(int i=0;i<sz;i++)
+			{
+				int val=q.front();
+				q.pop();
+				vector<int>& vt=adj[val];
+                //if(visited.count(val)) continue;
+				for(int t: vt) 
+                    if(!visited.count(t)) {
+                        q.push(t);visited.insert(t);
+                    }
+			}
+			step--;
+		}
+        //remaining in the queue are the answer
+        while(q.size()) ans.push_back(q.front()),q.pop();
+		return ans;
+    }
+	void build_map(TreeNode* root,unordered_map<int,vector<int>>& adj)
+	{
+		if(!root) return;
+		if(root->left) {
+			adj[root->val].push_back(root->left->val);
+			adj[root->left->val].push_back(root->val);
+		}
+		if(root->right){
+			adj[root->val].push_back(root->right->val);
+			adj[root->right->val].push_back(root->val);
+		}
+		build_map(root->left,adj);
+		build_map(root->right,adj);
+	}
+```
+1. use TreeNode* instead of pointer (if duplicate allowed)
+2. do not put too much inside the bfs loop, just exit when step becomes 0
+
+### 971. Flip Binary Tree To Match Preorder Traversal
+check if we can flip left right child to get the preorder traversal given.
+return the flipped nodes if not possible return {-1}
+approach: 
+preorder: root, left, right.
+root value not the same, false
+left value not the same with array value, swap left and right
+else go to left and right
+
+```cpp
+    vector<int> res;
+    int i = 0;
+    vector<int> flipMatchVoyage(TreeNode* root, vector<int>& v) {
+        return dfs(root, v) ? res : vector<int>{-1};
+    }
+
+    bool dfs(TreeNode* node, vector<int>& v) {
+        if (!node) return true;
+        if (node->val != v[i++]) return false;
+        if (node->left && node->left->val != v[i]) {
+            res.push_back(node->val);
+            return dfs(node->right, v) && dfs(node->left, v);
+        }
+        return dfs(node->left, v) && dfs(node->right, v);
+    }
+```
+dfs is preorder traversal
+need return the parent node. not the left/right.
 
 ### 96. Unique Binary Search Trees
 
@@ -1201,6 +1445,26 @@ this is a dp problem: dp[i]=sum(dp[j-1]*dp[i-j]) j from 1 to i
 first we need to know how to judge two trees are equal
 then we need compare each nodes (traverse)
 The way: convert a tree into a string and store into a hashset or map. Then we traverse and check if the string already appeared.
+post order: the root is the last one
+```cpp
+    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+		unordered_map<string,int> mp;
+		vector<TreeNode*> ans;
+		postorder(root,ans,mp);
+		return ans;
+    }
+	string postorder(TreeNode* root,vector<TreeNode*>& ans,unordered_map<string,int>& mp)
+	{
+		if(!root) return "#";
+		string s1=postorder(root->left,ans,mp);
+		string s2=postorder(root->right,ans,mp);
+		string s=s1+","+s2+","+to_string(root->val);
+		if(mp[s]==1) ans.push_back(root);
+		mp[s]++;
+		return s;
+	}
+```	
+To use a string, we need keep the null node in the string, otherwise we cannot differentiate the left/right.
 
 ### 129. Sum Root to Leaf Numbers
 
@@ -1258,7 +1522,28 @@ level by level and then reverse all even layers
 ### 662. Maximum Width of Binary Tree
 
 the left right largest difference
-can use full binary tree array storage
+can use full binary tree array storage (null node in the middle also counts)
+We know that a binary tree can be represented by an array (assume the root begins from the position with index 1 in the array). 
+If the index of a node is i, the indices of its two children are 2*i and 2*i + 1.
+```cpp
+    int widthOfBinaryTree(TreeNode* root) {
+       //it can be calculated by the left most branch and the right most branch,  on the same layer
+        //bfs search to get the left and rightmost nodes and get the max distance
+        //use an array to store the left-most node number for each layer and then preorder traversal
+        vector<int> lefts;
+        return dfs(root,0,1,lefts);
+    }
+    int dfs(TreeNode* root, int level, int id,vector<int>& lefts) //get the width of the tree
+    {
+        if(!root) return 0;
+        if(level>=lefts.size()) lefts.push_back(id); //the first non-empty node
+        //cout<<level<<" "<<id<<" "<<lefts[level]<<endl;
+        int d1=dfs(root->left,level+1,id*2,lefts);//max width of left subtree-
+        int d2=dfs(root->right,level+1,id*2+1,lefts); //max width of right subtree
+        return max(id-lefts[level]+1,max(d1,d2)); //current layer max width vs left right.
+    }
+
+```	
 
 ### 450. Delete Node in a BST
 
@@ -1271,7 +1556,28 @@ Once the node is found, have to handle the below 4 cases
 - node only has left subtree- return the left subtree
 - node only has right subtree- return the right subtree
 - node has both left and right - find the minimum value in the right subtree, set that value to the currently found node, then recursively delete the minimum value in the right subtree
-
+```cpp
+    TreeNode* deleteNode(TreeNode* root, int key) {
+		if(!root) return 0;
+		if(key<root->val) root->left=deleteNode(root->left,key);
+		else if(key>root->val) root->right=deleteNode(root->right,key);
+		else //find the node
+		{
+			if(!root->left) return root->right;
+			else if(!root->right) return root->left;
+			TreeNode* minNode=findMin(root->right);
+			root->val=minNode->val;
+			root->right=deleteNode(root->right,root->val);
+		}
+		return root;
+    }
+	TreeNode* findMin(TreeNode* root)
+	{
+		while(root->left) root=root->left;
+		return root;
+	}
+```
+	
 ### 113. Path Sum II
 
 find the root to leaf path sum=target
@@ -1297,7 +1603,37 @@ pre: root left right
 in: left root right
 get the root from the preorder and divide left and right
 do it recursively
+```cpp
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
 
+        return helper(preorder,0,preorder.size(),inorder,0,inorder.size());
+    
+    }
+
+    TreeNode* helper(vector<int>& preorder,int i,int j,vector<int>& inorder,int ii,int jj)
+    {
+        // tree        8 4 5 3 7 3
+        // preorder    8 [4 3 3 7] [5]
+        // inorder     [3 3 4 7] 8 [5]
+
+        // 每次从 preorder 头部取一个值 mid，作为树的根节点
+        // 检查 mid 在 inorder 中 的位置，则 mid 前面部分将作为 树的左子树，右部分作为树的右子树
+
+        if(i >= j || ii >= j)
+            return NULL;
+
+        int mid = preorder[i];
+        auto f = find(inorder.begin() + ii,inorder.begin() + jj,mid);
+
+        int dis = f - inorder.begin() - ii;
+
+        TreeNode* root = new TreeNode(mid);
+        root -> left = helper(preorder,i + 1,i + 1 + dis,inorder,ii,ii + dis);
+        root -> right = helper(preorder,i + 1 + dis,j,inorder,ii + dis + 1,jj);
+        return root;
+    }
+```
+	
 ### 106. Construct Binary Tree from Inorder and Postorder Traversal
 
 inorder: left root right
