@@ -1,10 +1,18 @@
 # Tree
 Generally tree is O(n) complexity (visiting each node just once).
+O(N^2) is generally not the optimal method
 
+height
+width
+complete tree
+traversal
+
+I put these problems from one star to 5 stars. one star problem is generally very straightforward and do not need to pay much attention
 ## easy
 easy tree problem generally involves only one recursive problem. Consider its subtree a similar problem and finally down to a single node.
 
 ## rating: *
+
 ### 589. N-ary Tree Preorder Traversal
 recursive. visit root first, and then child.
 Although we can use root+child vector, it is not very efficient. Use a helper function with the building vector is better.
@@ -24,6 +32,7 @@ Although we can use root+child vector, it is not very efficient. Use a helper fu
             helper(t,ans);
     }
 ```	
+
 ### 590. N-ary Tree Postorder Traversal: recursive
 similar to 589
 ```cpp
@@ -54,6 +63,7 @@ search in a bst is log(n)
 ```	
 
 ### 559. Maximum Depth of N-ary Tree
+
 depth=1+max(children depth), for the node, it is depth=1. (otherwise will be correct)
 ```cpp    
 	int maxDepth(Node* root) {
@@ -96,7 +106,6 @@ inorder traverse
     void inorder(TreeNode* root,int h,int& maxh)
     {
         if(!root) return;
-        
         inorder(root->left,h+1,maxh);
         maxh=max(h,maxh);
         inorder(root->right,h+1,maxh);
@@ -110,7 +119,37 @@ more concise:
         return 1+max(maxDepth(root->left),maxDepth(root->right));
     }
 ```
-	
+
+### 617. Merge Two Binary Trees
+recursive. reduce to left and right subtree and a single node.
+
+```cpp
+    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
+        if(!t1 && !t2) return 0;
+        if(!t1) return t2;
+        if(!t2) return t1;
+        t1->val+=t2->val;
+        t1->left=mergeTrees(t1->left,t2->left);
+        t1->right=mergeTrees(t1->right,t2->right);
+        return t1;
+    }
+```
+
+### 100. Same Tree
+compare its subtree and the root
+```cpp
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(!p && !q) return 1;
+        if(!p || !q) return 0;
+        return p->val==q->val && isSameTree(p->left,q->left) && isSameTree(p->right,q->right);
+    }
+```
+
+
+## rating: **	
+
+which may need a little bit more thinking or with extra data structure to record information while traverse.
+
 ### 429. N-ary Tree Level Order Traversal: bfs
 be sure to deal with null
 ```cpp
@@ -152,22 +191,6 @@ We can also use inorder or any order traverse to form a depth vs nodes data stru
     }
 ```
 	
-## rating: **	
-### 617. Merge Two Binary Trees
-recursive. reduce to left and right subtree and a single node.
-
-```cpp
-    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
-        if(!t1 && !t2) return 0;
-        if(!t1) return t2;
-        if(!t2) return t1;
-        t1->val+=t2->val;
-        t1->left=mergeTrees(t1->left,t2->left);
-        t1->right=mergeTrees(t1->right,t2->right);
-        return t1;
-    }
-```
-
 ### 965. Univalued binary tree
 this involves the compare of two nodes: root with left, root with right. So the smallest problem is:
 single node: true
@@ -268,16 +291,6 @@ or using root->left->left, root->right->left
     }
 ```
 	
-### 100. Same Tree
-compare its subtree and the root
-```cpp
-    bool isSameTree(TreeNode* p, TreeNode* q) {
-        if(!p && !q) return 1;
-        if(!p || !q) return 0;
-        return p->val==q->val && isSameTree(p->left,q->left) && isSameTree(p->right,q->right);
-    }
-```
-
 ### 107. Binary Tree Level Order Traversal II
 from bottom up: we can still use up down and reverse the answer.
 preorder: to get the root first and store in the vector
@@ -300,6 +313,9 @@ preorder: to get the root first and store in the vector
 
 
 ## rating: ***
+
+these problems need more thinking either structure reorganize or more subtle information collection while traverse
+understanding the different order traversal thoroughly may help a lot. May need other kind of traversal sometimes. do not limit those 3 types.
 
 ### 897. Increasing Order Search Tree
 convert the inorder sequence into a only right tree
@@ -395,7 +411,7 @@ trying a reverse in-order traverse and do the sum in place (postorder is not acc
 ```	
 
 ### 1022. Sum of Root To Leaf Binary Numbers
-preorder traverse
+preorder traverse, with value passing. We shall understand that the preorder traverse is basically dfs!!!
 
 ```cpp
 	int sumRootToLeaf(TreeNode* root) {
@@ -474,11 +490,13 @@ or to avoid the removal of last two chars.
 ```	
 
 ### 671. Second Minimum Node In a Binary Tree
-Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this tree has exactly two or zero sub-node. If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes.
+Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this tree has exactly two or zero sub-node. 
+If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes.
 Given such a binary tree, you need to output the second minimum value in the set made of all the nodes' value in the whole tree.
 If no such second minimum value exists, output -1 instead.
 traversal and put in a min heap. (does not use the fact provided in the question)
 the root is the min, we just need to find the first one who is bigger than the root.
+
 ```cpp
     int findSecondMinimumValue(TreeNode* root) {
         if(!root) return -1;
@@ -499,6 +517,7 @@ the root is the min, we just need to find the first one who is bigger than the r
 R>node>L, the node is the parent
 node>R, goes to left
 node<L: goes to right
+
 ```cpp
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
        if(root->val>p->val && root->val>q->val) 
@@ -534,6 +553,7 @@ node=node, left subtree=left subtree, right subtree=right subtree
 again two recursive problem:
 recursively check all subtree with t
 another: recursively check two trees are the same
+
 ```cpp
     bool isSubtree(TreeNode* s, TreeNode* t) {
       if(!s && !t) return 1;
@@ -550,6 +570,12 @@ another: recursively check two trees are the same
         return is_same(s->left,t->left) && is_same(s->right,t->right);
     }
 ```
+Note: this is O(N*M) approach. a recursive problem involves another recursive problem.
+generally reducing O(N^2) to linear using memoization is a direct effective way.
+the memoization shall include s and t root node and results. hash table using s-val + t-val string is also OK.
+
+other O(N) needs careful study to bring out the extra information while travese.
+
 
 ### 110. Balanced Binary Tree
 check if tree left and right height difference <=1
@@ -566,12 +592,35 @@ one recursive: the height of a tree
         return max(height(root->left),height(root->right))+1;
     }
 ```	
+similarly this is O(N^2) again.
+
+the second method is based on DFS. Instead of calling depth() explicitly for each child node, we return the height of the current node in DFS recursion. 
+When the sub tree of the current node (inclusive) is balanced, the function dfsHeight() returns a non-negative value as the height. Otherwise -1 is returned. 
+According to the leftHeight and rightHeight of the two children, the parent node could check if the sub tree is balanced, and decides its return value.
+```cpp
+	int dfsHeight (TreeNode *root) {
+        if (root == NULL) return 0;
+        
+        int leftHeight = dfsHeight (root -> left);
+        if (leftHeight == -1) return -1;
+        int rightHeight = dfsHeight (root -> right);
+        if (rightHeight == -1) return -1;
+        
+        if (abs(leftHeight - rightHeight) > 1)  return -1;
+        return max (leftHeight, rightHeight) + 1;
+    }
+    bool isBalanced(TreeNode *root) {
+        return dfsHeight (root) != -1;
+    }
+```	
+In this bottom up approach, each node in the tree only need to be accessed once. Thus the time complexity is O(N), better than the first solution.
 
 ### 501. Find Mode in Binary Search Tree
 most frequency element, allows duplicate
 left <=node, right>=node
 in order traversal will give the number of duplicate number
 using a map to record element vs frequency
+
 ```cpp
     vector<int> findMode(TreeNode* root) {
        int maxcnt=INT_MIN;
@@ -624,8 +673,6 @@ dfs to get the shortest path
         if(root->right) inorder(root->right,h+1,minh);
     }
 ```
-	
-## rating ****	
 
 ### 108. Convert Sorted Array to Binary Search Tree
 need to be a balanced tree. 
@@ -645,6 +692,10 @@ split the array in balanced way and recursively build the subtree
     }
 ```
 	
+## rating ****	
+these problems generally has a not so clear recursive relation and need to be very logic.
+generally while traverse, we shall collect more than one type of information, and then is very delicate.
+	
 ### 563. Binary Tree Tilt (**)
 Given a binary tree, return the tilt of the whole tree.
 The tilt of a tree node is defined as the absolute difference between the sum of all left subtree node values and the sum of all right subtree node values. Null node has tilt 0.
@@ -653,6 +704,7 @@ This is not so simple.
 it involves: a subtree sum (it is a recursive problem)
 tilt of a node
 sum of all node's tilt
+
 ```cpp
     int findTilt(TreeNode* root) {
         //post-order traversal to get the tilt
@@ -673,12 +725,14 @@ sum of all node's tilt
         return sum;
     }
 ```
+again it is O(N^2)
 
 ### 543. Diameter of Binary Tree (**)
 diameter is the longest distance between two nodes
 again this is not so straightforward.
 - if two node need go through the root, ldepth+rdepth (a node's depth problem)
 - if not go through root, choose lmax and rmax (a node's diameter subproblem)
+
 ```cpp
     int m_maxDia = 0;
     int diameterOfBinaryTree(TreeNode* root) {
@@ -688,7 +742,7 @@ again this is not so straightforward.
     int GetDepth(TreeNode* n)
     {
         if(!n) return 0;
-         int left = GetDepth(n->left);
+        int left = GetDepth(n->left);
         int right = GetDepth(n->right);
         m_maxDia = max(m_maxDia, left + right);
         return max(left, right) + 1;
@@ -716,6 +770,7 @@ second, for starting with a given node, we start from 0 and do dfs to search all
         return (prevsum==sum)+dfs_sum(root->left,sum,prevsum)+dfs_sum(root->right,sum,prevsum);
     }
 ```    
+again it is O(N^2)
 
 -------------------------------------------------------------------------------------------------
 ## medium
@@ -732,6 +787,7 @@ The right subtree is the maximum tree constructed from right part subarray divid
 Construct the maximum tree by the given array and output the root node of this tree.
 
 recursively find the max and divide into left and right
+
 ```cpp
     TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
         return helper(nums,0,nums.size());
@@ -1048,11 +1104,6 @@ C++:
 ```
 
 
-### 94. Binary Tree Inorder Traversal- iterative
-
-left node right
-put the node in stack and goes to left until no left, and then pop, go to the right
-
 ### 865. Smallest Subtree with all the Deepest Nodes
 
 Return the node with the largest depth such that it contains all the deepest nodes in its subtree.
@@ -1178,7 +1229,85 @@ this problem has the following sub problems
 ### 144. Binary Tree Preorder Traversal-iterative
 
 node, left, right
-keep pushing the right into stack
+keep pushing the right into stack.
+this is to show off your programming skill.
+```cpp
+    vector<int> preorderTraversal(TreeNode* root) {
+        stack<TreeNode*> st;
+		vector<int> ans;
+		if(!root) return ans;
+		
+		while(root)
+		{
+			ans.push_back(root->val);
+			if(root->right) st.push(root->right);
+			root=root->left;
+			if(!root && st.size()) {root=st.top();st.pop();}
+		}
+		return ans;
+    }
+```
+or more clear using below (it uses the stack push first pop last and is pretty)
+```cpp	
+    vector<int> preorderTraversal(TreeNode* root) {
+        stack<TreeNode*> st;
+		vector<int> ans;
+		if(!root) return ans;
+		st.push(root);
+		while(st.size())
+		{
+			TreeNode* p=st.top();
+			ans.push_back(p->val);
+			if(p->right) st.push_back(p->right);
+			if(p->left) st.push_back(p->left);
+		}
+		return ans;
+	}
+```
+
+
+### 94. Binary Tree Inorder Traversal
+inorder: left root right
+keep pushing left until there is no left, then push its right
+```cpp
+	vector<int> inorderTraversal(TreeNode* root) {
+		stack<TreeNode*> st;
+        vector<int> ans;
+		//push its right first, then node
+		while(root || st.size())
+		{
+			while(root) {st.push(root);root=root->left;}
+			if(st.size()) root=st.top(),st.pop();
+			ans.push_back(root->val);
+			root=root->right;
+		}
+		return ans;
+    }
+```	
+
+### 145. Binary Tree Postorder Traversal
+left right root
+we can do root right left traversal and reverse which is equivalent.
+
+```cpp
+    vector<int> postorderTraversal(TreeNode *root) {
+        stack<TreeNode*> nodeStack;
+        vector<int> result;
+        //base case
+        if(root==NULL) return result;
+        nodeStack.push(root);
+		while(!nodeStack.empty())
+		{
+			TreeNode* node= nodeStack.top();  
+			result.push_back(node->val);
+			nodeStack.pop();
+			if(node->left) nodeStack.push(node->left); //first push, last pop
+			if(node->right) nodeStack.push(node->right);
+		}
+		 reverse(result.begin(),result.end());
+		 return result;
+    }
+```	
 
 ### 684. Redundant Connection (**)
 
@@ -1970,32 +2099,6 @@ using stack to store the node and its depth.
             else {w+=c;}
         }
         return root;
-    }
-```	
-
-
-### 145. Binary Tree Postorder Traversal
-left right root
-we can do root right left traversal and reverse which is equivalent.
-
-```cpp
-    vector<int> postorderTraversal(TreeNode *root) {
-        stack<TreeNode*> nodeStack;
-        vector<int> result;
-        //base case
-        if(root==NULL)
-        return result;
-        nodeStack.push(root);
-		while(!nodeStack.empty())
-		{
-			TreeNode* node= nodeStack.top();  
-			result.push_back(node->val);
-			nodeStack.pop();
-			if(node->left) nodeStack.push(node->left);
-			if(node->right) nodeStack.push(node->right);
-		}
-		 reverse(result.begin(),result.end());
-		 return result;
     }
 ```	
 
