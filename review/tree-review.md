@@ -778,7 +778,6 @@ root val >left root->val<right
 		root->left=helper(preorder,l+1,ind);
 		root->right=helper(preorder,ind,r);
 		return root;
-		
 	}
 ```	
 note: we can use upper_bound since it satisfy 0,0,...1,1,1,...1 conditions.
@@ -1646,7 +1645,28 @@ next: the next right node.
 using the next we have a mechanism to do level traversal, and for each layer we directly update its children. next is used for this layer's traversal
 
 next is null the layer is done
-
+```cpp
+    Node* connect(Node* root) {
+        if(!root) return 0;
+		queue<Node*> dq;
+		dq.push(root);
+		while(dq.size())
+		{
+			int sz=dq.size();
+			Node* prev=0;
+			for(int i=0;i<sz;i++)
+			{
+				Node* t=dq.front();dq.pop();
+				if(t->left) dq.push(t->left);
+				if(t->right) dq.push(t->right);
+				if(prev) prev->next=t;
+				prev=t;
+			}
+		}
+		return root;
+    }
+```
+	
 ### 95. Unique Binary Search Trees II
 
 instead get the number need get the tree
@@ -1714,7 +1734,30 @@ two given nodes, not a BST
 ### 117. Populating Next Right Pointers in Each Node II
 
 tree is not full, in-place
-
+```cpp
+    Node* connect(Node* root) {
+        if(!root) return 0;
+        Node* p=root->next;
+        while(p && (!p->left && !p->right)) p=p->next;        
+		if(root->left && root->right) 
+		{
+			root->left->next=root->right;//right not processed yet.
+			if(p) root->right->next=p->left?p->left:p->right;
+		}
+		else if(root->left || root->right)
+		{
+			if(p)
+			{
+				if(root->left) root->left->next=p->left?p->left:p->right;
+				else root->right->next=p->left?p->left:p->right;
+			}
+		}
+		connect(root->right);
+        connect(root->left);
+		return root;
+    }
+```
+	
 ### 222. Count Complete Tree Nodes
 
 a complete tree depth is the leftmost nodes
@@ -1722,10 +1765,66 @@ previous layers are full and contain 2^h-1 nodes
 we can decide which side is not full
 and one side is full and otherside is not full, and it is a sub problem
 
+```cpp
+    int countNodes(TreeNode* root) {
+		if(!root) return 0;
+        int h1=depth(root->left),h2=depth(root->right);
+		if(h1>h2) return (1<<h2)+countNodes(root->left); //left>right, right is full
+		return (1<<h1)+countNodes(root->right); //left is full
+    }
+	int depth(TreeNode* root)
+	{
+		if(!root) return 0;
+		return 1+max(depth(root->left),depth(root->right));
+	}
+```
+
+### 987. Vertical Order Traversal of a Binary Tree
+vertical: left x-1 right x+1, depth is y
+some nodes may share the same position
+x,y,val, put into an array and sort using first x, then y and then val.
+
+```cpp
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+		vector<vector<int>> ans,mp;
+		preorder(root,0,0,mp);
+		sort(mp.begin(),mp.end(),
+		[](const vector<int>& a,const vector<int>& b)
+		{
+			return a[0]<b[0] || a[0]==b[0] && a[1]<b[1] || a[0]==b[0] && a[1]==b[1] && a[2]<b[2];
+		});
+		int prev=INT_MIN;
+		for(auto t: mp)
+		{
+			if(t[0]!=prev) {ans.push_back({t[2]});prev=t[0];}
+			else ans.back().push_back(t[2]);
+		}
+		return ans;
+    }
+	void preorder(TreeNode* root,int x,int y,vector<vector<int>>& mp)
+	{
+		if(!root) return;
+		mp.push_back({x,y,root->val});
+		preorder(root->left,x-1,y+1,mp);
+		preorder(root->right,x+1,y+1,mp);
+	}
+```	
 ### 98. Validate Binary Search Tree
 
 inorder traversal to see if it is sorted
-
+```cpp
+    long prev=LONG_MIN;
+    bool isValidBST(TreeNode* root) {
+        if(!root) return 1;
+        bool res=isValidBST(root->left);
+        if(prev!=LONG_MIN) 
+            res=res&&root->val>prev;
+        prev=root->val;
+        res=res&&isValidBST(root->right);
+        return res;
+    }
+```
+	
 ### 145. Binary Tree Postorder Traversal-iterative
 
 left right root
@@ -1741,7 +1840,67 @@ node i to all other nodes distance sum
 think in a graph. 
 dfs
 
+## Hard
+### 1028. Recover a Tree From Preorder Traversal
+using stack to store the node and its depth. 
+```cpp
+    TreeNode* recoverFromPreorder(string S) {
+        stack<pair<TreeNode*,int>> st;
+        TreeNode* root=0;
+        string w;
+        int depth=0,prev_depth=0;
+        S+='-';
+        for(int i=0;i<S.size();i++)
+        {
+            char c=S[i];
+            if(c=='-') 
+            {
+                if(w.size()) 
+                {
+                    int val=stoi(w);
+                    TreeNode* t=new TreeNode(val);
+                    if(st.empty()) root=t;
+                    else
+                    {
+                        while(st.size() && st.top().second>depth) st.pop();
+                        if(st.top().second==depth) {st.pop();st.top().first->right=t;}
+                        else st.top().first->left=t;
+                    }
+                    st.push(make_pair(t,depth));
+                    depth=0;
+                    w="";
+                }
+                depth++;
+            }
+            else {w+=c;}
+        }
+        return root;
+    }
+```	
 
 
+### 145. Binary Tree Postorder Traversal
+left right root
+we can do root right left traversal and reverse which is equivalent.
 
+```cpp
+    vector<int> postorderTraversal(TreeNode *root) {
+        stack<TreeNode*> nodeStack;
+        vector<int> result;
+        //base case
+        if(root==NULL)
+        return result;
+        nodeStack.push(root);
+		while(!nodeStack.empty())
+		{
+			TreeNode* node= nodeStack.top();  
+			result.push_back(node->val);
+			nodeStack.pop();
+			if(node->left) nodeStack.push(node->left);
+			if(node->right) nodeStack.push(node->right);
+		}
+		 reverse(result.begin(),result.end());
+		 return result;
+    }
+```	
 
