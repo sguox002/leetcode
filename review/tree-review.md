@@ -1287,6 +1287,36 @@ bfs using queue.
 
 dynamic with tree
 
+if we rob the root, then we need skip its left and right child (sub problem)
+if we not rob the root, then we can rob the left and right
+compare the two solutions and choose the max
+
+```cpp
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+		int val=0;
+		if(root->left) val+=rob(root->left->left)+rob(root->left->right);
+		if(root->right) val+=rob(root->right->left)+rob(root->right->right);
+		return max(val+root->val,rob(root->left)+rob(root->right));
+    }
+```	
+this recursive solution TLE
+There are a lot of overlaps.
+to solve root: we need evaluate root->left, root->right, root->left->left,root->left->right,root->right->left,root->right->right
+to evaluate root->left and we need to evaluate root->left->left and root->left->right again
+we may need a hashmap for memoization.
+
+```cpp
+	unordered_map<TreeNode*,int> dp;
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+		if(dp.count(root)) return dp[root];
+		int val=0;
+		if(root->left) val+=rob(root->left->left)+rob(root->left->right);
+		if(root->right) val+=rob(root->right->left)+rob(root->right->right);
+		return dp[root]=max(val+root->val,rob(root->left)+rob(root->right));
+    }
+```	
 ### 102. Binary Tree Level Order Traversal
 
 queue
@@ -1834,13 +1864,78 @@ need push root to stack, right and then left. pop them and get post order.
 
 same as 449?
 
+
+## Hard
 ### 834. Sum of Distances in Tree
 
 node i to all other nodes distance sum
 think in a graph. 
 dfs
+approach 1: iterate N nodes , each node using bfs or dfs and will get O(N^2) complexity, will TLE
+approach 2: 
+first we convert the tree into a graph using adjacent matrix.
 
-## Hard
+suppose x and y are neighboring nodes, if we break it, we divide into two subtree X and Y.
+ans(x)=x@X+y@Y+#(Y)
+x@X: distance from x to all nodes in X
+y@Y: distance from y to all nodes in Y
+#(y): number of nodes in Y (since x to y repeat n times)
+
+ans(y)=x@X+y@Y+#(X)
+so ans(x)-ans(y)=#(Y)-#(X)
+
+let us choose a node as the root.
+we break it into two parts, one with the node inside, one is its subtree. (or the Y part), X is its child part.
+count[node]: number of nodes in Y
+stsum[node]: the sum of distance fron node to nodes in Y
+
+These are two recursive problem (by repeating the scheme):
+count(node)+=count(child)
+stsum[node]+=stsum[child]+count[child]
+
+then we use the neighboring relation ans(x)=ans(y)+#(Y)-#(X) to get the answer for node x from its neighboring node
+#(Y)=N-#(X)
+
+
+```cpp
+    vector<int> sumOfDistancesInTree(int N, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(N);
+		for(auto t: edges) adj[t[0]].push_back(t[1]),adj[t[1]].push_back(t[0]);
+		vector<int> count(N,1),ans(N);
+		dfs1(adj,0,-1,count,ans); //using node 0 as the node.
+		dfs2(adj,0,-1,count,ans);
+		return ans;
+    }
+	
+	void dfs1(vector<vector<int>>& adj,int node,int parent,vector<int>& count,vector<int>& stsum)
+	{
+		for(int child: adj[node])
+		{
+			if(child!=parent)
+			{
+				dfs(adj,child,node,count,stsum);//first get its children, which is post order traversal
+				count[node]+=count[child];
+				stsum[node]+=stsum[child]+count[child];
+			}
+		}
+	}
+	
+	void dfs2(vector<vector<int>>& adj,int node,int parent,vector<int>& count,vector<int>& stsum)
+	{
+		for(int child: adj[node])
+		{
+			if(child!=parent)
+			{
+				stsum[child]=stsum[node]+N-2*count[child]; //get its child's answer and go on deeper nodes
+				dfs2(adj,child,node,count,stsum);
+			}
+		}
+	}
+	
+```
+Note count initialize to 1, since the node itself is not counted.
+
+	
 ### 1028. Recover a Tree From Preorder Traversal
 using stack to store the node and its depth. 
 ```cpp
@@ -1903,4 +1998,123 @@ we can do root right left traversal and reverse which is equivalent.
 		 return result;
     }
 ```	
+
+### 968. Binary Tree Cameras
+camera can monitor its parent, itself and its immediate children
+return the min number of cameras to cover all the nodes
+
+see problem 337 house robber III.
+they are similar in the fact that if we install a camera, its connected nodes are covered 
+(in 337 if we rob the node, all its connected nodes cannot be robbed).
+
+consider the root node with left and right subtree
+consider the left subtree, there are 3 cases:
+left covered: 
+left not covered
+left parent covered
+
+also for right subtree:
+right covered
+right not covered
+right parent covered
+
+Greedy algorithm:
+put cameras at as high level as possible, since it can cover more (children, parents and itself)
+0: no camera at the root, and no camera at children (not monitored)
+1: no camera at the root, and at least 1 child has camera, (monitored)
+2: there is a camera at this node
+
+```cpp
+    int minCameraCover(TreeNode* root) {
+		int sum=0;
+		if(dfs(root,sum)==0) sum++;
+		return sum;
+    }
+	
+	int dfs(TreeNode* root,int& sum)
+	{
+		if(!root) return 1; //no camera, but covered
+		int l=dfs(root->left,sum),r=dfs(root->right,sum);
+		if(l==0 || r==0) //one or two children not monitored
+		{
+			sum++;return 2; //add a camera here
+		}
+		else if(l==2 || r==2) //one or two children has a camera
+			return 1;
+		else return 0; //both children are monitored but no camera. greedy choice, we are not place a camera here, but try to place on its parent
+		return -1;
+	}
+```	
+
+### 124. Binary Tree Maximum Path Sum
+the path need contain at least one node
+can contain the root or not. 
+
+A path from start to end, goes up on the tree for 0 or more steps, then goes down for 0 or more steps. Once it goes down, it can't go up. Each path has a highest node, which is also the lowest common ancestor of all other nodes on the path.
+A recursive method maxPathDown(TreeNode node) (1) computes the maximum path sum with highest node is the input node, update maximum if necessary (2) returns the maximum sum of the path that can be extended to input node's parent.
+
+```cpp
+	int maxPathSum(TreeNode* root)
+	{
+		int maxSum=INT_MIN;
+		maxPathDown(root,maxSum);
+		return maxSum;
+	}
+	
+	int maxPathDown(TreeNode* root,int& max_sum)
+	{
+		if(!root) return 0;
+		int left=max(0,maxPathDown(root->left,max_sum)); //starting from the node or continue
+		int right=max(0,maxPathDown(root->right,max_sum));//starting from 
+		max_sum=max(max_sum,left+right+root->val);
+		return max(left,right)+root->val; //the root itself, or the left /right
+	}
+```
+
+### 685. Redundant Connection II
+now it is a directed graph
+if one edge is removed, it becomes a tree.
+return the last edge to remove.
+
+```cpp
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        //use the fact that each node only has zero or one parent, and cannot be itself
+        //note: when there is a cycle and two parents, need to remove the edge in the cycle
+        //four cases: 1: loop, 2, two parents, 3, first loop then two parents 4. first two parents then loop
+        unordered_map<int,int> parent;
+        vector<int> twop(2,-1),loop(2,-1);
+        for(int i=0;i<edges.size();i++)
+        {
+            int p=edges[i][0],c=edges[i][1];
+            if(parent.count(c)) 
+            {
+                //we will first remove this edge and try later
+                twop=edges[i];
+                continue;
+            }
+            else parent[c]=p;
+            if(iscycle(c,parent)) 
+            {
+                loop=edges[i];
+                parent.erase(c);
+            }
+        }
+        if(twop[0]<0) return loop;
+        if(loop[0]<0) return twop;
+        twop[0]=parent[twop[1]];
+        return twop;
+        
+    }
+    bool iscycle(int c,unordered_map<int,int>& parent)
+    {
+        //find its ultimate parent
+        int p=c;
+        while(parent.count(c)) {c=parent[c];if(c==p) break;}
+        return p==c;
+    }
+```
+	
+
+	
+		
 
