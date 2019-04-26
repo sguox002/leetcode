@@ -1,9 +1,22 @@
-### 1. two sum
-trivial using hashmap
-O(n)
+### 1. two sum (*)
+trivial using hashmap O(n)
+sort and use two pointers O(nlogn)
 
-### 7. Reverse integer
-using stack is trivial
+```cpp
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> ms;
+        for(int i=0;i<nums.size();i++)
+        {
+            int n=nums[i];
+            if(ms.count(target-n)) return vector<int>({ms[target-n],i});
+            ms[n]=i;
+        }
+        return vector<int>();
+    }
+```	
+
+### 7. Reverse integer (*)
+using stack is trivial. 
 can do it without data structure.
 a regular trick
 ```cpp
@@ -21,13 +34,24 @@ a regular trick
         return ans;
     }
 ```
-O(logn)
+O(logn), use long to avoid overflow
 
-### 9. Palindrome Number
+### 9. Palindrome Number (*)
 two pointer, trivial
+```cpp
+    bool isPalindrome(int x) {
+        string s=to_string(x);
+        int i=0,j=s.size()-1;
+        while(i<j)
+        {
+            if(s[i]!=s[j]) return 0;
+            i++,j--;
+        }
+        return 1;
+    }
+```	
 
-
-### 13. Roman Integer
+### 13. Roman Integer (***)
 
 we can also from other direction
 ```cpp
@@ -56,13 +80,50 @@ int romanToInt(string s)
 
 2. reverse direction iteration: if current number < previous number then subtract it
 
-### 14. Longest Common Prefix
+### 14. Longest Common Prefix (*)
 trivial, 
+```cpp
+    string longestCommonPrefix(vector<string>& strs) {
+        string ans;
+        if(strs.size()==0) return ans;
+        int minlen=INT_MAX;
+        for(int i=0;i<strs.size();i++) minlen=min(minlen,(int)strs[i].size());
+        int i=0;
+        for(i=0;i<minlen;i++)
+        {
+            char c=strs[0][i];
+            for(int j=1;j<strs.size();j++)
+                if(strs[j][i]!=c) return strs[0].substr(0,i);
+        }
+        return strs[0].substr(0,i);
+    }
+```	
 
-### 20. Valid Parentheses
-using stack and check if stack is empty when done
+### 20. Valid Parentheses (**)
+using stack and check if stack is empty when done.
 
-### 21. Merge Two Sorted Lists
+```cpp
+    bool isValid(string s) {
+        stack<char> st;
+        for(int i=0;i<s.size();i++)
+        {
+            if(s[i]=='(' || s[i]=='{' || s[i]=='[') st.push(s[i]);
+            else 
+            {
+                if(st.empty()) return 0;
+                char c=st.top();st.pop();
+                bool test=(c=='(' && s[i]==')') || (c=='{' && s[i]=='}') || (c=='[' && s[i]==']');
+                if(!test) return 0;
+            }
+        }
+        return st.empty();
+    }
+```
+
+or use + for ( and - for ), which does not need any data structure. The rule is any time the number >=0
+wrong: there is more logic inside. ([)] if using +/- will be true.
+
+### 21. Merge Two Sorted Lists (***)
 using two pointer, regular practice
 ```cpp
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
@@ -88,10 +149,22 @@ using two pointer, regular practice
     }
 ```
 
-### 26. Remove Duplicates from Sorted Array	
-in place algorithm using two pointer
-
-### 27. Remove Element
+### 26. Remove Duplicates from Sorted Array	(**)
+in place algorithm using two pointer from the same start.
+```cpp
+    int removeDuplicates(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int i=0,j=1;
+        while(j<nums.size())
+        {
+            if(nums[j]!=nums[i]) nums[++i]=nums[j];
+            j++;
+        }
+        return i+1;
+    }
+```	
+### 27. Remove Element (**)
+remove all instance of val.
 in place, two pointer
 ```cpp
     int removeElement(vector<int>& nums, int val) {
@@ -105,14 +178,27 @@ in place, two pointer
     }
 ```
 
-### 28. Implement strStr()	
+### 28. Implement strStr() (*)
 brutal force or KMP
-
-### 35. Search Insert Position
+```cpp
+    int strStr(string haystack, string needle) {
+        if(needle.empty()) return 0;
+        if(haystack.empty()) return -1;
+        int m=haystack.size(),n=needle.size();
+        for(int i=0;i<=m-n;i++)
+        {
+            if(haystack.substr(i,n)==needle) return i;
+        }
+        return -1;
+    }
+```
+O(m*n)
+	
+### 35. Search Insert Position (**)
 sorted array using lower_bound >= the target O(logn)
 
 
-### 38. count and say
+### 38. count and say (***)
 Constraints
 N: [1,30]
 1->11
@@ -156,7 +242,7 @@ Trap:
 2.	k-j is the number of same digit. This is a two pointer approach
 3.  don't forget the last section.
 
-### 53. max subarray
+### 53. max subarray (***)
 Subarray sum
 Constraints: 
 has negatives
@@ -191,7 +277,7 @@ Dp[i]=A[i]+(dp[i-1]>0?dp[i-1]:0)
 
 Complexity O(n)
 
-### 58. length of last word
+### 58. length of last word (*)
 ```cpp
     int lengthOfLastWord(string s) {
       stringstream ss(s)  ;
@@ -202,7 +288,7 @@ Complexity O(n)
 ```	
 Nothing special
 
-### 66. plus one
+### 66. plus one (**)
 Digits in array format
 Corner case:
 999
@@ -223,7 +309,7 @@ Corner case:
 ```
 Digits.size()-1 for empty may get a large number and runtime error
 
-### 67. add binary
+### 67. add binary (**)
 Only note we need reverse add
 Edge case:
 One is empty, n-1 will be invalid
@@ -246,7 +332,7 @@ One is empty, n-1 will be invalid
     }
 ```
 
-### 69 sqrt(x)
+### 69 sqrt(x) (**)
 Find i*i<=x and (i+1)^2<x
 We can use binary search
 Lower boundary is 0
@@ -287,7 +373,7 @@ mid*mid>x, mid will not be an answer so r=mid-1 (but if we use this, will get wr
 when we let l=mid, we will fall into infinite loop when r=l+1, mid=(2l+1)/2=l and this keeps forever.
 so while(l+1<r) to keep the mid changes
 
-### 70. climbing stairs
+### 70. climbing stairs (**)
 Dp
 dp[1]=1
 dp[2]=2 //2 steps, 2 1 step two method
@@ -308,7 +394,7 @@ edge case: n=0,1,2
     }
 ```
 
-83. Remove Duplicates from Sorted List
+83. Remove Duplicates from Sorted List (**)
 - The head will not change so we do not need the dummy
 - we can keep the val and found the next different node
 -edge case: empty list, one list….
@@ -334,13 +420,13 @@ Traps:
 1.	empty list
 2.	check if the pointer is null to avoid runtime error
 
-### 88. Merge Sorted Array
+### 88. Merge Sorted Array (***)
 Constraints:
 Need to merge into nums1 instead create a new array
 
 Approach
 Not so straightforward
-Use two pointers
+Use two pointers (actually 3 pointers)
 When an element in num2 to insert, we append it to nums1, and then swap
 Forward is hard
 But reverse merging is much easier since the space is reserved
@@ -356,7 +442,7 @@ But reverse merging is much easier since the space is reserved
 	}
 ```
 
-### 100. Same Tree
+### 100. Same Tree (*)
 ```cpp
     bool isSameTree(TreeNode* p, TreeNode* q) {
         if(!p && !q) return 1;
@@ -369,7 +455,7 @@ Both empty, return 1
 One is empty, return 0
 We shall have two exit condition
 
-### 101. Symmetric Tree
+### 101. Symmetric Tree (**)
 Not so straightforward
 Consider a node with left and right child
 It is symmetric: left->val==right->val
@@ -391,7 +477,7 @@ Subproblem Left->right vs right->left
     }
 ```
 
-### 104. Maximum Depth of Binary Tree
+### 104. Maximum Depth of Binary Tree (*)
 ```cpp
     int maxDepth(TreeNode* root) {
        //traverse to get the max depth 
@@ -409,7 +495,7 @@ Subproblem Left->right vs right->left
     }
 ```
 
-### 107. Binary Tree Level Order Traversal II
+### 107. Binary Tree Level Order Traversal II (*)
 ```cpp   
    vector<vector<int>> levelOrderBottom(TreeNode* root) {
        vector<vector<int>> ans;
@@ -426,7 +512,7 @@ Subproblem Left->right vs right->left
         preorder(root->right,h+1,ans);
     }
 
-### 108. Convert Sorted Array to Binary Search Tree
+### 108. Convert Sorted Array to Binary Search Tree (**)
 Convert to height balanced tree
 Every time we need use the median for the root
 ```cpp
@@ -444,7 +530,7 @@ Every time we need use the median for the root
     }
 ```
 
-### 110. Balanced Binary Tree
+### 110. Balanced Binary Tree (***)
 Check if the depth difference is <=1
 isBalanced: we need compare left vs right
 each subtree we do similar things
@@ -465,7 +551,7 @@ This is typical and not so straightforward
     }
 ```
 
-### 111. Minimum Depth of Binary Tree
+### 111. Minimum Depth of Binary Tree (**)
 ```cpp    
 	int minDepth(TreeNode* root) {
         if(!root) return 0;
@@ -484,9 +570,9 @@ This is typical and not so straightforward
 ```
 //minh only can be evaluated when it is a leaf node.
 
-### 112. Path Sum
-Root to leaf node
-Check if it has such a path
+### 112. Path Sum (***)
+Root to leaf node sums to a target.
+Check if it has such a path sum to a target
 Edge case: empty tree return false
 ```cpp
     bool hasPathSum(TreeNode* root, int sum) {
@@ -500,8 +586,8 @@ Edge case: empty tree return false
 ```
 Using preorder traversal, to visit the node first so all path are visited
 
-### 118. Pascal's Triangle
-Straightforward if we use a vector<vector<int>>
+### 118. Pascal's Triangle (**)
+Straightforward if we use a vector<vector<int>>, dp
 ```cpp
     vector<vector<int>> generate(int numRows) {
         if(!numRows) return vector<vector<int>>();
@@ -519,7 +605,7 @@ Straightforward if we use a vector<vector<int>>
     }
 ```
 
-### 119. Pascal's Triangle II
+### 119. Pascal's Triangle II (***)
 Only get the kth row
 Constrains: using only O(k) memory
 Note we only use previous line memory in previous example
@@ -537,7 +623,7 @@ Since we need use old value we need iterate in reverse order
 ```
 
 
-### 121. Best Time to Buy and Sell Stock
+### 121. Best Time to Buy and Sell Stock (***)
 At most one transaction
 Need get the previous min and current max
 Prices[i]-min(prices[j] j from i-1 to 0
@@ -555,7 +641,7 @@ Prices[i]-min(prices[j] j from i-1 to 0
 	}
 ```
 
-### 122. Best Time to Buy and Sell Stock II
+### 122. Best Time to Buy and Sell Stock II (***)
 Perform any times of transaction
 ```cpp    
 	int maxProfit(vector<int>& prices) {
@@ -568,7 +654,7 @@ Perform any times of transaction
     }   
 ```
 
-### 125. Valid Palindrome
+### 125. Valid Palindrome (**)
 Two pointer, ignore non-alpha numeric chars
 ```cpp    
 	bool isPalindrome(string s) {
@@ -590,7 +676,7 @@ empty string, i<j while skipping the chars
 need to know isalnum function
 
 
-### 136. Single Number
+### 136. Single Number (**)
 ```cpp    
 	int singleNumber(vector<int>& nums) {
         int ans=0;
@@ -601,7 +687,7 @@ need to know isalnum function
 
 x^x=0
 
-### 141. Linked List Cycle
+### 141. Linked List Cycle (***)
 Use a fast and a slow. The two pointer must meet somewhere in the cycle
 ```cpp
     bool hasCycle(ListNode *head) {
@@ -620,7 +706,7 @@ Use a fast and a slow. The two pointer must meet somewhere in the cycle
 Trap:
 Use fast and fast->next not null for the condition. Otherwise will cause runtime error
 
-### 155. Min Stack
+### 155. Min Stack (**)
 A stack and retrieve min in const time
 Need another data structure
 Push update min
@@ -662,7 +748,7 @@ Traps:
 When stack empty we need initialize the min0
 Min0 shall be update when push and pop
 
-### 160. Intersection of Two Linked Lists
+### 160. Intersection of Two Linked Lists (***)
 Assume before the intersection each length is a and b
 Common length is c
 For list 1: a+c
@@ -670,12 +756,42 @@ For list 2: b+c
 When the first finished one, wait for the other to finish, then we know the difference of a and b, then we let the first finished one to walk a-b steps and we reach the intersection
 Wrong: we shall wait for the longer one to walk first for lena-lenb and then walk the same time.
 An even smarter approach: when A reaches the end, switch to B, when B reaches the end, switch to A and then the two will meet together.
-
-### 167. Two Sum II - Input array is sorted
+```cpp
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if(!headA || !headB) return 0;
+        ListNode* p1=headA, *p2=headB;
+        while(p1!=p2)
+        {
+            p1=p1->next;
+            p2=p2->next;
+            if(!p1 && !p2) return 0;
+            if(!p1) p1=headB;
+            if(!p2) p2=headA;
+            
+        }
+        return p1;
+    }
+```	
+### 167. Two Sum II - Input array is sorted (**)
 two pointer O(N)
-
-### 168. Excel Sheet Column Title
-starting index is 1
+```cpp
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        //two pointer
+        int i=0,j=numbers.size()-1;
+        while(i<j)
+        {
+            int t=numbers[i]+numbers[j];
+            if(t==target) break;
+            if(t<target) i++;
+            if(t>target) j--;
+            //i++,j--;
+        }
+        return {i+1,j+1};
+    }
+```
+	
+### 168. Excel Sheet Column Title (**)
+starting index is 1, n-1 follows 26 base
 ```cpp
     string convertToTitle(int n) {
         string s;
@@ -685,7 +801,7 @@ starting index is 1
     }
 ```
 	
-### 169. Majority Element
+### 169. Majority Element (***)
 using hashmap to count is trivial O(n) in space and time
 sort O(nlogn) and O(1)
 there is a voting algorithm which is used for finding the majority element. O(n) and O(1)
@@ -711,7 +827,7 @@ The algorithm will not, in general, find the mode of a sequence (an element that
 ```
 Note: when cnt->0 need reset it to 1
 
-### 229. Majority Element II
+### 229. Majority Element II (***)
 similarly we can use voting algorithm
 since there could be one or two candidates, we need add two counters. Second pass is required to make sure they satisify
 ```cpp
@@ -749,7 +865,7 @@ vector<int> majorityElement(vector<int>& nums) {
 ```
 
 ### 171. Excel Sheet Column Number
-base 26
+base 26. and then convert to starting index as 1
 ```cpp
     int titleToNumber(string s) {
         int res=0;
@@ -762,7 +878,7 @@ base 26
     }
 ```
 	
-### 189. Rotate Array, rating 4
+### 189. Rotate Array (***)
 
 approach 1: double the array and return begin()+k for n elements
 
@@ -795,7 +911,7 @@ most easy to implement
 ```
 traps: need make k<n by k%=n
 
-### 190. Reverse Bits
+### 190. Reverse Bits (**)
 
 1. don't misunderstand the question. It ask reverse, not 1 to 0 and 0 to 1
 
@@ -820,9 +936,9 @@ traps: need make k<n by k%=n
 be sure to double first so that the bit31 is not doubled.
 
 ### 191. Number of 1 Bits
-trivial, loop or bitset
+trivial, loop or bitset (*)
 
-### 198. House Robber
+### 198. House Robber (***)
 dp[i]=max(dp[i-1],dp[i-2]+a[i])
 boundary: 
 dp[0]=0
@@ -841,7 +957,7 @@ dp[1]=a[1]
 ```
 edge case: n==0 will runtime error
 
-### 202. Happy Number
+### 202. Happy Number (***)
 trivial: detect the cycle or 1
 ```cpp
     bool isHappy(int n) {
@@ -858,7 +974,7 @@ trivial: detect the cycle or 1
     }
 ```
 
-### 203. Remove Linked List Elements
+### 203. Remove Linked List Elements (***)
 practice removing a node
 add a dummy node to avoid head change
 subtle: 
@@ -883,7 +999,7 @@ else prev=curr, curr=curr->next
     }
 ```
 
-### 204. Count Primes
+### 204. Count Primes (***)
 basic math problem: by marking down all its multiples and remaining are all primes. need extra storage to store the flags
 n could be very large, pay attention to overflow problem (even i is int, i*i could overflow)
 ```cpp
@@ -905,7 +1021,7 @@ n could be very large, pay attention to overflow problem (even i is int, i*i cou
     }
 ```
 
-### 205. Isomorphic Strings
+### 205. Isomorphic Strings (*)
 we just map both to abc order. This is a useful trick to have a common mapping
 ```cpp
     bool isIsomorphic(string s, string t) {
@@ -926,7 +1042,7 @@ we just map both to abc order. This is a useful trick to have a common mapping
         return s1==s2;
     }
 ```
-### 206 reverse linked list
+### 206 reverse linked list (***)
 reverse can be done recursively or iteratively
 ```cpp
     ListNode* reverseList(ListNode* head) {
@@ -975,7 +1091,7 @@ class Solution {
 
 another approach is more straightforward by using a prev node. and reverse the curr->next to prev. final answer is the prev. One pass.
 
-### 217. Contains Duplicate
+### 217. Contains Duplicate (**)
 naive: i and j, O(N^2)
 sort: O(nlogn)
 hash: O(n)
@@ -990,7 +1106,7 @@ hash: O(n)
         return 0;
     }
 ```
-### 219. Contains Duplicate II
+### 219. Contains Duplicate II (**)
 index difference shall be <=k
 ```cpp
     bool containsNearbyDuplicate(vector<int>& nums, int k) {
@@ -1004,11 +1120,11 @@ index difference shall be <=k
     }
 ```
 
-### 225. Implement Stack using Queues
+### 225. Implement Stack using Queues (*)
 only support push to the back and pop to the front
 when we push an element we need pop all front and add back to it
 
-### 226. Invert Binary Tree
+### 226. Invert Binary Tree (**)
 invert root's left and right and also its subtree
 ```cpp
     TreeNode* invertTree(TreeNode* root) {
@@ -1023,7 +1139,7 @@ scalable version: recursive not good for large tree
 using stack for iterative
 using queue for bfs
 
-### 231. Power of Two
+### 231. Power of Two (*)
 check if it is power of 2
 power of 2 in binary is 10000000
 x-1 is 0111111
@@ -1050,7 +1166,7 @@ power of 4:
 - num>0
 - even bit is 1 ( num & num-1==0 and num&0x555555 to make sure it is not 2^n)
 
-### 232. Implement Queue using Stacks
+### 232. Implement Queue using Stacks (*)
 when we push to a stack, it is on the top, 
 when we pop we need pop the bottom elements
 
@@ -1092,7 +1208,7 @@ this needs extra storage: another stack, which means we need two stacks
 ```
 Note: possible bug: only when output is empty we can correctly reverse the stack.
 
-### 234. Palindrome Linked List
+### 234. Palindrome Linked List (***)
 the approach: use a fast and slow pointer to get the mid point and then compare the first half and second half
 edge case:
 0 node:
@@ -1150,7 +1266,7 @@ possible problem:
 2. reverse list shall return prev instead of head (it is null)
 3. reverse list in this is more clear.
 
-### 235. Lowest Common Ancestor of a Binary Search Tree
+### 235. Lowest Common Ancestor of a Binary Search Tree (***)
 the node is on left or on right or the root is the ancestor
 ```cpp
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
@@ -1173,7 +1289,7 @@ p,q<root
 other
 
 
-### 237. Delete Node in a Linked List
+### 237. Delete Node in a Linked List (**)
 Only access to that node
 The approach: replace the value of current node to next node’s value and delete next node (so the node cannot be the tail)
 ```cpp
@@ -1183,11 +1299,11 @@ The approach: replace the value of current node to next node’s value and delet
     }
 ```
 
-### 242. Valid Anagram
+### 242. Valid Anagram (*)
 1. same hashmap
 2. sort
 
-### 257. Binary Tree Paths
+### 257. Binary Tree Paths (***)
 Get all path
 Preorder traverse with backtracking
 ```cpp
@@ -1212,7 +1328,7 @@ Preorder traverse with backtracking
     }
 ```
 
-### 258. Add Digits
+### 258. Add Digits (***)
 Try O(1) run time without any loop/recursion
 The problem, widely known as digit root problem, has a congruence formula:
 https://en.wikipedia.org/wiki/Digital_root#Congruence_formula
@@ -1224,7 +1340,7 @@ We are looking for the digit
 Sum(Ai*10^i)-sum(Ai)=sum(Ai*9999…) and this %9==0
 So the two numbers has the same remainder if %9
 
-### 263. Ugly Number
+### 263. Ugly Number (*)
 Very trial except input=0
 
 ### 268. Missing Number
