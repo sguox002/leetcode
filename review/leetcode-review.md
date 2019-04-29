@@ -1,4 +1,34 @@
 # leetcode review
+data structure:
+array
+string
+stack
+queue
+linked list
+hashmap
+heap
+tree
+trie
+graph
+
+need to be familiar with each data structure, inside layout and stl and common usage.
+
+algorithm
+sorting
+divide and conquer
+dynamic programming
+recursive
+math
+bfs/dfs
+disjoint set
+greedy
+backtracking
+bits
+two pointer
+binary search
+
+learning on subject could be most efficient. Focus on understanding some key points in the subject and gain experience and inuition.
+we will focus on some subject and put similar problems together so we can be more efficient.
 
 # Chapter 1. Tree
 
