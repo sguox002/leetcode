@@ -400,6 +400,24 @@ pay attention to starting index 0
 the base is 26.  (27-1)%26-->10
 0+1->A
 1-1->0->A
+
+consider the letter 'A' to have a value of 1, 'B'->2 ..... 'Z'->26
+note that in the above notation, values are 1-based
+
+here our Radix (R) == 26
+
+the final value of a number X Y Z = X * R^2 + Y * R + Z
+
+this looks similar to base-10 decimal number but the biggest difference is that the numbers on every digit starts with 1, instead of 0., and the max on each digit goes up to R (Radix) instead of R-1
+
+for example
+Z== Radix
+then next number is AA = R + 1 = Z+1
+ZZ = R * R + R
+next number is AAA = 1*R^2 + 1 * R + 1 = ZZ +1
+
+so from the AAA notation to their sequence number (decimal) it's easy, but the other way is a bit tricky due to the way % and / operates
+
 ```cpp
     string convertToTitle(int n) {
         //
@@ -422,6 +440,8 @@ Z-26
 
 again 26 base
 AA: c-'A'+1 is the number and then *26^n
+
+
 ```cpp
     int titleToNumber(string s) {
         //base 26
