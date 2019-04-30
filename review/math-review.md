@@ -530,9 +530,230 @@ two rect overlap
 224. Basic Calculator
 supports + - for non-negative numbers and ()
 
+Simple iterative solution by identifying characters one by one. One important thing is that the input is valid, which means the parentheses are always paired and in order.
+Only 5 possible input we need to pay attention:
+
+digit: it should be one digit from the current number
+'+': number is over, we can add the previous number and start a new number
+'-': same as above
+'(': push the previous result and the sign into the stack, set result to 0, just calculate the new result within the parenthesis.
+')': pop out the top two numbers from stack, first one is the sign before this pair of parenthesis, second is the temporary result before this pair of parenthesis. We add them together.
+Finally if there is only one number, from the above solution, we haven't add the number to the result, so we do a check see if the number is zero.
+
+```cpp
+	int calculate(string s)
+	{
+		stack<int> st;
+		int res=0,num=0,sign=1;
+		for(char c: s)
+		{
+			if(isdigit(c)) num=10*num+(c-'0');//to avoid overflow add ()
+			else if(c=='+')
+			{	
+				res+=sign*num;
+				num=0,sign=1;
+			}
+			else if(c=='-')
+			{
+				res+=sign*num;
+				num=0,sign=-1;
+			}
+			else if(c=='(')
+			{
+				st.push(res);
+				st.push(sign);
+				sign=1,res=0;
+			}
+			else if(c==')')
+			{
+				res+=sign*num;
+				num=0;
+				res*=st.top(),st.pop();
+				res+=st.top(),st.pop();
+			}
+		}
+		if(num) res+=sign*num;
+		return res;
+	}
+```
 
 
+231. Power of Two
+n&(n-1)
+
+326. Power of Three
+3^k is factor of 3^max 
+
+233. Number of Digit One
+Given an integer n, count the total number of digit 1 appearing in all non-negative integers less than or equal to n.
+log(n) algorithm
+divide and conquer
+
+For every digit in n (Suppose n = 240315, the digits are 2, 4, 0, 3, 1, 5)，I respectively count the number of digit 1 assuming the position of current digit is 1 and other digits of n is arbitrary.
+
+For example, I select 3 in n as the current digit, and I suppose the position of 3 is 1.
+
+The highn is the number composed with the digits before the current digit. In the example, highn = 240;
+
+The lown is the number composed with the digits after the current digit. In the example, lown = 15.
+
+The lowc = 10 ^ (the number of lower digits). In the example, lowc = 100;
+
+As curn = 3 and curn > 1, (highn * 10 + 1) must be less than (highn * 10 + curn). Then the higher part can be 0 ~ highn, the lower part can be 0 ~ (lowc-1), and the current result = (highn + 1) * lowc.
+
+```cpp
+int countDigitOne(int n) {
+        long long int res(0);
+        int highn(n), lowc(1), lown(0);
+        while(highn > 0){
+            int curn = highn % 10;
+            highn = highn / 10;
+            if(1 == curn){
+                //higher: 0~(highn-1);  lower:  0 ~ (lowc-1)
+                res += highn * lowc;
+                //higher: highn ~ highn;     lower:0~lown
+                res += lown + 1;
+            }else if(0 == curn){  
+                //curn < 1
+               //higher: 0~(highn-1);  lower:  0 ~ (lowc-1)
+                res += highn * lowc;
+            }else{              
+                //curn > 1
+                res += (highn + 1) * lowc;
+            }
+            //update lown and lowc
+            lown = curn * lowc + lown;
+            lowc = lowc * 10;
+        }
+        return res;
+    }
+```
 	
+258. Add Digits
+Given a non-negative integer num, repeatedly add all its digits until the result has only one digit.
+do it in O(1)
+The problem, widely known as digit root problem, has a congruence formula:
+
+https://en.wikipedia.org/wiki/Digital_root#Congruence_formula
+For base b (decimal case b = 10), the digit root of an integer is:
+
+dr(n) = 0 if n == 0
+dr(n) = (b-1) if n != 0 and n % (b-1) == 0
+dr(n) = n mod (b-1) if n % (b-1) != 0
+or
+
+dr(n) = 1 + (n - 1) % 9
+```cpp
+    int addDigits(int num) {
+        return 1+(num-1)%9;
+    }
+```
+	
+
+263. Ugly Number
+only has 2,3,5 factor
+recursive or iterative dividing 2,3,5 until is 1
+
+```cpp
+    bool isUgly(int num) {
+        if(!num) return 0;
+       while(num%2==0)  num/=2;
+        while(num%3==0) num/=3;
+        while(num%5==0) num/=5;
+        return num==1;
+    }
+```
+	
+264. Ugly Number II
+see dp
+```cpp
+    int nthUglyNumber(int n) {
+		if(n==0) return 0;
+		if(n==1) return 1;
+		int i=0,j=0,k=0;
+		vector<int> dp(n);
+		dp[0]=1;
+		for(int t=1;t<n;t++)
+		{
+			int curr=min(dp[i]*2,min(dp[j]*3,dp[k]*5));
+			if(curr==dp[i]*2) i++;
+			if(curr==dp[j]*3) j++;
+			if(curr==dp[k]*5) k++;
+			dp[t]=curr;
+		}
+		return dp[n-1];
+    }
+```
+
+313. Super Ugly Number
+just replace k pointers using dp
+
+
+268. Missing Number
+0 to n, one is missing.
+xor 1 to n and identical one goes to 0
+or add together
+```cpp
+    int missingNumber(vector<int>& nums) {
+        int tsum=accumulate(nums.begin(),nums.end(),0);
+        int n=nums.size();
+        return n*(n+1)/2-tsum;
+    }	
+```	
+
+273. Integer to English words
+1000 is the subproblem.
+
+```cpp
+string LESS_THAN_20[] = {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+string TENS[] = {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+string THOUSANDS[] = {"", "Thousand", "Million", "Billion"};
+
+
+class Solution {
+public:
+    string numberToWords(int num) {
+		if(num==0) return "Zero";
+		string ans;
+		int i=0;
+		while(num)
+		{
+			if(num%1000)
+				ans=helper(num%1000)+THOUSANDS[i]+" "+ans;
+			num/=1000;
+			i++;
+		}
+        while(ans.back()==' ') ans.pop_back();//remove trailing space
+        
+		return ans;
+    }
+	
+	string helper(int num)
+	{
+        //cout<<num<<endl;
+		if(num==0) return "";
+		if(num<20) return LESS_THAN_20[num]+" ";
+		if(num<100) return TENS[num/10]+" "+helper(num%10);
+		return LESS_THAN_20[num/100]+" Hundred "+helper(num%100);
+	}
+```	
+
+279. Perfect Squares
+see dp for knapsack
+```cpp
+    int numSquares(int n) {
+		vector<int> dp(n+1,INT_MAX);
+        dp[0]=0;
+		dp[1]=1; //1=1*1
+		for(int i=2;i<=n;i++)
+		{
+			for(int j=sqrt(i);j>=1;j--)
+				dp[i]=min(dp[i],dp[i-j*j]+1);
+		}
+		return dp[n];
+    }
+```	
+
 942. DI String Match
 return any permutation matching the DI string
 one solution: We track high (h = N - 1) and low (l = 0) numbers within [0 ... N - 1]. When we encounter 'I', we insert the current low number and increase it. With 'D', we insert the current high number and decrease it. In the end, h == l, so we insert that last number to complete the premutation.
@@ -621,20 +842,6 @@ the area of a triangle using 3 points: the area formula also works for other sha
     }
 ```    
 
-258. Add Digits
-Given a non-negative integer num, repeatedly add all its digits until the result has only one digit.
-do it in O(1)
-The problem, widely known as digit root problem, has a congruence formula:
-
-https://en.wikipedia.org/wiki/Digital_root#Congruence_formula
-For base b (decimal case b = 10), the digit root of an integer is:
-
-dr(n) = 0 if n == 0
-dr(n) = (b-1) if n != 0 and n % (b-1) == 0
-dr(n) = n mod (b-1) if n % (b-1) != 0
-or
-
-dr(n) = 1 + (n - 1) % 9
 
 
 
@@ -649,9 +856,6 @@ x = minNum + m
         //since it always covers the (0,0), we only need track the right bottom point
         //it is the min of all the x and min of all the y
         
-268. Missing Number
-0 to n, one is missing.
-xor 1 to n and identical one goes to 0
 
 628. Maximum Product of Three Numbers
 sort the array. It may contains negatives.
@@ -693,19 +897,10 @@ rec1[0]<rec2[2] && rec2[0]<rec1[2] && rec1[1]<rec2[3] && rec2[1]<rec1[3];
 415. Add Strings
 reverse and add
 
-231. Power of Two
-n&(n-1)
-
-326. Power of Three
-3^k is factor of 3^max 
 
 
 66. Plus One
 MSB is at the front, so we add from the end
-
-263. Ugly Number
-only has 2,3,5 factor
-recursive or iterative dividing 2,3,5 until is 1
 
 645. Set Mismatch
 1 to n, one number is changed to another number. find the missing number
@@ -935,8 +1130,6 @@ Divisors come in pairs, like i=12 has divisors 1 and 12, 2 and 6, and 3 and 4. E
 
 So just count the square numbers.
 
-313. Super Ugly Number
-just replace k pointers using dp
 
 593. Valid Square
 4 points if form a square
@@ -944,8 +1137,7 @@ C(4,2) to calculate the side length, 4 same and 2 same
 
 using hashset to count only two
 
-279. Perfect Squares
-see dp for knapsack
+
 
 640. Solve the Equation
 find the = and move all x items to left and non-x items to right
@@ -998,8 +1190,6 @@ public:
 };
 ```
 
-264. Ugly Number II
-see dp
 
 396. Rotate Function
 ```cpp
