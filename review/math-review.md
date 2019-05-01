@@ -754,6 +754,87 @@ see dp for knapsack
     }
 ```	
 
+319. Bulb Switcher
+n bulbs from 1 to n, from 2 to n toggle all its multiples. Number of lights left.
+A bulb ends up on if it is switched an odd number of times.
+
+Call them bulb 1 to bulb n. Bulb i is switched in round d if and only if d divides i. So bulb i ends up on if and only if it has an odd number of divisors.
+
+Divisors come in pairs, like i=12 has divisors 1 and 12, 2 and 6, and 3 and 4. Except when i is a square, like 36 has divisors 1 and 36, 2 and 18, 3 and 12, 4 and 9, and double divisor 6. So bulb i ends up on if and only if i is a square.
+
+So just count the square numbers.
+
+335. Self Crossing
+You are given an array x of n positive numbers. You start at point (0,0) and moves x[0] metres to the north, then x[1] metres to the west, x[2] metres to the south, x[3] metres to the east and so on. In other words, after each move your direction changes counter-clockwise.
+
+Write a one-pass algorithm with O(1) extra space to determine, if your path crosses itself, or not.
+
+There are only two cases which not cross
+1. keeps shrinking
+2. keeps growing
+
+if cross, it must first cross the recent loop. so we do not have to consider all previous
+the idea is fixed the line 1
+4th line cross line 1
+5th line cross line 1
+6th line cross line 1
+7th line cross line 1 (same as 7th cross line 2)
+
+```cpp
+boolean isSelfCrossing(int[] x) {
+        int l = x.length;
+        if(l <= 3) return false;
+        
+        for(int i = 3; i < l; i++){
+            if(x[i] >= x[i-2] && x[i-1] <= x[i-3]) return true;  //Fourth line crosses first line and onward
+            if(i >=4)
+            {
+                if(x[i-1] == x[i-3] && x[i] + x[i-4] >= x[i-2]) return true; // Fifth line meets first line and onward
+            }
+            if(i >=5)
+            {
+                if(x[i-2] - x[i-4] >= 0 && x[i] >= x[i-2] - x[i-4] && x[i-1] >= x[i-3] - x[i-5] && x[i-1] <= x[i-3]) return true;  // Sixth line crosses first line and onward
+            }
+        }
+        return false;
+    }
+```
+
+343. Integer Break
+Given a positive integer n, break it into the sum of at least two positive integers and maximize the product of those integers. 
+Return the maximum product you can get
+see dp
+dp[i] is the max product get for i
+dp[i]=max(dp[i],dp[j]*dp[i-j]) for all j
+
+math solution:
+assuming p=p1*p2*....*pk
+for pi
+if we break it into 2 and pi-2 2*(pi-2)>pi-->pi>4 
+if we break it into 3 and pi-3 3*(pi-3)>pi-->pi>4.5
+n=a*3+b*2 and the product is 3^a*2^b
+to max the product, we need more 3 than 2
+```cpp
+    public int integerBreak(int n) {
+        if(n == 2)
+            return 1;
+        else if(n == 3)
+            return 2;
+        else if(n%3 == 0)
+            return (int)Math.pow(3, n/3);
+        else if(n%3 == 1)
+            return 2 * 2 * (int) Math.pow(3, (n - 4) / 3);
+        else 
+            return 2 * (int) Math.pow(3, n/3);
+    }
+```
+	
+357. Count Numbers with Unique Digits
+from 0 to 10^n get the number of unique digits
+9*9*8*7*6...
+
+
+	
 942. DI String Match
 return any permutation matching the DI string
 one solution: We track high (h = N - 1) and low (l = 0) numbers within [0 ... N - 1]. When we encounter 'I', we insert the current low number and increase it. With 'D', we insert the current high number and decrease it. In the end, h == l, so we insert that last number to complete the premutation.
@@ -1105,12 +1186,8 @@ store the digits in sorted order string
 and then we iterate all 2^n to get same string
 check if the two string equal
 
-343. Integer Break
-see dp
 
-357. Count Numbers with Unique Digits
-from 0 to 10^n get the number of unique digits
-9*9*8*7*6...
+
 
 592. Fraction Addition and Subtraction
 need to find the lcm for all demom
@@ -1120,15 +1197,6 @@ final results need find the gcd
 first count those unique letters in each number
 after they decided, minus it from other
 
-319. Bulb Switcher
-n bulbs from 1 to n, from 2 to n toggle all its multiples. Number of lights left.
-A bulb ends up on iff it is switched an odd number of times.
-
-Call them bulb 1 to bulb n. Bulb i is switched in round d if and only if d divides i. So bulb i ends up on if and only if it has an odd number of divisors.
-
-Divisors come in pairs, like i=12 has divisors 1 and 12, 2 and 6, and 3 and 4. Except when i is a square, like 36 has divisors 1 and 36, 2 and 18, 3 and 12, 4 and 9, and double divisor 6. So bulb i ends up on if and only if i is a square.
-
-So just count the square numbers.
 
 
 593. Valid Square
