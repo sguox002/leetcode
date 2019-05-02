@@ -2721,6 +2721,309 @@ these points are all on a circle.
     }
 ```
 
-	
+964. Least Operators to Express Number
+Given a single positive integer x, we will write an expression of the form x (op1) x (op2) x (op3) x ... where each operator op1, op2, etc. is either addition, subtraction, multiplication, or division (+, -, *, or /).  For example, with x = 3, we might write 3 * 3 / 3 + 3 - 3 which is a value of 3.
+
+When writing such an expression, we adhere to the following conventions:
+
+The division operator (/) returns rational numbers.
+There are no parentheses placed anywhere.
+We use the usual order of operations: multiplication and division happens before addition and subtraction.
+It's not allowed to use the unary negation operator (-).  For example, "x - x" is a valid expression as it only uses subtraction, but "-x + x" is not because it uses negation.
+```cpp
+    int leastOpsExpressTarget(int x, int target) {
+        //dp: x-ary number to use least operations
+        //n=sum(Ai*X^i) to use less operator need to compare x^(i+1) and x^i
+        vector<int> digits;
+        while(target) {digits.push_back(target%x);target/=x;}
+        
+        int n=digits.size();
+        digits.push_back(0);//could add a carrier flag before the MSB
+        vector<int> pos(n+1),neg(n+1);
+        pos[0]=digits[0]*2;
+        neg[0]=(x-digits[0])*2; //x^0=x/x use more operations
+        for(int i=1;i<=n;i++)
+        {
+            //if use neg, we have a carrier flag to i
+            //Aix^i: add Ai times, each with i multplication
+            pos[i]=digits[i]*i+min(pos[i-1],neg[i-1]+i); 
+            //AiX^i=x^(i+1)-(x-Ai)x^i
+            neg[i]=min((x-digits[i])*i+pos[i-1],(x-digits[i]-1)*i+neg[i-1]);
+        }
+        return min(pos[n],neg[n])-1;
+    }
+```
+
+970. Powerful Integers
+Given two positive integers x and y, an integer is powerful if it is equal to x^i + y^j for some integers i >= 0 and j >= 0.
+
+Return a list of all powerful integers that have value less than or equal to bound.
+
+You may return the answer in any order.  In your answer, each value should occur at most once.
+
+```cpp
+    vector<int> powerfulIntegers(int x, int y, int bound) {
+        if(bound<2) return vector<int>();
+        if(x==1 && y==1) return vector<int>({2});
+        if(x==1 || y==1) //bound-1=y^i
+        {
+            vector<int> ans;
+            int xx=1;
+            x=max(x,y);
+            for(int i=0;i<=log(bound-1)/log(y);i++)
+            {
+                if(i) xx*=x;
+                ans.push_back(xx+1);   
+            }
+            return ans;
+        }
+        int m=log(bound-1)/log(x),n=log(bound-1)/log(y);
+        unordered_set<int> ans;
+        int xx=1,yy=1;
+        for(int i=0;i<=m;i++)
+        {
+            if(i) xx*=x;
+            yy=1;
+            for(int j=0;j<=n;j++)
+            {
+                if(j) yy*=y;
+                //cout<<xx+yy<<" ";
+                if(xx+yy<=bound) ans.insert(xx+yy);
+            }
+        }
+        return vector<int>(ans.begin(),ans.end());
+    }
+```
+
+972. Equal Rational Numbers
+expand to exceed double precision
+
+```cpp
+    bool isRationalEqual(string S, string T) {
+        return f(S) == f(T);
+    }
+
+    double f(string S) {
+        auto i = S.find("(");
+        if (i != string::npos) {
+            string base = S.substr(0, i);
+            string rep = S.substr(i + 1, S.length() - i - 2);
+            for (int j = 0; j < 20; ++j) base += rep;
+            return stod(base);
+        }
+        return stod(S);
+    }
+```	
+
+976. Largest Perimeter Triangle
+```cpp
+    int largestPerimeter(vector<int>& A) {
+       //a triangle: a+b>c a-b<c
+        sort(A.begin(),A.end(),greater<int>());
+        for(int i=0;i<A.size()-2;i++)
+        {
+            if(A[i]<A[i+1]+A[i+2]) return A[i]+A[i+1]+A[i+2];
+        }
+        return 0;
+    }
+```
+
+991. Broken Calculator
+On a broken calculator that has a number showing on its display, we can perform two operations:
+
+Double: Multiply the number on the display by 2, or;
+Decrement: Subtract 1 from the number on the display.
+Initially, the calculator is displaying the number X.
+
+Return the minimum number of operations needed to display the number Y.
+```cpp
+    int brokenCalc(int X, int Y) {
+        //every step we can choose -1 or *2
+        //greedy solution: 
+        //if Y is even, divide by 2, if Y is odd add 1
+        int res = 0;
+        while (Y > X) {
+            Y = Y % 2 > 0 ? Y + 1 : Y / 2;
+            res++;
+        }
+        return res + X - Y;        
+    }
+```
+
+1006. Clumsy Factorial
+```cpp
+    int clumsy(int N) {
+       int ans=N;
+        char op[]={'*','/','+','-'};
+        stack<int> st;
+        int j=0;
+        for(int i=N-1;i>=1;i--)
+        {
+            switch(op[j%4])
+            {
+                case '*': ans*=i;break;
+                case '/': ans/=i;break;
+                case '+': if(st.size()) {ans=st.top()-ans;st.pop();}ans+=i;break;
+                case '-': st.push(ans);ans=i;break;
+            }
+            //cout<<ans<<endl;
+            j++;
+        }
+        if(st.size()) {ans=st.top()-ans;st.pop();}
+        return ans;
+    }
+```
+mathematic: 4 as a group, and do not need extra data structure.
+(n+1)*n/(n-1)=n+1 for n>=5
+
+1009. Complement of Base 10 Integer
+```
+    int bitwiseComplement(int N) {
+        int ans=0;
+        int i=0;
+        if(N==0) return 1;
+        while(N)
+        {
+            if(N%2==0) {ans+=(1<<i);}
+            N/=2;i++;
+        }
+        return ans;
+    }	
+```
+
+1012. Numbers With Repeated Digit
+Given a positive integer N, return the number of positive integers less than or equal to N that have at least 1 repeated digit.
+
+Count res the Number Without Repeated Digit
+Then the number with repeated digits = N - res
+
+Similar as
+788. Rotated Digits
+902. Numbers At Most N Given Digit Set
+
+Explanation:
+Transform N + 1 to arrayList
+Count the number with digits < n
+Count the number with same prefix
+For example,
+if N = 8765, L = [8,7,6,6],
+the number without repeated digit can the the following format:
+XXX
+XX
+X
+1XXX ~ 7XXX
+80XX ~ 86XX
+870X ~ 875X
+8760 ~ 8765
+
+Time Complexity:
+the number of permutations A(m,n) is O(1)
+We count digit by digit, so it's O(logN)
+
+```cpp
+    int permutation(int m, int n) {
+        return n == 0 ? 1 : permutation(m, n - 1) * (m - n + 1);
+    }
+public:
+    int numDupDigitsAtMostN(int N) {
+        vector<int> digit;
+        for (int i = N + 1; i > 0; i /= 10) {
+            digit.push_back(i % 10);
+        }
+        reverse(digit.begin(), digit.end());
+        
+        int result = 0;
+        int n = digit.size();
+        for (int i = 1; i < n; i++) {
+            result += 9 * permutation(9, i - 1);
+        }
+        
+        // Count the number with same prefix
+        unordered_set<int> seen;
+        for (int i = 0; i < n; i++) {
+            for (int j = i > 0 ? 0 : 1; j < digit[i]; j++) {
+                if (seen.find(j) == seen.end()) {
+                    result += permutation(9 - i, n - i - 1);
+                }
+            }
+            if (seen.find(digit[i]) != seen.end()) {
+                break;
+            }
+            seen.insert(digit[i]);
+        }
+        return N - result;
+    }
+```
+
+1015. Smallest Integer Divisible by K
+Given a positive integer K, you need find the smallest positive integer N such that N is divisible by K, and N only contains the digit 1.
+
+Return the length of N.  If there is no such N, return -1.
+
+Intuition:
+Let's say the final result has N digits of 1.
+If N exist, N <= K, just do a brute force check.
+Also if K % 2 == 0, return -1, because 111....11 can't be even.
+Also if K % 5 == 0, return -1, because 111....11 can't end with 0 or 5.
 
 
+Explanation
+For different N, we calculate the remainder of mod K.
+It has to use the remainder for these two reason:
+
+Integer overflow
+The division operation for big integers, is NOT O(1), it's actually depends on the number of digits..
+Prove
+Why 5 is a corner case? It has a reason and we can find it.
+Assume that N = 1 to N = K, if there isn't 111...11 % K == 0
+There are at most K - 1 different remainders: 1, 2, .... K - 1.
+
+So this is a pigeon holes problem:
+There must be at least 2 same remainders.
+
+Assume that,
+f(N) ≡ f(M), N > M
+f(N - M) * 10 ^ M ≡ 0
+10 ^ M ≡ 0, mod K
+so that K has factor 2 or factor 5.
+
+Proof by contradiction，
+If (K % 2 == 0 || K % 5 == 0) return -1;
+otherwise, there must be a solution N <= K.
+
+Time Complexity:
+Time O(K), Space O(1)
+```cpp
+    int smallestRepunitDivByK(int K) {
+        for (int r = 0, N = 1; N <= K; ++N)
+            if ((r = (r * 10 + 1) % K) == 0)
+                return N;
+        return -1;
+    }
+```
+
+1017. Convert to Base -2
+
+```cpp
+    string baseNeg2(int N) {
+        string res = "";
+        while (N) {
+            res = to_string(N & 1) + res;
+            N = -(N >> 1);
+        }
+        return res == "" ? "0" : res;
+    }
+```
+
+1025. Divisor Game
+Alice and Bob take turns playing a game, with Alice starting first.
+
+Initially, there is a number N on the chalkboard.  On each player's turn, that player makes a move consisting of:
+
+Choosing any x with 0 < x < N and N % x == 0.
+Replacing the number N on the chalkboard with N - x.
+Also, if a player cannot make a move, they lose the game.
+
+Return True if and only if Alice wins the game, assuming both players play optimally.
+
+math fact: odd number only has odd factors, even number must have an even factor.
