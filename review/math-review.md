@@ -632,7 +632,11 @@ dr(n) = 1 + (n - 1) % 9
         return 1+(num-1)%9;
     }
 ```
-	
+about %:
+c++ use a/b round to abs floor for example -2/3=0, 2/3=0
+so -2%3=-1 2%3=2, so if one of a or b is negative, a%b is negative.
+since 9%9=0 so we use (9-1)%9+1 to get 9.
+
 
 263. Ugly Number **
 only has 2,3,5 factor
@@ -2110,6 +2114,8 @@ Return True if and only if Alice wins the game, assuming both players play optim
 
 812. Largest Triangle Area
 the area of a triangle using 3 points: the area formula also works for other shape (polygon)
+for convex or non-convex, choose a point and form several triangles (clockwise will get positive, counter-clockwise will get negative)
+note: we shall use the abs since negative is valid.
 ```cpp
     double largestTriangleArea(vector<vector<int>>& points) {
         int area=0,max_area=0;
