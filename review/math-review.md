@@ -1,82 +1,113 @@
 # Chapter 6 Math
 
-2. Add Two Numbers *
-linked list
-```cpp
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        int cf=0;
-        ListNode* root=0,*prev;
-        while(l1 || l2 || cf)
-        {
-            int val=(l1?l1->val:0)+(l2?l2->val:0)+cf;
-            cf=val/10;
-            ListNode* p=new ListNode(val%10);
-            if(l1) l1=l1->next;
-            if(l2) l2=l2->next;
-            if(!root) root=p;else prev->next=p;
-            prev=p;
-        }
-        
-        return root;
-    }
-```	
+Part 2: still easy but need math thinking
 
-7. Reverse Integer *
-using string, note there is a sign
+168. Excel Sheet Column Title ***
+
+math:  N=T(XY)=(X-'A'+1)*26+(Y-'A'+1)
+N%26=Y-'A'+1, Y=N%26-1+'A', note N%26 will get 0 to 25, if we get 0, then we will get a char in front of A which is incorrect.
+but we can change:
+N-1=Y-'A'
+
+
 ```cpp
-    int reverse(int x) {
-        if(!x) return 0;
-        long long ans=0;
-        while(x)
+    string convertToTitle(int n) {
+        //
+        string s;
+        while(n)
         {
-            ans*=10;
-            int d=x%10;
-            ans+=d;
-            x/=10;
+            int d=(n-1)%26;
+            s+='A'+d;
+            n=(n-1)/26;
         }
-        if(ans>INT_MAX || ans<INT_MIN) return 0;
-        return ans;
+        reverse(s.begin(),s.end());
+        return s;
     }
 ```
 
-8. String to Integer (atoi) *
+171. Excel Sheet Column Number ***
+note we shall add 1
+A-1
+Z-26
+
+again 26 base
+AA: c-'A'+1 is the number and then *26^n
+math: (c-'A'+1)*26^n
+
 ```cpp
-    int myAtoi(string str) {
-      long long res=0; //shall have a large container
-	  int sign=1;
-      bool found_sign=0;
-      bool found_digit=0;
-	  for(int i=0;i<str.size();i++)
-	  {
-		  char c=str[i];
-		  if(c=='-') {if(!found_sign) {sign=-1;found_sign=1;}else break;}
-		  else if(c=='+' ) {if(!found_sign) {sign=1;found_sign=1;}else break;}
-		  else if(c>='0' && c<='9') {found_digit=1;res=res*10+c-'0';if(res>INT_MAX) break;}
-		  else if(c==' ' || c=='\t') if(!found_digit && !found_sign) continue;else break;
-		  else break;
-	  }
-	  //overflow error dealing
-	  //if(sign*res>INT_MAX || sign*res<INT_MIN) return 0;
-	  if(res<0) if(sign>0) return INT_MAX;else return INT_MIN;
-	  if(sign*res>INT_MAX) return INT_MAX;
-	  if(sign*res<INT_MIN) return INT_MIN;
-	  return sign*res;
-    }
-```
-or use stringstream
-```cpp
-    int myAtoi(string str) {
-        stringstream ss(str);
-        long long ans=0;
-        ss>>ans;
-        if(ans>INT_MAX) return INT_MAX;
-        if(ans<INT_MIN) return INT_MIN;
+    int titleToNumber(string s) {
+        //base 26
+        int ans=0;
+        for(char c: s)
+        {
+            ans*=26;
+            ans+=c-'A'+1;
+        }
         return ans;
     }
 ```	
+	
+166. Fraction to Recurring Decimal ***
+hand division
+a/b: if a<b, then a*10, if the remaining is the same, then it is repeating
+2/3
+1: 2<3, we get 0.
+2: 20/3: we get 6, remaining 2
 
-9. Palindrome Number *
-convert to string and reverse to see if equal
+```cpp
+    string fractionToDecimal(int num, int denom) {
+		string ans;
+        if(num==0) return "0";
+		int sig1=num>=0?1:-1;
+		int sig2=denom>=0?1:-1;
+		long n=num,d=denom;
+		n=abs(n),d=abs(d);
+		long a=n/d,rem=n%d;
+
+        vector<long> res;
+		res.push_back(a);
+		unordered_map<int,int> mp;
+		mp[rem]=1;
+		int i=1;
+		while(rem)
+		{
+			rem*=10;
+			res.push_back(rem/d);
+			rem%=d;
+			if(!mp.count(rem)) mp[rem]=res.size();
+			else break;
+		}
+		if(!rem) //not recurring
+		{
+            if(sig1*sig2<0) ans="-";
+			ans+=to_string(res[0]);
+			if(res.size()>1) ans+=".";
+			for(int i=1;i<res.size();i++) ans+=to_string(res[i]);
+		}
+		else
+		{
+			int j=mp[rem];
+            if(sig1*sig2<0) ans="-";
+			ans+=to_string(res[0]);
+			if(res.size()>1) ans+=".";
+			for(int i=1;i<res.size();i++) 
+			{
+				if(i!=j) ans+=to_string(res[i]);
+				else ans+="("+to_string(res[i]);
+			}
+            ans+=")";
+		}
+		return ans;
+    }
+```	
+
+some corner case:
+1. 0/b: the sign is not useful
+2. sign must be attached explicitly, if the integer part is 0, the sign is lost.
+
+
+## Part 3: need more rigid math or thinking
+
 
 13. Roman to Integer ***
 a hashmap of the letter to the number
@@ -126,75 +157,7 @@ string intToRoman(int num) {
     }
 ```
 
-29. Divide Two Integers ***
-no division
-use subtraction. to speed up the subtraction we can double the divisor
-```cpp
-    int divide(int dividend, int divisor) {
-        int s1=dividend>=0?1:-1;
-        int s2=divisor>=0?1:-1;
-        long long d1=(long long)s1*dividend;
-        long long d2=(long long)s2*divisor;
-        if(d2>d1) return 0;
-        long long quotient=0;
-        while(d2<=d1)
-        {
-            long long scale=get_scale(d1,d2);
-            quotient+=scale;
-            d1-=scale*d2;
-        }
-        long long ans=s1*s2*quotient;
-        if(ans>INT_MAX || ans<INT_MIN) ans=INT_MAX;
-        return ans;
-    }
-    long long get_scale(long long d1,long long d2)
-    {
-        long long scale=1;
-        while(d2*2<=d1) {d2*=2;scale*=2;}
-        return scale;
-    }
-```
-	
-43. Multiply Strings **
-naive approach using hand multiplication
-```cpp
-    string multiply(string num1, string num2) {
-        //single s[i]*s[j] will contribute to res[i+j] and res[i+j+1]
-        //and then accumulate
-        reverse(num1.begin(),num1.end());
-        reverse(num2.begin(),num2.end());
-        vector<int> res(num1.size()+num2.size());
-        for(int i=0;i<num1.size();i++)
-        {
-            for(int j=0;j<num2.size();j++)
-            {
-                res[i+j]+=(num1[i]-'0')*(num2[j]-'0');
-            }
-        }
-        int cf=0;
-        string ans;
-        for(int i=0;i<res.size();i++)
-        {
-            int d=res[i]+cf;
-            ans+=(d%10)+'0';
-            cf=d/10;
-        }
-        while(ans.size()>1 && ans.back()=='0') ans.pop_back();
-        reverse(ans.begin(),ans.end());
-        return ans;
-    }
-```
 
-50. Pow(x, n) **
-divide and conque, x^n=x^2*x^(n/2)
-```cpp
-    double myPow(double x, int n) {
-        if(n==0) return 1;
-        long long nn=n;
-        if(n<0) {x=1/x;nn=-nn;}
-        return nn%2?x*myPow(x*x,nn/2):myPow(x*x,nn/2);
-    }
-```
 
 60. Permutation Sequence ****
 given number 1 to n, find its kth permutation
@@ -271,12 +234,7 @@ bool isNumber(const char *s)
 }
 ```
 
-67. Add Binary *
-reverse and add
 
-69. Sqrt(x) **
-searching for the upper bound for m*m>x
-see binary search
 
 149. Max Points on a Line ****
 Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
@@ -334,168 +292,33 @@ fixing one point:
 2. vertical line
 3. other lines
 
-166. Fraction to Recurring Decimal ***
-hand division
-a/b: if a<b, then a*10, if the remaining is the same, then it is repeating
-2/3
-1: 2<3, we get 0.
-2: 20/3: we get 6, remaining 2
 
-```cpp
-    string fractionToDecimal(int num, int denom) {
-		string ans;
-        if(num==0) return "0";
-		int sig1=num>=0?1:-1;
-		int sig2=denom>=0?1:-1;
-		long n=num,d=denom;
-		n=abs(n),d=abs(d);
-		long a=n/d,rem=n%d;
-
-        vector<long> res;
-		res.push_back(a);
-		unordered_map<int,int> mp;
-		mp[rem]=1;
-		int i=1;
-		while(rem)
-		{
-			rem*=10;
-			res.push_back(rem/d);
-			rem%=d;
-			if(!mp.count(rem)) mp[rem]=res.size();
-			else break;
-		}
-		if(!rem) //not recurring
-		{
-            if(sig1*sig2<0) ans="-";
-			ans+=to_string(res[0]);
-			if(res.size()>1) ans+=".";
-			for(int i=1;i<res.size();i++) ans+=to_string(res[i]);
-		}
-		else
-		{
-			int j=mp[rem];
-            if(sig1*sig2<0) ans="-";
-			ans+=to_string(res[0]);
-			if(res.size()>1) ans+=".";
-			for(int i=1;i<res.size();i++) 
-			{
-				if(i!=j) ans+=to_string(res[i]);
-				else ans+="("+to_string(res[i]);
-			}
-            ans+=")";
-		}
-		return ans;
-    }
-```	
-
-some corner case:
-1. 0/b: the sign is not useful
-2. sign must be attached explicitly, if the integer part is 0, the sign is lost.
-
-168. Excel Sheet Column Title ***
-pay attention to starting index 0
-1-A
-26-Z
-27-AA 
-the base is 26.  (27-1)%26-->10
-0+1->A
-1-1->0->A
-
-consider the letter 'A' to have a value of 1, 'B'->2 ..... 'Z'->26
-note that in the above notation, values are 1-based
-
-here our Radix (R) == 26
-
-the final value of a number X Y Z = X * R^2 + Y * R + Z
-
-this looks similar to base-10 decimal number but the biggest difference is that the numbers on every digit starts with 1, instead of 0., and the max on each digit goes up to R (Radix) instead of R-1
-
-for example
-Z== Radix
-then next number is AA = R + 1 = Z+1
-ZZ = R * R + R
-next number is AAA = 1*R^2 + 1 * R + 1 = ZZ +1
-
-so from the AAA notation to their sequence number (decimal) it's easy, but the other way is a bit tricky due to the way % and / operates
-
-```cpp
-    string convertToTitle(int n) {
-        //
-        string s;
-        while(n)
-        {
-            int d=(n-1)%26;
-            s+='A'+d;
-            n=(n-1)/26;
-        }
-        reverse(s.begin(),s.end());
-        return s;
-    }
-```
-
-171. Excel Sheet Column Number ***
-note we shall add 1
-A-1
-Z-26
-
-again 26 base
-AA: c-'A'+1 is the number and then *26^n
-
-
-```cpp
-    int titleToNumber(string s) {
-        //base 26
-        int ans=0;
-        for(char c: s)
-        {
-            ans*=26;
-            ans+=c-'A'+1;
-        }
-        return ans;
-    }
-```	
-
-172. Factorial Trailing Zeroes **
-n/2 2s n/5 5s so we need count number of 5s
-
-```cpp
-    int trailingZeroes(int n) {
-       //counter number of 5s 
-        int n5s=0;
-        for(int i=1;i<=n/5;i++)
-        {
-            n5s++;
-            int t=i;
-            while(t%5==0) {t/=5;n5s++;}
-        }
-        return n5s;
-    }
-```
-
-202. Happy Number **
-A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
-detect a cycle using hashset
-
-```cpp
-    bool isHappy(int n) {
-        unordered_set<int> ms;
-        while(n!=1)
-        {
-            if(ms.count(n)) return 0;
-            ms.insert(n);
-            string s=to_string(n);
-            n=0;
-            for(char c: s) n+=(c-'0')*(c-'0');
-            
-        }
-        return 1;
-    }
-```
 
 204. Count Primes ***
 cross out all even numbers
 cross out all multiples
 this is a typical algorithm
+simple one:
+
+```cpp
+    int countPrimes(int n) {
+        vector<bool> mark(n+1,1);
+        mark[0]=0; mark[1]=0;
+        int ans=0;
+        for(int i=2;i<n;i++)
+        {
+            if(mark[i])
+            {
+                ans++;
+                for(long j=(long)i*i;j<n;j+=i) mark[j]=0;
+            }
+        }
+        return ans;
+    }
+```
+more efficient one:	(all are counted except those crossed
+we only need go to sqrt(n) since it is the max factor.
+
 ```cpp
     int countPrimes(int n) {
         //matlab implementation on primes
@@ -578,12 +401,8 @@ Finally if there is only one number, from the above solution, we haven't add the
 ```
 
 
-231. Power of Two *
-n&(n-1)
 
-326. Power of Three *
-3^k is factor of 3^max 
-
+	
 233. Number of Digit One ***
 for the ith digit, makes it 1, and divide to left and right
 if the ith digit >1, then (left+1)*10^i (since the right can be any digit 0 to 9)
@@ -644,7 +463,7 @@ recursive or iterative dividing 2,3,5 until is 1
 
 ```cpp
     bool isUgly(int num) {
-        if(!num) return 0;
+        if(num<=0) return 0;
        while(num%2==0)  num/=2;
         while(num%3==0) num/=3;
         while(num%5==0) num/=5;
@@ -701,6 +520,12 @@ or add together
         int tsum=accumulate(nums.begin(),nums.end(),0);
         int n=nums.size();
         return n*(n+1)/2-tsum;
+    }	
+	
+    int missingNumber(vector<int>& nums) {
+        int ans=0,i=1;
+        for(int t: nums) ans^=i^t,i++;
+        return ans;
     }	
 ```	
 
@@ -901,7 +726,21 @@ do not use sqrt()
 1. n=k*k
 2. binary search
 3. a square number=1+3+5+...
-
+```cpp
+	bool isPerfectSquare(int num) {
+		int l=1,r=num;
+		while(l<=r)
+		{
+			int m=l+(r-l)/2;
+			long t=(long)m*m;
+			if(t==num) return 1;
+			if(t<num) l=m+1;
+			else r=m-1;
+		}
+		return 0;
+	}
+```
+	
 368. Largest Divisible Subset ****
 subset numbers all satisfy Si%Sj=0
 dp with backtrace
@@ -1141,27 +980,8 @@ after they decided, minus it from other
     }
 ```
 	
-441. Arranging Coins **
-n coins to arrange it as 1,2,3,4....
-m(m+1)/2<=n
-can use binary search
-math approach
-```
-    int arrangeCoins(int n) {
-        //the m(m+1)<=2*n, ceil(sqrt(2*n)-1)
-        int m=sqrt((long long)2*n);
-        if(m*(m+1)>2*n) return m-1;
-        return m;
-    }
-```
+
 	
-453. Minimum Moves to Equal Array Elements
-Given a non-empty integer array of size n, find the minimum number of moves required to make all array elements equal, where a move is incrementing n - 1 elements by 1.
-
-sum + m * (n - 1) = x * n
-x = minNum + m
-
-
 458. poor pigs
 
 There are 1000 buckets, one and only one of them is poisonous, while the rest are filled with water. They all look identical. If a pig drinks the poison it will die within 15 minutes. What is the minimum amount of pigs you need to figure out which bucket is poisonous within one hour?
@@ -1274,12 +1094,20 @@ be sure if i==num/i and it counts twice
 ```cpp
     bool checkPerfectNumber(int num) {
         if(num==1) return 0;
-        int sum=1;
-        for(int i=2;i<=sqrt(num);i++) if(num%i==0) sum+=i+num/i;
-        return sum==num;
+        int ans=1;
+        for(int i=2;i<=sqrt(num);i++)
+        {
+            if(num%i==0)
+            {
+                if(i*i!=num) ans+=i+num/i;
+                else ans+=i;
+            }
+        }
+        return ans==num;
     }
 ```
 above solution add the factor twice for n^2
+note n=1 is a corner case.
 	
 517. Super Washing Machines ****
 ```cpp
@@ -1400,52 +1228,6 @@ public:
     }
 ```
 	
-537. Complex Number Multiplication **
-read the real and imag and perform multiplication 
-read using stringstream
-```cpp
-    string complexNumberMultiply(string a, string b) {
-        pair<int,int> na=str2cplx(a);
-        pair<int,int> nb=str2cplx(b);
-        int real=na.first*nb.first-na.second*nb.second;
-        int imag=na.first*nb.second+na.second*nb.first;
-        return to_string(real)+"+"+to_string(imag)+"i";
-    }
-    pair<int,int> str2cplx(string& s)
-    {
-        pair<int,int> p;
-        char op;
-        stringstream ss(s);
-        ss>>p.first;
-        ss>>op;
-        ss>>p.second;
-        return p;
-    }
-```
-	
-553. Optimal Division **
-perform float division. by adding parenthesis to reach max result
-X1/X2/X3/../Xn will always be equal to (X1/X2) * Y, no matter how you place parentheses. 
-i.e no matter how you place parentheses, X1 always goes to the numerator and X2 always goes to the denominator. 
-Hence you just need to maximize Y. 
-And Y is maximized when it is equal to X3 *..*Xn. So the answer is always X1/(X2/X3/../Xn) = (X1 *X3 *..*Xn)/X2
-
-```cpp
-    string optimalDivision(vector<int>& nums) {
-        if(nums.size()<1) return string();
-        if(nums.size()==1) return to_string(nums[0]);
-        string res=to_string(nums[0])+"/";
-        if(nums.size()>2) res+='(';
-        
-        for(int i=1;i<nums.size();i++)
-            res+=to_string(nums[i])+'/';
-        res.pop_back();
-        if(nums.size()>2) res+=')';
-        return res;
-        
-    }
-```	
-
 592. Fraction Addition and Subtraction ***
 need to find the lcm for all demom
 final results need find the gcd
@@ -1508,107 +1290,11 @@ just the hand calculation on the fraction addition
     }
 ```
 	
-593. Valid Square ***
-4 points if form a square
-C(4,2) to calculate the side length, 4 same and 2 same
 
-using hashset to count only two
-```cpp
-    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
-        unordered_map<int,int> side2;
-        vector<vector<int>> pts;
-        pts.push_back(p1);pts.push_back(p2);pts.push_back(p3);pts.push_back(p4);
-        for(int i=0;i<pts.size();i++)
-        {
-            for(int j=i+1;j<pts.size();j++)
-            {
-                int dx=pts[i][0]-pts[j][0];
-                int dy=pts[i][1]-pts[j][1];
-                side2[dx*dx+dy*dy]++;
-            }
-        }
-        //4 sides the same, 2 sides the same
-        if(side2.size()==2)
-        {
-            if(side2.begin()->second==2 || side2.begin()->second==4) return 1;
-        }
-        return 0;
-    }
-```
 
-598. Range Addition II
-easy. just get the min x and y1-y2
-```cpp
-    int maxCount(int m, int n, vector<vector<int>>& ops) {
-        //seems to find the most overlapped region
-        //since it always covers the (0,0), we only need track the right bottom point
-        //it is the min of all the x and min of all the y
-        int xmin=m,ymin=n;
-        for(int i=0;i<ops.size();i++)
-        {
-            if(ops[i][0]<xmin) xmin=ops[i][0];
-            if(ops[i][1]<ymin) ymin=ops[i][1];
-        }
-        return xmin*ymin;
-        
-    }
-```
 
-628. Maximum Product of Three Numbers
-```cpp
-    int maximumProduct(vector<int>& nums) {
-        //sort it first, the max product must be chosen from the min 3 and the max 3
-        vector<int> a;
-        sort(nums.begin(),nums.end());
 
-        int n=nums.size();
-        int t1=nums[n-1]*nums[n-2]*nums[n-3];
-        int t2=nums[0]*nums[1]*nums[n-1];
-        return max(t1,t2);
-    }
-```
 
-not using sorting to find the 6 numbers
-```java
-    public int maximumProduct(int[] nums) {
-        int max1 = Integer.MIN_VALUE, max2 = Integer.MIN_VALUE, max3 = Integer.MIN_VALUE, min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
-        for (int n : nums) {
-            if (n > max1) {
-                max3 = max2;
-                max2 = max1;
-                max1 = n;
-            } else if (n > max2) {
-                max3 = max2;
-                max2 = n;
-            } else if (n > max3) {
-                max3 = n;
-            }
-
-            if (n < min1) {
-                min2 = min1;
-                min1 = n;
-            } else if (n < min2) {
-                min2 = n;
-            }
-        }
-        return Math.max(max1*max2*max3, max1*min1*min2);
-    }
-```
-
-633. Sum of Square Numbers
-check if a number is sum of two squares
-a^2+b^2=c, we just search one from 1 to sqrt(c/2) for a and once a is fixed we can find b
-```cpp
-    bool judgeSquareSum(int c) {
-        //approach: search from 1 to sqrt(c/2)
-        for(int i=0;i<=sqrt(c/2);i++)
-        {
-            int b=sqrt(c-i*i);
-            if(i*i+b*b==c) return 1;
-        }
-        return 0;
-    }
-```
 	
 640. Solve the Equation
 find the = and move all x items to left and non-x items to right
@@ -1671,14 +1357,45 @@ hand solving the equations
     }
 ```
 
-645. Set Mismatch **
+645. Set Mismatch ***
 1 to n, one number is changed to another number. find the missing number
 The idea is based on:
 (1 ^ 2 ^ 3 ^ .. ^ n) ^ (1 ^ 2 ^ 3 ^ .. ^ n) = 0
 Suppose we change 'a' to 'b', then all but 'a' and 'b' are XORed exactly 2 times. The result is then
 0 ^ a ^ b ^ b ^ b = a ^ b
 Let c = a ^ b, if we can find 'b' which appears 2 times in the original array, 'a' can be easily calculated by a = c ^ b.
+```cpp
+    public int[] findErrorNums(int[] nums) {
+        int n = nums.length;
+        int[] count = new int[n];
+        int[] ans = {0,0};
+        for(int i = 0; i < n; i++) {
+            ans[1] ^= (i+1) ^ nums[i];
+            if (++count[nums[i]-1] == 2)
+                ans[0] = nums[i];
+        }
+        ans[1] ^= ans[0];
+        return ans;
+    }
+```
+find the duplicate using counting or marking.
 
+```cpp
+    vector<int> findErrorNums(vector<int>& nums) {
+       //assume i is changed to j, then 1 to n xor nums will get i^j
+        //j appeared twice, or marking the seens
+        int dup,miss;
+        for(int i=0;i<nums.size();i++)
+        {
+            int t=abs(nums[i]);
+            if(nums[t-1]<0) dup=t;
+            else nums[t-1]*=-1;
+        }
+        for(int i=0;i<nums.size();i++)
+            if(nums[i]>0) miss=i+1;
+        return {dup,miss};
+    }
+```	
 	
 670. Maximum Swap ***
 Given a non-negative integer, you could swap two digits at most once to get the maximum valued number. Return the maximum valued number you could get.
@@ -1731,20 +1448,8 @@ In summary, the question can be simplified as m <= 3, n <= 3. I am sure you can 
         return m == 2? 7:8;
     }
 ```	
-728. Self Dividing Numbers *
-A self-dividing number is a number that is divisible by every digit it contains.
-just using brutal force	
-```cpp
-    vector<int> selfDividingNumbers(int left, int right) {
-        vector<int> res;
-        for (int i = left, n = 0; i <= right; i++) {
-            for (n = i; n > 0; n /= 10)
-                if (!(n % 10) || i % (n % 10)) break;
-            if (!n) res.push_back(i);
-        }
-        return res;
-    }
-```	
+
+
 
 753. Cracking the Safe ****
 return the string to guarantee to open the box (keeping matching the password)
@@ -1778,7 +1483,7 @@ The solution prunes early using backward iteration on k.
 when we start from forward, there will be a circle preventing us going on.
 ???
 
-754. Reach a Number
+754. Reach a Number ***
 You are standing at position 0 on an infinite number line. There is a goal at position target.
 
 On each move, you can either go left or right. During the n-th move (starting from 1), you take n steps.
@@ -1787,7 +1492,7 @@ Return the minimum number of steps required to reach the destination.
 very similar to the dp problem of racing car
 
 Step 0: Get positive target value (step to get negative target is the same as to get positive value due to symmetry).
-Step 1: Find the smallest step that the summation from 1 to step just exceeds or equalstarget.
+Step 1: Find the smallest step that the summation from 1 to step just exceeds or equals target.
 Step 2: Find the difference between sum and target. The goal is to get rid of the difference to reach target. For ith move, if we switch the right move to the left, the change in summation will be 2*i less. Now the difference between sum and target has to be an even number in order for the math to check out.
 Step 2.1: If the difference value is even, we can return the current step.
 Step 2.2: If the difference value is odd, we need to increase the step until the difference is even (at most 2 more steps needed).
@@ -1797,20 +1502,17 @@ Step 0: target = 5.
 Step 1: sum = 1 + 2 + 3 = 6 > 5, step = 3.
 Step 2: Difference = 6 - 5 = 1. Since the difference is an odd value, we will not reach the target by switching any right move to the left. So we increase our step.
 Step 2.2: We need to increase step by 2 to get an even difference (i.e. 1 + 2 + 3 + 4 + 5 = 15, now step = 5, difference = 15 - 5 = 10). Now that we have an even difference, we can simply switch any move to the left (i.e. change + to -) as long as the summation of the changed value equals to half of the difference. We can switch 1 and 4 or 2 and 3 or 5.
-```java
-    public int reachNumber(int target) {
-        target = Math.abs(target);
-        int step = 0;
-        int sum = 0;
-        while (sum < target) {
-            step++;
-            sum += step;
+```cpp
+    int reachNumber(int target) {
+        target=abs(target);
+        int ans=0;
+        int sum=0,i=0;
+        while(sum<target) sum+=++i;
+        while((sum-target)%2) //diff is odd
+        {
+            sum+=++i;
         }
-        while ((sum - target) % 2 != 0) {
-            step++;
-            sum += step;
-        }
-        return step;
+        return i;
     }
 ```
 
@@ -2112,30 +1814,7 @@ Return True if and only if Alice wins the game, assuming both players play optim
     }
 ```
 
-812. Largest Triangle Area
-the area of a triangle using 3 points: the area formula also works for other shape (polygon)
-for convex or non-convex, choose a point and form several triangles (clockwise will get positive, counter-clockwise will get negative)
-note: we shall use the abs since negative is valid.
-```cpp
-    double largestTriangleArea(vector<vector<int>>& points) {
-        int area=0,max_area=0;
-        int m=points.size();
-        for(int i=0;i<m;i++)
-        {
-            for(int j=i+1;j<m;j++)
-            {
-                for(int k=j+1;k<m;k++)
-                {
-                    area=points[i][0]*points[j][1]-points[j][0]*points[i][1];
-                    area+=points[j][0]*points[k][1]-points[k][0]*points[j][1];
-                    area+=points[k][0]*points[i][1]-points[i][0]*points[k][1];
-                    if(max_area<abs(area)) max_area=abs(area);
-                }    
-            }
-        }
-        return 0.5*max_area;
-    }
-```    
+
 
 829. Consecutive Numbers Sum
 number of ways to write a number to be a sum of consecuative numbers
@@ -2153,11 +1832,8 @@ number of ways to write a number to be a sum of consecuative numbers
     }
 ```
 	
-836. Rectangle Overlap
-        //x1-x2 interval and x3-x4 interval shall overlap
-        //y1-y2 interval and y3-y4 interval shall overlap
-rec1[0]<rec2[2] && rec2[0]<rec1[2] && rec1[1]<rec2[3] && rec2[1]<rec1[3];
 
+	
 858. Mirror Reflection
 reflection by expanding the rect in 2 directions and problem becomes a simple gcd problem
 
@@ -2206,26 +1882,6 @@ reduce the number digits by half.
 ```	
 
 
-868. Binary Gap
-find the largest distance of 1 in its binary representation
-straightforward
-```cpp
-    int binaryGap(int N) {
-       int ans=0;
-        bitset<32> bits(N);
-        int prev=-1;
-        for(int i=0;i<32;i++) 
-        {
-            if(bits[i])
-            {
-                if(prev!=-1) ans=max(ans,i-prev);
-                prev=i;
-            }
-        }
-        return ans;
-    }
-```
-	
 869. Reordered Power of 2
 Starting with a positive integer N, we reorder the digits in any order (including the original order) such that the leading digit is not zero.
 
@@ -2260,8 +1916,15 @@ check if the two string equal
 even number of piles, total sum is odd. taking from either end.
 who will win
 can use dp
-sum(piles(even)) < sum(piles[odd]), pick all odd
-sum(piles(even)) > sum(piles[odd]), pick all even
+If Alex wants to pick even indexed piles piles[0], piles[2], ....., piles[n-2],
+he picks first piles[0], then Lee can pick either piles[1] or piles[n - 1].
+Every turn, Alex can always pick even indexed piles and Lee can only pick odd indexed piles.
+
+In the description, we know that sum(piles) is odd.
+If sum(piles[even]) > sum(piles[odd]), Alex just picks all evens and wins.
+If sum(piles[even]) < sum(piles[odd]), Alex just picks all odds and wins.
+
+So, Alex always defeats Lee in this game.
 always win
 ```cpp
     bool stoneGame(vector<int>& piles) {
@@ -2394,23 +2057,7 @@ As the answer may be very large, return the answer modulo 10^9 + 7.
     }
 ```
 	
-892. Surface Area of 3D Shapes
-surface area of 3d shape
-calculate the stacked cube surface area
-minus its neighboring (i-1,j) and (i,j-1)
-```cpp
-    int surfaceArea(vector<vector<int>> grid) {
-        int res = 0, n = grid.size();
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                if (grid[i][j]) res += grid[i][j] * 4 + 2;
-                if (i) res -= min(grid[i][j], grid[i - 1][j]) * 2;
-                if (j) res -= min(grid[i][j], grid[i][j - 1]) * 2;
-            }
-        }
-        return res;
-    }
-```
+
 899. Orderly Queue
 in each move we move one of the char in the first k char to the end
 return the smallest string
@@ -2436,6 +2083,7 @@ So, K>1 equals bubble sort
         return minS;
     }
 ```
+
 902. Numbers At Most N Given Digit Set
 ```cpp
     int atMostNGivenDigitSet(vector<string>& D, int N) {
@@ -2531,18 +2179,7 @@ sort it first and then greedy
     }
 ```	
 
-914. X of a Kind in a Deck of Cards
-count card number for each number and find the gcd>1
-gcd for a list of number is the gcd of the gcd with the numnber
-```cpp
-    bool hasGroupsSizeX(vector<int>& deck) {
-        unordered_map<int, int> count;
-        int res = 0;
-        for (int i : deck) count[i]++;
-        for (auto i : count) res = __gcd(i.second, res);
-        return res > 1;
-    }
-```
+
 927. Three Equal Parts
 ```cpp
     vector<int> threeEqualParts(vector<int>& A) {
@@ -2569,54 +2206,6 @@ gcd for a list of number is the gcd of the gcd with the numnber
         return vector<int>({-1,-1});
     }
 ```	
-
-942. DI String Match
-return any permutation matching the DI string
-one solution: We track high (h = N - 1) and low (l = 0) numbers within [0 ... N - 1]. When we encounter 'I', we insert the current low number and increase it. With 'D', we insert the current high number and decrease it. In the end, h == l, so we insert that last number to complete the premutation.
-this is a greedy solution or two pointers
-```cpp
-    vector<int> diStringMatch(string S) {
-        //DI sequence, backtrace of dp 
-        //we fill I: the min the D the max
-        int n=S.length();
-        vector<int> ans(n+1);
-        int min0=0,max0=n;
-        for(int i=0;i<S.length();i++)
-        {
-            if(S[i]=='I') ans[i]=min0++;
-            else ans[i]=max0--;
-        }
-        if(S.back()=='I') ans[n]=min0;
-        else ans[n]=max0;
-        return ans;
-    }
-```	
-
-949. Largest Time for Given Digits
-need to consider the time as a whole. just use all the permutation and get the largest valid time
-```cpp
-string largestTimeFromDigits(vector<int>& A) {
-        int maxtime=-1;
-        sort(A.begin(),A.end());
-        do{
-            if(isvalid(A)) maxtime=max(maxtime,A[0]*1000+A[1]*100+A[2]*10+A[3]);
-        }while(next_permutation(A.begin(),A.end()));
-        if(maxtime<0) return "";
-        string ans(5,':');
-        ans[0]=maxtime/1000+'0';
-        ans[1]=(maxtime%1000)/100+'0';
-        ans[3]=(maxtime%100)/10+'0';
-        ans[4]=(maxtime%10)+'0';
-        return ans;
-    }
-    bool isvalid(vector<int>& A)
-    {
-        int hr=A[0]*10+A[1];;
-        int min0=A[2]*10+A[3];
-        return hr<24 && min0<60;
-    }
-```
-
 952. Largest Component Size by Common Factor
 union find
 ```cpp
@@ -2760,46 +2349,7 @@ It's not allowed to use the unary negation operator (-).  For example, "x - x" i
     }
 ```
 
-970. Powerful Integers
-Given two positive integers x and y, an integer is powerful if it is equal to x^i + y^j for some integers i >= 0 and j >= 0.
 
-Return a list of all powerful integers that have value less than or equal to bound.
-
-You may return the answer in any order.  In your answer, each value should occur at most once.
-
-```cpp
-    vector<int> powerfulIntegers(int x, int y, int bound) {
-        if(bound<2) return vector<int>();
-        if(x==1 && y==1) return vector<int>({2});
-        if(x==1 || y==1) //bound-1=y^i
-        {
-            vector<int> ans;
-            int xx=1;
-            x=max(x,y);
-            for(int i=0;i<=log(bound-1)/log(y);i++)
-            {
-                if(i) xx*=x;
-                ans.push_back(xx+1);   
-            }
-            return ans;
-        }
-        int m=log(bound-1)/log(x),n=log(bound-1)/log(y);
-        unordered_set<int> ans;
-        int xx=1,yy=1;
-        for(int i=0;i<=m;i++)
-        {
-            if(i) xx*=x;
-            yy=1;
-            for(int j=0;j<=n;j++)
-            {
-                if(j) yy*=y;
-                //cout<<xx+yy<<" ";
-                if(xx+yy<=bound) ans.insert(xx+yy);
-            }
-        }
-        return vector<int>(ans.begin(),ans.end());
-    }
-```
 
 972. Equal Rational Numbers
 expand to exceed double precision
@@ -2821,18 +2371,7 @@ expand to exceed double precision
     }
 ```	
 
-976. Largest Perimeter Triangle
-```cpp
-    int largestPerimeter(vector<int>& A) {
-       //a triangle: a+b>c a-b<c
-        sort(A.begin(),A.end(),greater<int>());
-        for(int i=0;i<A.size()-2;i++)
-        {
-            if(A[i]<A[i+1]+A[i+2]) return A[i]+A[i+1]+A[i+2];
-        }
-        return 0;
-    }
-```
+
 
 991. Broken Calculator
 On a broken calculator that has a number showing on its display, we can perform two operations:
@@ -2882,20 +2421,7 @@ Return the minimum number of operations needed to display the number Y.
 mathematic: 4 as a group, and do not need extra data structure.
 (n+1)*n/(n-1)=n+1 for n>=5
 
-1009. Complement of Base 10 Integer
-```
-    int bitwiseComplement(int N) {
-        int ans=0;
-        int i=0;
-        if(N==0) return 1;
-        while(N)
-        {
-            if(N%2==0) {ans+=(1<<i);}
-            N/=2;i++;
-        }
-        return ans;
-    }	
-```
+
 
 1012. Numbers With Repeated Digit
 Given a positive integer N, return the number of positive integers less than or equal to N that have at least 1 repeated digit.
@@ -3009,6 +2535,8 @@ Time O(K), Space O(1)
 ```
 
 1017. Convert to Base -2
+similar as 2 ,but we shall use N>>1 for negatives
+
 
 ```cpp
     string baseNeg2(int N) {
@@ -3021,15 +2549,3 @@ Time O(K), Space O(1)
     }
 ```
 
-1025. Divisor Game
-Alice and Bob take turns playing a game, with Alice starting first.
-
-Initially, there is a number N on the chalkboard.  On each player's turn, that player makes a move consisting of:
-
-Choosing any x with 0 < x < N and N % x == 0.
-Replacing the number N on the chalkboard with N - x.
-Also, if a player cannot make a move, they lose the game.
-
-Return True if and only if Alice wins the game, assuming both players play optimally.
-
-math fact: odd number only has odd factors, even number must have an even factor.
