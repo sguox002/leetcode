@@ -662,10 +662,10 @@ even number will win.
 
 ### 168. Excel Sheet Column Title ***
 
-math:  N=T(XY)=(X-'A'+1)*26+(Y-'A'+1)
-N%26=Y-'A'+1, Y=N%26-1+'A', note N%26 will get 0 to 25, if we get 0, then we will get a char in front of A which is incorrect.
-but we can change:
-N-1=Y-'A'
+math:  N=T(XY)=(X-'A'+1)*26+(Y-'A'+1)<br/>
+N%26=Y-'A'+1, Y=N%26-1+'A', note N%26 will get 0 to 25, if we get 0, then we will get a char in front of A which is incorrect.<br/>
+but we can change:<br/>
+N-1=Y-'A'<br/>
 
 
 ```cpp
@@ -684,13 +684,13 @@ N-1=Y-'A'
 ```
 
 ### 171. Excel Sheet Column Number ***
-note we shall add 1
-A-1
-Z-26
+note we shall add 1<br/>
+A-1<br/>
+Z-26<br/>
 
-again 26 base
-AA: c-'A'+1 is the number and then *26^n
-math: (c-'A'+1)*26^n
+again 26 base<br/>
+AA: c-'A'+1 is the number and then *26^n<br/>
+math: (c-'A'+1)*26^n<br/>
 
 ```cpp
     int titleToNumber(string s) {
@@ -706,11 +706,11 @@ math: (c-'A'+1)*26^n
 ```	
 	
 ### 166. Fraction to Recurring Decimal ***
-hand division
-a/b: if a<b, then a*10, if the remaining is the same, then it is repeating
-2/3
-1: 2<3, we get 0.
-2: 20/3: we get 6, remaining 2
+hand division<br/>
+a/b: if a<b, then a*10, if the remaining is the same, then it is repeating<br/>
+2/3<br/>
+1: 2<3, we get 0.<br/>
+2: 20/3: we get 6, remaining 2<br/>
 
 ```cpp
     string fractionToDecimal(int num, int denom) {
@@ -767,18 +767,18 @@ some corner case:
 ## Part 3: need more rigid math or thinking
 
 ### 13. Roman to Integer ***
-a hashmap of the letter to the number
-if its right>left, then we subtract the left
-else we add the left.
-Symbol       Value
-I             1
-V             5
-X             10
-L             50
-C             100
-D             500
-M             1000
-from right to left.
+a hashmap of the letter to the number<br/>
+if its right>left, then we subtract the left<br/>
+else we add the left.<br/>
+Symbol       Value<br/>
+I             1<br/>
+V             5<br/>
+X             10<br/>
+L             50<br/>
+C             100<br/>
+D             500<br/>
+M             1000<br/>
+from right to left.<br/>
 ```cpp
     int romanToInt(string s) {
 		if(s.empty()) return 0;
