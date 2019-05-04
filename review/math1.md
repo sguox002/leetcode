@@ -4,8 +4,8 @@ some easy questions to gain some experience and refresh some knowledge
 
 ## Part 1: straightforward with min knowledge
 
-2. Add Two Numbers *
-linked list, not much math, only the carrier flag.
+### 2. Add Two Numbers *
+linked list, not much math, only the carrier flag.<br/>
 list order from LSB to MSB
 
 ```cpp
@@ -27,8 +27,8 @@ list order from LSB to MSB
     }
 ```	
 
-7. Reverse Integer *
-using string, note there is a sign
+### 7. Reverse Integer *
+using string, note there is a sign<br/>
 ```cpp
     int reverse(int x) {
         if(!x) return 0;
@@ -45,7 +45,7 @@ using string, note there is a sign
     }
 ```
 
-8. String to Integer (atoi) *
+### 8. String to Integer (atoi) *
 ```cpp
     int myAtoi(string str) {
       long long res=0; //shall have a large container
@@ -73,17 +73,15 @@ or use stringstream
 ```cpp
     int myAtoi(string str) {
         stringstream ss(str);
-        long long ans=0;
-        ss>>ans;
-        if(ans>INT_MAX) return INT_MAX;
-        if(ans<INT_MIN) return INT_MIN;
-        return ans;
+        int t=0;
+        ss>>t;
+        return t;
     }
 ```	
 actually >> will automatically truncate the value in [int-min, int-max] so long is not necessary.
 
 
-9. Palindrome Number *
+### 9. Palindrome Number *
 convert to string and reverse to see if equal
 ```cpp
     bool isPalindrome(int x) {
@@ -94,9 +92,9 @@ convert to string and reverse to see if equal
     }
 ```
 
-29. Divide Two Integers **
-no division
-use subtraction. to speed up the subtraction we can double the divisor
+### 29. Divide Two Integers **
+no division<br/>
+use subtraction. to speed up the subtraction we can double the divisor<br/>
 ```cpp
     int divide(int dividend, int divisor) {
         int s1=dividend>=0?1:-1;
@@ -123,8 +121,8 @@ use subtraction. to speed up the subtraction we can double the divisor
     }
 ```
 	
-43. Multiply Strings **
-naive approach using hand multiplication
+### 43. Multiply Strings **
+naive approach using hand multiplication<br/>
 ```cpp
     string multiply(string num1, string num2) {
         //single s[i]*s[j] will contribute to res[i+j] and res[i+j+1]
@@ -153,8 +151,8 @@ naive approach using hand multiplication
     }
 ```
 
-50. Pow(x, n) **
-divide and conque, x^n=x^2*x^(n/2)
+### 50. Pow(x, n) **
+divide and conque, x^n=x^2*x^(n/2)<br/>
 ```cpp
     double myPow(double x, int n) {
         if(n==0) return 1;
@@ -164,8 +162,8 @@ divide and conque, x^n=x^2*x^(n/2)
     }
 ```
 
-67. Add Binary *
-reverse and add
+### 67. Add Binary *
+reverse and add<br/>
 ```cpp
     string addBinary(string a, string b) {
         string ans;
@@ -183,9 +181,9 @@ reverse and add
     }
 ```
 	
-69. Sqrt(x) **
-searching for the upper bound for m*m>x
-see binary search
+### 69. Sqrt(x) **
+searching for the upper bound for m*m>x<br/>
+see binary search<br/>
 ```cpp
     int mySqrt(int x) {
 		int l=0,r=x;
@@ -200,9 +198,8 @@ see binary search
 	}
 ```
 
-172. Factorial Trailing Zeroes **
-n/2 2s n/5 5s so we need count number of 5s
-1-'A'
+### 172. Factorial Trailing Zeroes **
+n/2 2s n/5 5s so we need count number of 5s<br/>
 
 ```cpp
     int trailingZeroes(int n) {
@@ -217,7 +214,7 @@ n/2 2s n/5 5s so we need count number of 5s
     }
 ```
 
-202. Happy Number **
+### 202. Happy Number **
 A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
 detect a cycle using hashset
 
@@ -237,16 +234,17 @@ detect a cycle using hashset
     }
 ```
 
-231. Power of Two *
-n&(n-1): corner case: n<0 and & is low priority.
+### 231. Power of Two *
+n&(n-1): corner case: n<0 and & is low priority.<br/>
 ```cpp
     bool isPowerOfTwo(int n) {
         if(n<=0) return false;
         return !(n&(n-1));
     }
 ```	
-326. Power of Three *
-3^k is factor of 3^max 
+### 326. Power of Three *
+approach 1: 3^k^ is factor of 3^max^ <br/>
+approach 2: keep dividing 3<br/>
 ```cpp
     bool isPowerOfThree(int n) {
         if(!n) return 0;
@@ -256,11 +254,11 @@ n&(n-1): corner case: n<0 and & is low priority.
 ```
 note brutal force: n=0 case will not come out of the loop.
 
-441. Arranging Coins **
-n coins to arrange it as 1,2,3,4....
-m(m+1)/2<=n
-can use binary search
-math approach
+### 441. Arranging Coins **
+n coins to arrange it as 1,2,3,4....<br/>
+m(m+1)/2<=n<br/>
+can use binary search<br/>
+math approach<br/>
 ```
     int arrangeCoins(int n) {
         //the m(m+1)<=2*n, ceil(sqrt(2*n)-1)
@@ -270,14 +268,14 @@ math approach
     }
 ```
 	
-453. Minimum Moves to Equal Array Elements
-Given a non-empty integer array of size n, find the minimum number of moves required to make all array elements equal, where a move is incrementing n - 1 elements by 1.
+### 453. Minimum Moves to Equal Array Elements
+Given a non-empty integer array of size n, find the minimum number of moves required to make all array elements equal, where a move is incrementing n - 1 elements by 1.<br/>
 
-sum + m * (n - 1) = x * n
-x = minNum + m (the min adds m times)
-m=sum-n*minNum;
-greedy + math
- pay attention to int overflow
+sum + m * (n - 1) = x * n<br/>
+x = minNum + m (the min adds m times)<br/>
+m=sum-n*minNum;<br/>
+greedy + math<br/>
+ pay attention to int overflow<br/>
 
 ```cpp
     int minMoves(vector<int>& nums) {
@@ -289,9 +287,9 @@ greedy + math
     }
 ```
 
-537. Complex Number Multiplication *
-read the real and imag and perform multiplication 
-read using stringstream
+### 537. Complex Number Multiplication *
+read the real and imag and perform multiplication <br/>
+read using stringstream<br/>
 ```cpp
     string complexNumberMultiply(string a, string b) {
         stringstream sa(a),sb(b);
@@ -304,12 +302,12 @@ read using stringstream
     }
 ```
 	
-553. Optimal Division **
-perform float division. by adding parenthesis to reach max result
-X1/X2/X3/../Xn will always be equal to (X1/X2) * Y, no matter how you place parentheses. 
-i.e no matter how you place parentheses, X1 always goes to the numerator and X2 always goes to the denominator. 
-Hence you just need to maximize Y. 
-And Y is maximized when it is equal to X3 *..*Xn. So the answer is always X1/(X2/X3/../Xn) = (X1 *X3 *..*Xn)/X2
+### 553. Optimal Division **
+perform float division. by adding parenthesis to reach max result<br/>
+X1/X2/X3/../Xn will always be equal to (X1/X2) * Y, no matter how you place parentheses. <br/>
+i.e no matter how you place parentheses, X1 always goes to the numerator and X2 always goes to the denominator. <br/>
+Hence you just need to maximize Y. <br/>
+And Y is maximized when it is equal to X3 *..*Xn. So the answer is always X1/(X2/X3/../Xn) = (X1 *X3 *..*Xn)/X2<br/>
 
 ```cpp
     string optimalDivision(vector<int>& nums) {
@@ -327,9 +325,9 @@ And Y is maximized when it is equal to X3 *..*Xn. So the answer is always X1/(X2
     }
 ```	
 
-593. Valid Square ***
-4 points if form a square
-C(4,2) to calculate the side length, 4 same and 2 same
+### 593. Valid Square ***
+4 points if form a square<br/>
+C(4,2) to calculate the side length, 4 same and 2 same<br/>
 
 using hashset to count only two
 ```cpp
@@ -355,7 +353,7 @@ using hashset to count only two
     }
 ```
 
-598. Range Addition II *
+### 598. Range Addition II *
 easy. just get the min x and y1-y2
 ```cpp
     int maxCount(int m, int n, vector<vector<int>>& ops) {
@@ -369,7 +367,7 @@ easy. just get the min x and y1-y2
     }
 ```
 
-628. Maximum Product of Three Numbers
+### 628. Maximum Product of Three Numbers
 ```cpp
     int maximumProduct(vector<int>& nums) {
         //sort it first, the max product must be chosen from the min 2 *max and the max 3
@@ -410,9 +408,10 @@ not using sorting to find the 6 numbers
     }
 ```
 
-633. Sum of Square Numbers ***
-check if a number is sum of two squares
-a^2+b^2=c, we just search one from 1 to sqrt(c/2) for a and once a is fixed we can find b
+### 633. Sum of Square Numbers ***
+check if a number is sum of two squares<br/>
+a^2+b^2=c, we just search one from 1 to sqrt(c/2) for a and once a is fixed we can find b<br/>
+a,b is paired so we can go to the lower bound is fine.
 ```cpp
     bool judgeSquareSum(int c) {
         //approach: search from 1 to sqrt(c/2)
@@ -425,8 +424,8 @@ a^2+b^2=c, we just search one from 1 to sqrt(c/2) for a and once a is fixed we c
     }
 ```
 
-728. Self Dividing Numbers *
-A self-dividing number is a number that is divisible by every digit it contains.
+### 728. Self Dividing Numbers *
+A self-dividing number is a number that is divisible by every digit it contains.<br/>
 just using brutal force	
 ```cpp
     vector<int> selfDividingNumbers(int left, int right) {
@@ -440,39 +439,41 @@ just using brutal force
     }
 ```	
 
-812. Largest Triangle Area
-the area of a triangle using 3 points: the area formula also works for other shape (polygon)
-for convex or non-convex, choose a point and form several triangles (clockwise will get positive, counter-clockwise will get negative)
-note: we shall use the abs since negative is valid.
-the area of triangle: 
-assume ABC are in clockwise, then area:
+### 812. Largest Triangle Area
+the area of a triangle using 3 points: the area formula also works for other shape (polygon)<br/>
+for convex or non-convex, choose a point and form several triangles (clockwise will get positive, counter-clockwise will get negative)<br/>
+note: we shall use the abs since negative is valid.<br/>
+the area of triangle: <br/>
+assume ABC are in **clockwise**, then area:<br/>
 =0.5*(Ax(By-Cy)+Bx*(Cy-Ay)+Cx(Ay-By))
 
 ```cpp
     double largestTriangleArea(vector<vector<int>>& points) {
-        int area=0,max_area=0;
-        int m=points.size();
-        for(int i=0;i<m;i++)
+        int ans=0;
+        //triangle areas using points
+        int n=points.size();
+        for(int i=0;i<n;i++)
         {
-            for(int j=i+1;j<m;j++)
+            for(int j=i+1;j<n;j++)
             {
-                for(int k=j+1;k<m;k++)
+                for(int k=j+1;k<n;k++)
                 {
-                    area=points[i][0]*points[j][1]-points[j][0]*points[i][1];
-                    area+=points[j][0]*points[k][1]-points[k][0]*points[j][1];
-                    area+=points[k][0]*points[i][1]-points[i][0]*points[k][1];
-                    if(max_area<abs(area)) max_area=abs(area);
-                }    
+                    auto& pi=points[i];
+                    auto& pj=points[j];
+                    auto& pk=points[k];
+                    int area=pi[0]*(pj[1]-pk[1])+pj[0]*(pk[1]-pi[1])+pk[0]*(pi[1]-pj[1]);
+                    ans=max(ans,abs(area));
+                }
             }
         }
-        return 0.5*max_area;
+        return ans*0.5;
     }
 ```    
 
-836. Rectangle Overlap
-        //x1-x2 interval and x3-x4 interval shall overlap
-        //y1-y2 interval and y3-y4 interval shall overlap
-rec1[0]<rec2[2] && rec2[0]<rec1[2] && rec1[1]<rec2[3] && rec2[1]<rec1[3];
+### 836. Rectangle Overlap
+        //x1-x2 interval and x3-x4 interval shall overlap<br/>
+        //y1-y2 interval and y3-y4 interval shall overlap<br/>
+
 ```cpp
     bool isRectangleOverlap(vector<int>& rec1, vector<int>& rec2) {
         int x1=rec1[0],x2=rec1[2],x3=rec2[0],x4=rec2[2];
@@ -484,9 +485,9 @@ two 1d interval overlap problem (2d)
 
 
 
-868. Binary Gap
-find the largest distance of 1 in its binary representation
-straightforward
+### 868. Binary Gap
+find the largest distance of 1 in its binary representation<br/>
+straightforward<br/>
 ```cpp
     int binaryGap(int N) {
        int ans=0;
@@ -504,10 +505,11 @@ straightforward
     }
 ```
 	
-892. Surface Area of 3D Shapes
-surface area of 3d shape
-calculate the stacked cube surface area
-minus its neighboring (i-1,j) and (i,j-1)
+### 892. Surface Area of 3D Shapes
+surface area of 3d shape<br/>
+calculate the stacked cube surface area<br/>
+minus its neighboring (i-1,j) and (i,j-1)<br/>
+once connected two surfaces are covered so need *2
 ```cpp
     int surfaceArea(vector<vector<int>> grid) {
         int res = 0, n = grid.size();
@@ -522,9 +524,9 @@ minus its neighboring (i-1,j) and (i,j-1)
     }
 ```
 
-914. X of a Kind in a Deck of Cards
-count card number for each number and find the gcd>1
-gcd for a list of number is the gcd of the gcd with the numnber
+### 914. X of a Kind in a Deck of Cards
+count card number for each number and find the gcd>1<br/>
+gcd for a list of number is the gcd of the gcd with the numnber<br/>
 ```cpp
     bool hasGroupsSizeX(vector<int>& deck) {
         unordered_map<int, int> count;
@@ -537,10 +539,12 @@ gcd for a list of number is the gcd of the gcd with the numnber
 
 
 
-942. DI String Match
-return any permutation matching the DI string
-one solution: We track high (h = N - 1) and low (l = 0) numbers within [0 ... N - 1]. When we encounter 'I', we insert the current low number and increase it. With 'D', we insert the current high number and decrease it. In the end, h == l, so we insert that last number to complete the premutation.
-this is a greedy solution or two pointers
+### 942. DI String Match
+return any permutation matching the DI string<br/>
+one solution: We track high (h = N - 1) and low (l = 0) numbers within [0 ... N - 1]. <br/>
+When we encounter 'I', we insert the current low number and increase it. With 'D', we insert the current high number and decrease it. <br/>
+In the end, h == l, so we insert that last number to complete the premutation.<br/>
+this is a greedy solution or two pointers<br/>
 ```cpp
     vector<int> diStringMatch(string S) {
         //DI sequence, backtrace of dp 
@@ -559,31 +563,9 @@ this is a greedy solution or two pointers
     }
 ```	
 
-949. Largest Time for Given Digits
+### 949. Largest Time for Given Digits
 need to consider the time as a whole. just use all the permutation and get the largest valid time
-```cpp
-string largestTimeFromDigits(vector<int>& A) {
-        int maxtime=-1;
-        sort(A.begin(),A.end());
-        do{
-            if(isvalid(A)) maxtime=max(maxtime,A[0]*1000+A[1]*100+A[2]*10+A[3]);
-        }while(next_permutation(A.begin(),A.end()));
-        if(maxtime<0) return "";
-        string ans(5,':');
-        ans[0]=maxtime/1000+'0';
-        ans[1]=(maxtime%1000)/100+'0';
-        ans[3]=(maxtime%100)/10+'0';
-        ans[4]=(maxtime%10)+'0';
-        return ans;
-    }
-    bool isvalid(vector<int>& A)
-    {
-        int hr=A[0]*10+A[1];;
-        int min0=A[2]*10+A[3];
-        return hr<24 && min0<60;
-    }
-```
-or use string compare
+use string compare
 ```cpp
     string largestTimeFromDigits(vector<int>& A) {
         sort(A.begin(),A.end());
@@ -603,12 +585,12 @@ or use string compare
     }
 ```	
 
-970. Powerful Integers
-Given two positive integers x and y, an integer is powerful if it is equal to x^i + y^j for some integers i >= 0 and j >= 0.
+### 970. Powerful Integers
+Given two positive integers x and y, an integer is powerful if it is equal to x^i + y^j for some integers i >= 0 and j >= 0.<br/>
 
-Return a list of all powerful integers that have value less than or equal to bound.
+Return a list of all powerful integers that have value less than or equal to bound.<br/>
 
-You may return the answer in any order.  In your answer, each value should occur at most once.
+You may return the answer in any order.  In your answer, each value should occur at most once.<br/>
 
 ```cpp
     vector<int> powerfulIntegers(int x, int y, int bound) {
@@ -629,10 +611,10 @@ You may return the answer in any order.  In your answer, each value should occur
         return ans;
     }
 ```
-note: for x or y==1 the loop will not come out
-one number may have more than one solution so when we find we need break the loop	
+note: for x or y==1 the loop will not come out<br/>
+one number may have more than one solution so when we find we need break the loop	<br/>
 
-976. Largest Perimeter Triangle
+### 976. Largest Perimeter Triangle
 a+b>c will ensure a triangle
 
 ```cpp
@@ -647,7 +629,7 @@ a+b>c will ensure a triangle
     }
 ```
 
-1009. Complement of Base 10 Integer
+### 1009. Complement of Base 10 Integer
 ```
     int bitwiseComplement(int N) {
         int ans=0;
@@ -662,23 +644,23 @@ a+b>c will ensure a triangle
     }	
 ```
 
-1025. Divisor Game
-Alice and Bob take turns playing a game, with Alice starting first.
+### 1025. Divisor Game
+Alice and Bob take turns playing a game, with Alice starting first.<br/>
 
-Initially, there is a number N on the chalkboard.  On each player's turn, that player makes a move consisting of:
+Initially, there is a number N on the chalkboard.  On each player's turn, that player makes a move consisting of:<br/>
 
-Choosing any x with 0 < x < N and N % x == 0.
-Replacing the number N on the chalkboard with N - x.
-Also, if a player cannot make a move, they lose the game.
+Choosing any x with 0 < x < N and N % x == 0.<br/>
+Replacing the number N on the chalkboard with N - x.<br/>
+Also, if a player cannot make a move, they lose the game.<br/>
 
-Return True if and only if Alice wins the game, assuming both players play optimally.
+Return True if and only if Alice wins the game, assuming both players play optimally.<br/>
 
-math fact: odd number only has odd factors, even number must have an even factor.
-
+math fact: odd number only has odd factors, even number must have an even factor.<br/>
+even number will win.
 	
 ## Part 2: still easy but need math thinking
 
-168. Excel Sheet Column Title ***
+### 168. Excel Sheet Column Title ***
 
 math:  N=T(XY)=(X-'A'+1)*26+(Y-'A'+1)
 N%26=Y-'A'+1, Y=N%26-1+'A', note N%26 will get 0 to 25, if we get 0, then we will get a char in front of A which is incorrect.
@@ -701,7 +683,7 @@ N-1=Y-'A'
     }
 ```
 
-171. Excel Sheet Column Number ***
+### 171. Excel Sheet Column Number ***
 note we shall add 1
 A-1
 Z-26
@@ -723,7 +705,7 @@ math: (c-'A'+1)*26^n
     }
 ```	
 	
-166. Fraction to Recurring Decimal ***
+### 166. Fraction to Recurring Decimal ***
 hand division
 a/b: if a<b, then a*10, if the remaining is the same, then it is repeating
 2/3
@@ -778,13 +760,13 @@ a/b: if a<b, then a*10, if the remaining is the same, then it is repeating
 ```	
 
 some corner case:
-1. 0/b: the sign is not useful
-2. sign must be attached explicitly, if the integer part is 0, the sign is lost.
+	1. 0/b: the sign is not useful
+	2. sign must be attached explicitly, if the integer part is 0, the sign is lost.
 
 
 ## Part 3: need more rigid math or thinking
 
-13. Roman to Integer ***
+### 13. Roman to Integer ***
 a hashmap of the letter to the number
 if its right>left, then we subtract the left
 else we add the left.
@@ -829,7 +811,7 @@ from left to right, we need check its right element
 ```
 
 
-12. Integer to Roman ***
+### 12. Integer to Roman ***
 ```cpp
     string intToRoman(int num) {
         string s;
@@ -873,13 +855,13 @@ string intToRoman(int num) {
 }
 ```
 
-60. Permutation Sequence ***
-given number 1 to n, find its kth permutation
-for n elements, it has n! permutations
-we have n on the first, n-1 on the second, so it is reduced to n*sub(n-1)
-we can locate the position for n, n-1, n-2....for each digit
-k/(n-1)! is the first char. using a vector to store the numbers in order. if one is used, erase it from the array
-note k start from 1, so the first thing we use k--
+### 60. Permutation Sequence ***
+given number 1 to n, find its kth permutation<br/>
+for n elements, it has n! permutations<br/>
+we have n on the first, n-1 on the second, so it is reduced to n*sub(n-1)<br/>
+we can locate the position for n, n-1, n-2....for each digit<br/>
+k/(n-1)! is the first char. using a vector to store the numbers in order. if one is used, erase it from the array<br/>
+note k start from 1, so the first thing we use k--<br/>
 ```cpp
     string getPermutation(int n, int k) {
         string ans;
@@ -904,11 +886,11 @@ note k start from 1, so the first thing we use k--
     }
 ```	
 
-204. Count Primes ***
-cross out all even numbers
-cross out all multiples
-this is a typical algorithm
-simple one:
+### 204. Count Primes ***
+cross out all even numbers<br/>
+cross out all multiples<br/>
+this is a typical algorithm<br/>
+simple one:<br/>
 
 ```cpp
     int countPrimes(int n) {
@@ -926,8 +908,8 @@ simple one:
         return ans;
     }
 ```
-more efficient one:	(all are counted except those crossed
-we only need go to sqrt(n) since it is the max factor.
+more efficient one:	(all are counted except those crossed<br/>
+we only need go to sqrt(n) since it is the max factor.<br/>
 
 ```cpp
     int countPrimes(int n) {
@@ -944,7 +926,7 @@ we only need go to sqrt(n) since it is the max factor.
     }
 ```
 
-223. Rectangle Area **
+### 223. Rectangle Area **
 two rect overlap. only pay attention to A*B overflow so use long.
 ```cpp
     int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
@@ -956,12 +938,12 @@ two rect overlap. only pay attention to A*B overflow so use long.
     }
 ```
 
-233. Number of Digit One ***
+### 233. Number of Digit One ***
 number counting.
-for the ith digit, makes it 1, and divide to left and right
-if the ith digit >1, then (left+1)*10^i (since the right can be any digit 0 to 9)
-==1: then right can be from 0 to right (right+1) and left can be 1 to left (left)*10^i.
-<1, then we need borrow 1 from left, left*10^i
+for the ith digit, makes it 1, and divide to left and right<br/>
+if the ith digit >1, then (left+1)*10^i (since the right can be any digit 0 to 9)<br/>
+==1: then right can be from 0 to right (right+1) and left can be 1 to left (left)*10^i.<br/>
+<1, then we need borrow 1 from left, left*10^i<br/>
 
 ```cpp
     int countDigitOne(int n) {
@@ -983,36 +965,31 @@ if the ith digit >1, then (left+1)*10^i (since the right can be any digit 0 to 9
     }
 ```	
 
-258. Add Digits ***
+### 258. Add Digits ***
 module property!
-Given a non-negative integer num, repeatedly add all its digits until the result has only one digit.
-do it in O(1)
-The problem, widely known as digit root problem, has a congruence formula:
+Given a non-negative integer num, repeatedly add all its digits until the result has only one digit.<br/>
+do it in O(1)<br/>
+The problem, widely known as digit root problem, has a congruence formula:<br/>
 
-https://en.wikipedia.org/wiki/Digital_root#Congruence_formula
-For base b (decimal case b = 10), the digit root of an integer is:
+https://en.wikipedia.org/wiki/Digital_root#Congruence_formula<br/>
+For base b (decimal case b = 10), the digit root of an integer is:<br/>
 
-dr(n) = 0 if n == 0
-dr(n) = (b-1) if n != 0 and n % (b-1) == 0
-dr(n) = n mod (b-1) if n % (b-1) != 0
-or
+about %:
 
-dr(n) = 1 + (n - 1) % 9
+c++ use a/b round to abs floor for example -2/3=0, 2/3=0 <br/>
+so -2%3=-1 2%3=2, so if one of a or b is negative, a%b is negative.<br/>
+since 9%9=0 so we use (9-1)%9+1 to get 9.<br/>
+
 ```cpp
     int addDigits(int num) {
         return 1+(num-1)%9;
     }
 ```
-about %:
-c++ use a/b round to abs floor for example -2/3=0, 2/3=0
-so -2%3=-1 2%3=2, so if one of a or b is negative, a%b is negative.
-since 9%9=0 so we use (9-1)%9+1 to get 9.
 
 
-
-263. Ugly Number **
-only has 2,3,5 factor
-recursive or iterative dividing 2,3,5 until is 1
+### 263. Ugly Number **
+only has 2,3,5 factor<br/>
+recursive or iterative dividing 2,3,5 until is 1<br/>
 
 ```cpp
     bool isUgly(int num) {
@@ -1024,7 +1001,7 @@ recursive or iterative dividing 2,3,5 until is 1
     }
 ```
 	
-264. Ugly Number II ***
+### 264. Ugly Number II ***
 see dp, find the nth number
 ```cpp
     int nthUglyNumber(int n) {
@@ -1045,9 +1022,9 @@ see dp, find the nth number
     }
 ```
 
-313. Super Ugly Number ***
-approach 1: just use k pointers as in 264
-approach 2: dp solution
+### 313. Super Ugly Number ***
+approach 1: just use k pointers as in 264<br/>
+approach 2: dp solution<br/>
 ```cpp
     int nthSuperUglyNumber(int n, vector<int>& primes) {
         vector<int> dp(n,INT_MAX); //the n super ugly number
@@ -1063,10 +1040,10 @@ approach 2: dp solution
     }
 ```	
 
-268. Missing Number **
-0 to n, one is missing.
-xor 1 to n and identical one goes to 0
-or add together
+### 268. Missing Number **
+0 to n, one is missing.<br/>
+xor 1 to n and identical one goes to 0<br/>
+or add together<br/>
 ```cpp
     int missingNumber(vector<int>& nums) {
         int tsum=accumulate(nums.begin(),nums.end(),0);
@@ -1081,9 +1058,9 @@ or
     }	
 ```	
 
-279. Perfect Squares ***
-Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.
-see dp for knapsack
+### 279. Perfect Squares ***
+Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.<br/>
+see dp for knapsack<br/>
 ```cpp
     int numSquares(int n) {
 		vector<int> dp(n+1,INT_MAX);
@@ -1097,30 +1074,30 @@ see dp for knapsack
 		return dp[n];
     }
 ```	
-min: set the initial value to be INT_MAX
-i-j*j must >=0 so initial is sqrt(i)
-can also be treated as a knapsack problem
-math:
+min: set the initial value to be INT_MAX<br/>
+i-j*j must >=0 so initial is sqrt(i)<br/>
+can also be treated as a knapsack problem<br/>
+math:<br/>
 agrange's four-square theorem, also known as Bachet's conjecture, states that every natural number can be represented as the sum of four integer squares. where the four numbers are integers. ... This theorem was proven by Joseph Louis Lagrange 
 
-335. Self Crossing ***
+### 335. Self Crossing ***
 You are given an array x of n positive numbers. You start at point (0,0) and moves x[0] metres to the north, then x[1] metres to the west, x[2] metres to the south, x[3] metres to the east and so on. In other words, after each move your direction changes counter-clockwise.
 
 Write a one-pass algorithm with O(1) extra space to determine, if your path crosses itself, or not.
 
-There are only two cases which not cross
-1. keeps shrinking
-2. keeps growing
+There are only two cases which not cross<br/>
+	1. keeps shrinking
+	2. keeps growing
 
 if cross, it must first cross the recent loop. so we do not have to consider all previous
 the idea is fixed the line 1
-4th line cross line 1
-5th line cross line 1
-6th line cross line 1
-7th line cross line 1 (same as 7th cross line 2)
+	4th line cross line 1
+	5th line cross line 1
+	6th line cross line 1
+	7th line cross line 1 (same as 7th cross line 2)
 
 ```cpp
-boolean isSelfCrossing(int[] x) {
+	boolean isSelfCrossing(int[] x) {
         int l = x.length;
         if(l <= 3) return false;
         
@@ -1139,10 +1116,10 @@ boolean isSelfCrossing(int[] x) {
     }
 ```
 
-357. Count Numbers with Unique Digits ****
-from 0 to 10^n get the number of unique digits
-9*9*8*7*6...
-Following the hint. Let f(n) = count of number with unique digits of length n.
+### 357. Count Numbers with Unique Digits ****
+from 0 to 10^n get the number of unique digits<br/>
+9*9*8*7*6...<br/>
+Following the hint. Let f(n) = count of number with unique digits of length n.<br/>
 
 f(1) = 10. (0, 1, 2, 3, ...., 9)
 
@@ -1157,6 +1134,7 @@ Similarly f(4) = f(3) * 7 = 9 * 9 * 8 * 7....
 f(10) = 9 * 9 * 8 * 7 * 6 * ... * 1
 
 f(11) = 0 = f(12) = f(13)....
+
 ```cpp
     int countNumbersWithUniqueDigits(int n) {
       int num=0;
@@ -1173,7 +1151,7 @@ f(11) = 0 = f(12) = f(13)....
     }
 ```	
 
-367. Valid Perfect Square  **
+### 367. Valid Perfect Square  **
 do not use sqrt()
 1. n=k*k
 2. binary search
@@ -1193,15 +1171,15 @@ do not use sqrt()
 	}
 ```
 	
-397. Integer Replacement ***
-if n is even n/=2
-if n is odd n++ or n--
-repeat until n=1, return the min step
+### 397. Integer Replacement ***
+if n is even n/=2<br/>
+if n is odd n++ or n--<br/>
+repeat until n=1, return the min step<br/>
 
-binary 01: we subtract 1->00
-binary 11: we add 1->00
-so we can reduce by half sooner
-greedy based on math.
+binary 01: we subtract 1->00<br/>
+binary 11: we add 1->00<br/>
+so we can reduce by half sooner<br/>
+greedy based on math.<br/>
 ```cpp
     int integerReplacement(int n) {
         //using dynamic programming will not meet memory requirement
@@ -1221,7 +1199,7 @@ greedy based on math.
      }
 ```	 
 
-413. Arithmetic Slices ***
+### 413. Arithmetic Slices ***
 see dp
 ```cpp
     int numberOfArithmeticSlices(vector<int>& A) {
@@ -1245,14 +1223,14 @@ see dp
     }
 ```
 
-478. Generate Random Point in a Circle ***
-radius from 0 to r
-angle from 0 to 359
-x=r*cos(a)
-y=r*sin(a)
+### 478. Generate Random Point in a Circle ***
+radius from 0 to r<br/>
+angle from 0 to 359<br/>
+x=r*cos(a)<br/>
+y=r*sin(a)<br/>
 
-however, if we use rand for radius, we will get much denser close to circle center. 
-area is pi*r^2 we shall let it to be uniform in area so r^2 shall be uniform.
+however, if we use rand for radius, we will get much denser close to circle center. <br/>
+area is pi*r^2 we shall let it to be uniform in area so r^2 shall be uniform.<br/>
 
 ```cpp
     const double PI = 3.14159265358979732384626433832795;
@@ -1275,13 +1253,15 @@ area is pi*r^2 we shall let it to be uniform in area so r^2 shall be uniform.
         };
     }
 ```
-1. how to generate random
-2. how to make area uniform.	
+	1. how to generate random
+	2. how to make area uniform.	
 
 
-507. Perfect Number ***
+### 507. Perfect Number ***
 We define the Perfect Number is a positive integer that is equal to the sum of all its positive divisors except itself.
+
 brutal force: up to sqrt(n)
+
 be sure if i==num/i and it counts twice
 
 ```cpp
@@ -1300,11 +1280,12 @@ be sure if i==num/i and it counts twice
     }
 ```
 above solution add the factor twice for n^2
+
 note n=1 is a corner case.
 
-523. Continuous Subarray Sum ***
-target sum multiple of k
-prefix sum and put the %k the same value together
+### 523. Continuous Subarray Sum ***
+target sum multiple of k<br/>
+prefix sum and put the %k the same value together<br/>
 
 O(N^2)
 ```cpp
@@ -1313,17 +1294,17 @@ O(N^2)
         vector<int> accum(nums.size()+1,0);
         for(int i=0;i<nums.size();i++) accum[i+1]=accum[i]+nums[i];
         if(k)
-        for(int i=0;i<accum.size();i++)
-        {
-            for(int j=i+2;j<accum.size();j++)
-                if((accum[j]-accum[i])%k==0) return 1;
-        }
+			for(int i=0;i<accum.size();i++)
+			{
+				for(int j=i+2;j<accum.size();j++)
+					if((accum[j]-accum[i])%k==0) return 1;
+			}
         else
-        for(int i=0;i<accum.size();i++)
-        {
-            for(int j=i+2;j<accum.size();j++)
-                if(accum[j]==accum[i]) return 1;
-        }
+			for(int i=0;i<accum.size();i++)
+			{
+				for(int j=i+2;j<accum.size();j++)
+					if(accum[j]==accum[i]) return 1;
+			}
             
         return 0;
         
@@ -1347,36 +1328,36 @@ use %k for O(N), note k=0 case
 		 
 
 
-319. Bulb Switcher ***
-n bulbs from 1 to n, from 2 to n toggle all its multiples. Number of lights left.
-A bulb ends up on if it is switched an odd number of times.
+### 319. Bulb Switcher ***
+n bulbs from 1 to n, from 2 to n toggle all its multiples. Number of lights left.<br/>
+A bulb ends up on if it is switched an odd number of times.<br/>
 
 Call them bulb 1 to bulb n. Bulb i is switched in round d if and only if d divides i. So bulb i ends up on if and only if it has an odd number of divisors.
 
 Divisors come in pairs, like i=12 has divisors 1 and 12, 2 and 6, and 3 and 4. Except when i is a square, like 36 has divisors 1 and 36, 2 and 18, 3 and 12, 4 and 9, and double divisor 6. So bulb i ends up on if and only if i is a square.
 
-So just count the square numbers.
+So just count the square numbers.<br/>
 
-cards problem is very similar.
+cards problem is very similar.<br/>
 ```cpp
 int bulbSwitch(int n) {
     return sqrt(n);
 }
 ```
 
-672. Bulb Switcher II ***
-flips all lights
-flips all odd lights
-flip all even lights
-flip all 3k+1 lights
-here are three important observations:
+### 672. Bulb Switcher II ***
+flips all lights<br/>
+flips all odd lights<br/>
+flip all even lights<br/>
+flip all 3k+1 lights<br/>
+here are three important observations:<br/>
 
-For any operation, only odd or even matters, i.e. 0 or 1. Two same operations equal no operation.
-The first 3 operations can be reduced to 1 or 0 operation. For example, flip all + flip even = flip odd. So the result of the first 3 operations is the same as either 1 operation or original.
-The solution for n > 3 is the same as n = 3.
-For example, 1 0 0 ....., I use 0 and 1 to represent off and on.
-The state of 2nd digit indicates even flip; The state of 3rd digit indicates odd flip; And the state difference of 1st and 3rd digits indicates 3k+1 flip.
-In summary, the question can be simplified as m <= 3, n <= 3. I am sure you can figure out the rest easily.
+For any operation, only odd or even matters, i.e. 0 or 1. Two same operations equal no operation.<br/>
+The first 3 operations can be reduced to 1 or 0 operation. For example, flip all + flip even = flip odd. So the result of the first 3 operations is the same as either 1 operation or original.<br/>
+The solution for n > 3 is the same as n = 3.<br/>
+For example, 1 0 0 ....., I use 0 and 1 to represent off and on.<br/>
+The state of 2nd digit indicates even flip; The state of 3rd digit indicates odd flip; And the state difference of 1st and 3rd digits indicates 3k+1 flip.<br/>
+In summary, the question can be simplified as m <= 3, n <= 3. I am sure you can figure out the rest easily.<br/>
 ```cpp
     int flipLights(int n, int m) {
         if (m == 0 || n == 0) return 1;
@@ -1389,10 +1370,10 @@ In summary, the question can be simplified as m <= 3, n <= 3. I am sure you can 
 
 ## Part 3, more thinking
 
-592. Fraction Addition and Subtraction ***
-need to find the lcm for all demom
-final results need find the gcd
-just the hand calculation on the fraction addition
+### 592. Fraction Addition and Subtraction ***
+need to find the lcm for all demom<br/>
+final results need find the gcd<br/>
+just the hand calculation on the fraction addition<br/>
 
 ```cpp
     string fractionAddition(string expression) {
@@ -1451,10 +1432,10 @@ just the hand calculation on the fraction addition
     }
 ```
 	
-640. Solve the Equation
-find the = and move all x items to left and non-x items to right
-ax=b
-hand solving the equations
+### 640. Solve the Equation
+find the = and move all x items to left and non-x items to right<br/>
+ax=b<br/>
+hand solving the equations<br/>
 ```cpp
     string solveEquation(string equation) {
         //approach: lhs and rhs, move all x items to left and other to right
@@ -1512,13 +1493,13 @@ hand solving the equations
     }
 ```
 
-645. Set Mismatch ***
-1 to n, one number is changed to another number. find the missing number
-The idea is based on:
-(1 ^ 2 ^ 3 ^ .. ^ n) ^ (1 ^ 2 ^ 3 ^ .. ^ n) = 0
-Suppose we change 'a' to 'b', then all but 'a' and 'b' are XORed exactly 2 times. The result is then
-0 ^ a ^ b ^ b ^ b = a ^ b
-Let c = a ^ b, if we can find 'b' which appears 2 times in the original array, 'a' can be easily calculated by a = c ^ b.
+### 645. Set Mismatch ***
+1 to n, one number is changed to another number. find the missing number<br/>
+The idea is based on:<br/>
+(1 ^ 2 ^ 3 ^ .. ^ n) ^ (1 ^ 2 ^ 3 ^ .. ^ n) = 0<br/>
+Suppose we change 'a' to 'b', then all but 'a' and 'b' are XORed exactly 2 times. The result is then<br/>
+0 ^ a ^ b ^ b ^ b = a ^ b<br/>
+Let c = a ^ b, if we can find 'b' which appears 2 times in the original array, 'a' can be easily calculated by a = c ^ b.<br/>
 ```cpp
     public int[] findErrorNums(int[] nums) {
         int n = nums.length;
@@ -1552,10 +1533,10 @@ find the duplicate using counting or marking.
     }
 ```	
 	
-670. Maximum Swap ***
-Given a non-negative integer, you could swap two digits at most once to get the maximum valued number. Return the maximum valued number you could get.
-a greedy choice
-find the right max and swap with the first smaller.
+### 670. Maximum Swap ***
+Given a non-negative integer, you could swap two digits at most once to get the maximum valued number. Return the maximum valued number you could get.<br/>
+a greedy choice<br/>
+find the right max and swap with the first smaller.<br/>
 ```cpp
     int maximumSwap(int num) {
         //this is a selection sort
@@ -1579,24 +1560,24 @@ find the right max and swap with the first smaller.
     }
 ```
 	
-754. Reach a Number ***
-You are standing at position 0 on an infinite number line. There is a goal at position target.
+### 754. Reach a Number ***
+You are standing at position 0 on an infinite number line. There is a goal at position target.<br/>
 
-On each move, you can either go left or right. During the n-th move (starting from 1), you take n steps.
+On each move, you can either go left or right. During the n-th move (starting from 1), you take n steps.<br/>
 
-Return the minimum number of steps required to reach the destination.
-very similar to the dp problem of racing car
+Return the minimum number of steps required to reach the destination.<br/>
+very similar to the dp problem of racing car<br/>
 
-Step 0: Get positive target value (step to get negative target is the same as to get positive value due to symmetry).
-Step 1: Find the smallest step that the summation from 1 to step just exceeds or equals target.
+Step 0: Get positive target value (step to get negative target is the same as to get positive value due to symmetry).<br/>
+Step 1: Find the smallest step that the summation from 1 to step just exceeds or equals target.<br/>
 Step 2: Find the difference between sum and target. The goal is to get rid of the difference to reach target. For ith move, if we switch the right move to the left, the change in summation will be 2*i less. Now the difference between sum and target has to be an even number in order for the math to check out.
-Step 2.1: If the difference value is even, we can return the current step.
-Step 2.2: If the difference value is odd, we need to increase the step until the difference is even (at most 2 more steps needed).
-Eg:
-target = 5
-Step 0: target = 5.
-Step 1: sum = 1 + 2 + 3 = 6 > 5, step = 3.
-Step 2: Difference = 6 - 5 = 1. Since the difference is an odd value, we will not reach the target by switching any right move to the left. So we increase our step.
+Step 2.1: If the difference value is even, we can return the current step.<br/>
+Step 2.2: If the difference value is odd, we need to increase the step until the difference is even (at most 2 more steps needed).<br/>
+Eg:<br/>
+target = 5<br/>
+Step 0: target = 5.<br/>
+Step 1: sum = 1 + 2 + 3 = 6 > 5, step = 3.<br/>
+Step 2: Difference = 6 - 5 = 1. Since the difference is an odd value, we will not reach the target by switching any right move to the left. So we increase our step.<br/>
 Step 2.2: We need to increase step by 2 to get an even difference (i.e. 1 + 2 + 3 + 4 + 5 = 15, now step = 5, difference = 15 - 5 = 10). Now that we have an even difference, we can simply switch any move to the left (i.e. change + to -) as long as the summation of the changed value equals to half of the difference. We can switch 1 and 4 or 2 and 3 or 5.
 ```cpp
     int reachNumber(int target) {
@@ -1612,9 +1593,9 @@ Step 2.2: We need to increase step by 2 to get an even difference (i.e. 1 + 2 + 
     }
 ```
 
-775. Global and Local Inversions
-if global==local
-only local inversion exists. so the i-A[i] difference cannot be more than 1
+### 775. Global and Local Inversions
+if global==local<br/>
+only local inversion exists. so the i-A[i] difference cannot be more than 1<br/>
 ```cpp
     bool isIdealPermutation(vector<int>& A) {
 	for (int i = 0; i < A.size(); ++i) {
@@ -1624,7 +1605,7 @@ only local inversion exists. so the i-A[i] difference cannot be more than 1
     }
 ```
 
-829. Consecutive Numbers Sum
+### 829. Consecutive Numbers Sum
 number of ways to write a number to be a sum of consecuative numbers
 ```cpp
     int consecutiveNumbersSum(int N) {
@@ -1640,10 +1621,10 @@ number of ways to write a number to be a sum of consecuative numbers
     }
 ```
 	
-789. Escape The Ghosts
-you and ghost can move 4 directions and move simultaneously. see if you can escape and reach the target position
-Let's say you always take the shortest route to reach the target because if you go a longer or a more tortuous route, I believe the ghost has a better chance of getting you.
-Denote your starting point A, ghost's starting point B, the target point C.
+### 789. Escape The Ghosts
+you and ghost can move 4 directions and move simultaneously. see if you can escape and reach the target position<br/>
+Let's say you always take the shortest route to reach the target because if you go a longer or a more tortuous route, I believe the ghost has a better chance of getting you.<br/>
+Denote your starting point A, ghost's starting point B, the target point C.<br/>
 For a ghost to intercept you, there has to be some point D on AC such that AD = DB. Fix D. By triangle inequality, AC = AD + DC = DB + DC >= BC. What that means is if the ghost can intercept you in the middle, it can actually reach the target at least as early as you do. So wherever the ghost starts at (and wherever the interception point is), its best chance of getting you is going directly to the target and waiting there rather than intercepting you in the middle.
 
 ```cpp
@@ -1665,7 +1646,7 @@ For a ghost to intercept you, there has to be some point D on AC such that AD = 
     }
 ```
 	
-858. Mirror Reflection
+### 858. Mirror Reflection
 reflection by expanding the rect in 2 directions and problem becomes a simple gcd problem
 
 ```cpp
@@ -1686,9 +1667,9 @@ reflection by expanding the rect in 2 directions and problem becomes a simple gc
     }
 ```
 
-878. Nth Magical Number
-approach  1: use gcd lcm to define l and r, and use binary search
-note the binary search looks for the first true f,f,f,f...t,t...t,f,f,f,f
+### 878. Nth Magical Number
+approach  1: use gcd lcm to define l and r, and use binary search<br/>
+note the binary search looks for the first true f,f,f,f...t,t...t,f,f,f,f<br/>
 
 approach 2: the pattern repeats at the lcm
 ```cpp
@@ -1716,8 +1697,9 @@ approach 2: the pattern repeats at the lcm
 gcd only judge b==0 is fine since only b acts as the divisor
 	
 	
-883. Projection Area of 3D Shapes
+### 883. Projection Area of 3D Shapes
 cube projection to xy, yz, xz plane and return the total area
+
 ```cpp
     int projectionArea(vector<vector<int>>& grid) {
         int xy=0,xz=0,yz=0;
@@ -1744,7 +1726,7 @@ cube projection to xy, yz, xz plane and return the total area
 
 ## Part 4. hard problems
 
-### 65. Valid Number
+###  65. Valid Number
 Validate if a given string can be interpreted as a decimal number.
 note using stringstream cannot over the double range
 
@@ -1792,7 +1774,7 @@ bool isNumber(const char *s)
 
 
 
-149. Max Points on a Line ****
+### 149. Max Points on a Line ****
 Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
 approach:
 points on a line: kx+b=y, a line is determined by the k and a point on the line.
@@ -1851,7 +1833,7 @@ fixing one point:
 
 
 
-224. Basic Calculator ****
+### 224. Basic Calculator ****
 supports + - for non-negative numbers and ()
 
 Simple iterative solution by identifying characters one by one. One important thing is that the input is valid, which means the parentheses are always paired and in order.
@@ -1901,7 +1883,7 @@ Finally if there is only one number, from the above solution, we haven't add the
 	}
 ```
 
-273. Integer to English words ***
+### 273. Integer to English words ***
 1000 is the subproblem.
 
 ```cpp
@@ -1942,7 +1924,7 @@ public:
 
 
 
-343. Integer Break ****
+### 343. Integer Break ****
 Given a positive integer n, break it into the sum of at least two positive integers and maximize the product of those integers. 
 Return the maximum product you can get
 see dp
@@ -1978,7 +1960,7 @@ use 3 until we reach 4. that is the essence of this problem.
 
 
 
-365. Water and Jug Problem ****
+### 365. Water and Jug Problem ****
 jug x and y, to measure z. we can only use x and y and x+y or x-y
 
 ```cpp
@@ -2000,7 +1982,7 @@ jug x and y, to measure z. we can only use x and y and x+y or x-y
 ```
 
 
-368. Largest Divisible Subset ****
+### 368. Largest Divisible Subset ****
 subset numbers all satisfy Si%Sj=0
 dp with backtrace
 first sort it.
@@ -2052,7 +2034,7 @@ first sort it.
     }
 ```	
 
-372. Super Pow ****
+### 372. Super Pow ****
 Your task is to calculate a^b mod 1337 where a is a positive integer and b is an extremely large positive integer given in the form of an array.
 ```cpp
 /*One knowledge: ab % k = (a%k)(b%k)%k
@@ -2083,7 +2065,7 @@ Implementation of this idea: divide and conque
 
 ```
 
-396. Rotate Function ****
+### 396. Rotate Function ****
 Given an array of integers A and let n to be its length.
 
 Assume Bk to be an array obtained by rotating the array A k positions clock-wise, we define a "rotation function" F on A as follow:
@@ -2124,7 +2106,7 @@ F(k) = F(k-1) + sum - nBk[0]
 
 
 
-400. Nth Digit ****
+### 400. Nth Digit ****
 find the nth digit for 1,2,3,....
 one digit: 1-9: 9
 two digit: 10-99: 90
@@ -2158,7 +2140,7 @@ public:
 	
 
 	
-423. Reconstruct Original Digits from English ****
+### 423. Reconstruct Original Digits from English ****
 
 first count those unique letters in each number
 after they decided, minus it from other
@@ -2189,7 +2171,7 @@ after they decided, minus it from other
 	
 
 	
-458. poor pigs
+### 458. poor pigs
 
 There are 1000 buckets, one and only one of them is poisonous, while the rest are filled with water. They all look identical. If a pig drinks the poison it will die within 15 minutes. What is the minimum amount of pigs you need to figure out which bucket is poisonous within one hour?
 
@@ -2199,7 +2181,7 @@ General case:
 
 If there are n buckets and a pig drinking poison will die within m minutes, how many pigs (x) you need to figure out the poisonous bucket within p minutes? There is exactly one bucket with poison.
 
-462. Minimum Moves to Equal Array Elements II ****
+### 462. Minimum Moves to Equal Array Elements II ****
 a move is to add +/-1 to an element
 min moves to make the elements equal.
 choose the median and make every number equal to median
@@ -2226,7 +2208,7 @@ In this problem, we set two boundaries, saying i and j, and we move the i and j 
 
 
 
-483. Smallest Good Base ***
+### 483. Smallest Good Base ***
 binary search or
 math
 ```cpp
@@ -2263,7 +2245,7 @@ math
 ```
 
 	
-517. Super Washing Machines ****
+### 517. Super Washing Machines ****
 ```cpp
     int findMinMoves(vector<int>& machines) {
         //approach: total number is not changed, final number is the mean, through distribution
@@ -2288,7 +2270,7 @@ math
 	
 
 
-535. Encode and Decode TinyURL ****
+### 535. Encode and Decode TinyURL ****
 using 0-9 a-z A-Z to form a tinyURL
 tinyURL includes 6 chars from above
 
@@ -2349,7 +2331,7 @@ public:
 
 
 
-753. Cracking the Safe ****
+### 753. Cracking the Safe ****
 return the string to guarantee to open the box (keeping matching the password)
 password is n digit using 0 to k-1 digits
 
@@ -2383,7 +2365,7 @@ when we start from forward, there will be a circle preventing us going on.
 
 
 	
-780. Reaching Points
+### 780. Reaching Points
 A move consists of taking a point (x, y) and transforming it to either (x, x+y) or (x+y, y).
 
 Given a starting point (sx, sy) and a target point (tx, ty), return True if and only if a sequence of moves exists to transform the point (sx, sy) to (tx, ty). Otherwise, return False.
@@ -2410,7 +2392,7 @@ Similar argument applies for tx <= ty.
     }
 ```
 	
-781. Rabbits in Forest
+### 781. Rabbits in Forest
 In a forest, each rabbit has some color. Some subset of rabbits (possibly all of them) tell you how many other rabbits have the same color as them. Those answers are placed in an array.
 
 Return the minimum number of rabbits that could be in the forest.
@@ -2437,7 +2419,7 @@ the number of groups is math.ceil(n / (x + 1)) and it equals to (n + x) / (x + 1
     }
 ```
 
-782. Transform to Chessboard
+### 782. Transform to Chessboard
 ```cpp
     int movesToChessboard(vector<vector<int>>& board) {
         //check all rows against row 0, check all columns against col 0
@@ -2554,7 +2536,7 @@ C++:
 
 
 	
-794. Valid Tic-Tac-Toe State
+### 794. Valid Tic-Tac-Toe State
 Players take turns placing characters into empty squares (" ").
 The first player always places "X" characters, while the second player always places "O" characters.
 "X" and "O" characters are always placed into empty squares, never filled ones.
@@ -2609,7 +2591,7 @@ bool validTicTacToe(vector<string>& board) {
 }
 ```
 
-805. Split Array With Same Average
+### 805. Split Array With Same Average
 In a given integer array A, we must move every element of A to either list B or list C. (B and C initially start empty.)
 
 Return true if and only if after such a move, it is possible that the average value of B is equal to the average value of C, and B and C are both non-empty.
@@ -2631,7 +2613,7 @@ Return true if and only if after such a move, it is possible that the average va
     }
 ```
 	
-810. Chalkboard XOR Game
+### 810. Chalkboard XOR Game
 We are given non-negative integers nums[i] which are written on a chalkboard.  Alice and Bob take turns erasing exactly one number from the chalkboard, with Alice starting first.  If erasing a number causes the bitwise XOR of all the elements of the chalkboard to become 0, then that player loses.  (Also, we'll say the bitwise XOR of one element is that element itself, and the bitwise XOR of no elements is 0.)
 
 Also, if any player starts their turn with the bitwise XOR of all the elements of the chalkboard equal to 0, then that player wins.
@@ -2650,7 +2632,7 @@ Return True if and only if Alice wins the game, assuming both players play optim
 
 
 	
-866. Prime Palindrome
+### 866. Prime Palindrome
 find the smallest prime palindrome number >=N
 All palindrome with even digits is multiple of 11.
 So among them, 11 is the only one prime
@@ -2677,7 +2659,7 @@ reduce the number digits by half.
 ```	
 
 
-869. Reordered Power of 2
+### 869. Reordered Power of 2
 Starting with a positive integer N, we reorder the digits in any order (including the original order) such that the leading digit is not zero.
 
 Return true if and only if we can do this in a way such that the resulting number is a power of 2.
@@ -2707,7 +2689,7 @@ check if the two string equal
     }
 ```	
 
-877. Stone Game
+### 877. Stone Game
 even number of piles, total sum is odd. taking from either end.
 who will win
 can use dp
@@ -2744,7 +2726,7 @@ always win
 
 ```    
 
-885. Spiral Matrix III
+### 885. Spiral Matrix III
 starting from (r0,c0), walking clockwise
 change direction and change step
 ```cpp
@@ -2763,7 +2745,7 @@ change direction and change step
     }
 ```
 
-887. Super Egg Drop
+### 887. Super Egg Drop
 binary search
 or dp
 ```cpp
@@ -2782,7 +2764,7 @@ or dp
         return s; 
     }
 ```
-891. Sum of Subsequence Widths
+### 891. Sum of Subsequence Widths
 Given an array of integers A, consider all non-empty subsequences of A.
 
 For any sequence S, let the width of S be the difference between the maximum and minimum element of S.
@@ -2802,7 +2784,7 @@ As the answer may be very large, return the answer modulo 10^9 + 7.
 ```
 	
 
-899. Orderly Queue
+### 899. Orderly Queue
 in each move we move one of the char in the first k char to the end
 return the smallest string
 
@@ -2828,7 +2810,7 @@ So, K>1 equals bubble sort
     }
 ```
 
-902. Numbers At Most N Given Digit Set
+### 902. Numbers At Most N Given Digit Set
 ```cpp
     int atMostNGivenDigitSet(vector<string>& D, int N) {
         string NS = to_string(N);
@@ -2852,7 +2834,7 @@ So, K>1 equals bubble sort
 ```
 
 
-906. Super Palindromes
+### 906. Super Palindromes
 itself and also a square of another palindrome
 ```cpp
     int superpalindromesInRange(string L, string R) {
@@ -2893,7 +2875,7 @@ itself and also a square of another palindrome
     }
 ```
 	
-908. Smallest Range I
+### 908. Smallest Range I
 Given an array A of integers, for each integer A[i] we may choose any x with -K <= x <= K, and add x to A[i].
 
 After this process, we have some array B.
@@ -2909,7 +2891,7 @@ math: max and min, we can max pull down by 2K. if the difference>0, then the min
     }
 ```
 	
-910. Smallest Range II
+### 910. Smallest Range II
 add +k or -k
 sort it first and then greedy
 ```cpp
@@ -2926,7 +2908,7 @@ sort it first and then greedy
 ```	
 
 
-927. Three Equal Parts
+### 927. Three Equal Parts
 ```cpp
     vector<int> threeEqualParts(vector<int>& A) {
       vector<int> ones;
@@ -2952,7 +2934,7 @@ sort it first and then greedy
         return vector<int>({-1,-1});
     }
 ```	
-952. Largest Component Size by Common Factor
+### 952. Largest Component Size by Common Factor
 union find
 ```cpp
     int largestComponentSize(vector<int>& A) {
@@ -3012,7 +2994,7 @@ union find
 ```
 	
 
-963. Minimum Area Rectangle II
+### 963. Minimum Area Rectangle II
 any four points
 using the side as diagnonal and use the center point and the side length as the key to form a hashmap
 these points are all on a circle.
@@ -3062,7 +3044,7 @@ these points are all on a circle.
     }
 ```
 
-964. Least Operators to Express Number
+### 964. Least Operators to Express Number
 Given a single positive integer x, we will write an expression of the form x (op1) x (op2) x (op3) x ... where each operator op1, op2, etc. is either addition, subtraction, multiplication, or division (+, -, *, or /).  For example, with x = 3, we might write 3 * 3 / 3 + 3 - 3 which is a value of 3.
 
 When writing such an expression, we adhere to the following conventions:
@@ -3097,7 +3079,7 @@ It's not allowed to use the unary negation operator (-).  For example, "x - x" i
 
 
 
-972. Equal Rational Numbers
+### 972. Equal Rational Numbers
 expand to exceed double precision
 
 ```cpp
@@ -3119,7 +3101,7 @@ expand to exceed double precision
 
 
 
-991. Broken Calculator
+### 991. Broken Calculator
 On a broken calculator that has a number showing on its display, we can perform two operations:
 
 Double: Multiply the number on the display by 2, or;
@@ -3141,7 +3123,7 @@ Return the minimum number of operations needed to display the number Y.
     }
 ```
 
-1006. Clumsy Factorial
+### 1006. Clumsy Factorial
 ```cpp
     int clumsy(int N) {
        int ans=N;
@@ -3169,15 +3151,15 @@ mathematic: 4 as a group, and do not need extra data structure.
 
 
 
-1012. Numbers With Repeated Digit
+### 1012. Numbers With Repeated Digit
 Given a positive integer N, return the number of positive integers less than or equal to N that have at least 1 repeated digit.
 
 Count res the Number Without Repeated Digit
 Then the number with repeated digits = N - res
 
 Similar as
-788. Rotated Digits
-902. Numbers At Most N Given Digit Set
+### 788. Rotated Digits
+### 902. Numbers At Most N Given Digit Set
 
 Explanation:
 Transform N + 1 to arrayList
@@ -3233,7 +3215,7 @@ public:
     }
 ```
 
-1015. Smallest Integer Divisible by K
+### 1015. Smallest Integer Divisible by K
 Given a positive integer K, you need find the smallest positive integer N such that N is divisible by K, and N only contains the digit 1.
 
 Return the length of N.  If there is no such N, return -1.
