@@ -34,6 +34,32 @@ just count the unsorted column. To improve efficiency, we just compare neigborin
     }
 ```
 
+### 955. Delete Columns to Make Sorted II
+make rows are sorted. Once the column is removed, replace it with same char *, and continue to compare.
+do not misunderstand: it needs the strings (row represents a word) to be sorted.
+```cpp
+    int minDeletionSize(vector<string>& A) {
+        //previous col is sorted then is over
+        int ans=0;
+        int m=A.size(),n=A[0].size();
+        for(int j=0;j<n;j++)
+        {
+            bool need_next=0;
+            int i=1;
+            for(;i<m;i++)
+            {
+                if(A[i].substr(0,j+1)<A[i-1].substr(0,j+1)) {ans++;break;}
+                else if(A[i].substr(0,j)==A[i-1].substr(0,j)) need_next=1;
+            }
+            if(i==m && !need_next) return ans; //sorted
+            if(i<m) for(int k=0;k<m;k++) A[k][j]='*';
+        }
+        return ans;
+    }
+```	
+if for the previous j columns not sorted, then we replace the jth column with *
+if there is string ==, then we need check further to see if they are sorted.
+
 ### 122. Best Time to Buy and Sell Stock II
 as many as transactions.
 Greedy: just compare with previous price, if profit >0 then make it.
@@ -57,6 +83,60 @@ the profit of the transaction
    Prices[X+1] - Prices[X] 
 = D[Y] + D[Y-1] + ... + D[X+1]
 = sum of D from X+1 to Y
+
+### 714. Best Time to Buy and Sell Stock with Transaction Fee ***
+see dp solution
+dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) j=0 to i-1
+dp[i]=max(dp[i-1],price[i]+max(dp[j]-price[j]-fee)) j=0 to i-1 and this can be updated iteratively and reducing the complexity from O(N^2) to O(N)
+```cpp
+    int maxProfit(vector<int>& prices, int fee) {
+        int n=prices.size();
+        vector<int> dp(n);//dp is the max profit ending at ith day
+        int tmax=INT_MIN;
+        for(int i=1;i<n;i++)
+        {
+            tmax=max(tmax,dp[i-1]-prices[i-1]-fee);
+            dp[i]=max(dp[i-1],prices[i]+tmax);
+        }
+        return dp[n-1];
+    }
+```    
+greedy choice:
+when current price>previous price+fee, perform a transaction, is this a safe move?</br>
+a<b<c<d, and b>a+fee, d>c+fee, then b-a-fee+d-c-fee ==? d-a-fee not really. so this approach is incorrect.</br>
+for example fee is 1, 4,6,8,10, we get 3 using first approach, 5 for 2nd approach.</br>
+we buy at 4, sell at 6 (equiv sell at 5), buy at 6 sell at 8 (equiv sell at 7). In this case we cannot start a new transaction.</br>
+for example 4,6,3,8. buy at 4 sell at 6, profit is 1, buy at 3 sell at 8, profit is 4, total profit is 5. </br>
+for example 4,6,5,8. buy at 4 sell at 6, profit is 1, buy at 5 sell at 8, profit is 2, total profit is 3. </br>
+so what is the safe move?</br>
+we shall tolerate some variation, only when price[i]<price[i-1]-fee we can sell at i-1 and buy at i. 
+(i.e the dip shall be deep enough to cover the transaction fee, otherwise it is not worthful). 
+Once we start a transaction, we reduce the problem into a smaller subproblem with the new minimum, 
+which is a typical greedy approach.</br>
+
+```cpp
+    int maxProfit(vector<int>& prices, int fee) {
+        //greedy solution
+        //only when price[i]<price[i-1]-fee we can start buy at ith day
+        int n=prices.size();
+        if(n<2) return 0;
+        int minimum=prices[0];
+        int maxprof=0;
+        for(int i=1;i<n;i++)
+        {
+            if(prices[i]<minimum) //prices[i-1]-fee
+                minimum=prices[i];
+            else if(prices[i]>minimum+fee)
+            {
+                maxprof+=prices[i]-minimum-fee;
+                minimum=prices[i]-fee;
+            }
+        }
+        return maxprof;
+    }
+```
+The greedy is not so understandable, and most of greedy can be solved using dp approach.
+
 
 ### 860. Lemonade Change
 greedy: always gives changes of the large bill first. 
@@ -291,55 +371,6 @@ public:
 };
 ```
 
-### 714. Best Time to Buy and Sell Stock with Transaction Fee ***
-see dp solution
-dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) j=0 to i-1
-dp[i]=max(dp[i-1],price[i]+max(dp[j]-price[j]-fee)) j=0 to i-1 and this can be updated iteratively and reducing the complexity from O(N^2) to O(N)
-```cpp
-    int maxProfit(vector<int>& prices, int fee) {
-        int n=prices.size();
-        vector<int> dp(n);//dp is the max profit ending at ith day
-        int tmax=INT_MIN;
-        for(int i=1;i<n;i++)
-        {
-            tmax=max(tmax,dp[i-1]-prices[i-1]-fee);
-            dp[i]=max(dp[i-1],prices[i]+tmax);
-        }
-        return dp[n-1];
-    }
-```    
-greedy choice:
-when current price>previous price+fee, perform a transaction, is this a safe move?</br>
-a<b<c<d, and b>a+fee, d>c+fee, then b-a-fee+d-c-fee ==? d-a-fee not really. so this approach is incorrect.</br>
-for example fee is 1, 4,6,8,10, we get 3 using first approach, 5 for 2nd approach.</br>
-we buy at 4, sell at 6 (equiv sell at 5), buy at 6 sell at 8 (equiv sell at 7). In this case we cannot start a new transaction.</br>
-for example 4,6,3,8. buy at 4 sell at 6, profit is 1, buy at 3 sell at 8, profit is 4, total profit is 5. </br>
-for example 4,6,5,8. buy at 4 sell at 6, profit is 1, buy at 5 sell at 8, profit is 2, total profit is 3. </br>
-so what is the safe move?</br>
-we shall tolerate some variation, only when price[i]<price[i-1]-fee we can sell at i-1 and buy at i. (i.e the dip shall be deep enough to cover the transaction fee, otherwise it is not worthful). Once we start a transaction, we reduce the problem into a smaller subproblem with the new minimum, which is a typical greedy approach.</br>
-
-```cpp
-    int maxProfit(vector<int>& prices, int fee) {
-        //greedy solution
-        //only when price[i]<price[i-1]-fee we can start buy at ith day
-        int n=prices.size();
-        if(n<2) return 0;
-        int minimum=prices[0];
-        int maxprof=0;
-        for(int i=1;i<n;i++)
-        {
-            if(prices[i]<minimum) //prices[i-1]-fee
-                minimum=prices[i];
-            else if(prices[i]>minimum+fee)
-            {
-                maxprof+=prices[i]-minimum-fee;
-                minimum=prices[i]-fee;
-            }
-        }
-        return maxprof;
-    }
-```
-The greedy is not so understandable, and most of greedy can be solved using dp approach.
 
 ### 1007. Minimum Domino Rotations For Equal Row
 swap a vs b to make a has the same number
@@ -414,53 +445,6 @@ this problem is similar to those overlapping interval problems such as double bo
             if(points[i].first>cur_end) {cur_end=points[i].second;ans++;}
         }
         return ans;
-    }
-```
-
-### 621. Task Scheduler
-same task needs at least n intervals (adding idle). </br>
-return the number of intervals to complete all tasks </br>
-greedy approach: try to take one from each set of task and add zero or more idles for this to satisfy n intervals. Always take one task from current max task. 
-Assuming the highest frequency is K, then we divide it into k chunks. each chunk will fill one task from each set. (k-1)*(n+1)
-
-First count the number of occurrences of each element.
-Let the max frequency seen be M for element E
-We can schedule the first M-1 occurrences of E, each E will be followed by at least N CPU cycles in between successive schedules of E
-Total CPU cycles after scheduling M-1 occurrences of E = (M-1) * (N + 1) // 1 comes for the CPU cycle for E itself
-Now schedule the final round of tasks. We will need at least 1 CPU cycle of the last occurrence of E. If there are multiple tasks with frequency M, they will all need 1 more cycle.
-Run through the frequency dictionary and for every element which has frequency == M, add 1 cycle to result.
-If we have more number of tasks than the max slots we need as computed above we will return the length of the tasks array as we need at least those many CPU cycles.
-
-For the last point I think you should explain more clearly.
-
-Support we have AAABBBCCDDEF n = 2
-
-No matter how we arrange, we at least have the following schedule:
-
-A cool cool A cool cool A
-In this way, we could replace the first 'cool' with B. then it becomes.
-
-A B cool A B cool A B
-
-With the remain C, we could
-A B C A B C A B
-for the def,
-A B C (D) E A B C (D) F
-we insert at the position of end of each period of A B C. then we could ensure that there would be no collision
-
-```cpp
-    int leastInterval(vector<char>& tasks, int n) {
-        unordered_map<char,int>mp;
-        int count = 0;
-        for(auto e : tasks)
-        {
-            mp[e]++;
-            count = max(count, mp[e]);
-        }
-        
-        int ans = (count-1)*(n+1);
-        for(auto e : mp) if(e.second == count) ans++;
-        return max((int)tasks.size(), ans);
     }
 ```
 
@@ -541,37 +525,73 @@ c++ using priority_queue by removing the highest freq one and followed by the 2n
 
 ```cpp
     string reorganizeString(string S) {
-        priority_queue<pair<int, char>> pq;
-        int map[26] = { 0 };
-        
-        for (auto c : S) 
-        {
-            if (++map[c-'a'] > (S.size() + 1)/2)
-                return "";
+        vector<int> mp(26);
+        for(char c: S) {
+            mp[c-'a']++;
+            if(mp[c-'a']>(S.size()+1)/2) return "";
         }
-        
-        for (int i = 0; i < 26; ++i) 
-        {
-            if (map[i]) pq.push({map[i], i + 'a'});
-        }
-        
+        priority_queue<pair<int,char>> pq;
+        for(int i=0;i<26;i++) if(mp[i]) pq.push({mp[i],i+'a'});
         string ans;
-        while(!pq.empty()) 
+        while(pq.size())
         {
-            pair<int, char> p1, p2;
-            p1 = pq.top(); pq.pop();
-            ans.push_back(p1.second);
-            if (!pq.empty()) 
+            auto t=pq.top();
+            pq.pop();
+            ans+=t.second;
+            if(pq.size())
             {
-                p2 = pq.top(); pq.pop();
-                ans.push_back(p2.second);
-                if (--p2.first) pq.push(p2);
+                auto t1=pq.top();
+                pq.pop();
+                ans+=t1.second;
+                if(--t1.first) pq.push(t1);
             }
-            if (--p1.first) pq.push(p1);
+            if(--t.first) pq.push(t);
         }
         return ans;
     }
 ```    
+
+### 621. Task Scheduler
+same task needs at least n intervals (adding idle). </br>
+return the number of intervals to complete all tasks </br>
+greedy approach: try to take one from each set of task and add zero or more idles for this to satisfy n intervals. Always take one task from current max task. 
+Assuming the highest frequency is K, then we divide it into k chunks. each chunk will fill one task from each set. (k-1)*(n+1)
+
+First count the number of occurrences of each element.
+Let the max frequency seen be M for element E
+We can schedule the first M-1 occurrences of E, each E will be followed by at least N CPU cycles in between successive schedules of E
+Total CPU cycles after scheduling M-1 occurrences of E = (M-1) * (N + 1) // 1 comes for the CPU cycle for E itself
+Now schedule the final round of tasks. We will need at least 1 CPU cycle of the last occurrence of E. If there are multiple tasks with frequency M, they will all need 1 more cycle.
+Run through the frequency dictionary and for every element which has frequency == M, add 1 cycle to result.
+If we have more number of tasks than the max slots we need as computed above we will return the length of the tasks array as we need at least those many CPU cycles.
+
+For the last point I think you should explain more clearly.
+
+Support we have AAABBBCCDDEF n = 2
+
+No matter how we arrange, we at least have the following schedule:
+
+A cool cool A cool cool A
+In this way, we could replace the first 'cool' with B. then it becomes.
+
+A B cool A B cool A B
+
+With the remain C, we could
+A B C A B C A B
+for the def,
+A B C (D) E A B C (D) F
+we insert at the position of end of each period of A B C. then we could ensure that there would be no collision
+
+```cpp
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> mp(26);
+        int mostfreq=0;
+        for(char c: tasks) {mp[c-'A']++;mostfreq=max(mostfreq,mp[c-'A']);}
+        int ans=(mostfreq-1)*(n+1);
+        for(int i=0;i<26;i++) if(mp[i]==mostfreq) ans++;
+        return max((int)tasks.size(),ans);
+    }
+```
 
 ### 659. Split Array into Consecutive Subsequences
 
@@ -749,11 +769,52 @@ greedy:
       
       return true;
     }
+or
+    bool canJump(vector<int>& nums) {
+        //to jump from ith position, you first need to be able to jump here
+        int reach=0;
+        for(int i=0;i<nums.size() && i<=reach;i++)
+            reach=max(reach,i+nums[i]);
+        return reach>=nums.size()-1;
+    }
+
 ```
 
-### 955. Delete Columns to Make Sorted II
-make each row sorted. Once the column is removed, replace it with same char *, and continue to compare.
+### 45. Jump Game II.md
+### Problem Summary
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
 
+Each element in the array represents your maximum jump length at that position.
+
+Your goal is to reach the last index in the minimum number of jumps.
+
+### Analysis
+- starting at the first step i=0, max range is num[0]. Which covers the node from 1 to num[0]
+- we shall check the next max range using all those nodes
+- the first one > n-1 is the min level
+does it sound like a bfs? yes
+
+We can also use dp for a O(N^2) approach.
+
+```cpp
+    int jump(vector<int>& nums) {
+        if(nums.size()<2) return 0;
+        int cur_max=0,next_max=0;
+        int i=0,ans=0;
+        while(cur_max>=i)
+        {
+            ans++;
+            for(;i<=cur_max;i++)
+                next_max=max(next_max,nums[i]+i);
+            cur_max=next_max;
+            if(cur_max>=nums.size()-1) return ans;
+        }
+        return 0;
+    }
+ ```
+ note: n==1 is a corner case, need 0 steps.
+ 
+ 
 ### 402. Remove K Digits
 to make the number the smallest.
 for example 1432219, k=3
@@ -789,7 +850,18 @@ greedy: sort the array, the left side always +k, and the right side always -k. w
 
 or it is equivalent to add 0 or 2K to each element. 
 sort is the key step.
-
+```cpp
+    int smallestRangeII(vector<int> A, int K) {
+        sort(A.begin(), A.end());
+        int n = A.size(), mx = A[n - 1], mn = A[0], res = mx - mn;
+        for (int i = 0; i < n - 1; ++i) {
+            mx = max(mx, A[i] + 2 * K);
+            mn = min(A[i + 1], A[0] + 2 * K);
+            res = min(res, mx - mn);
+        }
+        return res;
+    }
+```	
 ### 135. Candy.md
 ### Problem Summary
 There are N children standing in a line. Each child is assigned a rating value.
@@ -867,33 +939,26 @@ once the char is chosen, all previous index shall be removed.
     }
 ```    
 
-Optimization
- If we think about this problem intuitively, you would sort of go from the beginning of the string and start removing one if there is still the same character left and a smaller character is after it.  Given "bcabc", when you see a 'b', keep it and continue with the search, then keep the following 'c', then we see an 'a'. Now we get a chance to get a smaller lexi order, you can check if after 'a', there is still 'b' and 'c' or not. We indeed have them and "abc" will be our result.
-```java
-public String removeDuplicateLetters(String s) {
-    Stack<Character> stack = new Stack<>();
-    int[] count = new int[26];
-    char[] arr = s.toCharArray();
-    for(char c : arr) count[c-'a']++;
-    
-    boolean[] visited = new boolean[26];
-    for(char c : arr) 
-    {
-        count[c-'a']--;
-        if(visited[c-'a']) continue;
-        
-        while(!stack.isEmpty() && stack.peek() > c && count[stack.peek()-'a'] > 0) 
+best algorithm: each time we find the leftmost (smallest) until there is a char missing, then we choose the letter
+removing all other instance of this char and form a new string for the subproblem.
+each time O(n)
+```cpp
+    string removeDuplicateLetters(string s) {
+        if(s.empty()) return "";
+        vector<int> cnt(26);
+        for(char c: s) cnt[c-'a']++;
+        char leftmost=s[0];
+        int ind=0;
+        for(int i=0;i<s.size();i++)
         {
-            visited[stack.peek()-'a'] = false;
-            stack.pop();
+            if(s[i]<leftmost) {leftmost=s[i],ind=i;}
+            if(--cnt[s[i]-'a']==0) break;
         }
-        stack.push(c);
-        visited[c-'a'] = true;
+        //erase all instance of leftmost in the right substr
+        string ns;
+        for(int i=ind+1;i<s.size();i++) if(s[i]!=leftmost) ns+=s[i];
+        return leftmost+removeDuplicateLetters(ns);
     }
-    StringBuilder sb = new StringBuilder();
-    for(char c : stack) {sb.append(c); }
-    return sb.toString();
-}
 ```
 
 ### 321. Create Maximum Number.md
@@ -1002,39 +1067,7 @@ so if previous m element can sum to [1,M]. If M+1 is not covered, we shall add i
     }
 ```    
 
-### 45. Jump Game II.md
-### Problem Summary
-Given an array of non-negative integers, you are initially positioned at the first index of the array.
 
-Each element in the array represents your maximum jump length at that position.
-
-Your goal is to reach the last index in the minimum number of jumps.
-
-### Analysis
-- starting at the first step i=0, max range is num[0]. Which covers the node from 1 to num[0]
-- we shall check the next max range using all those nodes
-- the first one > n-1 is the min level
-
-```cpp
-    int jump(vector<int>& nums) {
-    int n=nums.size();
-	 if(n<2)return 0;
-	 int level=0,currentMax=0,i=0,nextMax=0;
-
-	 while(currentMax-i+1>0)
-     {		//nodes count of current level>0
-		 level++;
-		 for(;i<=currentMax;i++)
-         {	//traverse current level , and update the max reach of next level
-			nextMax=max(nextMax,nums[i]+i);
-			if(nextMax>=n-1)return level;   // if last element is in level+1,  then the min jump=level 
-		 }
-		 currentMax=nextMax;
-	 }
-	 return 0;
- }        
- ```
- 
 ### 502. IPO.md
 ### Problem Summary
 Given k projects, each project has a profit Pi and cost Wi, Initial capital is W. 
@@ -1283,3 +1316,26 @@ The key is to reverse the process: we first match the whole stamp which would be
         return -1; //no matching
     }
 ```
+
+### 984. String Without AAA or BBB
+just one way to build the string
+A=0: b
+B=0: a
+A==B: ab
+A>B: aab
+A<B: abb
+
+
+```cpp
+    string strWithout3a3b(int A, int B) {
+        if(A == 0) return string(B, 'b');
+        else if(B == 0) return string(A, 'a');
+        else if(A == B) return "ab" + strWithout3a3b(A - 1, B - 1);
+        else if(A > B) return "aab" + strWithout3a3b(A - 2, B - 1);
+        else return strWithout3a3b(A - 1, B - 2) + "abb";
+    }
+```	
+for example 1a and 3b, we always need keep the single a or b with the remaining substring
+"abb"+strWithout3a3b(A-1,B-2) is not correct.
+
+
