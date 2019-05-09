@@ -495,6 +495,7 @@ greedy: reversely find the inversion. if found an inversion we reduce the previo
 example: 3421->3411->3311->3399
 example: 3431->3421->3321->3399
 example: 144267->144267->144267->143267->133267->13999
+example: 1100->1100->1000->0000->999
 ```cpp
     int monotoneIncreasingDigits(int N) {
         string n_str = to_string(N);
@@ -516,6 +517,42 @@ Given two arrays A and B of equal size, the advantage of A with respect to B is 
 Return any permutation of A that maximizes its advantage with respect to B.
 Greedy solution: if there is an element in A >B[i], then choose the smallest one. 
 运用田忌赛马的思路，如果A中有相应的higher元素，使用最小的higher元素。否则使用A中最小的元素 :)
+using a multset
+```cpp
+    vector<int> advantageCount(vector<int>& A, vector<int>& B) {
+        multiset<int> ms(A.begin(),A.end());
+        vector<int> ans;
+        //if we cannot beat we choose the min available for it
+        //if we can beat we choose the min > B[i]
+        for(int t: B)
+        {
+            auto it=upper_bound(ms.begin(),ms.end(),t);
+            if(it==ms.end()) {
+                ans.push_back(*ms.begin());
+                ms.erase(ms.begin());
+            }
+            else
+            {
+                ans.push_back(*it);
+                ms.erase(it);
+            }
+        }
+        return ans;
+    }
+```
+but got TLE
+with some optimization (do not check upperbound every time
+```cpp
+	vector<int> advantageCount(vector<int>& A, vector<int>& B) {
+	  multiset<int> s(begin(A), end(A));
+	  for (auto i = 0; i < B.size(); ++i) {
+		auto p = *s.rbegin() <= B[i] ? s.begin() : s.upper_bound(B[i]);
+		A[i] = *p;
+		s.erase(p);
+	  }
+	  return A;
+	}
+```	
 
 ### 767. Reorganize String
 neighboring characters are not the same.
@@ -601,23 +638,31 @@ for each card, either it can be appended to existent, or start a new group or it
 
 ```cpp
     bool isPossible(vector<int>& nums) {
-        unordered_map<int, int> freq, need;
-        for (int num : nums) ++freq[num];
-        for (int num : nums) {
-            if (freq[num] == 0) continue;
-            else if (need[num] > 0) {
-                --need[num];
-                ++need[num + 1];
-            } else if (freq[num + 1] > 0 && freq[num + 2] > 0) {
-                --freq[num + 1];
-                --freq[num + 2];
-                ++need[num + 3];
-            } else return false;
-            --freq[num];
+        unordered_map<int,int> cnt,need;
+        for(int i: nums) cnt[i]++;
+        for(int i: nums)
+        {
+            if(cnt[i]==0) continue;
+            if(need[i]) //we are in need of i
+            {
+                need[i]--;
+                need[i+1]++;
+            }
+            else if(cnt[i+1] && cnt[i+2]) //start a new group
+            {
+                cnt[i+1]--,cnt[i+2]--;
+                need[i+3]++;
+            }
+            else return 0; //neither
+            cnt[i]--;
         }
-        return true;
+        return 1;
     }
 ```
+uses two hashmap: 
+freq is the counter for each number.
+need is the counter for needed number for current consecuative subsequence
+
 
 ### 948. Bag of Tokens
 given a list of tokens with power[i]. We put the token down, losing the power and gain 1 point. We put the token up, losing one point and gain power[i].
@@ -651,9 +696,10 @@ sort the power and uses two pointers
 ### 649. Dota2 Senate
 two parties. according order, each senate can ban a senator from other party, predict who is the winner.
 greedy: ban its next member from other party since otherwise it will ban a member from your party.
-using two queues: if the member exercises its right, move it to the end of the queue.
+using two queues: if the member exercises its right, move it to the end of the queue. banned member are removed from queue
+
 ```cpp
-string predictPartyVictory(string senate) {
+	string predictPartyVictory(string senate) {
         queue<int> q1, q2;
         int n = senate.length();
         for(int i = 0; i<n; i++)
@@ -666,20 +712,78 @@ string predictPartyVictory(string senate) {
         return (q1.size() > q2.size())? "Radiant" : "Dire";
     }
 ```
+note: why push_back with +n? (make sure its index is greater than n and it can live to other rounds)
+this is the key step.
 
 ### 376. Wiggle Subsequence
 greedy or dp: the first number could be smaller or larger number.
+use dp[n][2] or down[n]/.up[n] to record the wiggle subsequence length
+```java
+    public int wiggleMaxLength(int[] nums) {
+        
+        if( nums.length == 0 ) return 0;
+        
+        int[] up = new int[nums.length];
+        int[] down = new int[nums.length];
+        
+        up[0] = 1;
+        down[0] = 1;
+        
+        for(int i = 1 ; i < nums.length; i++){
+            if( nums[i] > nums[i-1] ){
+                up[i] = down[i-1]+1;
+                down[i] = down[i-1];
+            }else if( nums[i] < nums[i-1]){
+                down[i] = up[i-1]+1;
+                up[i] = up[i-1];
+            }else{
+                down[i] = down[i-1];
+                up[i] = up[i-1];
+            }
+        }
+        
+        return Math.max(down[nums.length-1],up[nums.length-1]);
+    }
+```
+
+reducing to O(1)
+
 ```cpp
     int wiggleMaxLength(vector<int>& nums) {
         if(nums.size()==0) return 0;
         int up=1,dn=1;
         for(int i=1;i<nums.size();i++)
         {
+            if(nums[i]==nums[i-1]) continue;
             if(nums[i]>nums[i-1]) up=dn+1;
-            if(nums[i]<nums[i-1]) dn=up+1;
-            //cout<<nums[i]<<"\t"<<up<<" "<<dn<<endl;
+            else dn=up+1;
         }
         return max(up,dn);
+    }
+```
+
+### 991. Broken Calculator
+On a broken calculator that has a number showing on its display, we can perform two operations:
+
+Double: Multiply the number on the display by 2, or;
+Decrement: Subtract 1 from the number on the display.
+Initially, the calculator is displaying the number X.
+
+Return the minimum number of operations needed to display the number Y.
+seen in math
+from Y to x is easier.
+Y<X we can only use -1.
+```cpp
+    int brokenCalc(int X, int Y) {
+        //every step we can choose -1 or *2
+        //greedy solution: 
+        //if Y is even, divide by 2, if Y is odd add 1
+        int res = 0;
+        while (Y > X) {
+            Y = Y % 2 > 0 ? Y + 1 : Y / 2;
+            res++;
+        }
+        return res + X - Y;        
     }
 ```
 
@@ -727,6 +831,27 @@ a circular circuit with each station gas[i] and cost[i], you are starting at 0. 
 -. flatten the circle by copying the array
 -. net gas[i]-cost[i]
 -. accumulate a N-window sum. Cannot have any station with accumulate sum to be <0
+
+first we need prove:
+if the total net gas>=0 there is a solution
+sum(gas[i]-cost[i])>=0 for i=0 to n-1
+sum from 0 to j is min, then j+1 is the start station (math proof is simple)
+
+```cpp
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int n = gas.size();
+        int total(0), subsum(INT_MAX), start(0);
+        for(int i = 0; i < n; ++i){
+            total += gas[i] - cost[i];
+            if(total < subsum) {
+                subsum = total;
+                start = i + 1;
+            }
+        }
+        return (total < 0) ?  -1 : (start%n); 
+    }
+```	
+note start=i+1 and start%n
 
 ### 55. Jump Game
 given a list of max jump steps at each position, check if we can reach the end
@@ -818,12 +943,15 @@ We can also use dp for a O(N^2) approach.
 ### 402. Remove K Digits
 to make the number the smallest.
 for example 1432219, k=3
-greedy choice: remove the first peak digit from left to right
+greedy choice: remove the first peak digit from left to right (left is most important for numbers)
+for example 1329 remove 3 becomes 129, remove 9 becomes 132
+for example 1239 remove 9 to become 123 (the largest)
+
 we can use a stack to find the peak digit to make it O(n)
 note: the accepted submission cannot process string with no peaks correctly. (if there is no peak, it will not delete any digits)
 
 ```cpp
-string removeKdigits(string num, int k) {
+	string removeKdigits(string num, int k) {
         string res;
         int keep = num.size() - k;
         for (int i=0; i<num.size(); i++) {
@@ -833,7 +961,7 @@ string removeKdigits(string num, int k) {
             }
             res.push_back(num[i]);
         }
-        res.erase(keep, string::npos);
+        res.erase(keep, string::npos);//otherwise removing the rightmost digits
         
         // trim leading zeros
         int s = 0;
@@ -843,12 +971,19 @@ string removeKdigits(string num, int k) {
         return res=="" ? "0" : res;
     }
 ```
+string acts as a stack. using a stack to find a pattern is regular practice see the stack.
+leading zero may occur due to digits removed and 0 is left. for example 10200
+first erase peaks from left to right
+then remove the right remaining
+note: while is correct. if we change while to if, this will not be correct since the peak is missed.
+
 
 ### 910. Smallest Range II
 given an array, each element can be add K or minus K, return the smallest difference between the max and min
 greedy: sort the array, the left side always +k, and the right side always -k. we iterate each element as the left/right and get the min.
+the left one could become max, and the right could become min
 
-or it is equivalent to add 0 or 2K to each element. 
+or it is equivalent to add 0 to right or 2K to left. 
 sort is the key step.
 ```cpp
     int smallestRangeII(vector<int> A, int K) {
@@ -856,12 +991,16 @@ sort is the key step.
         int n = A.size(), mx = A[n - 1], mn = A[0], res = mx - mn;
         for (int i = 0; i < n - 1; ++i) {
             mx = max(mx, A[i] + 2 * K);
-            mn = min(A[i + 1], A[0] + 2 * K);
+            mn = min(A[i + 1], A[0] + 2 * K);//add 0 or 2*K
             res = min(res, mx - mn);
         }
         return res;
     }
 ```	
+1. add all 0 to each element, mx-mn
+2. the leftmost add 2*K and rightmost add 0
+
+
 ### 135. Candy.md
 ### Problem Summary
 There are N children standing in a line. Each child is assigned a rating value.
