@@ -377,7 +377,27 @@ swap a vs b to make a has the same number
 we only have two choice: 
 a=a[0] or a=b[0]
 we need check one by one to see if we have a[0] or b[0] in each column
-
+```cpp
+    int minDominoRotations(vector<int>& A, vector<int>& B) {
+      //we need count 1 to 6 index in each row
+        vector<vector<int>> inda(6,vector<int>()),indb(6,vector<int>());
+        int n=A.size();
+        for(int i=0;i<A.size();i++)
+        {
+            inda[A[i]-1].push_back(i);
+            indb[B[i]-1].push_back(i);
+        }
+        int minstep=INT_MAX;
+        for(int i=0;i<6;i++)
+        {
+            unordered_set<int> ms(inda[i].begin(),inda[i].end());;
+            for(int j=0;j<indb[i].size();j++) ms.insert(indb[i][j]);
+            //cout<<i<<" "<<ms.size()<<endl;
+            if(ms.size()==n) minstep=min(minstep,n-max((int)inda[i].size(),(int)indb[i].size()));
+        }
+        return minstep==INT_MAX?-1:minstep;
+    }
+```	
 Solution 2
 Try A[0]
 Try B[0]
