@@ -1386,6 +1386,54 @@ function minSwapsCouples(row) {
 }
 ```
 
+union find solution
+Think about each couple as a vertex in the graph. So if there are N couples, there are N vertices. Now if in position 2i and 2i +1 there are person from couple u and couple v sitting there, that means that the permutations are going to involve u and v. So we add an edge to connect u and v. The min number of swaps = N - number of connected components. This follows directly from the theory of permutations. Any permutation can be decomposed into a composition of cyclic permutations. If the cyclic permutation involve k elements, we need k -1 swaps. You can think about each swap as reducing the size of the cyclic permutation by 1. So in the end, if the graph has k connected components, we need N - k swaps to reduce it back to N disjoint vertices.
+
+Then there are many ways of doing this. We can use dfs for example to compute the number of connected components. The number of edges isn O(N). So this is an O(N) algorithm. We can also use union-find. I think a union-find is usually quite efficient.
+
+```cpp
+class Solution {
+    private class UF {
+        private int[] parents;
+        public int count;
+        UF(int n) {
+            parents = new int[n];
+            for (int i = 0; i < n; i++) {
+                parents[i] = i;
+            }
+            count = n;
+        }
+        
+        private int find(int i) {
+            if (parents[i] == i) {
+                return i;
+            }
+            parents[i] = find(parents[i]);
+            return parents[i];
+        }
+        
+        public void union(int i, int j) {
+            int a = find(i);
+            int b = find(j);
+            if (a != b) {
+                parents[a] = b;
+                count--;
+            }
+        }
+    }
+    public int minSwapsCouples(int[] row) {
+        int N = row.length/ 2;
+        UF uf = new UF(N);
+        for (int i = 0; i < N; i++) {
+            int a = row[2*i];
+            int b = row[2*i + 1];
+            uf.union(a/2, b/2);
+        }
+        return N - uf.count;
+    }
+}
+```
+
 ### 927. Three Equal Parts.md
 ### Problem Summary
 Given an array A of 0s and 1s, divide the array into 3 non-empty parts such that all of these parts represent the same binary value.
@@ -1496,5 +1544,96 @@ A<B: abb
 ```	
 for example 1a and 3b, we always need keep the single a or b with the remaining substring
 "abb"+strWithout3a3b(A-1,B-2) is not correct.
+"bba"+strWithout3a3b(A-1,B-2) is correct also.
 
+### 995. Minimum Number of K Consecutive Bit Flips
+In an array A containing only 0s and 1s, a K-bit flip consists of choosing a (contiguous) subarray of length K and simultaneously changing every 0 in the subarray to 1, and every 1 in the subarray to 0.
+
+Return the minimum number of K-bit flips required so that there is no 0 in the array.  If it is not possible, return -1
+
+straightforward: we need flip all 0s from left to right
+```cpp
+    int minKBitFlips(vector<int>& A, int K) {
+        //the leading bit shall be flipped and reduce to sub problem
+        int minflips=0;
+        
+        for(int i=0;i<A.size()-K+1;i++)
+        {
+            if(A[i]==0) {if(minkflip(A,K,i)) minflips++;else return -1;}
+        }
+        int sum=accumulate(A.begin(),A.end(),0);
+        if(sum!=A.size()) return -1;
+        return minflips;
+    }
+    int minkflip(vector<int>& A,int K,int ind)
+    {
+        int m=A.size();
+        for(int i=ind;i<ind+K;i++) A[i]^=1;
+        if(m-ind==K) //last flip
+        {
+            int sum=accumulate(A.begin()+ind,A.end(),0);
+            return sum==K;
+        }
+        
+        return 1;
+    }
+```
+	
+
+knowledge:
+cyclic swapping algorithm
+lc41
+lc268
+
+https://stackoverflow.com/questions/7858412/cycle-sort-algorithm
+
+The cycle sort algorithm is motivated by something called a cycle decomposition. Cycle decompositions are best explained by example. Let's suppose that you have this array:
+
+4 3 0 1 2
+Let's imagine that we have this sequence in sorted order, as shown here:
+
+0 1 2 3 4
+How would we have to shuffle this sorted array to get to the shuffled version? Well, let's place them side-by-side:
+
+0 1 2 3 4
+4 3 0 1 2
+Let's start from the beginning. Notice that the number 0 got swapped to the position initially held by 2. The number 2, in turn, got swapped to the position initially held by 4. Finally, 4 got swapped to the position initially held by 0. In other words, the elements 0, 2, and 4 all were cycled forward one position. That leaves behind the numbers 1 and 3. Notice that 1 swaps to where 3 is and 3 swaps to where 1 is. In other words, the elements 1 and 3 were cycled forward one position.
+
+As a result of the above observations, we'd say that the sequence 4 3 0 1 2 has cycle decomposition (0 2 4)(1 3). Here, each group of terms in parentheses means "circularly cycle these elements forward." This means to cycle 0 to the spot where 2 is, 2 to the spot where 4 is, and 4 to the spot where 0 was, then to cycle 1 to the spot where 3 was and 3 to the spot where 1 is.
+
+If you have the cycle decomposition for a particular array, you can get it back in sorted order making the fewest number of writes by just cycling everything backward one spot. The idea behind cycle sort is to try to determine what the cycle decomposition of the input array is, then to reverse it to put everything back in its place.
+
+Part of the challenge of this is figuring out where everything initially belongs since a cycle decomposition assumes you know this. Typically, cycle sort works by going to each element and counting up how many elements are smaller than it. This is expensive - it contributes to the Θ(n2) runtime of the sorting algorithm - but doesn't require any writes.
+
+https://leetcode.com/problems/couples-holding-hands/discuss/113362/JavaC%2B%2B-O(N)-solution-using-cyclic-swapping
+
+
+for example:
+row: 2, 3, 1, 0, 5, 4
+idx:   0, 1, 2, 3, 4, 5
+0->2->1->3->0
+5->4->5
+two cyclic group: for a group with k elements, min swap is k-1
+main conclusions:
+1. eventually repeat
+2. two lists are exclusive mutually
+3. min swaps for group k is k-1
+In conclusion, the minimum number of swaps needed to resolve the whole array can be obtained by summing up the minimum number of swaps needed to resolve each of the index groups. To resolve each index group, we are free to choose any two distinct indices in the group and swap them so as to reduce the group to two smaller disjoint groups. In practice, we can always choose a pivot index and continuously swap it with its expected index until the pivot index is the same as its expected index, meaning the entire group is resolved and all placement requirements within the group are satisfied.
+```java
+public int miniSwapsArray(int[] row) {
+    int res = 0, N = row.length;
+
+    for (int i = 0; i < N; i++) {
+		for (int j = row[i]; i != j; j = row[i]) {
+			swap(row, i, j);
+			res++;
+		}
+    }
+
+    return res;
+}
+
+```
+
+see 765 couples holding hands (not required sort, 0,1 and 1, 0 are both valid)
 
