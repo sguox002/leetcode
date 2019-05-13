@@ -140,9 +140,15 @@ union find, by connecting all boundary cells to a parent.
 dfs: we only need to find those regions attached to the 4 boundaries and they shall not change. other nodes all change to x
 
 ### 979. Distribute coins in binary tree
+
 ### 1026 Max difference between node and ancestor
 
+### 337. House Robber III
+dp problem in binary tree
+
 ## dfs or recursive
+
+## straightfoward **
 
 ### 690. Employee Importance
 employee's importance=itself's importance+all its subordinate's importance.
@@ -179,7 +185,8 @@ importance=self+sum(child's importance), child's importance is a subproblem
 more like a  recursive.
 
 ### 733. Flood Fill
-typical dfs
+typical dfs or coloring
+
 ```cpp
     vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
         if(newColor==image[sr][sc]) return image;
@@ -202,54 +209,6 @@ typical dfs
 ```
 Note: need first change the color before processing the subproblem, otherwise, it will go into infinite loop
 same color will cause infinite loop
-
-### 743. Network Delay Time
-times[i] = (u, v, w), from node u to node v, takes travel time w
-from node K, what is the time required for all nodes to receive it.
-max time of all min time from K to other nodes.
-this could be a dp, dijkstra, bellman-ford problem. Trying to relax edges from k to all other nodes.
-dfs: from k to all other node, calculate the min path sum.
-dijkstra: using priority_queue or multiset (min heap) to try the smallest first to relax the edge
-```cpp
-    typedef pair<int,int> pii;
-    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
-        vector<pii> g[n + 1];
-        for (const auto& t : times) g[t[0]].push_back(make_pair(t[1], t[2]));
-        const int inf = 1e9;
-        vector<int> dist(n + 1, inf);
-        dist[k] = 0;//k to k
-        priority_queue<pii, vector<pii>, greater<pii> > pq;
-        pq.push(make_pair(0, k));//distance, destination
-        int u, v, w;
-		vector<bool> visited(n + 1);
-        while (!pq.empty()) 
-        {
-            pii p = pq.top(); pq.pop();
-            u = p.second;
-			if (visited[u]) continue;
-            for (auto& to : g[u]) 
-            {
-                v = to.first, w = to.second;
-                if (dist[v] > dist[u] + w) 
-                {
-                    dist[v] = dist[u] + w;
-                    pq.push(make_pair(dist[v], v));
-                }
-            }
-			visited[u] = 1;
-        }
-        int ans = *max_element(dist.begin() + 1, dist.end());
-        return ans == inf ? -1 : ans;
-    }
-```
-the dijkstra:
-- form the graph
-- maintain a min distance from k to all other nodes (from k to k is 0)
-- priority-queue: using the distance for compare, min heap (try smallest distance first)
-- use the other nodes to relax the edge and get the min dist.
-- when the edge can be relaxed, add the updated distance back to priority-queue
-- stop when no more distance can be relaxed.
-- this is not an easy problem.
 
 ### 959. Regions Cut By Slashes  ***
 upsample and do dfs
@@ -527,6 +486,242 @@ The first cycle does DFS for the boundary cells. The second cycle counts the rem
     }
 ```
 
+### 934. Shortest Bridge
+two islands, the shortest bridge (4 direction connection)
+dfs to get the two parties and calculate the mutual distance and get the min
+note the distance is not sqrt distance
+```cpp
+    int shortestBridge(vector<vector<int>>& A) {
+        //two party problem can use paint
+        //or use dfs/bfs to reach the other party
+        //we can calculate the min distance between the two parties
+        vector<vector<int>> partyA,partyB;
+        for(int i=0;i<A.size();i++)
+        {
+            for(int j=0;j<A[0].size();j++)
+            {
+                if(A[i][j]==1) 
+                {
+                    if(partyA.size()==0) dfs(A,i,j,partyA);
+                    else dfs(A,i,j,partyB);
+                }
+            }
+        }
+        //cout<<"OK";
+        int mindist=INT_MAX;
+        for(int i=0;i<partyA.size();i++)
+        {
+            for(int j=0;j<partyB.size();j++)
+                mindist=min(mindist,abs(partyA[i][0]-partyB[j][0])+abs(partyA[i][1]-partyB[j][1]));
+        }
+        return mindist-1;
+    }
+    void dfs(vector<vector<int>>& A,int i,int j,vector<vector<int>>& pa)
+    {
+        //4 directions
+        A[i][j]=2; 
+        int n=A.size(),m=A[0].size();
+        pa.push_back({i,j});
+        if(i>0 && A[i-1][j]==1) dfs(A,i-1,j,pa);
+        if(j>0 && A[i][j-1]==1) dfs(A,i,j-1,pa);
+        if(i<n-1 && A[i+1][j]==1) dfs(A,i+1,j,pa);
+        if(j<m-1 && A[i][j+1]==1) dfs(A,i,j+1,pa);
+    }
+```
+
+### 200. Number of Islands
+disjoint set also ok
+4 direction. use coloring and dfs
+```cpp
+    int numIslands(vector<vector<char>>& grid) {
+        int ans=0;
+        for(int i=0;i<grid.size();i++)
+        {
+            for(int j=0;j<grid[0].size();j++)
+            {
+                if(grid[i][j]=='1') dfs(grid,i,j),ans++;
+            }
+        }
+        return ans;
+    }
+    void dfs(vector<vector<char>>& grid,int i,int j)
+    {
+        if(i<0 ||j<0 ||i>=grid.size()||j>=grid[0].size()) return;
+        if(grid[i][j]=='1')
+        {
+            grid[i][j]='2';
+            dfs(grid,i-1,j);
+            dfs(grid,i+1,j);
+            dfs(grid,i,j-1);
+            dfs(grid,i,j+1);
+        }
+    }
+```
+
+### 1034 coloring a border
+```cpp
+    vector<vector<int>> colorBorder(vector<vector<int>>& grid, int r0, int c0, int color) {
+        int oc=grid[r0][c0];
+        dfs(grid,r0,c0,oc,color);
+        for(int i=0;i<grid.size();i++)
+            for(int j=0;j<grid[0].size();j++)
+                if(grid[i][j]<0) grid[i][j]=color;
+        return grid;
+    }
+    void dfs(vector<vector<int>>& grid,int r,int c,int oc,int nc)
+    {
+        if(r<0 ||c<0 ||r>=grid.size() || c>=grid[0].size() || grid[r][c]!=oc) return;
+        grid[r][c]=-oc;
+        dfs(grid,r+1,c,oc,nc);
+        dfs(grid,r-1,c,oc,nc);
+        dfs(grid,r,c+1,oc,nc);
+        dfs(grid,r,c-1,oc,nc);
+        if(r && c && r<grid.size()-1 && c<grid[0].size()-1)
+        {
+            if((abs(grid[r-1][c])==oc) && 
+               (abs(grid[r+1][c])==oc) && 
+               (abs(grid[r][c+1])==oc) && 
+               (abs(grid[r][c-1])==oc))
+                grid[r][c]=oc;
+        }
+    }
+```
+note use a color which cannot be the same
+second, restore the inner side cells
+
+### 130. Surrounded Regions
+dfs or union find. but if the group touches the boundary it shall be excluded.
+```cpp
+class union_find
+{
+    int m,n;
+    int count;
+    vector<int> parent;
+public:
+    union_find(vector<vector<char>>& grid)
+    {
+        count=0;
+        m=grid.size(),n=grid[0].size();
+        parent.resize(m*n+1);
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]=='O') {parent[i*n+j]=i*n+j;count++;}
+            }
+        }
+        parent[n*m]=n*m;
+    }
+    int find(int node)
+    {
+        while(parent[node]!=node) node=parent[node];
+        return node;
+    }
+    void merge(int ni,int nj)
+    {
+        int i_id=find(ni);
+        int j_id=find(nj);
+        if(i_id==j_id) return;
+        if(i_id<j_id) parent[j_id]=i_id;
+        else parent[i_id]=j_id;
+        count--;
+    }
+    bool connected(int ni,int nj) {return find(ni)==find(nj);}
+    int get_numset() {return count;}
+};
+
+//we are only interested in those region which touches the boundary!
+//or we are only interested in those region which does not touch the boundary
+//dummy node n*m is connected to those region touching the boundary
+class Solution {
+public:
+    void solve(vector<vector<char>>& board) {
+        if(board.size()==0 || board[0].size()==0) return;
+        int m=board.size(),n=board[0].size();
+        union_find uf(board);
+        int dx[]={-1,1,0,0},dy[]={0,0,-1,1};
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if((i==0||i==m-1||j==0||j==n-1)&&board[i][j]=='O') // if a 'O' node is on the boundry, connect it to the dummy node
+                    uf.merge(i*n+j,n*m);
+                if(board[i][j]=='O')
+                for(int k=0;k<4;k++)    
+                {
+                    int x=i+dx[k],y=j+dy[k];
+                    if(x>=0 && x<m && y>=0 && y<n && board[x][y]=='O') uf.merge(i*n+j,x*n+y);
+                }
+            }
+        }
+        //capture all those regions surrounded by X
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(!uf.connected(i*n+j,n*m))
+                { // if a 'O' node is not connected to the dummy node, it is captured
+                    board[i][j]='X';
+                }
+            }
+        }        
+    }
+};
+```
+
+
+## more complicated
+
+### 743. Network Delay Time
+times[i] = (u, v, w), from node u to node v, takes travel time w
+from node K, what is the time required for all nodes to receive it.
+max time of all min time from K to other nodes.
+this could be a dp, dijkstra, bellman-ford problem. Trying to relax edges from k to all other nodes.
+dfs: from k to all other node, calculate the min path sum.
+dijkstra: using priority_queue or multiset (min heap) to try the smallest first to relax the edge
+```cpp
+    typedef pair<int,int> pii;
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<pii> g[n + 1];
+        for (const auto& t : times) g[t[0]].push_back(make_pair(t[1], t[2]));
+        const int inf = 1e9;
+        vector<int> dist(n + 1, inf);
+        dist[k] = 0;//k to k
+        priority_queue<pii, vector<pii>, greater<pii> > pq;
+        pq.push(make_pair(0, k));//distance, destination
+        int u, v, w;
+		vector<bool> visited(n + 1);
+        while (!pq.empty()) 
+        {
+            pii p = pq.top(); pq.pop();
+            u = p.second;
+			if (visited[u]) continue;
+            for (auto& to : g[u]) 
+            {
+                v = to.first, w = to.second;
+                if (dist[v] > dist[u] + w) 
+                {
+                    dist[v] = dist[u] + w;
+                    pq.push(make_pair(dist[v], v));
+                }
+            }
+			visited[u] = 1;
+        }
+        int ans = *max_element(dist.begin() + 1, dist.end());
+        return ans == inf ? -1 : ans;
+    }
+```
+the dijkstra:
+- form the graph
+- maintain a min distance from k to all other nodes (from k to k is 0)
+- priority-queue: using the distance for compare, min heap (try smallest distance first)
+- use the other nodes to relax the edge and get the min dist.
+- when the edge can be relaxed, add the updated distance back to priority-queue
+- stop when no more distance can be relaxed.
+- this is not an easy problem.
+
+
+
 ### 756. Pyramid Transition Matrix
 It is very hard to understand the question. Let me explain:
 Given a list of allowed triplets, the pyramid is built layer by layer, each triangle (upper layer node with its adjacent lower layer two nodes) must be in the allowed list. 
@@ -576,7 +771,10 @@ from a bottom string, we build a combination of strings, then we try each combin
 *. dfs just get all combinations, judge if the string OK waits for upper level function helper
 
 ### 638. Shopping Offers
-this is more like a dp or knapsack problem
+this is more like a dp or knapsack problem.
+given a list of special offsers and prices for buying individually
+the target cannot be altered i.e we shall buy exactly the amount.
+
 ```cpp
 void operator+=(vector<int> &a, const vector<int> &b) {
     for (int i = 0; i < a.size(); i++)
@@ -621,9 +819,8 @@ public:
     }
 ```
 this is a combined condition, but if we considered it as a whole it is much simpler.
+typical backtracing problem
 
-### 337. House Robber III
-dp problem in binary tree
 
 ### 851. Loud and Rich
 N people
@@ -636,9 +833,9 @@ for person 0:
 who is richer than him? 1
 who is richer than 1? 2,3
 who is richer than 2,3? 4,5,6
-### 7 is less rich than 3 but not sure if 7 is richer than 1, so the anwer is 5 (who is loudest)
+7 is less rich than 3 but not sure if 7 is richer than 1, so the anwer is 5 (who is loudest)
 
-just build a map for each person with a list of richer person. and do dfs.
+just build a map for each person with a list of richer person. and do dfs to find the least quiet person.
 ```cpp
     unordered_map<int, vector<int>> richer2;
     vector<int> res;
@@ -674,7 +871,7 @@ each number has +/- two selections, the complexity would be O(2^N) without the m
     int helper(vector<int>& nums,int target,int cur_pos,vector<unordered_map<int,int>>& status,int offset)
     {
         if(cur_pos==nums.size()) return target?0:1;
-        //(status[cur_pos][target+offs]>=0) return status[cur_pos][target+offset];
+        
         if(status[cur_pos].count(target+offset)) return status[cur_pos][target+offset];
         int res=0;
         res+=helper(nums,target-nums[cur_pos],cur_pos+1,status,offset);//it overflows target+/-num
@@ -682,23 +879,29 @@ each number has +/- two selections, the complexity would be O(2^N) without the m
         status[cur_pos][target+offset]=res;
         return res;
     }
-```    
+```   
+//two options + or -, we shall know how to do this 
 
 ### 394. Decode String
 stack, recursion problem.
+s = "3[a]2[bc]", return "aaabcbc".
+s = "3[a2[c]]", return "accaccacc".
+s = "2[abc]3[cd]ef", return "abcabccdcdcdef".
+
 The subproblem is:
 the first non-repeated string
 the repeat number [
 the to be repeated string (subproblem since it may contain [] again)
 ]
 
-This effectively avoid the problem to do it first in the stack and expand the string which make the problem really complicated.
+This effectively avoid the problem to do it first in the stack and 
+expand the string which make the problem really complicated.
 ```cpp
     string decodeString(const string& s, int& i) {
         string res;
         while (i < s.length() && s[i] != ']') 
         {
-            if (!isdigit(s[i])) res += s[i++];
+            if (!isdigit(s[i])) res += s[i++]; //not a digit
             else 
             {
                 int n = 0;
@@ -706,55 +909,15 @@ This effectively avoid the problem to do it first in the stack and expand the st
                 i++; // '['
                 string t = decodeString(s, i);
                 i++; // ']'
-                while (n-- > 0) res += t;
+                while (n-- > 0) res += t; //repeat n times
             }
         }
         return res;
     }
 ```
+to approach this kind of problem: we need consider the simplest form and consider the inner subproblem as a solved problem
 
-### 934. Shortest Bridge
-two islands, the shortest bridge (4 direction connection)
-dfs to two parties and calculate the mutual distance and get the min
-note the distance is not sqrt distance
-```cpp
-    int shortestBridge(vector<vector<int>>& A) {
-        //two party problem can use paint
-        //or use dfs/bfs to reach the other party
-        //we can calculate the min distance between the two parties
-        vector<vector<int>> partyA,partyB;
-        for(int i=0;i<A.size();i++)
-        {
-            for(int j=0;j<A[0].size();j++)
-            {
-                if(A[i][j]==1) 
-                {
-                    if(partyA.size()==0) dfs(A,i,j,partyA);
-                    else dfs(A,i,j,partyB);
-                }
-            }
-        }
-        //cout<<"OK";
-        int mindist=INT_MAX;
-        for(int i=0;i<partyA.size();i++)
-        {
-            for(int j=0;j<partyB.size();j++)
-                mindist=min(mindist,abs(partyA[i][0]-partyB[j][0])+abs(partyA[i][1]-partyB[j][1]));
-        }
-        return mindist-1;
-    }
-    void dfs(vector<vector<int>>& A,int i,int j,vector<vector<int>>& pa)
-    {
-        //4 directions
-        A[i][j]=2; 
-        int n=A.size(),m=A[0].size();
-        pa.push_back({i,j});
-        if(i>0 && A[i-1][j]==1) dfs(A,i-1,j,pa);
-        if(j>0 && A[i][j-1]==1) dfs(A,i,j-1,pa);
-        if(i<n-1 && A[i+1][j]==1) dfs(A,i+1,j,pa);
-        if(j<m-1 && A[i][j+1]==1) dfs(A,i,j+1,pa);
-    }
-```
+
 	
 ### 802. Find Eventual Safe States
 given a directed graph, starting from some node if we can reach a terminal node (not a cycle)
@@ -799,10 +962,12 @@ visited can also use coloring, they are equivalent, but coloring is more efficie
         return 1;
     }
 ```
+the key is all paths shall reach a terminal, if one fail, then fail.
 
 ### 785. Is Graph Bipartite?
 edge only occurs between different parties but not inside.
-two coloring: a->b we color a as 0 and b as 1, then b->c we color c as 1... if we found no conflicts it is two parites.
+two coloring: a->b we color a as 0 and b as 1, then b->c we color c as 1... 
+if we found no conflicts it is two parites.
 ```cpp
     bool isBipartite(vector<vector<int>>& graph) {
         //use coloring 0: not color, 1, -1
@@ -833,59 +998,6 @@ For each node,
 
 If it hasn't been colored, use a color to color it. Then use the other color to color all its adjacent nodes (DFS).
 If it has been colored, check if the current color is the same as the color that is going to be used to color it.
-```cpp
-    bool isBipartite(vector<vector<int>>& graph) {
-        //use coloring 0: not color, 1, -1
-        int n=graph.size(); //num of nodes
-        vector<int> color(n); 
-        for(int i=0;i<n;i++)
-        {
-            if(!color[i] && !dfs(graph,i,color,1)) return 0;
-        }
-        return 1;
-    }
-    bool dfs(vector<vector<int>>& graph,int i,vector<int>& color,int nc)
-    {
-        if(color[i]) return color[i]==nc;
-        color[i]=nc;
-        for(int j=0;j<graph[i].size();j++)
-        {
-            if(!dfs(graph,graph[i][j],color,-nc)) return 0; //adjacent reverse color
-        }
-        return 1;
-    }
-```
-
-### 491. Increasing Subsequences
-typical backtracking problem
-
-```cpp
-    vector<vector<int>> findSubsequences(vector<int>& nums) {
-        vector<vector<int>> ans;
-        vector<int> myv;
-        helper(nums,0,ans,myv);//no need loop here, often made mistakes here
-
-        return ans;
-    }
-    
-    void helper(vector<int>& nums,int ind,vector<vector<int>>& res,vector<int>& v)
-    {
-        if(v.size()>1) res.push_back(v);
-        unordered_set<int> visited;
-        for(int i=ind;i<nums.size();i++)
-        {
-            if((!v.size() || nums[i]>=v.back()) && !visited.count(nums[i]))
-            {
-                v.push_back(nums[i]);
-                helper(nums,i+1,res,v);//i+1 instead ind+1
-                v.pop_back();
-                visited.insert(nums[i]);
-            }
-        }
-    }
-```
-use reference to push and pop the last element and try new path
-
 
 ### 886. Possible Bipartition
 disliked person cannot be in the same group
@@ -922,42 +1034,186 @@ build the input to ajacent matrix.
 ```
 Note: the precheck color[node]!=-nc is critical: since the following condition only checks non-set colors. if already set, we need check if it is the color we expected. otherwise it is 0. If it is same color, we need continue checking (cannot return)
 
-### 200. Number of Islands
-disjoint set also ok
-### 4 direction. use coloring and dfs
+
+### 491. Increasing Subsequences
+Given an integer array, your task is to find all the different possible increasing subsequences of the given array, and the length of an increasing subsequence should be at least 2 
+typical backtracking problem
+
 ```cpp
-    int numIslands(vector<vector<char>>& grid) {
-        int ans=0;
-        for(int i=0;i<grid.size();i++)
-        {
-            for(int j=0;j<grid[0].size();j++)
-            {
-                if(grid[i][j]=='1') dfs(grid,i,j),ans++;
-            }
-        }
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> myv;
+        helper(nums,0,ans,myv);//no need loop here, often made mistakes here
+
         return ans;
     }
-    void dfs(vector<vector<char>>& grid,int i,int j)
+    
+    void helper(vector<int>& nums,int ind,vector<vector<int>>& res,vector<int>& v)
     {
-        if(i<0 ||j<0 ||i>=grid.size()||j>=grid[0].size()) return;
-        if(grid[i][j]=='1')
+        if(v.size()>1) res.push_back(v);
+        unordered_set<int> visited;
+        for(int i=ind;i<nums.size();i++)
         {
-            grid[i][j]='2';
-            dfs(grid,i-1,j);
-            dfs(grid,i+1,j);
-            dfs(grid,i,j-1);
-            dfs(grid,i,j+1);
+            if((!v.size() || nums[i]>=v.back()) && !visited.count(nums[i]))
+            {
+                v.push_back(nums[i]);
+                helper(nums,i+1,res,v);//i+1 instead ind+1
+                v.pop_back();
+                visited.insert(nums[i]);
+            }
         }
     }
 ```
+use reference to push and pop the last element and try new path
 
+### 721. Accounts Merge
+union find is more suitable
+
+### 207. Course Schedule
+There are a total of n courses you have to take, labeled from 0 to n-1.
+
+Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
+
+Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+```cpp
+    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<vector<int>> adj(numCourses);
+        for(int i=0;i<prerequisites.size();i++) adj[prerequisites[i].second].push_back(prerequisites[i].first);
+        vector<int> explored(numCourses,-1); //-1 checked, 0: is in check, 1: checked
+        for(int i=0;i<numCourses;i++)
+            if(!explore(adj,i,explored)) return 0;
+        return 1;
+    }
+    bool explore(vector<vector<int>>& adj,int v,vector<int>& explored)
+    {
+        if(explored[v]>0) return 1;
+        
+        explored[v]=0;
+        for(int i=0;i<adj[v].size();i++)
+        {
+            if(explored[adj[v][i]]==0) return 0;//a cycle
+            if(explored[adj[v][i]]<0 && !explore(adj,adj[v][i],explored)) return 0;
+        }
+        explored[v]=1;
+        return 1;
+    }
+```
+3 states while exploring: (to avoid recursively explore)
+
+### 210. Course Schedule II
+There are a total of n courses you have to take, labeled from 0 to n-1.
+
+Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
+
+Given the total number of courses and a list of prerequisite pairs, return the ordering of courses you should take to finish all courses.
+
+There may be multiple correct orders, you just need to return one of them. If it is impossible to finish all courses, return an empty array.
+
+```cpp
+    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+        //all edges shall be visited and only once
+        unordered_map<int,unordered_set<int>> v;
+        for(int i=0;i<numCourses;i++) v[i]=unordered_set<int>();
+        for(int i=0;i<prerequisites.size();i++)
+        {
+            v[prerequisites[i].first].insert(prerequisites[i].second);
+        }
+        vector<int> ans;
+        while(v.size())
+        {
+            vector<int> q=scanforSource(v);
+            if(q.size()==0) return vector<int>();
+            //semi bfs
+            int sz=q.size();
+            for(int i=0;i<sz;i++) remove_node(v,q[i]);
+            for(int i=0;i<sz;i++) v.erase(q[i]);
+            ans.insert(ans.end(),q.begin(),q.end());
+        }
+        return ans;        
+    }
+    vector<int> scanforSource(unordered_map<int,unordered_set<int>>& mp)
+    {
+        vector<int> ans;
+        for(auto it=mp.begin();it!=mp.end();it++)
+        {
+           if(it->second.size()==0)  ans.push_back(it->first);
+        }
+        return ans;
+    }
+    
+    void remove_node(unordered_map<int,unordered_set<int>>& mp,int ind)
+    {
+        for(auto it=mp.begin();it!=mp.end();it++)
+        {
+            if(it->second.size() && it->second.count(ind)) it->second.erase(ind);
+        }
+    }
+```
+	
+### 417. Pacific Atlantic Water Flow	
+top and left are pacfic, right and bottom are atlantic
+given a matrix of altitude of cells.
+Find the list of grid coordinates where water can flow to both the Pacific and Atlantic ocean.
+
+```cpp
+    vector<pair<int, int>> res;
+    vector<vector<int>> visited;
+
+    vector<pair<int, int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        if (matrix.empty()) return res;
+        int m = matrix.size(), n = matrix[0].size();
+        visited.resize(m, vector<int>(n, 0));
+        for (int i = 0; i < m; i++) 
+        {
+            dfs(matrix, i, 0, INT_MIN, 1);
+            dfs(matrix, i, n - 1, INT_MIN, 2);
+        }
+        for (int i = 0; i < n; i++) 
+        {
+            dfs(matrix, 0, i, INT_MIN, 1);
+            dfs(matrix, m - 1, i, INT_MIN, 2);
+        }
+        return res;
+    }
+	
+    void dfs(vector<vector<int>>& m, int x, int y, int pre, int preval){
+        if (x < 0 || x >= m.size() || y < 0 || y >= m[0].size()  
+                || m[x][y] < pre || (visited[x][y] & preval) == preval) 
+            return;
+        visited[x][y] |= preval;
+        if (visited[x][y] == 3) res.push_back({x, y});
+        dfs(m, x + 1, y, m[x][y], visited[x][y]); 
+        dfs(m, x - 1, y, m[x][y], visited[x][y]);
+        dfs(m, x, y + 1, m[x][y], visited[x][y]); 
+        dfs(m, x, y - 1, m[x][y], visited[x][y]);
+    }
+```
+*. from boundary to inner side
+*. mark 1 for pacific and 2 for atlantic, both are 3
+
+	
 ### 473. Matchsticks to Square
 using sticks with different length to form a square
-You have to use all the sticks once
+You have to use all the sticks just once
 
 first calculate the side length, which is the target sum.
-dfs to get the target
+dfs to get the target.
+we have seen similar knapsack problems. (different choice may invalid the whole )
 ```cpp
+    bool makesquare(vector<int>& nums) {
+        //each side adds up to total/4
+        if(nums.size()==0) return 0;
+        int total=accumulate(nums.begin(),nums.end(),0);
+        int side=total/4;
+        if(total%4) return 0;
+        unordered_set<int> visited;
+        sort(nums.begin(),nums.end(),greater<int>());
+        for(int i=0;i<4;i++)
+        {
+            if(!dfs(nums,side,0,visited)) return 0;
+        }
+        return visited.size()==nums.size();
+    }
     bool dfs(vector<int>& sticks,int target,int start_ind,unordered_set<int>& visited)
     {
         if(target==0) return 1;
@@ -974,34 +1230,6 @@ dfs to get the target
 ```
 if path fail, we need pop back the node visited.
 
-### 1034 coloring a border
-```cpp
-    vector<vector<int>> colorBorder(vector<vector<int>>& grid, int r0, int c0, int color) {
-        int oc=grid[r0][c0];
-        dfs(grid,r0,c0,oc,color);
-        for(int i=0;i<grid.size();i++)
-            for(int j=0;j<grid[0].size();j++)
-                if(grid[i][j]<0) grid[i][j]=color;
-        return grid;
-    }
-    void dfs(vector<vector<int>>& grid,int r,int c,int oc,int nc)
-    {
-        if(r<0 ||c<0 ||r>=grid.size() || c>=grid[0].size() || grid[r][c]!=oc) return;
-        grid[r][c]=-oc;
-        dfs(grid,r+1,c,oc,nc);
-        dfs(grid,r-1,c,oc,nc);
-        dfs(grid,r,c+1,oc,nc);
-        dfs(grid,r,c-1,oc,nc);
-        if(r && c && r<grid.size()-1 && c<grid[0].size()-1)
-        {
-            if((abs(grid[r-1][c])==oc) && 
-               (abs(grid[r+1][c])==oc) && 
-               (abs(grid[r][c+1])==oc) && 
-               (abs(grid[r][c-1])==oc))
-                grid[r][c]=oc;
-        }
-    }
-```
 
 ### 430. Flatten a Multilevel Doubly Linked List
 ```cpp
@@ -1153,7 +1381,52 @@ Adjacent matrix: always sort the nodes (using multiset can sort it automatically
 ### 133. Clone Graph
 when clone the graph, those pointers are invalidated and they shall point to new nodes
 mapping pointers to id, id to pointer then we can rebuild the relation
+```cpp
+    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+        //name each node from 0 to n and create a map
+        if(!node) return node;
+        unordered_map<UndirectedGraphNode*,int> nodeid_map;
+        unordered_map<int,UndirectedGraphNode*> idnode_map;
+        //bfs search to traverse all nodes
+        stack<UndirectedGraphNode*> st;
+        st.push(node);
+        UndirectedGraphNode *p,*newnode=0;
+        int id=0;
+        //to avoid dfs repetitive visit, also need a visited array.
+        while(!st.empty()) //if it contains a cycle, this would be a problem!
+        {
+            p=st.top();st.pop();
+            if(!nodeid_map.count(p)) //this also serves as a visited array
+            {
+                nodeid_map[p]=id;idnode_map[id]=p;id++;
+                for(int i=0;i<p->neighbors.size();i++) 
+                    if(p!=p->neighbors[i]) st.push(p->neighbors[i]);
+            }
+        }
+        //now clone and make id-node map
+        int num_nodes=nodeid_map.size();
+        vector<UndirectedGraphNode*> vnode(num_nodes);
+        for(auto it=nodeid_map.begin();it!=nodeid_map.end();it++)
+        {
+            p=new UndirectedGraphNode(it->first->label);
+            vnode[it->second]=p; 
+        }
+        //fill its neighbors
+        for(int i=0;i<vnode.size();i++)
+        {
+            p=idnode_map[i];
+            for(int j=0;j<p->neighbors.size();j++)
+            {
+                int id=nodeid_map[p->neighbors[j]];
+                vnode[i]->neighbors.push_back(vnode[id]);
+            }
+        }
+        return vnode[0];
+    }
+```
 
+## hard
+	
 ### 753. Cracking the Safe
 n boxes with n digits password using k digits only (from 0 to k-1)
 the min length of input to guarantee opening it. (auto match the password)
