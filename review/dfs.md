@@ -6,155 +6,15 @@ dfs/bfs/disjoint set sometimes can be all used for similar problems
 
 some tree problems are not discussed here in detail.
 
-### 559. Maximum Depth of N-ary Tree
-max depth is 1+maxdepth(children)
-bfs is even faster
-see tree
-
-### 872. Leaf-Similar Trees
-dfs all tree first left and then right, combined to a string or an array
-see tree
-
-### 897. Increasing Order Search Tree
-inorder traversal of the tree and arrange the nodes in a linked list.
-naive solution is trivial
-inplace is more meaningful
-connection is left->root->right. we need the last node to connect.
-first subproblem: the left connects the root as the last node, modify the root's left=NULL. and its right shall be the subproblem for the right subtree.
-it returns the new root, 
-```cpp
-    TreeNode* increasingBST(TreeNode* root, TreeNode* tail = NULL) {
-        if (!root) return tail;
-        TreeNode* res = increasingBST(root->left, root);
-        root->left = NULL;
-        root->right = increasingBST(root->right, tail);
-        return res;
-    }
-```
-or use a prev pointer to connect
-
-### 104. Maximum Depth of Binary Tree
-same as 559, but we only have left and right child
-
-	
-### 100. Same Tree
-check left sub and right sub equal and root equal
-
-### 108. Convert Sorted Array to Binary Search Tree
-convert the sorted array into balanced binary tree
-choose the mid number as the root, then solve left and right subtree recursively
-see tree
-
-### 257. Binary Tree Paths
-output the path in a string
-classical dfs: when get a node, add into the string, dfs the left, pop out the node, dfs the right
-```cpp
-    void dfs(TreeNode* root, string path, vector<string>& vs)
-    {
-        if(!root) return;
-        if(!root->left && !root->right) 
-        {
-            path+=to_string(root->val);
-            vs.push_back(path);
-            return;
-        }
-        path+=to_string(root->val)+"->";
-        dfs(root->left,path,vs);
-        dfs(root->right,path,vs);
-    }
-```
-Note:
-- need process the leaf node to add the answer (cannot use null node for this since it will give wrong path)
-- use value passing for path, so we do not need to push and pop the string
-
-### 101. Symmetric Tree
-recursively check whether l->left equals r->right and l->right equals r->left.
-
-### 110. Balanced Binary Tree
-recursively check if the left sub height vs right sub height difference is <=1
-
-### 112. Path Sum
-check if the tree has a root to leaf path sum=target
-dfs or recursive. reduce to sub problem with target-root on left sub or right sub
-
-### 111. Minimum Depth of Binary Tree
-similar for max depth 1+min(left height,right height)
-
-### 513. Find Bottom Left Tree Value
-Given a binary tree, find the leftmost value in the last row of the tree
-if right height is bigger, find in right subtree
-else find in left subtree
-
-### 515. Find Largest Value in Each Tree Row
-can use hash map for each layer and get the max using traversal (any order)
-
-### 199. Binary Tree Right Side View
-bfs the last one is the anwer
-
-### 129. Sum Root to Leaf Numbers
-each path represents a number and add all path
-backtracking
-```cpp
-    void sumtree(TreeNode* root,long long num,long long & sum)
-    {
-        //root is valid
-        num=num*10+root->val;
-        if(root->left) sumtree(root->left,num,sum);//if root is leaf will call twice
-        if(root->right) sumtree(root->right,num,sum);
-        if(!root->left && !root->right) {sum+=num;return;}
-    }
-```
-using value passing so no need to push/pop
-
-### 114. Flatten Binary Tree to Linked List
-arrange the tree in preorder
-inplace: we can do different order.
-we have two subproblem, flatten the left and flatten the right and then connect using the root as root->left->right
-The linked list generally uses the reverse sequence right->left->root
-ie. we first flatten the right subtree, then left subtree, finally the root, root->right connects the right first and now the root becomes the top node. The top node is null first.
-```cpp
-    void flatten(TreeNode* root) {
-        TreeNode* prev=0;
-        helper(root,prev);
-    }
-    void helper(TreeNode* root, TreeNode*& prev)
-    {
-        if(!root) return;
-        helper(root->right,prev);
-        helper(root->left,prev);
-        root->right=prev;
-        root->left=0;
-        prev=root;
-    }
-```
-we have to use reference passing since the change of prev shall carry to the next step.
-
-### 863. All Nodes Distance K in Binary Tree
-given a node find all nodes in distance K
-One method: build a graph and bfs. To build the graph, the tree parent needs to be passed in recursive traversal.
-
-### 98. Validate Binary Search Tree
-straightforward: in order traversal and see if they are sorted. Or we do not need extra space for this.
-must be surrounded by x, boundary o does not count.
-union find, by connecting all boundary cells to a parent.
-dfs: we only need to find those regions attached to the 4 boundaries and they shall not change. other nodes all change to x
-
-### 979. Distribute coins in binary tree
-
-### 1026 Max difference between node and ancestor
-
-### 337. House Robber III
-dp problem in binary tree
-
 ## dfs or recursive
 
 ## straightfoward **
 
 ### 690. Employee Importance
-employee's importance=itself's importance+all its subordinate's importance.
-this is a n-tary tree with its sum.
-first build a tree map, and then use recursion:
-importance=self+sum(child's importance), child's importance is a subproblem
+employee's importance=itself's importance+all its subordinate's importance.<br/>
+this is a n-tary tree with its sum.<br/>
+first build a tree map, and then use recursion:<br/>
+importance=self+sum(child's importance), child's importance is a subproblem<br/>
 ```cpp
     int getImportance(vector<Employee*> employees, int id) {
         //this is a tree structure
@@ -292,9 +152,9 @@ dfs version:
     }
 ```	
 ### 695. Max Area of Island
-dfs and count the number and mark it as different color
-dfs is much simpler than bfs.
-The following code is used for finding the area of one connected region
+dfs and count the number and mark it as different color<br/>
+dfs is much simpler than bfs.<br/>
+The following code is used for finding the area of one connected region<br/>
 
 ```cpp
     int maxAreaOfIsland(vector<vector<int>>& grid) {
@@ -315,17 +175,21 @@ The following code is used for finding the area of one connected region
         if(i<0 || j<0 || i>=m || j>=n) return 0;
         if(grid[i][j]!=1) return 0;
         grid[i][j]=2;
-       return dfs(grid,i-1,j)+dfs(grid,i+1,j)+dfs(grid,i,j-1)+dfs(grid,i,j+1)+1;
+       return 1+dfs(grid,i-1,j)+dfs(grid,i+1,j)+dfs(grid,i,j-1)+dfs(grid,i,j+1);
     }
 ```    
 
 ### 547. Friend Circles
-disjoint set could be perfect for this
+disjoint set could be perfect for this<br/>
 if M[i,j]==1 then we merge i and j
 
-for dfs: if M(i,j)==1 then we need dfs from i and dfs from j. the two are a group. That means we shall iterate on the person instead of the edges, hence coloring on the matrix is not good. instead we shall use the person if visited.
+for dfs: if M(i,j)==1 then we need dfs from i and dfs from j. the two are a group. 
+That means we shall iterate on the person instead of the edges, hence coloring on the matrix is not good. 
+instead we shall use the person if visited.
 
-The relation matrix is symmetric. and can we only need to use half? The answer is no, since when we found i relates with j, j could relates with people ahead of i. so We need iterate on all people.
+The relation matrix is symmetric. and can we only need to use half? 
+The answer is no, since when we found i relates with j, j could relates with people ahead of i. 
+so We need iterate on all people.
 ```cpp
     int findCircleNum(vector<vector<int>>& M) {
         int num_cycle=0;
@@ -344,7 +208,7 @@ The relation matrix is symmetric. and can we only need to use half? The answer i
         }
     }
 ```
-dfs version
+dfs version: using only the upper triangle.
 ```cpp
     int findCircleNum(vector<vector<int>>& M) {
         //if (i,j) then visit ith row and jth row
@@ -451,11 +315,13 @@ Note: the input is the coordinates for the n stones. The coordinate could be muc
         }
     }
 ```
-The above solution is much slower than using disjoint set (140ms vs 40ms). Since we use a loop to find all those nodes sharing coordinates, this could be reduced using a hashmap.
+The above solution is much slower than using disjoint set (140ms vs 40ms). 
+
+Since we use a loop to find all those nodes sharing coordinates, this could be reduced using a hashmap.
 
 ### 1020. Number of enclaves
-count inland lands
-The first cycle does DFS for the boundary cells. The second cycle counts the remaining land.
+count inland lands<br/>
+The first cycle does DFS for the boundary cells. The second cycle counts the remaining land.<br/>
 ```cpp
     int numEnclaves(vector<vector<int>>& A) {
         int m=A.size(),n=A[0].size();
@@ -487,9 +353,9 @@ The first cycle does DFS for the boundary cells. The second cycle counts the rem
 ```
 
 ### 934. Shortest Bridge
-two islands, the shortest bridge (4 direction connection)
-dfs to get the two parties and calculate the mutual distance and get the min
-note the distance is not sqrt distance
+two islands, the shortest bridge (4 direction connection)<br/>
+dfs to get the two parties and calculate the mutual distance and get the min<br/>
+note the distance is not sqrt distance<br/>
 ```cpp
     int shortestBridge(vector<vector<int>>& A) {
         //two party problem can use paint
@@ -530,8 +396,8 @@ note the distance is not sqrt distance
 ```
 
 ### 200. Number of Islands
-disjoint set also ok
-4 direction. use coloring and dfs
+disjoint set also ok<br/>
+4 direction. use coloring and dfs<br/>
 ```cpp
     int numIslands(vector<vector<char>>& grid) {
         int ans=0;
@@ -586,8 +452,8 @@ disjoint set also ok
         }
     }
 ```
-note use a color which cannot be the same
-second, restore the inner side cells
+note use a color which cannot be the same<br/>
+second, restore the inner side cells<br/>
 
 ### 130. Surrounded Regions
 dfs or union find. but if the group touches the boundary it shall be excluded.
@@ -670,66 +536,17 @@ public:
 ```
 
 
-## more complicated
-
-### 743. Network Delay Time
-times[i] = (u, v, w), from node u to node v, takes travel time w
-from node K, what is the time required for all nodes to receive it.
-max time of all min time from K to other nodes.
-this could be a dp, dijkstra, bellman-ford problem. Trying to relax edges from k to all other nodes.
-dfs: from k to all other node, calculate the min path sum.
-dijkstra: using priority_queue or multiset (min heap) to try the smallest first to relax the edge
-```cpp
-    typedef pair<int,int> pii;
-    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
-        vector<pii> g[n + 1];
-        for (const auto& t : times) g[t[0]].push_back(make_pair(t[1], t[2]));
-        const int inf = 1e9;
-        vector<int> dist(n + 1, inf);
-        dist[k] = 0;//k to k
-        priority_queue<pii, vector<pii>, greater<pii> > pq;
-        pq.push(make_pair(0, k));//distance, destination
-        int u, v, w;
-		vector<bool> visited(n + 1);
-        while (!pq.empty()) 
-        {
-            pii p = pq.top(); pq.pop();
-            u = p.second;
-			if (visited[u]) continue;
-            for (auto& to : g[u]) 
-            {
-                v = to.first, w = to.second;
-                if (dist[v] > dist[u] + w) 
-                {
-                    dist[v] = dist[u] + w;
-                    pq.push(make_pair(dist[v], v));
-                }
-            }
-			visited[u] = 1;
-        }
-        int ans = *max_element(dist.begin() + 1, dist.end());
-        return ans == inf ? -1 : ans;
-    }
-```
-the dijkstra:
-- form the graph
-- maintain a min distance from k to all other nodes (from k to k is 0)
-- priority-queue: using the distance for compare, min heap (try smallest distance first)
-- use the other nodes to relax the edge and get the min dist.
-- when the edge can be relaxed, add the updated distance back to priority-queue
-- stop when no more distance can be relaxed.
-- this is not an easy problem.
-
-
+## more complicated ***
 
 ### 756. Pyramid Transition Matrix
-It is very hard to understand the question. Let me explain:
-Given a list of allowed triplets, the pyramid is built layer by layer, each triangle (upper layer node with its adjacent lower layer two nodes) must be in the allowed list. 
-The question is: given the bottom layer and the allowed list, can we build the pyramid? (all the way to the top).
+It is very hard to understand the question. <br/>
+Given a list of allowed triplets, the pyramid is built layer by layer, 
+each triangle (upper layer node with its adjacent lower layer two nodes) must be in the allowed list. <br/>
+The question is: given the bottom layer and the allowed list, can we build the pyramid? (all the way to the top).<br/>
 
-So the solution is:
-get the possible string for upper layer and recursively solve each problem.
-we can build a map with two chars with the other char. Building all kinds of combinations from lower layer can use dfs.
+So the solution is:<br/>
+get the possible string for upper layer and recursively solve each problem.<br/>
+we can build a map with two chars with the other char. Building all kinds of combinations from lower layer can use dfs.<br/>
 ```cpp
     bool pyramidTransition(string bottom, vector<string>& allowed) {
         //first build the relation
@@ -823,19 +640,19 @@ typical backtracing problem
 
 
 ### 851. Loud and Rich
-N people
-richer: richer(x,y) means x is richer than y, only a subset is provided.
-quite[x] is the quiteness of person x
-find the person with money >= person x and is the loudest. 
-for n people, that is n problems.
-example: [[1,0],[2,1],[3,1],[3,7],[4,3],[5,3],[6,3]], quiet = [3,2,5,4,6,1,7,0]
-for person 0:
-who is richer than him? 1
-who is richer than 1? 2,3
-who is richer than 2,3? 4,5,6
-7 is less rich than 3 but not sure if 7 is richer than 1, so the anwer is 5 (who is loudest)
+N people<br/>
+richer: richer(x,y) means x is richer than y, only a subset is provided.<br/>
+quite[x] is the quiteness of person x<br/>
+find the person with money >= person x and is the loudest. <br/>
+for n people, that is n problems.<br/>
+example: [[1,0],[2,1],[3,1],[3,7],[4,3],[5,3],[6,3]], quiet = [3,2,5,4,6,1,7,0]<br/>
+for person 0:<br/>
+who is richer than him? 1<br/>
+who is richer than 1? 2,3<br/>
+who is richer than 2,3? 4,5,6<br/>
+7 is less rich than 3 but not sure if 7 is richer than 1, so the anwer is 5 (who is loudest)<br/>
 
-just build a map for each person with a list of richer person. and do dfs to find the least quiet person.
+just build a map for each person with a list of richer person. and do dfs to find the least quiet person.<br/>
 ```cpp
     unordered_map<int, vector<int>> richer2;
     vector<int> res;
@@ -849,15 +666,17 @@ just build a map for each person with a list of richer person. and do dfs to fin
     int dfs(int i, vector<int>& quiet) {
         if (res[i] >= 0) return res[i];
         res[i] = i;
-        for (int j : richer2[i]) if (quiet[res[i]] > quiet[dfs(j, quiet)]) res[i] = res[j];
+        for (int j : richer2[i]) 
+			if (quiet[res[i]] > quiet[dfs(j, quiet)]) res[i] = res[j];
         return res[i];
     }
 ```
+using memoization
 
 ### 494. Target Sum
-with + and - for each number, find number of ways to get target sum S.
-can be a dp or recursion with memoization
-Note the S shall be in the range of [-m, m] where m is the accumulate sum.
+with + and - for each number, find number of ways to get target sum S.<br/>
+can be a dp or recursion with memoization<br/>
+Note the S shall be in the range of [-m, m] where m is the accumulate sum.<br/>
 each number has +/- two selections, the complexity would be O(2^N) without the memoization to avoid repeatedly solving overlapped subproblems.
 
 ```cpp
@@ -883,15 +702,15 @@ each number has +/- two selections, the complexity would be O(2^N) without the m
 //two options + or -, we shall know how to do this 
 
 ### 394. Decode String
-stack, recursion problem.
-s = "3[a]2[bc]", return "aaabcbc".
-s = "3[a2[c]]", return "accaccacc".
-s = "2[abc]3[cd]ef", return "abcabccdcdcdef".
+stack, recursion problem.<br/>
+s = "3[a]2[bc]", return "aaabcbc".<br/>
+s = "3[a2[c]]", return "accaccacc".<br/>
+s = "2[abc]3[cd]ef", return "abcabccdcdcdef".<br/>
 
-The subproblem is:
-the first non-repeated string
-the repeat number [
-the to be repeated string (subproblem since it may contain [] again)
+The subproblem is:<br/>
+the first non-repeated string<br/>
+the repeat number [<br/>
+the to be repeated string (subproblem since it may contain [] again)<br/>
 ]
 
 This effectively avoid the problem to do it first in the stack and 
@@ -915,17 +734,16 @@ expand the string which make the problem really complicated.
         return res;
     }
 ```
-to approach this kind of problem: we need consider the simplest form and consider the inner subproblem as a solved problem
-
-
+to approach this kind of problem: we need consider the simplest form and consider the inner subproblem as a solved problem<br/>
+we need to learn to process this type of problems.<br/>
 	
 ### 802. Find Eventual Safe States
-given a directed graph, starting from some node if we can reach a terminal node (not a cycle)
-the node is called safe node, return all the safe nodes.
-so: a node start, it must goes to a terminal for all paths. If any path fails (cycle) it is not a safe node.
-if the path contains any non-safe node, it is not safe either.
+given a directed graph, starting from some node if we can reach a terminal node (not a cycle)<br/>
+the node is called safe node, return all the safe nodes.<br/>
+so: a node start, it must goes to a terminal for all paths. If any path fails (cycle) it is not a safe node.<br/>
+if the path contains any non-safe node, it is not safe either.<br/>
 
-visited can also use coloring, they are equivalent, but coloring is more efficient.
+visited can also use coloring, they are equivalent, but coloring is more efficient.<br/>
 ```cpp
     vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
         //dfs to see if it can walk to a terminal (all paths)
@@ -965,9 +783,9 @@ visited can also use coloring, they are equivalent, but coloring is more efficie
 the key is all paths shall reach a terminal, if one fail, then fail.
 
 ### 785. Is Graph Bipartite?
-edge only occurs between different parties but not inside.
-two coloring: a->b we color a as 0 and b as 1, then b->c we color c as 1... 
-if we found no conflicts it is two parites.
+edge only occurs between different parties but not inside.<br/>
+two coloring: a->b we color a as 0 and b as 1, then b->c we color c as 1... <br/>
+if we found no conflicts it is two parites.<br/>
 ```cpp
     bool isBipartite(vector<vector<int>>& graph) {
         //use coloring 0: not color, 1, -1
@@ -991,18 +809,20 @@ if we found no conflicts it is two parites.
     }
 ```
 	
- 0: Haven't been colored yet.
- 1: Blue.
- -1: Red.
-For each node,
+ 0: Haven't been colored yet.<br/>
+ 1: Blue.<br/>
+ -1: Red.<br/>
+For each node,<br/>
 
-If it hasn't been colored, use a color to color it. Then use the other color to color all its adjacent nodes (DFS).
-If it has been colored, check if the current color is the same as the color that is going to be used to color it.
+If it hasn't been colored, use a color to color it. Then use the other color to color all its adjacent nodes (DFS).<br/>
+If it has been colored, check if the current color is the same as the color that is going to be used to color it.<br/>
+three states, for example course schedule.
+
 
 ### 886. Possible Bipartition
-disliked person cannot be in the same group
-use coloring. three state 0: not assigned, 1/-1
-build the input to ajacent matrix.
+disliked person cannot be in the same group<br/>
+use coloring. three state 0: not assigned, 1/-1<br/>
+build the input to ajacent matrix.<br/>
 
 ```cpp
     bool possibleBipartition(int N, vector<vector<int>>& dislikes) {
@@ -1032,7 +852,10 @@ build the input to ajacent matrix.
         return 1;
     }
 ```
-Note: the precheck color[node]!=-nc is critical: since the following condition only checks non-set colors. if already set, we need check if it is the color we expected. otherwise it is 0. If it is same color, we need continue checking (cannot return)
+Note: the precheck color[node]!=-nc is critical: <br/>
+since the following condition only checks non-set colors. 
+if already set, we need check if it is the color we expected. otherwise it is 0. <br/>
+If it is same color, we need continue checking (cannot return)<br/>
 
 
 ### 491. Increasing Subsequences
@@ -1070,11 +893,11 @@ use reference to push and pop the last element and try new path
 union find is more suitable
 
 ### 207. Course Schedule
-There are a total of n courses you have to take, labeled from 0 to n-1.
+There are a total of n courses you have to take, labeled from 0 to n-1.<br/>
 
-Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
-
-Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+Some courses may have prerequisites, <br/>
+for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]<br/>
+Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?<br/>
 ```cpp
     bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
         vector<vector<int>> adj(numCourses);
@@ -1098,7 +921,8 @@ Given the total number of courses and a list of prerequisite pairs, is it possib
         return 1;
     }
 ```
-3 states while exploring: (to avoid recursively explore)
+3 states while exploring: (to avoid recursively explore)<br/>
+-1: not checked, 0 it is in check, 1 checked.<br/>
 
 ### 210. Course Schedule II
 There are a total of n courses you have to take, labeled from 0 to n-1.
@@ -1149,11 +973,51 @@ There may be multiple correct orders, you just need to return one of them. If it
         }
     }
 ```
+better solution using dfs
+```cpp
+    typedef vector<vector<int>> graph;
+    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+        graph g = buildGraph(numCourses, prerequisites);
+        vector<int> order;
+        vector<bool> todo(numCourses, false), done(numCourses, false);
+        for (int i = 0; i < numCourses; i++) {
+            if (!done[i] && !acyclic(g, todo, done, i, order)) {
+                return {};
+            }
+        }
+        reverse(order.begin(), order.end());
+        return order;
+    }
+
+    graph buildGraph(int numCourses, vector<pair<int, int>>& prerequisites) {
+        graph g(numCourses);
+        for (auto p : prerequisites) {
+            g[p.second].push_back(p.first);
+        }
+        return g;
+    }
+    
+    bool acyclic(graph& g, vector<bool>& todo, vector<bool>& done, int node, vector<int>& order) {
+        if (todo[node])  return false;
+        
+        if (done[node]) return true;
+        
+        todo[node] = done[node] = true;
+        for (int neigh : g[node]) {
+            if (!acyclic(g, todo, done, neigh, order)) {
+                return false;
+            }
+        }
+        order.push_back(node);
+        todo[node] = false;
+        return true;
+    }
 	
+```	
 ### 417. Pacific Atlantic Water Flow	
-top and left are pacfic, right and bottom are atlantic
-given a matrix of altitude of cells.
-Find the list of grid coordinates where water can flow to both the Pacific and Atlantic ocean.
+top and left are pacfic, right and bottom are atlantic  <br/>
+given a matrix of altitude of cells.<br/>
+Find the list of grid coordinates where water can flow to both the Pacific and Atlantic ocean.<br/>
 
 ```cpp
     vector<pair<int, int>> res;
@@ -1274,8 +1138,10 @@ bfs for each non zero cell.
         
         queue<int> q;
         for(int i=0;i<m;i++)
-            for(int j=0;j<n;j++) if(matrix[i][j]) ans[i][j]=update_closest(matrix,i,j,q);
-        //print(matrix);
+            for(int j=0;j<n;j++) 
+				if(matrix[i][j]) 
+					ans[i][j]=update_closest(matrix,i,j,q);
+
         int dir[][2]={{0,1},{0,-1},{1,0},{-1,0}};
         //note process 1 first, 2 second,3,4,5....., otherwise there would have a problem depending on the update sequence
         int level=1;
@@ -1296,10 +1162,7 @@ bfs for each non zero cell.
                 else {q.push(i*n+j);}
             }
             level++;
-            //cout<<i<<" "<<j<<":"<<ans[i][j]<<endl;
-            //cout<<"updated matrix:"<<endl;print(ans);
         }
-
         return ans;
     }
     
@@ -1319,7 +1182,7 @@ bfs for each non zero cell.
 	
 
 ### 576. Out of Boundary Paths
-recursive or dp
+recursive or dp: outside probability is 0, inside is 1.
 ```cpp
     int findPaths(int m, int n, int N, int i0, int j0) {
         vector<vector<vector<uint>>> dp(N + 1, vector<vector<uint>>(m, vector<uint>(n, 0)));
@@ -1426,6 +1289,55 @@ mapping pointers to id, id to pointer then we can rebuild the relation
 ```
 
 ## hard
+	
+### 743. Network Delay Time
+times[i] = (u, v, w), from node u to node v, takes travel time w
+from node K, what is the time required for all nodes to receive it.
+max time of all min time from K to other nodes.
+this could be a dp, dijkstra, bellman-ford problem. Trying to relax edges from k to all other nodes.
+dfs: from k to all other node, calculate the min path sum.
+dijkstra: using priority_queue or multiset (min heap) to try the smallest first to relax the edge
+```cpp
+    typedef pair<int,int> pii;
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<pii> g[n + 1];
+        for (const auto& t : times) g[t[0]].push_back(make_pair(t[1], t[2]));
+        const int inf = 1e9;
+        vector<int> dist(n + 1, inf);
+        dist[k] = 0;//k to k
+        priority_queue<pii, vector<pii>, greater<pii> > pq;
+        pq.push(make_pair(0, k));//distance, destination
+        int u, v, w;
+		vector<bool> visited(n + 1);
+        while (!pq.empty()) 
+        {
+            pii p = pq.top(); pq.pop();
+            u = p.second;
+			if (visited[u]) continue;
+            for (auto& to : g[u]) 
+            {
+                v = to.first, w = to.second;
+                if (dist[v] > dist[u] + w) 
+                {
+                    dist[v] = dist[u] + w;
+                    pq.push(make_pair(dist[v], v));
+                }
+            }
+			visited[u] = 1;
+        }
+        int ans = *max_element(dist.begin() + 1, dist.end());
+        return ans == inf ? -1 : ans;
+    }
+```
+the dijkstra:
+- form the graph
+- maintain a min distance from k to all other nodes (from k to k is 0)
+- priority-queue: using the distance for compare, min heap (try smallest distance first)
+- use the other nodes to relax the edge and get the min dist.
+- when the edge can be relaxed, add the updated distance back to priority-queue
+- stop when no more distance can be relaxed.
+- this is not an easy problem.
+
 	
 ### 980. Unique Paths III	
 On a 2-dimensional grid, there are 4 types of squares:
