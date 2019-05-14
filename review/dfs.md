@@ -1427,6 +1427,47 @@ mapping pointers to id, id to pointer then we can rebuild the relation
 
 ## hard
 	
+### 980. Unique Paths III	
+On a 2-dimensional grid, there are 4 types of squares:
+
+1 represents the starting square.  There is exactly one starting square.
+2 represents the ending square.  There is exactly one ending square.
+0 represents empty squares we can walk over.
+-1 represents obstacles that we cannot walk over.
+Return the number of 4-directional walks from the starting square to the ending square, that walk over every non-obstacle square exactly once.
+
+```cpp
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        int m=grid.size(),n=grid[0].size();
+        int nsteps=0,sx=0,sy=0;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]==1) sx=i,sy=j;
+                if(grid[i][j]!=-1) nsteps++;
+            }
+        }
+        return dfs(grid,sx,sy,1,nsteps);
+    }
+    int dfs(vector<vector<int>>& grid,int sx,int sy,int step,int nsteps)
+    {
+        int m=grid.size(),n=grid[0].size();
+        if(sx<0 || sx>=m || sy<0 || sy>=n || grid[sx][sy]==-1) return 0;
+        if(grid[sx][sy]==2) return step==nsteps?1:0;
+        grid[sx][sy]=-1; //mark it visited
+        int ans=dfs(grid,sx+1,sy,step+1,nsteps);
+        ans+=dfs(grid,sx-1,sy,step+1,nsteps);
+        ans+=dfs(grid,sx,sy+1,step+1,nsteps);
+        ans+=dfs(grid,sx,sy-1,step+1,nsteps);
+        grid[sx][sy]=0;
+        return ans;
+    }
+```
+first we get number of grids to walk, and get the starting cell and ending cell	
+dfs will try all possible paths and we only need to count the paths satisfying the conditions.
+
+
 ### 753. Cracking the Safe
 n boxes with n digits password using k digits only (from 0 to k-1)
 the min length of input to guarantee opening it. (auto match the password)
@@ -1437,3 +1478,668 @@ greedy choice:
 two digits: 00, 01, 11, 10-->00110. every time only the last n-1 digits are reserved and append a new digit in reversed way, ie. from k-1 to 0
 if we try from 0 to k-1: 00, 01, 10, 11-->001011, which is 6, not the smallest one. 
 if a cycle is seen, continue next.
+```cpp
+    string crackSafe(int n, int k) {
+    string ans = string(n, '0');
+    unordered_set<string> visited;
+    visited.insert(ans);
+
+    for(int i = 0;i<pow(k,n);i++)
+    {
+        string prev = ans.substr(ans.size()-n+1,n-1);
+        for(int j = k-1;j>=0;j--)
+        {
+            string now = prev + to_string(j);
+            if(!visited.count(now))
+            {
+                visited.insert(now);
+                ans += to_string(j);
+                break;
+            }       
+        }
+    }
+    return ans;
+    }
+```
+
+### 827. Making A Large Island	
+In a 2D grid of 0s and 1s, we change at most one 0 to a 1.
+
+After, what is the size of the largest island? (An island is a 4-directionally connected group of 1s).
+
+union find: to see if we can connect two groups
+```cpp
+class union_find
+{
+    int m,n;
+    int count;
+    vector<int> parent;
+    vector<int> size;
+    int max_size;
+public:
+    union_find(vector<vector<int>>& grid)
+    {
+        count=0;
+        max_size=0;
+        m=grid.size(),n=grid[0].size();
+        parent.resize(m*n+1);
+        size.resize(m*n+1);
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]) {parent[i*n+j]=i*n+j;size[i*n+j]=1;count++;}
+            }
+        }
+        if(count) max_size=1;
+        parent[n*m]=n*m;//dummy node
+    }
+    int find(int node)
+    {
+        while(parent[node]!=node) node=parent[node];
+        return node;
+    }
+    void merge(int ni,int nj)
+    {
+        int i_id=find(ni);
+        int j_id=find(nj);
+        if(i_id==j_id) return;
+        if(i_id<j_id) {parent[j_id]=i_id;size[i_id]+=size[j_id];size[j_id]=0;max_size=max(max_size,size[i_id]);}
+        else {parent[i_id]=j_id;size[j_id]+=size[i_id];size[i_id]=0;max_size=max(max_size,size[j_id]);}
+        count--;
+    }
+    bool connected(int ni,int nj) {return find(ni)==find(nj);}
+    int get_numset() {return count;}
+    int get_size(int p) {return size[p];}
+    int get_maxsize() {return max_size;}
+};
+class Solution {
+public:
+    int largestIsland(vector<vector<int>>& grid) {
+        //disjoint set and see which one flip will add the largest
+        //using the i*n+j as the root
+        //bfs search to merge 
+        union_find uf(grid);
+        int m=grid.size(),n=grid[0].size();
+        int dir[][2]={{-1,0},{1,0},{0,-1},{0,1}};
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j])
+                {
+                    for(int k=0;k<4;k++)
+                    {
+                        int x=i+dir[k][0],y=j+dir[k][1];
+                        if(x>=0 && x<m && y>=0 && y<n && grid[x][y])
+                        {
+                            uf.merge(i*n+j,x*n+y);
+                        }
+                    }
+                }
+            }
+        }
+        //now we get all the adjoint set, we will check the 0 to see which connect two or three or 4
+        int maxlen=INT_MIN;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(!grid[i][j])
+                {
+                    unordered_set<int> us;
+                    for(int k=0;k<4;k++)
+                    {
+                        int x=i+dir[k][0],y=j+dir[k][1];
+
+                        if(x>=0 && x<m && y>=0 && y<n && grid[x][y])
+                        {
+                            int p=uf.find(x*n+y);//same region cannot be added multiple times
+                            us.insert(p);
+                        }
+                    }
+                    int cnt=0;
+                    for(auto it=us.begin();it!=us.end();it++) cnt+=uf.get_size(*it);
+                    maxlen=max(maxlen,cnt);
+                }
+            }
+        }
+        return maxlen==INT_MIN?uf.get_maxsize():maxlen+1;
+    }
+};
+```
+
+### 679. 24 Game
+You have 4 cards each containing a number from 1 to 9. You need to judge whether they could operated through *, /, +, -, (, ) to get the value of 24.
+the division is floating division
+```cpp
+    bool judgePoint24(vector<int>& nums) {
+        //recursive approach. 
+        //for all combination check if we can get 24
+        //pick any two numbers and do +-*/ and reduce to 3 numbers, then 2 and then 1
+        vector<double> v(nums.size());
+        for(int i=0;i<nums.size();i++) v[i]=nums[i];
+        return search24(v);
+    }
+    
+    bool search24(vector<double> v)
+    {
+        if(v.size()==1) return abs(v[0]-24)<1e-7;
+        vector<double> list;
+        char op[]={'+','*','-','/'};
+        for(int i=0;i<v.size();i++)
+        {
+            for(int j=0;j<v.size();j++)
+            {
+                if(i==j) continue; //same cards cannot be used
+                //pick v[i] op v[j]
+                //+ * a+b=b+a a*b=b*a so do not have to compute
+                for(int k=0;k<4;k++) //operations
+                {
+                    if((op[k]=='+' || op[k]=='*') && i>j) continue;
+                    if(op[k]=='/' && v[j]==0) continue; //cannot divide 0
+                    double res;
+                    switch(op[k])
+                    {
+                        case '+': res=v[i]+v[j];break;
+                        case '-': res=v[i]-v[j];break;
+                        case '*': res=v[i]*v[j];break;
+                        case '/': res=v[i]/v[j];break;
+                    }
+                    //remove i,j and add res int a new list
+                    list.clear();
+                    for(int l=0;l<v.size();l++) if(l!=i && l!=j) list.push_back(v[l]);
+                    list.push_back(res);
+                    //for(int l=0;l<list.size();l++) cout<<list[i]<<",";cout<<endl;
+                    if(search24(list)) return 1;
+                }
+            }
+        }
+        return 0;
+    }
+```
+
+### 749. Contain Virus	
+A virus is spreading rapidly, and your task is to quarantine the infected area by installing walls.
+
+The world is modeled as a 2-D array of cells, where 0 represents uninfected cells, and 1 represents cells contaminated with the virus. A wall (and only one wall) can be installed between any two 4-directionally adjacent cells, on the shared boundary.
+
+Every night, the virus spreads to all neighboring cells in all four directions unless blocked by a wall. Resources are limited. Each day, you can install walls around only one region -- the affected area (continuous block of infected cells) that threatens the most uninfected cells the following night. There will never be a tie.
+
+Can you save the day? If so, what is the number of walls required? If not, and the world becomes fully infected, return the number of walls used.
+
+### 514. Freedom Trail
+dp solution can also use top down recursive solution
+```cpp
+    int findRotateSteps(string ring, string key) {
+        //dfs
+        int n=ring.size();
+        int m=key.size();
+        unordered_map<char,vector<int>> mp;
+        for(int i=0;i<ring.size();i++) mp[ring[i]].push_back(i);
+        //we are looking for a minimum path sum, ring initial is always 0
+        //based on the memoization dfs approach, the dp approach is then simple
+        vector<vector<int>> dp(n,vector<int>(m+1,INT_MAX));
+        for(int i=0;i<n;i++) dp[i][m]=0;
+        for(int j=m-1;j>=0;j--)
+        {
+            vector<int>& v=mp[key[j]];
+            //for(int i=0;i<ring.size();i++)
+            for(int i=n-1;i>=0;i--)
+            {
+                for(int k=0;k<v.size();k++) //all possible index of the current char
+                {
+                    int d=abs(v[k]-i); //
+                    d=min(d,n-d);
+                    dp[i][j]=min(dp[i][j],d+dp[v[k]][j+1]);
+                }
+            }
+        }
+        int minSteps=dp[0][0];
+        return minSteps+m;
+    }
+```
+
+### 329. Longest Increasing Path in a Matrix
+dfs with memoization
+```cpp
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        if(matrix.size()==0) return 0;
+        int m=matrix.size(),n=matrix[0].size();
+        int maxlen=0;
+        vector<vector<int>> dp(m,vector<int>(n));
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                maxlen=max(maxlen,dfs(matrix,i,j,INT_MIN,dp));
+            }
+        }
+        return maxlen;
+    }
+    
+    int dfs(vector<vector<int>>& mat,int i,int j,int prev,vector<vector<int>>& dp)
+    {
+        if(i<0 || j<0 || i>=mat.size() || j>=mat[0].size() || mat[i][j]<=prev) return 0;
+        if(dp[i][j]) return dp[i][j];
+        int d=mat[i][j];
+        mat[i][j]=INT_MIN;
+        int d0=1+dfs(mat,i-1,j,d,dp);
+        int d1=1+dfs(mat,i+1,j,d,dp);
+        int d2=1+dfs(mat,i,j-1,d,dp);
+        int d3=1+dfs(mat,i,j+1,d,dp);
+        mat[i][j]=d;
+        return dp[i][j]=max({d0,d1,d2,d3});
+    }
+```
+
+### 924. Minimize Malware Spread	
+In a network of nodes, each node i is directly connected to another node j if and only if graph[i][j] = 1.
+
+Some nodes initial are initially infected by malware.  Whenever two nodes are directly connected and at least one of those two nodes is infected by malware, both nodes will be infected by malware.  This spread of malware will continue until no more nodes can be infected in this manner.
+
+Suppose M(initial) is the final number of nodes infected with malware in the entire network, after the spread of malware stops.
+
+We will remove one node from the initial list.  Return the node that if removed, would minimize M(initial).  If multiple nodes could be removed to minimize M(initial), return such a node with the smallest index.
+
+Note that if a node was removed from the initial list of infected nodes, it may still be infected later as a result of the malware spread.
+
+union find
+```cpp
+    int minMalwareSpread(vector<vector<int>>& graph, vector<int>& initial) {
+        int n=graph.size();
+        vector<int> parents(n),size(n,1);
+        
+        for(int i=0;i<n;i++) parents[i]=i;
+        int num_set=n;
+        for(int i=0;i<n;i++)
+        {
+            for(int j=i;j<n;j++)
+            if(graph[i][j]) merge(parents,i,j,num_set,size);
+        }
+        //sort(initial.begin(),initial.end());
+        //copy(size.begin(),size.end(),ostream_iterator<int>(cout," "));
+        unordered_map<int,set<int>> mp;
+        for(int i=0;i<initial.size();i++)
+            mp[get_id(parents,initial[i])].insert(initial[i]);
+        //if there are more than one, then it is 0
+        int max0=0,ans=INT_MAX;
+        for(auto it=mp.begin();it!=mp.end();it++)
+        {
+            if(it->second.size()>1) 
+            {
+                if(max0==0) ans=min(ans,*(it->second.begin()));
+            }
+            else
+            {
+                if(max0<size[it->first])
+                {
+                    max0=size[it->first];
+                    ans=*(it->second.begin());
+                }
+                else if(max0==size[it->first])
+                    ans=min(ans,*(it->second.begin()));
+            }
+        }
+        return ans;
+        
+    }
+    int get_id(vector<int>& parent,int i)
+    {
+        while(i!=parent[i]) i=parent[i];
+        return i;
+    }
+    void merge(vector<int>& parent,int i,int j,int& num_set,vector<int>& size)
+    {
+        int i_id=get_id(parent,i);
+        int j_id=get_id(parent,j);
+        if(i_id==j_id) return;
+        if(i_id<j_id) {parent[j_id]=i_id;size[i_id]+=size[j_id];size[j_id]=0;}
+        else {parent[i_id]=j_id;size[j_id]+=size[i_id];size[i_id]=0;}
+        num_set--;
+    }    
+```
+
+### 928. Minimize Malware Spread II
+We will remove one node from the initial list, completely removing it and any connections from this node to any other node.  Return the node that if removed, would minimize M(initial).  If multiple nodes could be removed to minimize M(initial), return such a node with the smallest index.
+
+union find
+```cpp
+    int minMalwareSpread(vector<vector<int>>& graph, vector<int>& initial) {
+        //the idea: build the disjoint set by removing all infected nodes
+        //add the infected nodes except the removed one one by one and find the one with most infected
+        //union-find is fast to do union but not good for splitting and that is why we use the above approach
+        int n=graph.size();
+        vector<int> parents(n),size(n,1);
+        //set<int> infected(initials.begin(),initials.end());
+        
+        sort(initial.begin(),initial.end());
+        int minsize=INT_MAX,ans=INT_MAX;        
+        for(int k=0;k<initial.size();k++)
+        {
+            int remove=initial[k];
+            int infected_size=0;
+            //build the union by disable the remove node
+            for(int i=0;i<n;i++) {parents[i]=i;size[i]=1;}
+            int num_set=n;
+            for(int i=0;i<n;i++)
+            {
+                for(int j=i;j<n;j++)
+                {
+                    if(i==remove || j==remove) continue;
+                    if(graph[i][j]) merge(parents,i,j,num_set,size);
+                }
+            }
+            //get the number of infected nodes
+            unordered_set<int> myset;
+            for(int t=0;t<initial.size();t++)
+            {
+                if(initial[t]==remove) continue;
+                myset.insert(get_id(parents,initial[t]));
+            }
+            
+            for(auto it=myset.begin();it!=myset.end();it++)
+                infected_size+=size[*it];
+            if(minsize>infected_size) minsize=infected_size,ans=remove;
+        }
+        return ans;
+    }
+    int get_id(vector<int>& parent,int i)
+    {
+        while(i!=parent[i]) i=parent[i];
+        return i;
+    }
+    void merge(vector<int>& parent,int i,int j,int& num_set,vector<int>& size)
+    {
+        int i_id=get_id(parent,i);
+        int j_id=get_id(parent,j);
+        if(i_id==j_id) return;
+        if(i_id<j_id) {parent[j_id]=i_id;size[i_id]+=size[j_id];size[j_id]=0;}
+        else {parent[i_id]=j_id;size[j_id]+=size[i_id];size[i_id]=0;}
+        num_set--;
+    }    
+```
+	
+### 301. Remove Invalid Parentheses
+Remove the minimum number of invalid parentheses in order to make the input string valid. Return all possible results.
+
+Note: The input string may contain letters other than the parentheses ( and ).
+```cpp
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> ans;
+        helper(s,ans,0,0,{'(',')'});
+        return ans;
+    }
+    void helper(string s,vector<string>& ans,int lasti,int lastj,vector<char> par)
+    {
+        int cnt=0;
+        for(int i=lasti;i<s.size();i++)
+        {
+            if(s[i]==par[0]) cnt++;
+            if(s[i]==par[1]) cnt--;
+            if(cnt<0)
+            {
+                for(int j=lastj;j<=i;j++)
+                {
+                    if(s[j]==par[1] && (j==lastj || s[j-1]!=par[1]))
+                        helper(s.substr(0,j)+s.substr(j+1),ans,i,j,par);
+                }
+                return; 
+            }
+        }
+        string rs=s;
+        reverse(rs.begin(),rs.end());
+        if(par[0]=='(') helper(rs,ans,0,0,{')','('}); //finished left to right
+        else ans.push_back(rs);//finished right to left
+    }	
+```
+
+### 488. Zuma Game
+Think about Zuma Game. You have a row of balls on the table, colored red(R), yellow(Y), blue(B), green(G), and white(W). You also have several balls in your hand.
+
+Each time, you may choose a ball in your hand, and insert it into the row (including the leftmost place and rightmost place). Then, if there is a group of 3 or more balls in the same color touching, remove these balls. Keep doing this until no more balls can be removed.
+
+Find the minimal balls you have to insert to remove all the balls on the table. If you cannot remove all the balls, output -1.
+
+### 546. Remove Boxes
+more dp than dfs
+Given several boxes with different colors represented by different positive numbers. 
+You may experience several rounds to remove boxes until there is no box left. Each time you can choose some continuous boxes with the same color (composed of k boxes, k >= 1), remove them and get k*k points.
+Find the maximum points you can get.
+
+```cpp
+    int removeBoxes(vector<int> boxes) {
+        int n = boxes.size();
+        vector<vector<vector<int>>> dp(n,vector<vector<int>>(n,vector<int>(n)));
+        return removeBoxesSub(boxes, 0, n - 1, 0, dp);
+    }
+
+    int removeBoxesSub(vector<int>& boxes, int i, int j, int k, vector<vector<vector<int>>>& dp) 
+    {
+        if (i > j) return 0;
+        if (dp[i][j][k] > 0) return dp[i][j][k];
+        for (; i + 1 <= j && boxes[i + 1] == boxes[i]; i++, k++); 
+        // optimization: all boxes of the same color counted continuously from the first box should be grouped together
+        int res = (k + 1) * (k + 1) + removeBoxesSub(boxes, i + 1, j, 0, dp);
+        for (int m = i + 1; m <= j; m++) {
+            if (boxes[i] == boxes[m]) {
+                res = max(res, removeBoxesSub(boxes, i + 1, m - 1, 0, dp) + removeBoxesSub(boxes, m, j, k + 1, dp));
+            }
+        }
+        dp[i][j][k] = res;
+        return res;
+    }
+```
+
+664. Strange Printer
+There is a strange printer with the following two special requirements:
+
+The printer can only print a sequence of the same character each time.
+At each turn, the printer can print new characters starting from and ending at any places, and will cover the original existing characters.
+Given a string consists of lower English letters only, your job is to count the minimum number of turns the printer needed in order to print it.
+
+```cpp
+    int strangePrinter(string s) {
+        //this is similar to the Removing Boxes
+        //define T(i,j,k) as the minimum number for substr(i,j) with k same numbers as s[j+1]
+        if(s.length()<1) return 0;
+        string ss;
+        char c=s[0];
+        ss+=s[0];
+        for(int i=1;i<s.length();i++) if(s[i]!=c) {c=s[i];ss+=s[i];}
+        //cout<<s.length()<<"->"<<ss.length();
+        s=ss;
+        int n=s.length();
+        //vector<vector<vector<int>>> dp(n,vector<vector<int>>(n,vector<int>(2)));
+        vector<vector<int>> dp(n,vector<int>(n));
+        return helper(s,dp,0,n-1);
+    }
+    int helper(string& s,vector<vector<int>>& dp,int i,int j)
+    {
+        if(i>j) return 0;
+        if(i==j) return 1;
+        if(dp[i][j]) return dp[i][j];
+        //k is the number of same char
+        //for(;i<=j && s[i+1]==s[i];i++) k++; //same character shall be grouped
+        int res=1+helper(s,dp,i+1,j);//no char attached
+        //cout<<res;
+        for(int m=i+1;m<=j;m++)
+        {
+            if(s[m]==s[i])
+                res=min(res,helper(s,dp,i+1,m-1)+helper(s,dp,m,j));
+        }
+        dp[i][j]=res;
+        return res;
+    }
+```
+
+472. Concatenated Words
+Given a list of words (without duplicates), please write a program that returns all concatenated words in the given list of words.
+A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
+
+```cpp
+bool cmp1(const string& s1,const string& s2) {return s1.length()<s2.length();}
+class Solution {
+public:
+    
+    struct cmp
+    {//note the 3 const are required!!!!
+        bool operator()(const string& s1,const string& s2) const {return s1.length()<s2.length();}
+    };
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        //sort the words using length
+        vector<string> res;
+        sort(words.begin(),words.end(),cmp1);
+        //copy(words.begin(),words.end(),ostream_iterator<string>(cout," "));cout<<endl;
+        unordered_set<string> dict;
+        
+        //multiset<string,cmp> dict(words.begin(),words.end()); //note if the length are the same it is not inserted!!!
+        
+        for(int i=0;i<words.size();i++)
+        {
+            if(canCombine(words[i],dict))
+            {
+                res.push_back(words[i]);
+            }
+            dict.insert(words[i]);
+            //copy(dict.begin(),dict.end(),ostream_iterator<string>(cout," "));cout<<endl;
+        }
+        return res;
+    }
+    bool canCombine(string& word,unordered_set<string>& dict)
+    {
+        //set<string,cmp>::iterator it=dict.find(word);
+        //auto it=dict.find(word);
+        //int nelem=distance(dict.begin(),it);
+        //if(nelem==0) return 0;
+        if(dict.empty()) return 0;
+        vector<bool> dp(word.length()+1);//dp[i]: [0...i-1] substr can be combined
+        dp[0]=1;//always can form by an empty string
+        for(int i=1;i<=word.length();i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(!dp[j]) continue;//previous one is not a word
+                string t=word.substr(j,i-j);//note substr 2nd is the length
+                //cout<<j<<","<<i<<":"<<t<<" "<<dict.count(t)<<endl;
+                if(dict.count(t)) {dp[i]=1;break;} //cannot search the whole set!
+            }
+        }
+        return dp[word.length()];
+        
+    }
+```
+
+839. Similar String Groups
+Two strings X and Y are similar if we can swap two letters (in different positions) of X, so that it equals Y.
+
+For example, "tars" and "rats" are similar (swapping at positions 0 and 2), and "rats" and "arts" are similar, but "star" is not similar to "tars", "rats", or "arts".
+
+Together, these form two connected groups by similarity: {"tars", "rats", "arts"} and {"star"}.  Notice that "tars" and "arts" are in the same group even though they are not similar.  Formally, each group is such that a word is in the group if and only if it is similar to at least one other word in the group.
+
+We are given a list A of strings.  Every string in A is an anagram of every other string in A.  How many groups are there?
+union find
+```cpp
+class disjoint_set {
+    vector<int> v;
+    int sz;
+public:
+    disjoint_set(int n) {
+        makeset(n);
+    }
+
+    void makeset(int n) {
+        v.resize(n);
+        iota(v.begin(), v.end(), 0);
+        sz = n;
+    }
+
+    int find(int i) {
+        if (i != v[i])
+            v[i] = find(v[i]);
+        return v[i];
+    }
+    
+    void join(int i, int j) {
+        int ri = find(i), rj = find(j);
+        if (ri != rj) {
+            v[ri] = rj;
+            sz--;
+        }
+    }
+    
+    int size() {
+        return sz;
+    }
+};
+class Solution {
+public:
+    bool similar(string &a, string &b) {
+        int n = 0;
+        for (int i = 0; i < a.size(); i++)
+            if (a[i] != b[i] && ++n > 2)
+                return false;
+        return true;
+    }
+
+    int numSimilarGroups(vector<string>& A) {
+        disjoint_set ds(A.size());
+        for (int i = 0; i < A.size(); i++)
+            for (int j = i + 1; j < A.size(); j++)
+                if (similar(A[i], A[j]))
+                    ds.join(i, j);
+        return ds.size();
+    }
+
+};
+```
+
+685. Redundant Connection II
+In this problem, a rooted tree is a directed graph such that, there is exactly one node (the root) for which all other nodes are descendants of this node, plus every node has exactly one parent, except for the root node which has no parents.
+
+The given input is a directed graph that started as a rooted tree with N nodes (with distinct values 1, 2, ..., N), with one additional directed edge added. The added edge has two different vertices chosen from 1 to N, and was not an edge that already existed.
+
+The resulting graph is given as a 2D-array of edges. Each element of edges is a pair [u, v] that represents a directed edge connecting nodes u and v, where u is a parent of child v.
+
+Return an edge that can be removed so that the resulting graph is a rooted tree of N nodes. If there are multiple answers, return the answer that occurs last in the given 2D-array.
+
+```cpp
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        //use the fact that each node only has zero or one parent, and cannot be itself
+        //note: when there is a cycle and two parents, need to remove the edge in the cycle
+        //four cases: 1: loop, 2, two parents, 3, first loop then two parents 4. first two parents then loop
+        unordered_map<int,int> parent;
+        vector<int> twop(2,-1),loop(2,-1);
+        for(int i=0;i<edges.size();i++)
+        {
+            int p=edges[i][0],c=edges[i][1];
+            if(parent.count(c)) 
+            {
+                //we will first remove this edge and try later
+                twop=edges[i];
+                continue;
+            }
+            else parent[c]=p;
+            if(iscycle(c,parent)) 
+            {
+                loop=edges[i];
+                parent.erase(c);
+            }
+        }
+        if(twop[0]<0) return loop;
+        if(loop[0]<0) return twop;
+        twop[0]=parent[twop[1]];
+        return twop;
+        
+    }
+    bool iscycle(int c,unordered_map<int,int>& parent)
+    {
+        //find its ultimate parent
+        int p=c;
+        while(parent.count(c)) {c=parent[c];if(c==p) break;}
+        return p==c;
+    }
+```	
+
+
+	
