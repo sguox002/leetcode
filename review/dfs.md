@@ -1179,6 +1179,9 @@ bfs for each non zero cell.
         return -1;
     }
 ```
+first, build the queue to solve. when a cell has a neighboring 0, we just mark it as 1. otherwise we add it into a queue (its surroudings are all 1)
+second, we process a cell in the queue and update its value with its neighboring minimum (bfs), if the min==level, the answer is fixed to be min+1. otherwise we shall add back into queue for further processing.
+
 	
 
 ### 576. Out of Boundary Paths
@@ -1288,6 +1291,38 @@ mapping pointers to id, id to pointer then we can rebuild the relation
     }
 ```
 
+### 329. Longest Increasing Path in a Matrix
+dfs with memoization
+```cpp
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        if(matrix.size()==0) return 0;
+        int m=matrix.size(),n=matrix[0].size();
+        int maxlen=0;
+        vector<vector<int>> dp(m,vector<int>(n));
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                maxlen=max(maxlen,dfs(matrix,i,j,INT_MIN,dp));
+            }
+        }
+        return maxlen;
+    }
+    
+    int dfs(vector<vector<int>>& mat,int i,int j,int prev,vector<vector<int>>& dp)
+    {
+        if(i<0 || j<0 || i>=mat.size() || j>=mat[0].size() || mat[i][j]<=prev) return 0;
+        if(dp[i][j]) return dp[i][j];
+        int d=mat[i][j];
+        mat[i][j]=INT_MIN;
+        int d0=1+dfs(mat,i-1,j,d,dp);
+        int d1=1+dfs(mat,i+1,j,d,dp);
+        int d2=1+dfs(mat,i,j-1,d,dp);
+        int d3=1+dfs(mat,i,j+1,d,dp);
+        mat[i][j]=d;
+        return dp[i][j]=max({d0,d1,d2,d3});
+    }
+```
 ## hard
 	
 ### 743. Network Delay Time
@@ -1570,6 +1605,8 @@ the division is floating division
         return 0;
     }
 ```
+more like a divide and conquer problem.
+
 
 ### 749. Contain Virus	
 A virus is spreading rapidly, and your task is to quarantine the infected area by installing walls.
@@ -1612,38 +1649,7 @@ dp solution can also use top down recursive solution
     }
 ```
 
-### 329. Longest Increasing Path in a Matrix
-dfs with memoization
-```cpp
-    int longestIncreasingPath(vector<vector<int>>& matrix) {
-        if(matrix.size()==0) return 0;
-        int m=matrix.size(),n=matrix[0].size();
-        int maxlen=0;
-        vector<vector<int>> dp(m,vector<int>(n));
-        for(int i=0;i<m;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                maxlen=max(maxlen,dfs(matrix,i,j,INT_MIN,dp));
-            }
-        }
-        return maxlen;
-    }
-    
-    int dfs(vector<vector<int>>& mat,int i,int j,int prev,vector<vector<int>>& dp)
-    {
-        if(i<0 || j<0 || i>=mat.size() || j>=mat[0].size() || mat[i][j]<=prev) return 0;
-        if(dp[i][j]) return dp[i][j];
-        int d=mat[i][j];
-        mat[i][j]=INT_MIN;
-        int d0=1+dfs(mat,i-1,j,d,dp);
-        int d1=1+dfs(mat,i+1,j,d,dp);
-        int d2=1+dfs(mat,i,j-1,d,dp);
-        int d3=1+dfs(mat,i,j+1,d,dp);
-        mat[i][j]=d;
-        return dp[i][j]=max({d0,d1,d2,d3});
-    }
-```
+
 
 ### 924. Minimize Malware Spread	
 In a network of nodes, each node i is directly connected to another node j if and only if graph[i][j] = 1.
@@ -1843,7 +1849,7 @@ Find the maximum points you can get.
     }
 ```
 
-664. Strange Printer
+### 664. Strange Printer
 There is a strange printer with the following two special requirements:
 
 The printer can only print a sequence of the same character each time.
@@ -1885,7 +1891,7 @@ Given a string consists of lower English letters only, your job is to count the 
     }
 ```
 
-472. Concatenated Words
+### 472. Concatenated Words
 Given a list of words (without duplicates), please write a program that returns all concatenated words in the given list of words.
 A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
 
@@ -1942,7 +1948,7 @@ public:
     }
 ```
 
-839. Similar String Groups
+### 839. Similar String Groups
 Two strings X and Y are similar if we can swap two letters (in different positions) of X, so that it equals Y.
 
 For example, "tars" and "rats" are similar (swapping at positions 0 and 2), and "rats" and "arts" are similar, but "star" is not similar to "tars", "rats", or "arts".
@@ -2006,7 +2012,7 @@ public:
 };
 ```
 
-685. Redundant Connection II
+### 685. Redundant Connection II
 In this problem, a rooted tree is a directed graph such that, there is exactly one node (the root) for which all other nodes are descendants of this node, plus every node has exactly one parent, except for the root node which has no parents.
 
 The given input is a directed graph that started as a rooted tree with N nodes (with distinct values 1, 2, ..., N), with one additional directed edge added. The added edge has two different vertices chosen from 1 to N, and was not an edge that already existed.
