@@ -171,6 +171,11 @@ What if there are lots of merges and the number of disjoint intervals are small 
 ```
 
 621. Task Scheduler
+given a list of tasks and requirement, return the min number of intervals needed
+somewhat similar to the playlist
+choose the most frequent char and divide it into k interval with n period
+and put other inside, the min time is (k-1)*n
+however when n is smaller than the period, we need suppress non-necessary idle
 
 ```cpp
     int leastInterval(vector<char>& tasks, int n) {
@@ -209,6 +214,16 @@ What if there are lots of merges and the number of disjoint intervals are small 
 ```
 
 729. My Calendar I
+Implement a MyCalendar class to store your events. A new event can be added if adding the event will not cause a double booking.
+
+Your class will have the method, book(int start, int end). Formally, this represents a booking on the half open interval [start, end), the range of real numbers x such that start <= x < end.
+
+A double booking happens when two events have some non-empty intersection (ie., there is some time that is common to both events.)
+
+For each call to the method MyCalendar.book, return true if the event can be added to the calendar successfully without causing a double booking. Otherwise, return false and do not add the event to the calendar.
+
+Your class will be called like this: MyCalendar cal = new MyCalendar(); MyCalendar.book(start, end)
+
 double booking
 ```cpp
     set<pair<int, int>> books;
@@ -330,4 +345,27 @@ public:
     }
 };
 ```
+
+### 495. Teemo Attacking
+In LOL world, there is a hero called Teemo and his attacking can make his enemy Ashe be in poisoned condition. Now, given the Teemo's attacking ascending time series towards Ashe and the poisoning time duration per Teemo's attacking, you need to output the total time that Ashe is in poisoned condition.
+
+You may assume that Teemo attacks at the very beginning of a specific time point, and makes Ashe be in poisoned condition immediately.
+
+need subtract those overlaps
+
+```cpp
+    int findPoisonedDuration(vector<int>& timeSeries, int duration) {
+        //timeseries point is the left side point, duration is the length of the line segment
+        //the problem needs to accumulate the line. timeseries is sorted
+        //brutal force solution
+        int tp=0;
+        int tend=0;
+        for(int i=0;i<timeSeries.size();i++)
+        {
+            tp+=duration-(timeSeries[i]<tend)*(tend-timeSeries[i]);
+            tend=timeSeries[i]+duration;
+        }
+        return tp;
+    }
+```	
 
