@@ -2086,6 +2086,10 @@ Otherwise, we divide the String by j, and get mid = s.substring(0, j) and suffix
 
 We reverse suffix as beginning of result and recursively call shortestPalindrome to get result of mid 
 then append suffix to get result.
+for exmple xyzyxabc
+we get j=5 cba(xyzyx)abc the middle is already a pal-string
+xyabcyx, we get j=3 xycb(xya)bcyx, then process xya, we get j=0, ->ayxya
+final is then xycbayxyabcyx.
 ```cpp
     string shortestPalindrome(string s) {
         //find the longest palindrome in s and then use it as the base to add
@@ -2112,11 +2116,41 @@ locked
 ### 32	Longest Valid Parentheses	 	Hard	
 Given a string containing just the characters '(' and ')', 
 find the length of the longest valid (well-formed) parentheses substring.
+approach: add a invalid ) at the begin and ( at the end to avoid stack empty.
 
+```cpp
+    int longestValidParentheses(string s) {
+		stack<int> st;
+		s=')'+s+'(';
+		int maxlen=0;
+		for(int i=0;i<s.size();i++)
+		{
+			char c=s[i];
+			if(c=='(') st.push(i);
+			else 
+			{
+				if(st.size() && s[st.top()]=='(') st.pop();
+				else st.push(i);
+			}
+		}
+		//pop out the invalid index and get the max
+		int ind=st.top();st.pop();
+		while(st.size()) {maxlen=max(maxlen,ind-st.top()-1);ind=st.top();st.pop();}
+		return maxlen;
+	}
+```	
 ### 10	Regular Expression Matching	 	Hard	
 see dp
 ### 273	Integer to English Words	 	Hard	
+see math
 ### 30	Substring with Concatenation of All Words	 	Hard	
+You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.
+Input:
+  s = "barfoothefoobarman",
+  words = ["foo","bar"]
+Output: [0,9]
+
+
 ### 68	Text Justification	 	Hard	
 ### 44	Wildcard Matching	 	Hard	
 see dp
