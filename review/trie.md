@@ -295,3 +295,122 @@ public:
 };
 ```
 
+### 648	Replace Words		Medium	
+all words has the prefix is replaced with prefix
+use trie
+```cpp
+struct Node
+{
+    Node* next[26]; //use pointer is much convenient than using array!
+    bool is_leaf;
+    Node(bool b=0) {fill(next,next+26,(Node*)0);is_leaf=b;}
+};
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Node* root;
+    Trie() {
+        root=new Node();
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)        
+        {
+            int ind=word[i]-'a';
+            if(p->is_leaf) break;
+            if(!p->next[ind]) p->next[ind]=new Node();
+            p=p->next[ind];
+            
+        }
+        p->is_leaf=1;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        Node* p=find(word);
+        return p && p->is_leaf; //has to end with a leaf node
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        Node* p=find(prefix);
+        return p; //does not have to end with a leaf node
+    }
+    
+    Node* find(string word)
+    {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)
+        {
+            int ind=word[i]-'a';
+            if(p->next[ind]==0) return 0;
+            p=p->next[ind];
+        }
+        return p;
+    }
+    Node* get_root() {return root;}
+};
+bool cmp(string& a,string &b) {return a.length()<b.length() || (a.length()==b.length() && a<b);}
+class Solution {
+public:
+    string replaceWords(vector<string>& dict, string sentence) {
+        Trie t;
+        //sort the dict
+        sort(dict.begin(),dict.end(),cmp);
+        for(int i=0;i<dict.size();i++) t.insert(dict[i]);
+        //split the sentence into vector strings
+        string newstr;
+        string word;
+        Node* root=t.get_root();
+        Node* p=root;
+        int len=sentence.size();
+        for(int i=0;i<len;)
+        {
+            char c=sentence[i];
+            //cout<<i<<" ";
+            if(c==' ') //a word is done
+            {
+                newstr+=word+' ';
+                p=root;
+                word.clear(); //reset
+            }
+            else
+            {
+                if(p->next[c-'a'])
+                {
+                    word+=c;
+                    p=p->next[c-'a'];
+                    //cout<<"n";
+                }
+                else //no match stop here
+                {
+                    if(p->is_leaf) //matched
+                    {
+                        //cout<<"m";
+                        newstr+=word;
+                        //need to jump to next word
+                        while(++i<len && sentence[i]!=' ');
+                    }
+                    else
+                    {
+                        word+=c;
+                        while(++i<len && sentence[i]!=' ') word+=sentence[i];
+                        newstr+=word;
+                        //cout<<'u';
+                    }
+                    newstr+=sentence[i];
+                    p=root;
+                    word.clear();
+                }
+            }
+            i++;
+            if(i==len) newstr+=word;
+                
+        }
+        return newstr;
+    }
+};
+```
+
