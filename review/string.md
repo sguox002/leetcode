@@ -1247,20 +1247,901 @@ direct approach sometimes is more direct and faster
 ```
 
 ### 722	Remove Comments	 	Medium	
+regex
+```cpp
+    vector<string> removeComments(vector<string>& source) {
+        stringstream ss;
+        const char* delim="\n";
+        copy(source.begin(),source.end(),ostream_iterator<string>(ss,delim));
+        string s=ss.str();
+        //cout<<s;
+        regex e("//.*|/\\*(.|\n)*?\\*/");
+        string ns=regex_replace(s,e,"");
+        //cout<<ns;
+        //split the string into vector using tokened string
+        ss.str(ns);
+        vector<string> ans;
+        while(ss.good())
+        {
+            string token;
+            getline(ss,token,'\n');
+            if(!token.empty())
+            ans.push_back(token);
+        }
+        //copy(ans.begin(),ans.end(),ostream_iterator<string>(cout,"\n"));
+        return ans;
+    }
+```
+first convert the vector of strings into one string add \n
+second using regular expression to remove /*...*/ or \\to the end
+
+other approach: brutal force
+```cpp
+    vector<string> removeComments(vector<string>& s) {
+        vector<string> ans;
+        bool inBlock = false;
+        string sf;
+        for (auto &t:s) {
+            for (int i = 0; i < t.size();) {
+                if (!inBlock) {
+                    if (i + 1 == t.size()) sf += t[i++];
+                    else {
+                        string m = t.substr(i,2);
+                        if (m == "/*") inBlock = 1, i+=2;
+                        else if (m == "//") break;
+                        else sf += t[i++];
+                    }
+                }
+                else {
+                    if (i + 1 == t.size()) i++;
+                    else {
+                        string m = t.substr(i,2);
+                        if (m == "*/") inBlock = 0, i+=2;
+                        else i++;
+                    }
+                }
+            }
+            if (sf.size() && !inBlock) ans.push_back(sf), sf = "";
+        }
+        return ans;
+    }
+```
 ### 43	Multiply Strings	 	Medium	
 see math
 
 ### 556	Next Greater Element III	 	Medium	
+convert to string and get next_permutation.
+
+```cpp
+    int nextGreaterElement(int n) {
+        string s=to_string(n);
+        next_permutation(s.begin(),s.end());
+        int res=stoul(s);
+        return (res>n)?res:-1;
+    }
+```	
 ### 71	Simplify Path	 	Medium	
+using stack
+```cpp
+    string simplifyPath(string path) {
+     //. stay .. go back. other go down, get the final path
+        //this is a stack problem
+        //slash is the separater, multiple slash is the same
+        //possibly the last one is not /
+        path+="/";
+        vector<string> st;
+        int start=0,end=0;
+        while(1)
+        {
+            end=path.find_first_of('/',start+1);
+            if(end==string::npos) break;
+            string s=path.substr(start+1,end-start-1);
+            if(s.empty() || s==".");
+            else if(s=="..") {if(!st.empty()) st.pop_back();}
+            else st.push_back(s);
+            start=end;
+        }
+        
+        string res;
+        
+        for(int i=0;i<st.size();i++)
+           res+="/"+st[i];
+        if(st.empty()) res="/";
+        return res;
+    }
+```
+
 ### 3 Longest Substring Without Repeating Characters	 	Medium	
+this could have multiple approaches
+first if we use ith char as the ending, we can get the length of the segment
+using a hashmap to record previous position
+```cpp
+int lengthOfLongestSubstring(string s) {
+    // for ASCII char sequence, use this as a hashmap
+    vector<int> charIndex(256, -1);
+    int longest = 0, m = 0;
+
+    for (int i = 0; i < s.length(); i++) {
+        m = max(charIndex[s[i]] + 1, m);    // automatically takes care of -1 case
+        charIndex[s[i]] = i;
+        longest = max(longest, i - m + 1);
+    }
+    return longest;
+}
+```
+m is the max index with no repeated. similar to two pointer approach.
+
 ### 5 Longest Palindromic Substring	 	Medium	
+dp
+```cpp
+    string longestPalindrome(string s) {
+       //dp solution using i j
+        int n=s.length();
+        vector<vector<int>> dp(n,vector<int>(n)); //initialize to 0
+        //dp(i,j)=length of p-string
+        int ans=0;//the max length
+        int start=0;
+        for(int i=0;i<n;i++) {dp[i][i]=1;ans=1;}
+        for(int i=0;i<n-1;i++) 
+        {
+            if(s[i]==s[i+1]) {dp[i][i+1]=2,ans=2,start=i;}
+        }
+        for(int i=n-3;i>=0;i--) //since it needs i+1
+        {
+            for(int j=i+2;j<n;j++) //since it needs j-1
+            {
+                if(s[i]==s[j] && dp[i+1][j-1]) dp[i][j]=dp[i+1][j-1]+2;
+                if(ans<dp[i][j]) ans=dp[i][j],start=i;
+            }
+        }
+        return s.substr(start,ans);
+    }
+```	
 ### 271	Encode and Decode Strings  	Medium	
+locked
 ### 165	Compare Version Numbers	 	Medium	
+Compare two version numbers version1 and version2.
+If version1 > version2 return 1; if version1 < version2 return -1;otherwise return 0.
+
+using . to separate parts and compare parts by parts. if one is missing parts, use 0 to compare
+```cpp
+	int compareVersion(string version1, string version2) {
+		//replace . to space and use stringstream to read
+		for(char& c: version1) if(c=='.') c=' ';
+		for(char& c: version2) if(c=='.') c=' ';
+		stringstream s1(version1),s2(version2);
+		int v1=0,v2=0;
+		while(s1.good() || s2.good())
+		{
+            s1>>v1,s2>>v2;
+			if(v1>v2) return 1;
+			else if(v1<v2) return -1;
+			v1=v2=0;
+		}
+		return 0;
+	}
+```	
 ### 91	Decode Ways	 	Medium	
+see dp
+A to 1 and Z to 26
+
 ### 468	Validate IP Address	 	Medium	
+ipv4 and ipv6
+ipv4: 4 numbers from 0 to 255, separated by ., no leading zero.
+ipv6: 8 numbers, each number is 4 digit hex, separated by :
+we can use sscanf to get the hex
+
+```cpp
+    string validIPAddress(string IP) {
+        //using : or . for ipv4 or ipv6
+        //stringstream to read
+        bool b;
+        if(IP.find('.')!=string::npos)
+        {
+            if(isIPv4(IP)) return "IPv4";
+            return "Neither";
+        }
+        if(isIPv6(IP)) return "IPv6";
+        return "Neither";
+    }
+    
+    bool isIPv4(string ip)
+    {
+        int start=0;
+        
+        for(int i=0;i<3;i++)
+        {
+            int pos=ip.find('.',start);
+            if(pos!=string::npos)
+            {
+                //check the substring
+                int len=pos-start;
+                if(len>3 || len<1) return 0;
+                string s=ip.substr(start,pos-start);
+                if(s[0]=='0' && s.size()>1) return 0;
+                //int res=stoi(s);
+                int res;
+                if(s.find_first_not_of("0123456789")!=string::npos) return 0;
+                if(sscanf(s.c_str(),"%d",&res)!=1) return 0;//cannot contain char other than 0-9
+                if(res<0 || res>255) return 0;
+            }
+            start=pos+1;
+        }
+        string s=ip.substr(start);
+        int len=s.size();
+        if(len>3) return 0;
+        if(s[0]=='0' && s.size()>1) return 0;
+        int res;//=stoi(s);//if it is not a number this will fail
+        if(sscanf(s.c_str(),"%d",&res)!=1) return 0;
+        if(s.find_first_not_of("0123456789")!=string::npos) return 0;
+        if(res<0 || res>255) return 0;
+        return 1;
+    }   
+    bool isIPv6(string ip)
+    {
+        int start=0;
+        int t=0,ind;
+        char c;
+        const char* p=ip.c_str();
+        if(ip.find_first_not_of("0123456789:abcdefABCDEF")!=string::npos) return 0;
+        for(int i=0;i<7;i++)
+        {
+            ind=ip.find_first_of(':',start);
+            if(ind-start>4 || ind-start<1) return 0;
+            
+            int num=sscanf(p+start,"%x",&t);
+            if(num!=1) return 0;
+            //sscanf(p+ind,"%c",&c);
+            //if(c!=':') return 0;
+            start=ind+1;
+            //
+        }
+        string s=ip.substr(start);
+        if(s.size()>4) return 0;
+        if(sscanf(s.c_str(),"%x",&t)!=1) return 0;
+        
+        
+        return 1;
+    }
+```	
+
 ### 151	Reverse Words in a String	 	Medium	
+read words into a vector and then reverse the vector
+simple
+```cpp
+    void reverseWords(string &s) {
+        if(s.empty()) return;
+        istringstream ss(s);
+        string str;
+        vector<string> vs;
+        while(ss>>str) {vs.push_back(str);str.clear();}
+        if(vs.size())
+        {
+			reverse(vs.begin(),vs.end());
+			//s=accumulate(vs.begin(),vs.end(),string());
+			s.clear();
+			for(int i=0;i<vs.size()-1;i++) s+=vs[i]+" ";
+			s+=vs[vs.size()-1];
+        }
+        else s.clear();
+    }
+```	
 ### 8 String to Integer (atoi)	 	Medium	
 using stringstream is trivial.
+
+## hard
+### 761	Special Binary String	 	Hard	
+Special binary strings are binary strings with the following two properties:
+
+The number of 0's is equal to the number of 1's.
+Every prefix of the binary string has at least as many 1's as 0's. (>=)
+Given a special string S, a move consists of choosing two consecutive, non-empty, special substrings of S, and swapping them. (Two strings are consecutive if the last character of the first string is exactly one index before the first character of the second string.)
+
+At the end of any number of moves, what is the lexicographically largest resulting string possible?
+
+Example 1:
+Input: S = "11011000"
+Output: "11100100"
+Explanation:
+The strings "10" [occuring at S[1]] and "1100" [at S[3]] are swapped.
+This is the lexicographically largest string possible after some number of swaps.
+
+Just 4 steps:
+
+Split S into several special strings (as many as possible).
+Special string starts with 1 and ends with 0. Recursion on the middle part.
+Sort all special strings in lexicographically largest order.
+Join and output all strings.
+
+```cpp
+string makeLargestSpecial(string S) {
+    int count = 0, i = 0;
+    vector<string> res;
+    for (int j = 0; j < S.size(); ++j) {
+      if (S[j] == '1') count++;
+      else count--;
+      if (count == 0) {
+        res.push_back('1' + makeLargestSpecial(S.substr(i + 1, j - i - 1)) + '0');
+        i = j + 1;
+      }
+    }
+    sort(res.begin(), res.end(), greater<string>());
+    string res2 = "";
+    for (int i = 0; i < res.size(); ++i) res2 += res[i];
+    return res2;
+  }
+```
+
+### 527	Word Abbreviation  	Hard	
+locked
+
+### 632	Smallest Range	 	Hard	
+You have k lists of sorted integers in ascending order. Find the smallest range that includes at least one number from each of the k lists.
+
+We define the range [a,b] is smaller than range [c,d] if b-a < d-c or a < c if b-a == d-c.
+
+using pq for merge sort of k lists. the range is the max and min difference.
+we need to keep the min and max.
+```cpp
+	vector<int> smallestRange(vector<vector<int>>& nums) {
+		int n=nums.size();
+		vector<int> ind(n); //the index for each list
+		priority_queue<vector<int>,vector<vector<int>>,greater<vector<int>>> pq; //stores value and index i, j
+		int mn=INT_MAX,mx=INT_MIN; //the range
+		vector<int> ans;
+		int minrange=INT_MAX;
+        for(int i=0;i<n;i++)
+        {
+            pq.push({nums[i][ind[i]],i});
+            mx=max(mx,nums[i][ind[i]]);
+            mn=min(mn,nums[i][ind[i]]);
+        }
+        
+		while(1)
+		{
+            if(minrange>mx-mn)
+            {
+                minrange=mx-mn;
+                ans={mn,mx};
+            }
+            auto t=pq.top();
+            pq.pop();
+            ind[t[1]]++;
+            if(ind[t[1]]<nums[t[1]].size()) 
+            {
+                pq.push({nums[t[1]][ind[t[1]]],t[1]});
+                mn=pq.top()[0];
+                mx=max(mx,nums[t[1]][ind[t[1]]]);
+                //cout<<mn<<" "<<mx<<" "<<nums[t[1]][ind[t[1]]]<<endl;
+            }
+            else break; //used one list
+		}
+		return ans;
+	}
+```	
+
+### 899	Orderly Queue	 	Hard	
+A string S of lowercase letters is given.  Then, we may make any number of moves.
+
+In each move, we choose one of the first K letters (starting from the left), remove it, and place it at the end of the string.
+
+Return the lexicographically smallest string we could have after any number of moves.
+
+k=1, we can rotate the whole string, n states
+k>1: we can rotate the whole string (0), start from 1,.... start from k-1.
+bubble sort eventually is swapping pairs, So, you have a buffer of at least 2 when K>1
+you can put them back into the queue in different order: swap!
+So, K>1 equals bubble sort
+
+```cpp
+    string orderlyQueue(string S, int K) {
+        if (K>1){
+            sort(S.begin(),S.end());
+            return S;
+        }
+        string minS=S;
+        for (int i=0;i<S.size();++i){
+            S=S.substr(1)+S.substr(0,1);
+            minS=min(S,minS);
+        }
+        return minS;
+    }
+```
+	
+### 159	Longest Substring with At Most Two Distinct Characters  	Hard	
+locked
+### 770	Basic Calculator IV	 	Hard	
+### 736	Parse Lisp Expression	 	Hard
+You are given a string expression representing a Lisp-like expression to return the integer value of.
+
+The syntax for these expressions is given as follows.
+
+An expression is either an integer, a let-expression, an add-expression, a mult-expression, or an assigned variable. Expressions always evaluate to a single integer.
+(An integer could be positive or negative.)
+A let-expression takes the form (let v1 e1 v2 e2 ... vn en expr), where let is always the string "let", then there are 1 or more pairs of alternating variables and expressions, meaning that the first variable v1 is assigned the value of the expression e1, the second variable v2 is assigned the value of the expression e2, and so on sequentially; and then the value of this let-expression is the value of the expression expr.
+An add-expression takes the form (add e1 e2) where add is always the string "add", there are always two expressions e1, e2, and this expression evaluates to the addition of the evaluation of e1 and the evaluation of e2.
+A mult-expression takes the form (mult e1 e2) where mult is always the string "mult", there are always two expressions e1, e2, and this expression evaluates to the multiplication of the evaluation of e1 and the evaluation of e2.
+For the purposes of this question, we will use a smaller subset of variable names. A variable starts with a lowercase letter, then zero or more lowercase letters or digits. Additionally for your convenience, the names "add", "let", or "mult" are protected and will never be used as variable names.
+Finally, there is the concept of scope. When an expression of a variable name is evaluated, within the context of that evaluation, the innermost scope (in terms of parentheses) is checked first for the value of that variable, and then outer scopes are checked sequentially. It is guaranteed that every expression is legal. Please see the examples for more details on scope.
+Evaluation Examples:
+Input: (add 1 2)
+Output: 3
+
+Input: (mult 3 (add 2 3))
+Output: 15
+
+Input: (let x 2 (mult x 5))
+Output: 10
+
+Input: (let x 2 (mult x (let x 3 y 4 (add x y))))
+Output: 14
+Explanation: In the expression (add x y), when checking for the value of the variable x,
+we check from the innermost scope to the outermost in the context of the variable we are trying to evaluate.
+Since x = 3 is found first, the value of x is 3.
+
+Input: (let x 3 x 2 x)
+Output: 2
+Explanation: Assignment in let statements is processed sequentially.
+
+Input: (let x 1 y 2 x (add x y) (add x y))
+Output: 5
+Explanation: The first (add x y) evaluates as 3, and is assigned to x.
+The second (add x y) evaluates as 3+2 = 5.
+
+Input: (let x 2 (add (let x 3 (let x 4 x)) x))
+Output: 6
+Explanation: Even though (let x 4 x) has a deeper scope, it is outside the context
+of the final x in the add-expression.  That final x will equal 2.
+
+Input: (let a1 3 b2 (add a1 1) b2) 
+Output 4
+Explanation: Variable names can contain digits after the first character.
+
+```cpp
+    int evaluate(string expression) {
+        unordered_map<string,int> myMap;
+        return help(expression,myMap);
+    }
+    
+    int help(string expression,unordered_map<string,int> myMap) {
+        if ((expression[0] == '-') || (expression[0] >= '0' && expression[0] <= '9'))
+            return stoi(expression);
+        else if (expression[0] != '(')
+            return myMap[expression];
+        //to get rid of the first '(' and the last ')'
+        string s = expression.substr(1,expression.size()-2);
+        int start = 0;
+        string word = parse(s,start);
+        if (word == "let") {
+            while (true) {
+                string variable = parse(s,start);
+                //if there is no more expression, simply evaluate the variable
+                if (start > s.size())
+                    return help(variable,myMap);
+                string temp = parse(s,start);
+                myMap[variable] = help(temp,myMap);                    
+            }
+        }
+        else if (word == "add") 
+            return help(parse(s,start),myMap) + help(parse(s,start),myMap);
+        else if (word == "mult") 
+            return help(parse(s,start),myMap) * help(parse(s,start),myMap);
+    }
+    
+    //function to seperate each expression
+    string parse(string &s,int &start) {
+        int end = start+1, temp = start, count = 1;
+        if (s[start] == '(') {
+            while (count != 0) {
+                if (s[end] == '(')
+                    count++;
+                else if (s[end] == ')')
+                    count--;
+                end++;
+            }
+        }
+        else {
+            while (end < s.size() && s[end] != ' ')
+                end++;
+        }
+        start = end+1;
+        return s.substr(temp,end-temp);
+    }
+```	
+### 772	Basic Calculator III  	Hard	
+locked
+### 340	Longest Substring with At Most K Distinct Characters  	Hard	
+locked
+### 730	Count Different Palindromic Subsequences	 	Hard	
+Given a string S, find the number of different non-empty palindromic subsequences in S, and return that number modulo 10^9 + 7.
+
+A subsequence of a string S is obtained by deleting 0 or more characters from S.
+
+A sequence is palindromic if it is equal to the sequence reversed.
+
+Two sequences A_1, A_2, ... and B_1, B_2, ... are different if there is some i for which A_i != B_i.
+
+dp:
+
+
+### 72	Edit Distance	 	Hard	
+see dp
+
+### 936	Stamping The Sequence	 	Hard	
+You want to form a target string of lowercase letters.
+
+At the beginning, your sequence is target.length '?' marks.  You also have a stamp of lowercase letters.
+
+On each turn, you may place the stamp over the sequence, and replace every letter in the sequence with the corresponding letter from the stamp.  You can make up to 10 * target.length turns.
+
+For example, if the initial sequence is "?????", and your stamp is "abc",  then you may make "abc??", "?abc?", "??abc" in the first turn.  (Note that the stamp must be fully contained in the boundaries of the sequence in order to stamp.)
+
+If the sequence is possible to stamp, then return an array of the index of the left-most letter being stamped at each turn.  If the sequence is not possible to stamp, return an empty array.
+
+For example, if the sequence is "ababc", and the stamp is "abc", then we could return the answer [0, 2], corresponding to the moves "?????" -> "abc??" -> "ababc".
+
+Also, if the sequence is possible to stamp, it is guaranteed it is possible to stamp within 10 * target.length moves.  Any answers specifying more than this number of moves will not be accepted.
+
+```cpp
+    vector<int> movesToStamp(string stamp, string target) {
+        //reverse operation: matched then change it to ***
+        //until we change the target string into *****
+        //note we can only match one end if it is covered
+        int n=target.length();
+        string final(n,'*');
+        vector<int> ans;
+        while(target!=final)
+        {
+            int ind=match_change(target,stamp);
+            if(ind==-1) return vector<int>();
+            ans.push_back(ind);
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+    int match_change(string& target,string stamp)
+    {
+        //find the first matching and return
+        //at least has one non * char inside, * matches any char
+        bool matched=0;
+        for(int i=0;i<target.size();i++)
+        {
+            int cnt_match=0;
+            int j=0;
+            for(j=0;j<stamp.size();j++)
+            {
+                if(target[i+j]=='*') continue;
+                if(target[i+j]==stamp[j]) cnt_match++;
+                else break;
+            }
+            if(j==stamp.size()&& cnt_match) 
+            {
+                for(j=0;j<stamp.size();j++) target[i+j]='*';
+                return i;
+            }
+        }
+        return -1; //no matching
+    }
+```
+	
+### 115	Distinct Subsequences	 	Hard	
+dp
+
+### 591	Tag Validator	 	Hard	
+<TAG>Tag Content</TAG> tag is uppercase and length is from 1 to 9.
+tag content: can contain valid closed tags, cdata and any characters except unmatched <
+cdata format: <![CDATA[cdata content]]>
+```cpp    bool isValid(string code) {
+        int i = 0;
+        return validTag(code, i) && i == code.size();
+    }
+
+private:
+    bool validTag(string s, int& i) {
+        int j = i;
+        string tag = parseTagName(s, j);
+        if (tag.empty()) return false;
+        if (!validContent(s, j)) return false;
+        int k = j + tag.size() + 2; // expecting j = pos of "</" , k = pos of '>'
+        if (k >= s.size() || s.substr(j, k + 1 - j) != "</" + tag + ">") return false;
+        i = k + 1;
+        return true;
+    }
+
+    string parseTagName(string s, int& i) {
+        if (s[i] != '<') return "";
+        int j = s.find('>', i);
+        if (j == string::npos || j - 1 - i < 1 || 9 < j - 1 - i) return "";
+        string tag = s.substr(i + 1, j - 1 - i);
+        for (char ch : tag) {
+            if (ch < 'A' || 'Z' < ch) return "";
+        }
+        i = j + 1;
+        return tag;
+    }
+
+    bool validContent(string s, int& i) {
+        int j = i;
+        while (j < s.size()) {
+            if (!validText(s, j) && !validCData(s, j) && !validTag(s, j)) break;
+        }
+        i = j;
+        return true;
+    }
+
+    bool validText(string s, int& i) {
+        int j = i;
+        while (i < s.size() && s[i] != '<') { i++; }
+        return i != j;
+    }
+
+    bool validCData(string s, int& i) {
+        if (s.find("<![CDATA[", i) != i) return false;
+        int j = s.find("]]>", i);
+        if (j == string::npos) return false;
+        i = j + 3;
+        return true;
+    }
+```	
+### 87	Scramble String	 	Hard	
+tree or recursive:
+```cpp
+    bool isScramble(string s1, string s2) {
+        //always use recursively approach.
+        //the left and right branch shall have the same character map
+        int len=s1.size();
+        int len=s1.size();
+        if(len==0) return 1;
+        if(s1==s2) return 1;
+        //string are not the same, just sort them and compare
+        string ts1=s1,ts2=s2;
+        sort(ts1.begin(),ts1.end());
+        sort(ts2.begin(),ts2.end());
+        if(ts1!=ts2) return 0;
+        //since the string can be swapped or not swapped, we need check it left and right, left-left, 4 combination
+        //note we cannot start from 0, and this will cause an infinite loop!
+        for(int i=1;i<len;i++) //be careful of the index, starting position cannot exceed the length
+        {
+            if(isScramble(s1.substr(0,i),s2.substr(0,i)) && isScramble(s1.substr(i),s2.substr(i))) //left and right is not swapped
+                return 1;
+            if(isScramble(s1.substr(0,i),s2.substr(len-i)) && isScramble(s1.substr(i),s2.substr(0,len-i)))
+               return 1;
+        }
+        return 0;
+    }
+```
+dp
+```cpp
+    bool isScramble(string s1, string s2) {
+        int n = s1.size(), len, i, j, k;
+        if(0==n) return true;
+        if(1==n) return s1==s2;
+        bool dp[n+1][n][n];
+
+        for(i=0; i<n; ++i)
+            for(j=0; j<n; ++j)
+                dp[1][i][j] = s1[i] == s2[j];
+                
+        for(len=2; len <=n; ++len)
+            for(i=0; i<=n-len; ++i)
+                for(j=0; j<=n-len; ++j)
+                {
+                    dp[len][i][j] = 0;
+                    for(k=1; k<len && !dp[len][i][j]; ++k)
+                    {
+                        dp[len][i][j] = dp[len][i][j]||(dp[k][i][j] && dp[len-k][i+k][j+k]);
+                        dp[len][i][j] = dp[len][i][j]||(dp[k][i+len-k][j] && dp[len-k][i][j+k]);
+                    }
+                }
+        return dp[n][0][0];            
+
+    }
+```	
+### 336	Palindrome Pairs	 	Hard	
+Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
+brutal force is fine
+```cpp
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        //brutal force approach: 
+        vector<vector<int>> res;
+        vector<int> item(2);
+        for(int i=0;i<words.size();i++)
+        {
+            for(int j=0;j<words.size();j++)
+            {
+                if(i==j) continue;
+                if(is_palindrome(words[i],words[j]))
+                {
+                    item[0]=i;item[1]=j;
+                    res.push_back(item);
+                }
+            }
+        }
+        return res;
+    }
+    bool is_palindrome(const string& a, const string& b)
+    {
+        //concat a and b, however avoid make a string
+        int la=a.size(),lb=b.size();
+        int len=la+lb;
+        int mid=len/2;
+        for(int i=0;i<mid;i++)
+        {
+            //compare i and len-1-i
+            char c,d;
+            int j=len-1-i;
+            c=(i<la)?a[i]:b[i-la];
+            d=(j<la)?a[j]:b[j-la];
+            if(c!=d) return 0;
+        }
+        return 1;
+    }
+```
+	
+### 76	Minimum Window Substring	 	Hard	
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+For most substring problem, we are given a string and need to find a substring of it which satisfy some restrictions. A general way is to use a hashmap assisted with two pointers.
+
+first create the hashmap of the string T
+use two pointer for s: eveytime we found a char in both, we decrease the counter
+until we found no char left, we try to shrink the window. 
+
+this is a pretty solution. 
+```cpp
+string minWindow(string s, string t) {
+	unordered_map<char, int> mp;	// Statistic for count of char in t
+	for (auto c : t) mp[c]++;
+	// counter represents the number of chars of t to be found in s.
+	int start = 0, end = 0, minStart = 0, minLen = INT_MAX;
+	int slen = s.size(),tlen = t.size();
+		
+	while (end<slen) // Move end to find a valid window.
+    {
+		if (mp[s[end]]) tlen--;// If char in s exists in t, decrease counter
+		mp[s[end]]--;// Decrease m[s[end]]. If char does not exist in t, m[s[end]] will be negative.
+		end++;
+		
+		while (tlen == 0) // When we found a valid window, move start to find smaller window.
+        {
+			if(end-start<minLen) 
+            {
+				minStart=start;
+				minLen=end-start;
+			}
+			mp[s[start]]++;
+			
+			if (mp[s[start]]) tlen++;// When char exists in t, increase counter.
+			start++;
+		}
+	}
+	if (minLen != INT_MAX)return s.substr(minStart, minLen);
+	return "";
+}
+```	
+### 97	Interleaving String	 	Hard	
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
+if put s1 in the row and s2 in the column, s3 is the path in the matrix (only right and down is allowed) from top left to bottom right
+dp:
+```cpp
+    bool isInterleave(string s1, string s2, string s3) {
+        int n1=s1.size(),n2=s2.size();
+        if(s3.length() != n1+n2) return 0;
+        if(n1==0) return s3==s2;
+        if(n2==0) return s3==s1;
+        vector<vector<bool>> dp(n1+1,vector<bool>(n2+1));
+        dp[0][0]=1; //empty vs empty
+        //boundary condition
+        for(int i=1;i<n1+1;i++) dp[i][0]=dp[i-1][0] && (s1[i-1]==s3[i-1]); //j=0, s1 compare with s3
+        for(int j=1;j<n2+1;j++) dp[0][j]=dp[0][j-1] && (s2[j-1]==s3[j-1]); //i=0: s2 compare with s3
+        for(int i=1; i<n1+1; i++)
+        {
+            for(int j=1; j< n2+1; j++)
+            {
+                dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1] ) || (dp[i][j-1] && s2[j-1] == s3[i+j-1] );
+            }
+        }   
+        return dp[n1][n2];
+    }
+```	
+
+### 214	Shortest Palindrome	 	Hard	
+Given a string s, you are allowed to convert it to a palindrome by adding characters in front of it. Find and return the shortest palindrome you can find by performing this transformation.
+
+KMP
+```cpp
+    string shortestPalindrome(string s) {
+        //using KMP method to find the largest prefix!
+        string sr(s.rbegin(),s.rend());
+        int len=sr.size();
+        s+='$'+sr;
+        vector<int> sfun=computePrefixFunction(s);
+        //the longest common prefix is the last one
+        //append the remaining in the reverse string
+        int largest_prefix=sfun.back();
+        return sr.substr(0,len-largest_prefix)+s.substr(0,len);
+    }
+    vector<int> computePrefixFunction(const string& p)
+    {
+        int len=p.size();
+        vector<int> s(len,0);
+        int border=0;
+        for(int i=1;i<len;i++)
+        {
+            while(border && p[i]!=p[border]) border=s[border-1];
+            if(p[i]==p[border]) border++;
+            else border=0;
+            s[i]=border;
+        }
+        return s;
+    }
+```
+assume we add xxx to make it palindrome
+xyz__________
+then the original string must be like this ______zyx and the inner side must be a pal string
+it is equivalent to find the longest prefix palindrome string
+
+The idea is to use two anchors j and i to compare the String from beginning and end.
+If j can reach the end, the String itself is Palindrome. 
+Otherwise, we divide the String by j, and get mid = s.substring(0, j) and suffix.
+
+We reverse suffix as beginning of result and recursively call shortestPalindrome to get result of mid 
+then append suffix to get result.
+```cpp
+    string shortestPalindrome(string s) {
+        //find the longest palindrome in s and then use it as the base to add
+        //the longest must start with the first char
+        int n=s.size();
+        int j = 0;
+        for (int i = s.length() - 1; i >= 0; i--) 
+        {
+            if (s[i] == s[j]) { j += 1; }
+        }
+        if (j == s.length()) { return s; }
+        string suffix=s.substr(j);
+        string rss=suffix;
+        reverse(rss.begin(),rss.end());
+        return rss+shortestPalindrome(s.substr(0,j))+suffix;
+    }
+
+```
+this two pointer scheme	is pretty interesting. it switches the i and j positions
+	
+
+### 158	Read N Characters Given Read4 II - Call multiple times  	Hard	
+locked
+### 32	Longest Valid Parentheses	 	Hard	
+Given a string containing just the characters '(' and ')', 
+find the length of the longest valid (well-formed) parentheses substring.
+
+### 10	Regular Expression Matching	 	Hard	
+see dp
+### 273	Integer to English Words	 	Hard	
+### 30	Substring with Concatenation of All Words	 	Hard	
+### 68	Text Justification	 	Hard	
+### 44	Wildcard Matching	 	Hard	
+see dp
+### 564	Find the Closest Palindrome	 	Hard	
+### 126	Word Ladder II	 	Hard	
+### 65	Valid Number	 	Hard
+use stringstream
+```cpp
+    bool isNumber(string s) {
+        string whitespace=" \t";
+        int ind=s.find_last_not_of(whitespace);
+        s=s.substr(0,ind+1);
+        stringstream ss(s);
+        double a;
+        //we need remove trailing space since it is not good for processing
+ 
+        ss>>a;
+        
+        if(ss.fail()) return 0;
+        if(ss.eof()) return 1;
+        return 0;
+    }
+```	
+
+
 
 ### 890. Find and Replace Pattern
 permuation of pattern and match
