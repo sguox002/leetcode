@@ -530,3 +530,877 @@ this is a typical problem
         return accumulate(primes.begin(),primes.end(),0);
     }
 ```	
+
+## medium
+### 535	Encode and Decode TinyURL		Medium	
+```cpp
+    string dict = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int id = 0;
+    unordered_map m;  //key is longURL, value is shortURL
+    unordered_map idm;  //key is id in DB, value is longURL
+    // Encodes a URL to a shortened URL.
+    string encode(string longUrl) {
+        if(m.find(longUrl) != m.end())return m[longUrl];
+        string res = "";
+        id++;
+        int count = id;
+        while(count > 0)
+        {
+            res = dict[count%62] + res;
+            count /= 62;
+        }
+        while(res.size() < 6)
+        {
+            res = "0" + res;
+        }
+        m[longUrl] = res;
+        idm[id] = longUrl;
+        return res;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    string decode(string shortUrl) {
+        int id = 0;
+        for(int i = 0; i < shortUrl.size(); i++)
+        {
+            id = 62*id + (int)(dict.find(shortUrl[i]));
+        }
+        if(idm.find(id) != idm.end())return idm[id];
+        return "";
+    }
+```
+
+### 739	Daily Temperatures		Medium	
+Given a list of daily temperatures T, return a list such that, for each day in the input, tells you how many days you would have to wait until a warmer temperature. If there is no future day for which this is possible, put 0 instead.
+
+For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73], your output should be [1, 1, 4, 2, 1, 1, 0, 0].
+stack problem
+```cpp
+    vector<int> dailyTemperatures(vector<int>& T) {
+		stack<int> st; //store the index
+		for(int i=0;i<T.size();i++)
+		{
+			while(st.size() && T[i]>T[st.top()])
+			{
+				int ind=st.top();
+				st.pop();
+				T[ind]=i-ind;
+			}
+			st.push(i);
+		}
+		while(st.size()) T[st.top()]=0,st.pop();
+		return T;
+    }
+```	
+### 94	Binary Tree Inorder Traversal		Medium	
+see tree
+
+### 311	Sparse Matrix Multiplication 	Medium	
+locked
+### 451	Sort Characters By Frequency		Medium	
+trivial, sort the map pairs with second.
+or no sorting put into buckets. upper bound is the string length
+
+### 609	Find Duplicate File in System		Medium	
+see string, use content as key in hashmap
+
+### 347	Top K Frequent Elements		Medium	
+hashmap and then put into priority_queue
+
+### 508	Most Frequent Subtree Sum		Medium	
+see  tree
+### 648	Replace Words		Medium	
+all words has the prefix is replaced with prefix
+use trie
+```cpp
+struct Node
+{
+    Node* next[26]; //use pointer is much convenient than using array!
+    bool is_leaf;
+    Node(bool b=0) {fill(next,next+26,(Node*)0);is_leaf=b;}
+};
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Node* root;
+    Trie() {
+        root=new Node();
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)        
+        {
+            int ind=word[i]-'a';
+            if(p->is_leaf) break;
+            if(!p->next[ind]) p->next[ind]=new Node();
+            p=p->next[ind];
+            
+        }
+        p->is_leaf=1;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        Node* p=find(word);
+        return p && p->is_leaf; //has to end with a leaf node
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        Node* p=find(prefix);
+        return p; //does not have to end with a leaf node
+    }
+    
+    Node* find(string word)
+    {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)
+        {
+            int ind=word[i]-'a';
+            if(p->next[ind]==0) return 0;
+            p=p->next[ind];
+        }
+        return p;
+    }
+    Node* get_root() {return root;}
+};
+bool cmp(string& a,string &b) {return a.length()<b.length() || (a.length()==b.length() && a<b);}
+class Solution {
+public:
+    string replaceWords(vector<string>& dict, string sentence) {
+        Trie t;
+        //sort the dict
+        sort(dict.begin(),dict.end(),cmp);
+        for(int i=0;i<dict.size();i++) t.insert(dict[i]);
+        //split the sentence into vector strings
+        string newstr;
+        string word;
+        Node* root=t.get_root();
+        Node* p=root;
+        int len=sentence.size();
+        for(int i=0;i<len;)
+        {
+            char c=sentence[i];
+            //cout<<i<<" ";
+            if(c==' ') //a word is done
+            {
+                newstr+=word+' ';
+                p=root;
+                word.clear(); //reset
+            }
+            else
+            {
+                if(p->next[c-'a'])
+                {
+                    word+=c;
+                    p=p->next[c-'a'];
+                    //cout<<"n";
+                }
+                else //no match stop here
+                {
+                    if(p->is_leaf) //matched
+                    {
+                        //cout<<"m";
+                        newstr+=word;
+                        //need to jump to next word
+                        while(++i<len && sentence[i]!=' ');
+                    }
+                    else
+                    {
+                        word+=c;
+                        while(++i<len && sentence[i]!=' ') word+=sentence[i];
+                        newstr+=word;
+                        //cout<<'u';
+                    }
+                    newstr+=sentence[i];
+                    p=root;
+                    word.clear();
+                }
+            }
+            i++;
+            if(i==len) newstr+=word;
+                
+        }
+        return newstr;
+    }
+};
+```
+### 676	Implement Magic Dictionary		Medium	
+a list of dictionary words. Given a word and if we modify exactly one letter, it will match
+one approach: while we build the dictionary we replace each letter with $ and add into it. when check, we replace each letter with $, any string match then success
+or just remove that char.
+```cpp
+    unordered_map<string,set<string>> mydict;
+    MagicDictionary() {
+        
+    }
+    
+    /** Build a dictionary through a list of words */
+    void buildDict(vector<string> dict) {
+        for(int i=0;i<dict.size();i++) 
+        {
+            for(int j=0;j<dict[i].size();j++)
+            {
+                string s=dict[i];
+                s[j]='$';
+                mydict[s].insert(dict[i]);
+            }
+        }
+    }
+    
+    /** Returns if there is any word in the trie that equals to the given word after modifying exactly one character */
+    bool search(string word) {
+        //try replace the word 
+        for(int i=0;i<word.size();i++)
+        {
+            string s=word;
+            s[i]='$';
+            //if match one
+            if(mydict.count(s) && (!mydict[s].count(word) || (mydict[s].size()>1))) return 1;//need check other matches
+        }
+        return 0;
+    }
+```
+	
+### 781	Rabbits in Forest		Medium	
+In a forest, each rabbit has some color. Some subset of rabbits (possibly all of them) tell you how many other rabbits have the same color as them. Those answers are placed in an array.
+
+Return the minimum number of rabbits that could be in the forest.
+
+If x+1 rabbits have same color, then we get x+1 rabbits who all answer x.
+now n rabbits answer x.
+If n % (x + 1) == 0, we need n / (x + 1) groups of x + 1 rabbits. (different color group)
+If n % (x + 1) != 0, we need n / (x + 1) + 1 groups of x + 1 rabbits. 
+
+the number of groups is math.ceil(n / (x + 1)) and it equals to (n + x) / (x + 1) , which is more elegant.
+
+```cpp
+    int numRabbits(vector<int>& answers) {
+        unordered_map<int, int> c;
+        for (int i : answers) c[i]++;
+        int res = 0;
+        for (auto i : c) res += (i.second + i.first) / (i.first + 1) * (i.first + 1);
+        return res;
+    }
+```
+	
+### 694	Number of Distinct Islands 	Medium	
+locked
+
+### 981	Time Based Key-Value Store		Medium	
+Create a timebased key-value store class TimeMap, that supports two operations.
+
+1. set(string key, string value, int timestamp)
+
+Stores the key and value, along with the given timestamp.
+2. get(string key, int timestamp)
+
+Returns a value such that set(key, value, timestamp_prev) was called previously, with timestamp_prev <= timestamp.
+If there are multiple such values, it returns the one with the largest timestamp_prev.
+If there are no values, it returns the empty string ("").
+
+```cpp
+    unordered_map<string, map<int, string>> m;
+    void set(string key, string value, int timestamp) {
+      m[key].insert({ timestamp, value });
+    }
+    string get(string key, int timestamp) {
+      auto it = m[key].upper_bound(timestamp);
+      return it == m[key].begin() ? "" : prev(it)->second;
+    }    
+    TimeMap() {
+        
+    }
+```
+    
+### 454	4Sum II		Medium	
+4 lists of numbers choose one from each array a+b+c+d=target
+reduce 4 into 2
+```cpp
+    int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
+        //approach build a map of A+B
+        unordered_map<int,int> sumcount,sumcount2;
+        for(int i=0;i<A.size();i++)
+        {
+            for(int j=0;j<B.size();j++)
+                sumcount[A[i]+B[j]]++;
+        }
+        for(int i=0;i<C.size();i++)
+        {
+            for(int j=0;j<D.size();j++)
+                sumcount2[-C[i]-D[j]]++;
+        }
+
+        int res=0;
+        for(auto it=sumcount.begin();it!=sumcount.end();it++)
+        {
+            if(sumcount2.count(it->first))
+                res+=it->second*sumcount2[it->first];
+        }
+        return res;
+    }
+```
+	
+
+### 939	Minimum Area Rectangle		Medium	
+the rectangle parallels to the axis xy
+step 1: group points using x coordinate, y sorted
+step 2: iterate to see current x can form a rectangle with previous x (has a same y)
+step 3: get the y intersect
+step 4: compare the min rect area.
+
+```cpp
+    int minAreaRect(vector<vector<int>>& points) {
+        //sort(points.begin(),points.end(),comp);
+        map<int,set<int>> mp;
+        for(int i=0;i<points.size();i++) mp[points[i][0]].insert(points[i][1]);
+        auto it=mp.begin();
+        it++;
+        int minarea=INT_MAX;
+        for(;it!=mp.end();it++)
+        {
+            //check if it can form any rectangle with previous x
+            int x=it->first;
+            for(auto it1=mp.begin();it1!=it;it1++)
+            {
+                if(it1->second.size()<2) continue; //must have at least two y points
+                vector<int> intersect;
+                int x1=it1->first;
+                //set_intersection(mp[x].begin(),mp[x].end,mp[x1].begin(),mp[x1].end(),back_inserter(intersect));
+                for(auto it2=mp[x].begin();it2!=mp[x].end();it2++)
+                    if(mp[x1].count(*it2)) intersect.push_back(*it2);
+                if(intersect.size()<2) continue;
+                //choose the min delta from the set
+                sort(intersect.begin(),intersect.end());
+                int mindy=intersect[1]-intersect[0];
+                for(int i=2;i<intersect.size();i++) mindy=min(mindy,intersect[i]-intersect[i-1]);
+                minarea=min(minarea,(x-x1)*mindy);
+            }
+        }
+        return minarea==INT_MAX?0:minarea;
+    }
+```	
+### 249	Group Shifted Strings 	Medium	
+locked
+### 554	Brick Wall		Medium	
+There is a brick wall in front of you. The wall is rectangular and has several rows of bricks. The bricks have the same height but different width. You want to draw a vertical line from the top to the bottom and cross the least bricks.
+
+The brick wall is represented by a list of rows. Each row is a list of integers representing the width of each brick in this row from left to right.
+
+If your line go through the edge of a brick, then the brick is not considered as crossed. You need to find out how to draw the line to cross the least bricks and return the number of crossed bricks.
+
+this is a interval problem.
+we store all the junction position in hashmap. position vs occurance.
+we get the most common junctions
+note the last one does not count.
+
+```cpp
+    int leastBricks(vector<vector<int>>& wall) {
+        //we save all the junctions for each layer in map
+        unordered_map<int,int> mp;
+        int maxcomm=0;
+        for(int i=0;i<wall.size();i++)
+        {
+            for(int j=0;j<wall[i].size()-1;j++) //2 does not work
+            {
+                if(j) wall[i][j]+=wall[i][j-1];
+                mp[wall[i][j]]++;
+                maxcomm=max(maxcomm,mp[wall[i][j]]);
+            }
+        }
+        return wall.size()-maxcomm;
+    }
+```	
+### 244	Shortest Word Distance II 	Medium	
+locked
+### 49	Group Anagrams		Medium	
+sorted as the key
+
+### 718	Maximum Length of Repeated Subarray		Medium	
+similar to longest common substr
+dp
+```cpp
+    int findLength(vector<int>& A, vector<int>& B) {
+        //longest common substring
+        int m=A.size(),n=B.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1)); 
+        //dp[i, j] represents the longest common subarray between A[0..i-1] and B[0...j-1] 
+        //boundary: dp[0][0]=0, 0th row and 0th column all zero
+        int max0=0;
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(A[i-1]==B[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+                //else dp[i][j]=0;
+                max0=max(max0,dp[i][j]);
+            }
+        }
+        return max0;
+    }
+```	
+
+### 692	Top K Frequent Words		Medium	
+Given a non-empty list of words, return the k most frequent elements.
+
+Your answer should be sorted by frequency from highest to lowest. If two words have the same frequency, then the word with the lower alphabetical order comes first.
+can approached using trie, node add frequency
+hashmap with pq is more straightforward
+```cpp
+struct cmp
+{
+   bool operator()(const pair<string,int>&a, const pair<string,int>& b)  
+   {
+       return a.second<b.second ||(a.second==b.second && a.first>b.first);
+   }
+};
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        //calculate histogram of each words and sort these words
+        unordered_map<string,int> wmap;
+        for(int i=0;i<words.size();i++) wmap[words[i]]++;
+        priority_queue<pair<string,int>,vector<pair<string,int>>,cmp> pq(wmap.begin(),wmap.end());
+        vector<string> vs(k);
+        for(int i=0;i<k;i++) {vs[i]=pq.top().first;pq.pop();}
+        return vs;
+    }
+};
+```
+
+### 325	Maximum Size Subarray Sum Equals k 	Medium	
+
+	
+### 974	Subarray Sums Divisible by K		Medium	
+hashmap to record the remainder or not using hashmap
+```cpp
+    int subarraysDivByK(vector<int>& A, int K) {
+        A[0]=(A[0]%K+K)%K;
+        for(int i=1;i<A.size();i++) 
+        {
+            A[i]+=A[i-1];
+            A[i]=(A[i]%K+K)%K;
+        }
+        //copy(A.begin(),A.end(),ostream_iterator<int>(cout," "));
+        sort(A.begin(),A.end());
+        
+        int ans=0,cnt=0;
+        for(int i=0;i<A.size();i++)
+        {
+            if(A[i]==0) ans++;
+            if(i && A[i]==A[i-1]) cnt++,ans+=cnt;
+            else cnt=0;
+        }
+        return ans;
+    }
+```
+### 36	Valid Sudoku		Medium	
+each row, each colum, each 3x3 subbox, contains 1-9 exactly once
+check if not used, then use it.
+```cpp
+    bool isValidSudoku(vector<vector<char>>& board) {
+        int size=board.size();
+        //row, col, and 3x3 subgrid needs to be checked
+        vector<int> rcount(size,0);
+        vector<int> ccount(size,0);
+        vector<int> gridcount(size,0);
+        
+        for(int r=0;r<size;r++)
+        {
+            for(int c=0;c<size;c++)
+            {
+                char mc=board[r][c];
+                if(mc!='.')
+                {
+                    //9bits to record the number filled
+                    //first check if the number is already used
+                    int n=mc-'0';
+                    int gridnum=r/3*3+c/3; //
+                    if(get_bit(rcount[r],n) || get_bit(ccount[c],n) || get_bit(gridcount[gridnum],n))
+						return 0;
+                    set_bit(rcount[r],n);
+                    set_bit(ccount[c],n);
+                    set_bit(gridcount[gridnum],n);
+                }
+            }
+        }
+        return 1;
+    }
+    void set_bit(int& mask,int n)
+    {
+        mask |= 1<<n;
+    }
+    int get_bit(int mask,int n)
+    {
+        return mask & (1<<n);
+    }
+```	
+### 380	Insert Delete GetRandom O(1)		Medium	
+see design
+### 525	Contiguous Array		Medium	
+Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+approach: consider it as -1 1 series, accumulate sum would be the same if between range sum is 0
+store the sum vs the index.
+```cpp
+int findMaxLength(vector<int>& nums) {
+    //approach: convert to -1 1 series, if the sum is the same as before, it is the length, cumsum!
+    map<int, int> myMap;
+    map<int, int>::iterator it;
+    int sum = 0;
+    int maxLen = 0;
+    myMap[0] = -1;
+    for (int i = 0; i < nums.size(); i++)
+    {
+        sum += (nums[i] == 0) ? -1 : 1;
+        it = myMap.find(sum); 
+        if (it != myMap.end())
+            maxLen = max(maxLen, i - it->second);
+        else
+            myMap[sum] = i;
+    }
+    return maxLen;
+}
+```
+
+### 560	Subarray Sum Equals K		Medium	
+Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
+```cpp
+    int subarraySum(vector<int>& nums, int k) {
+        int cum=0; // cumulated sum
+        map<int,int> rec; // prefix sum recorder
+        int cnt = 0; // number of found subarray
+        rec[0]++; // to take into account those subarrays that begin with index 0
+        for(int i=0;i<nums.size();i++){
+            cum += nums[i];
+            cnt += rec[cum-k];
+            rec[cum]++;
+        }
+        return cnt;
+    }
+```	
+### 966	Vowel Spellchecker		Medium	
+see string
+
+### 314	Binary Tree Vertical Order Traversal 	Medium	
+see tree
+
+### 299	Bulls and Cows		Medium	
+You are playing the following Bulls and Cows game with your friend: You write down a number and ask your friend to guess what the number is. Each time your friend makes a guess, you provide a hint that indicates how many digits in said guess match your secret number exactly in both digit and position (called "bulls") and how many digits match the secret number but locate in the wrong position (called "cows"). Your friend will use successive guesses and hints to eventually derive the secret number.
+
+Write a function to return a hint according to the secret number and friend's guess, use A to indicate the bulls and B to indicate the cows. 
+
+Please note that both secret number and friend's guess may contain duplicate digits.
+
+note matched shall be subtracted.
+
+```cpp
+    string getHint(string secret, string guess) {
+        //strategy: 
+        //all numbers 0-9
+        //count each number occurance in secret
+        //if the number matches position and number, ++, corresponding occurance -- (cannot count twice)
+        //calculate the number matches cases
+        int count[10]={0};
+        int count_a=0,count_b=0;
+        for(int i=0;i<secret.size();i++) count[secret[i]-'0']++;
+        //one interesting case 1122, 1222, the second one will increase count_b, but it is incorrect!!!
+        for(int i=0;i<guess.size();i++)
+        {
+            if(secret[i]==guess[i]) 
+			{
+				count_a++;
+				count[secret[i]-'0']--;
+				if(count[secret[i]-'0']<0) count_b--;
+			} //match number and position
+            else if(count[guess[i]-'0']>0) 
+			{
+				count_b++;
+				count[guess[i]-'0']--;
+			} //only has the number, but position incorrect
+        }
+        return to_string(count_a)+"A"+to_string(count_b)+"B";
+    }
+```	
+### 957	Prison Cells After N Days		Medium	
+There are 8 prison cells in a row, and each cell is either occupied or vacant.
+
+Each day, whether the cell is occupied or vacant changes according to the following rules:
+
+If a cell has two adjacent neighbors that are both occupied or both vacant, then the cell becomes occupied.
+Otherwise, it becomes vacant.
+(Note that because the prison is a row, the first and the last cells in the row can't have two adjacent neighbors.)
+
+We describe the current state of the prison in the following way: cells[i] == 1 if the i-th cell is occupied, else cells[i] == 0.
+
+Given the initial state of the prison, return the state of the prison after N days (and N such changes described above.)
+
+cycle detection using hashmap
+```cpp
+    vector<int> prisonAfterNDays(vector<int>& cells, int N) {
+        //neigboring 0,0=>1 1,1=>0, otherwise =>0
+        int n=cells.size();
+        unordered_map<int,int> status;
+        vector<int> curr(n);
+        int period;
+        for(int i=1;i<=N;)
+        {
+            int res=0;
+            for(int j=1;j<n-1;j++)
+            {
+                int t=cells[j-1]+cells[j+1];
+                curr[j]=t==1?0:1;
+                res+=(curr[j]<<j);
+            }
+            if(status.count(res)) //we have a repeat pattern
+            {
+                period=i-status[res];
+                int nskip=(N-i)/period*period;
+                i+=nskip;
+                i++;
+            }
+            else {status[res]=i;i++;}
+            cells=curr;
+        }
+        return cells;
+    }
+```
+	
+### 930	Binary Subarrays With Sum		Medium	
+In an array A of 0s and 1s, how many non-empty subarrays have sum S?
+a window covering S 1s and calculate the front and after range to move (all 0 which can move freely)
+
+```cpp
+    int numSubarraysWithSum(vector<int>& A, int S) {
+        //first need moving the window to contain S number of 1s
+        vector<int> ones;
+        ones.push_back(-1);
+        for(int i=0;i<A.size();i++) if(A[i]) ones.push_back(i);
+        ones.push_back(A.size());
+        //if(ones.size()==2 && S==0)  return A.size()*(A.size()+1)/2;
+        int ans=0;
+        //does not work with all zeros
+        for(int i=1;i<ones.size()-S;i++)
+        {
+            int front=0,after=0;
+            front=ones[i]-ones[i-1];
+            after=ones[i+S]-ones[i+S-1];
+            //cout<<front<<" "<<after<<endl;
+            if(S) ans+=front*after;
+            else ans+=(front-1)*front/2;
+        }
+        return ans;
+    }
+```	
+### 187	Repeated DNA Sequences		Medium	
+All DNA is composed of a series of nucleotides abbreviated as A, C, G, and T, for example: "ACGAATTCCG". When studying DNA, it is sometimes useful to identify repeated sequences within the DNA.
+
+Write a function to find all the 10-letter-long sequences (substrings) that occur more than once in a DNA molecule.
+
+this uses direct hash for string.
+10 chars may be able to hold in a integer
+sliding window hash calculation
+
+```cpp
+    vector<string> findRepeatedDnaSequences(string s) {
+        //approach: the 10 char string as key cost too much memory, need some manipulation
+        //if it used as a 0 1 2 3, the maximum would be 10 digits, which needs unsigned int
+        //linear scan
+        //actually no counter is needed, so map is not needed
+        vector<string> res;
+        if(s.size()<11) return res;
+        unordered_map<unsigned int,int> mp; 
+        unsigned int num0=str2num(s);
+        mp[num0]++;
+        //mp.insert(num0);
+        
+        const unsigned int myconst=1000000000;
+        for(int i=1;i<s.size()-9;i++)
+        {
+            char c=s[i+9];
+            int digit=0;
+            switch(c)
+            {
+                case 'C':digit=1;break;
+                case 'G':digit=2;break;
+                case 'T':digit=3;break;
+            }
+            num0=(num0%myconst)*10+digit;
+            if(!mp.count(num0)) mp[num0]++;//mp.insert(num0);
+            else
+            {   
+                mp[num0]++;
+                if(mp[num0]==2)
+                res.push_back(s.substr(i,10)); //cannot output same string multiple times
+                
+            }
+        }
+        return res;
+        
+    }
+    unsigned int str2num(const string& s)
+    {
+        //10 chars only
+        unsigned int res=0;
+        for(int i=0;i<10;i++)
+        {
+            char c=s[i];
+            int a=0;
+            switch(c)
+            {
+                case 'A': a=0;break;
+                case 'C': a=1;break;
+                case 'G': a=2;break;
+                case 'T': a=3;break;
+            }
+            res=res*10+a;
+        }
+        return res;
+    }
+```
+	
+
+### 274	H-Index		Medium	
+### 954	Array of Doubled Pairs		Medium	
+negative and positive shall be separated to treat, otherwise will cause problem
+```cpp
+    bool canReorderDoubled(vector<int>& A) {
+        multiset<int> pos,neg;
+        for(int i=0;i<A.size();i++)
+        {
+            if(A[i]>=0) pos.insert(A[i]);
+            else neg.insert(-A[i]);
+        }
+        if(pos.size()%2 || neg.size()%2) return 0;
+        return checkpairs(pos) && checkpairs(neg);
+     }
+    bool checkpairs(multiset<int> ms)
+    {
+        auto it=ms.begin();
+        while(ms.size())
+        {
+            it=ms.begin();
+            auto it1=ms.upper_bound((*it)*2);
+            --it1;
+            if(it1!=ms.begin() && *it1==*it*2)
+            {
+                ms.erase(it1);
+                ms.erase(ms.begin());
+            }
+            else return 0;
+            
+        }
+        return 1;        
+    }
+```
+	
+### 987	Vertical Order Traversal of a Binary Tree		Medium	
+see tree
+### 356	Line Reflection 	Medium	
+locked
+### 18	4Sum		Medium	
+two pointer or array
+O(N^3)
+```cpp
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> total;
+        int n = nums.size();
+        if(n<4)  return total;
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<n-3;i++)
+        {
+            if(i>0&&nums[i]==nums[i-1]) continue;
+            if(nums[i]+nums[i+1]+nums[i+2]+nums[i+3]>target) break;
+            if(nums[i]+nums[n-3]+nums[n-2]+nums[n-1]<target) continue;
+            for(int j=i+1;j<n-2;j++)
+            {
+                if(j>i+1&&nums[j]==nums[j-1]) continue;
+                if(nums[i]+nums[j]+nums[j+1]+nums[j+2]>target) break;
+                if(nums[i]+nums[j]+nums[n-2]+nums[n-1]<target) continue;
+                int left=j+1,right=n-1;
+                while(left<right){
+                    int sum=nums[left]+nums[right]+nums[i]+nums[j];
+                    if(sum<target) left++;
+                    else if(sum>target) right--;
+                    else{
+                        total.push_back(vector<int>{nums[i],nums[j],nums[left],nums[right]});
+                        do{left++;}while(nums[left]==nums[left-1]&&left<right);
+                        do{right--;}while(nums[right]==nums[right+1]&&left<right);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+```
+	
+### 3	Longest Substring Without Repeating Characters		Medium	
+Given a string, find the length of the longest substring without repeating characters.
+this is a highly rated question.
+```cpp
+int lengthOfLongestSubstring(string s) {
+        vector<int> dict(256, -1); //char vs the index
+        int maxLen = 0, start = -1;
+        for (int i = 0; i != s.length(); i++) {
+            if (dict[s[i]] > start) //dict returns >=0 so it supports the first and check if contains
+                start = dict[s[i]];
+            dict[s[i]] = i;
+            maxLen = max(maxLen, i - start);
+        }
+        return maxLen;
+    }
+```
+
+### 355	Design Twitter		Medium	
+see design
+
+### 138	Copy List with Random Pointer		Medium	
+similar to clone graph id to node and node to id
+```cpp
+    Node* copyRandomList(Node* head) {
+        //hashmap to save the node 
+        unordered_map<Node*,int> nodeid;
+        unordered_map<int,Node*> idnode;
+        Node* p=head;
+        int id=0;
+        while(p)
+        {
+            nodeid[p]=id++;
+            p=p->next;
+        }
+        p=head;
+        Node* newhead=0,*pnode=0;
+        id=0;
+        while(p)
+        {
+            Node* tmp=new Node(p->val,NULL,NULL);
+            if(!newhead) pnode=newhead=tmp;
+            else {pnode->next=tmp;pnode=pnode->next;}
+            idnode[id++]=tmp;
+            p=p->next;
+            //pnode=pnode->next;
+        }
+        //cout<<"OK"<<endl;
+        p=head,pnode=newhead;
+        while(p)
+        {
+            int id;
+            if(p->random==0) pnode->random=0;
+            else
+            {
+                id=nodeid[p->random];
+                pnode->random=idnode[id];
+            }
+            p=p->next,pnode=pnode->next;
+        }
+        return newhead;
+    }
+```
+	
+
+### 288	Unique Word Abbreviation 	Medium	
+locked
+
+### 166	Fraction to Recurring Decimal		Medium	
+see math
