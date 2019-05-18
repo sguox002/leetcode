@@ -414,3 +414,83 @@ public:
 };
 ```
 
+### 692	Top K Frequent Words		Medium	
+Given a non-empty list of words, return the k most frequent elements.
+
+Your answer should be sorted by frequency from highest to lowest. If two words have the same frequency, then the word with the lower alphabetical order comes first.
+can approached using trie, node add frequency
+```cpp
+struct Node
+{
+    Node* next[26]; //use pointer is much convenient than using array!
+    bool is_leaf;
+    int freq;
+    Node(bool b=0) {fill(next,next+26,(Node*)0);is_leaf=b;freq=0;}
+};
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Node* root;
+    Trie() {
+        root=new Node();
+    }
+    
+    /** Inserts a word into the trie. */
+    Node* insert(string word) {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)        
+        {
+            int ind=word[i]-'a';
+            if(!p->next[ind]) p->next[ind]=new Node();
+            p=p->next[ind];
+        }
+        p->is_leaf=1;
+        p->freq++;
+        return p;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        Node* p=find(word);
+        return p && p->is_leaf; //has to end with a leaf node
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        Node* p=find(prefix);
+        return p; //does not have to end with a leaf node
+    }
+    
+    Node* find(string word)
+    {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)
+        {
+            int ind=word[i]-'a';
+            if(p->next[ind]==0) return 0;
+            p=p->next[ind];
+        }
+        return p;
+    }
+};
+
+struct cmp{
+    bool operator()(const pair<string,int>& a,const pair<string,int>& b)
+    {return a.second<b.second ||(a.second==b.second && a.first>b.first);}
+};
+    
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        //although hash table can easily do this, we may try trie
+        Trie t;
+        Node* p;
+        unordered_map<string,int> mp;
+        for(int i=0;i<words.size();i++) {p=t.insert(words[i]);mp[words[i]]=p->freq;}
+        priority_queue<pair<string,int>,vector<pair<string,int>>,cmp> pq(mp.begin(),mp.end());
+        vector<string> ans(k);
+        for(int i=0;i<k;i++) {ans[i]=pq.top().first;pq.pop();}
+        return ans;
+    }
+};
+```
