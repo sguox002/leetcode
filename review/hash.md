@@ -2,111 +2,111 @@
 
 ## contents
 
-771	Jewels and Stones		Easy	
-760	Find Anagram Mappings 	Easy	
-961	N-Repeated Element in Size 2N Array		Easy	
-1002 Find Common Characters		Easy	
-811	Subdomain Visit Count		Easy	
-359	Logger Rate Limiter 	Easy	
-500	Keyboard Row		Easy	
-463	Island Perimeter		Easy	
-884	Uncommon Words from Two Sentences		Easy	
-266	Palindrome Permutation 	Easy	
-136	Single Number		Easy	
-575	Distribute Candies		Easy	
-706	Design HashMap		Easy	
-953	Verifying an Alien Dictionary		Easy	
-349	Intersection of Two Arrays		Easy	
-690	Employee Importance		Easy	
-748	Shortest Completing Word		Easy	
-705	Design HashSet		Easy	
-389	Find the Difference		Easy	
-242	Valid Anagram		Easy	
-217	Contains Duplicate		Easy	
-387	First Unique Character in a String		Easy	
-447	Number of Boomerangs		Easy	
-409	Longest Palindrome		Easy	
-599	Minimum Index Sum of Two Lists		Easy	
-350	Intersection of Two Arrays II		Easy	
-202	Happy Number		Easy	
-720	Longest Word in Dictionary		Easy	
-1	Two Sum		Easy	
-594	Longest Harmonious Subsequence		Easy	
-246	Strobogrammatic Number 	Easy	
-645	Set Mismatch		Easy	
-734	Sentence Similarity 	Easy	
-970	Powerful Integers		Easy	
-438	Find All Anagrams in a String		Easy	
-205	Isomorphic Strings		Easy	
-624	Maximum Distance in Arrays 	Easy	
-219	Contains Duplicate II		Easy	
-290	Word Pattern		Easy	
-170	Two Sum III - Data structure design 	Easy	
-204	Count Primes		Easy	
+### 771	Jewels and Stones		Easy	
+### 760	Find Anagram Mappings 	Easy	
+### 961	N-Repeated Element in Size 2N Array		Easy	
+### 1002 Find Common Characters		Easy	
+### 811	Subdomain Visit Count		Easy	
+### 359	Logger Rate Limiter 	Easy	
+### 500	Keyboard Row		Easy	
+### 463	Island Perimeter		Easy	
+### 884	Uncommon Words from Two Sentences		Easy	
+### 266	Palindrome Permutation 	Easy	
+### 136	Single Number		Easy	
+### 575	Distribute Candies		Easy	
+### 706	Design HashMap		Easy	
+### 953	Verifying an Alien Dictionary		Easy	
+### 349	Intersection of Two Arrays		Easy	
+### 690	Employee Importance		Easy	
+### 748	Shortest Completing Word		Easy	
+### 705	Design HashSet		Easy	
+### 389	Find the Difference		Easy	
+### 242	Valid Anagram		Easy	
+### 217	Contains Duplicate		Easy	
+### 387	First Unique Character in a String		Easy	
+### 447	Number of Boomerangs		Easy	
+### 409	Longest Palindrome		Easy	
+### 599	Minimum Index Sum of Two Lists		Easy	
+### 350	Intersection of Two Arrays II		Easy	
+### 202	Happy Number		Easy	
+### 720	Longest Word in Dictionary		Easy	
+### 1	Two Sum		Easy	
+### 594	Longest Harmonious Subsequence		Easy	
+### 246	Strobogrammatic Number 	Easy	
+### 645	Set Mismatch		Easy	
+### 734	Sentence Similarity 	Easy	
+### 970	Powerful Integers		Easy	
+### 438	Find All Anagrams in a String		Easy	
+### 205	Isomorphic Strings		Easy	
+### 624	Maximum Distance in Arrays 	Easy	
+### 219	Contains Duplicate II		Easy	
+### 290	Word Pattern		Easy	
+### 170	Two Sum III - Data structure design 	Easy	
+### 204	Count Primes		Easy	
 
-535	Encode and Decode TinyURL		Medium	
-739	Daily Temperatures		Medium	
-94	Binary Tree Inorder Traversal		Medium	
-311	Sparse Matrix Multiplication 	Medium	
-451	Sort Characters By Frequency		Medium	
-609	Find Duplicate File in System		Medium	
-347	Top K Frequent Elements		Medium	
-508	Most Frequent Subtree Sum		Medium	
-648	Replace Words		Medium	
-676	Implement Magic Dictionary		Medium	
-781	Rabbits in Forest		Medium	
-694	Number of Distinct Islands 	Medium	
-981	Time Based Key-Value Store		Medium	
-454	4Sum II		Medium	
-939	Minimum Area Rectangle		Medium	
-249	Group Shifted Strings 	Medium	
-554	Brick Wall		Medium	
-244	Shortest Word Distance II 	Medium	
-49	Group Anagrams		Medium	
-718	Maximum Length of Repeated Subarray		Medium	
-692	Top K Frequent Words		Medium	
-325	Maximum Size Subarray Sum Equals k 	Medium	
-974	Subarray Sums Divisible by K		Medium	
-36	Valid Sudoku		Medium	
-380	Insert Delete GetRandom O(1)		Medium	
-525	Contiguous Array		Medium	
-560	Subarray Sum Equals K		Medium	
-966	Vowel Spellchecker		Medium	
-314	Binary Tree Vertical Order Traversal 	Medium	
-299	Bulls and Cows		Medium	
-957	Prison Cells After N Days		Medium	
-930	Binary Subarrays With Sum		Medium	
-187	Repeated DNA Sequences		Medium	
-274	H-Index		Medium	
-954	Array of Doubled Pairs		Medium	
-987	Vertical Order Traversal of a Binary Tree		Medium	
-356	Line Reflection 	Medium	
-18	4Sum		Medium	
-3	Longest Substring Without Repeating Characters		Medium	
-355	Design Twitter		Medium	
-138	Copy List with Random Pointer		Medium	
-288	Unique Word Abbreviation 	Medium	
-166	Fraction to Recurring Decimal		Medium	
+### 535	Encode and Decode TinyURL		Medium	
+### 739	Daily Temperatures		Medium	
+### 94	Binary Tree Inorder Traversal		Medium	
+### 311	Sparse Matrix Multiplication 	Medium	
+### 451	Sort Characters By Frequency		Medium	
+### 609	Find Duplicate File in System		Medium	
+### 347	Top K Frequent Elements		Medium	
+### 508	Most Frequent Subtree Sum		Medium	
+### 648	Replace Words		Medium	
+### 676	Implement Magic Dictionary		Medium	
+### 781	Rabbits in Forest		Medium	
+### 694	Number of Distinct Islands 	Medium	
+### 981	Time Based Key-Value Store		Medium	
+### 454	4Sum II		Medium	
+### 939	Minimum Area Rectangle		Medium	
+### 249	Group Shifted Strings 	Medium	
+### 554	Brick Wall		Medium	
+### 244	Shortest Word Distance II 	Medium	
+### 49	Group Anagrams		Medium	
+### 718	Maximum Length of Repeated Subarray		Medium	
+### 692	Top K Frequent Words		Medium	
+### 325	Maximum Size Subarray Sum Equals k 	Medium	
+### 974	Subarray Sums Divisible by K		Medium	
+### 36	Valid Sudoku		Medium	
+### 380	Insert Delete GetRandom O(1)		Medium	
+### 525	Contiguous Array		Medium	
+### 560	Subarray Sum Equals K		Medium	
+### 966	Vowel Spellchecker		Medium	
+### 314	Binary Tree Vertical Order Traversal 	Medium	
+### 299	Bulls and Cows		Medium	
+### 957	Prison Cells After N Days		Medium	
+### 930	Binary Subarrays With Sum		Medium	
+### 187	Repeated DNA Sequences		Medium	
+### 274	H-Index		Medium	
+### 954	Array of Doubled Pairs		Medium	
+### 987	Vertical Order Traversal of a Binary Tree		Medium	
+### 356	Line Reflection 	Medium	
+### 18	4Sum		Medium	
+### 3	Longest Substring Without Repeating Characters		Medium	
+### 355	Design Twitter		Medium	
+### 138	Copy List with Random Pointer		Medium	
+### 288	Unique Word Abbreviation 	Medium	
+### 166	Fraction to Recurring Decimal		Medium	
 
-895	Maximum Frequency Stack		Hard	
-632	Smallest Range		Hard	
-159	Longest Substring with At Most Two Distinct Characters 	Hard	
-711	Number of Distinct Islands II 	Hard	
-770	Basic Calculator IV		Hard	
-992	Subarrays with K Different Integers		Hard	
-726	Number of Atoms		Hard	
-340	Longest Substring with At Most K Distinct Characters 	Hard	
-37	Sudoku Solver		Hard	
-1001	Grid Illumination		Hard	
-85	Maximal Rectangle		Hard	
-358	Rearrange String k Distance Apart 	Hard	
-381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	
-710	Random Pick with Blacklist		Hard	
-336	Palindrome Pairs		Hard	
-76	Minimum Window Substring		Hard	
-30	Substring with Concatenation of All Words		Hard	
-1044 Longest Duplicate Substring		Hard	
-149	Max Points on a Line		Hard	
+### 895	Maximum Frequency Stack		Hard	
+### 632	Smallest Range		Hard	
+### 159	Longest Substring with At Most Two Distinct Characters 	Hard	
+### 711	Number of Distinct Islands II 	Hard	
+### 770	Basic Calculator IV		Hard	
+### 992	Subarrays with K Different Integers		Hard	
+### 726	Number of Atoms		Hard	
+### 340	Longest Substring with At Most K Distinct Characters 	Hard	
+### 37	Sudoku Solver		Hard	
+### 1001	Grid Illumination		Hard	
+### 85	Maximal Rectangle		Hard	
+### 358	Rearrange String k Distance Apart 	Hard	
+### 381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	
+### 710	Random Pick with Blacklist		Hard	
+### 336	Palindrome Pairs		Hard	
+### 76	Minimum Window Substring		Hard	
+### 30	Substring with Concatenation of All Words		Hard	
+### 1044 Longest Duplicate Substring		Hard	
+### 149	Max Points on a Line		Hard	
 
 ## easy
 ### 771	Jewels and Stones		Easy	
@@ -437,7 +437,7 @@ then for each number we look for its neighboring
 locked
 
 ### 645	Set Mismatch		Easy	
-1 to n, one number converts to other number, so one is missing and one is duplicated.
+### 1 to n, one number converts to other number, so one is missing and one is duplicated.
 find the two numbers
 xor will find a^b
 we need another pass to find the duplicate or the missing. (using seen, change to negative)
@@ -792,10 +792,10 @@ locked
 ### 981	Time Based Key-Value Store		Medium	
 Create a timebased key-value store class TimeMap, that supports two operations.
 
-1. set(string key, string value, int timestamp)
+### 1. set(string key, string value, int timestamp)
 
 Stores the key and value, along with the given timestamp.
-2. get(string key, int timestamp)
+### 2. get(string key, int timestamp)
 
 Returns a value such that set(key, value, timestamp_prev) was called previously, with timestamp_prev <= timestamp.
 If there are multiple such values, it returns the one with the largest timestamp_prev.
@@ -816,7 +816,7 @@ If there are no values, it returns the empty string ("").
 ```
     
 ### 454	4Sum II		Medium	
-4 lists of numbers choose one from each array a+b+c+d=target
+### 4 lists of numbers choose one from each array a+b+c+d=target
 reduce 4 into 2
 ```cpp
     int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
@@ -1199,7 +1199,7 @@ All DNA is composed of a series of nucleotides abbreviated as A, C, G, and T, fo
 Write a function to find all the 10-letter-long sequences (substrings) that occur more than once in a DNA molecule.
 
 this uses direct hash for string.
-10 chars may be able to hold in a integer
+### 10 chars may be able to hold in a integer
 sliding window hash calculation
 
 ```cpp
@@ -1404,3 +1404,213 @@ locked
 
 ### 166	Fraction to Recurring Decimal		Medium	
 see math
+
+## hard
+
+### 895	Maximum Frequency Stack		Hard	
+see stack, a very interesting problem
+
+### 632	Smallest Range		Hard	
+merge sort process, see string
+
+### 159	Longest Substring with At Most Two Distinct Characters 	Hard	
+locked
+### 711	Number of Distinct Islands II 	Hard	
+locked
+### 770	Basic Calculator IV		Hard	
+
+### 992	Subarrays with K Different Integers		Hard	
+Given an array A of positive integers, call a (contiguous, not necessarily distinct) subarray of A good if the number of different integers in that subarray is exactly K.
+
+(For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3.)
+
+Return the number of good subarrays of A.
+
+approach:
+use three pointers, i for the left most, j for the mid, k for the right.
+we maintain a hashmap to record the counters in the window
+j to k is the smallest window containing k types of characters
+i to k is the largest window containing k types of characters
+when window contains more chars, we discard A[j] and move i and j to j+1
+we keep shrinking [j,k] to make sure j k is the narrowest range.
+
+```cpp
+    int subarraysWithKDistinct(vector<int>& A, int K) {
+        int ans=0;
+        int i=0,j=0,k=0;//use 3 pointers, i, j for the two left i<j
+        unordered_map<int,int> mp; //number vs the occurance
+        while(k<A.size())
+        {
+            mp[A[k]]++;
+            if(mp.size()>K) {i=j+1;mp.erase(A[j]);} //A[k] must be different from A[j] so remove A[j] will make it K again
+            if(j<i) j=i;
+            if(mp.size()==K) 
+            {
+                while(mp[A[j]]>1) //we make sure the narrowest range [j, k]. the leftmost only has one.
+				{
+					mp[A[j]]--;
+					if(mp[A[j]]==0) mp.erase(A[j]);
+					j++;
+				}
+                ans+=j-i+1;
+            }
+
+            k++;
+        }
+        return ans;
+    }
+```	
+for example [1,2,1,2,3] with k=2
+i=0,j=0,k=0, we had 1:1
+i=0,j=0,k=1, we had 1:1, 2:1, we found [1,2]
+i=0,j=0,k=2, we had 1:2, 2:1, so we move j to 1, i=0,j=1,k=2 we had [2,1] and [1,2,1]
+i=0,j=1,k=3, we had 1:1, 2:2, so we move j to 2, i=0,j=2,k=3, we had [1,2], [2,1,2],[1,2,1,2]
+....
+
+### 726	Number of Atoms		Hard	
+chemical formula, output the atoms and counts in sorted order (by the atom name)
+for example: "K4(ON(SO3)2)2"
+save K:4 in stack
+save O:1 N:1 in stack
+save S:1 O:3 in stack
+pop stack and *2
+pop stack and *2
+pop stack and *1
+
+using a stack and recursive could be the possible way.
+straightforward and easy to understand.
+```cpp
+    string countOfAtoms(string formula) {
+		stack<map<string,int>> st;
+		map<string,int> mp;
+		int i=0,n=formula.size();
+		while(i<n)
+		{
+			char c=formula[i++];
+			if(c=='(') //( starting a stack
+			{
+				st.push(mp);//save previous result in stack
+				mp.clear();
+			}
+			else if(c==')') //read the digits and perform multiply
+			{
+				int val=0;
+				while(i<n && isdigit(formula[i])) val=val*10+formula[i++]-'0';
+				if(!val) val=1;
+				if(!st.empty())
+				{
+					map<string,int> mp0=st.top(); //t is a map
+					st.pop();
+                    //merge the two maps
+					for(auto tt: mp) 
+                        mp0[tt.first]+=tt.second*val;
+                    mp=mp0;
+				}
+			}
+			else //letters
+			{
+                
+				int start=i-1;//since we perform i++ already
+				while(i<n && islower(formula[i])) i++;
+				string s=formula.substr(start,i-start);
+                int val=0;
+				while(i<n && isdigit(formula[i])) val=val*10+formula[i++]-'0';
+				if(!val) val=1;
+				mp[s]+=val;
+			}
+		}
+		string ans;
+		for(auto tt: mp)
+		{
+            ans+=tt.first;
+            if(tt.second>1) ans+=to_string(tt.second);
+		}
+		return ans;
+	}
+```	
+	
+approach: top down method
+step1: assuming we can solve the string from 0 and return a map of atom name vs its counter, then we know the answer.
+step2: solve the problem with formula starting at index i and return a map<string,int>.  and we merge the result with previous
+step3: 
+
+```cpp
+    string countOfAtoms(string formula) {
+        string output;
+        const int n = formula.size();
+        int i = 0;
+        map<string, int> counts = parseFormula(formula, i);
+        for (pair<string, int> p : counts) 
+        {
+            output += p.first;
+            if (p.second > 1) output += to_string(p.second);
+        }
+        return output;
+    }
+
+    //starting index use i as reference
+    map<string, int> parseFormula(string& s, int& i) 
+    {
+        map<string, int> counts;
+        const int n = s.size();
+        while (i < n && s[i] != ')') 
+        {
+            map<string, int> cnts = parseUnit(s, i);
+            merge(counts, cnts, 1);
+        }
+        return counts;
+    }
+
+    map<string, int> parseUnit(string& s, int& i) {
+        map<string, int> counts;
+        const int n = s.size();
+        if (s[i] == '(') 
+        {
+            map<string, int> cnts = parseFormula(s, ++i); // ++i for '('
+            int digits = parseDigits(s, ++i); // ++i for ')'
+            merge(counts, cnts, digits);
+        }
+        else 
+        {
+            int i0 = i++; // first letter
+            while (i < n && islower(s[i])) { i++; }
+            string atom = s.substr(i0, i - i0);
+            int digits = parseDigits(s, i);
+            counts[atom] += digits;
+        }
+        return counts;
+    }
+
+    int parseDigits(string& s, int& i) 
+    {
+        int i1 = i;
+        while (i < s.size() && isdigit(s[i])) { i++; }
+        int digits = i == i1 ? 1 : stoi(s.substr(i1, i - i1));
+        return digits;
+    }
+
+    void merge(map<string, int>& counts, map<string, int>& cnts, int times) 
+    {
+        for (pair<string, int> p : cnts) counts[p.first] += p.second * times;
+    }
+```	
+
+### 340	Longest Substring with At Most K Distinct Characters 	Hard	
+locked
+
+### 37	Sudoku Solver		Hard	
+each number has a row, col, and a grid. so first we need to exclude those impossibles
+first solve those only one solution and keeps updating.
+can use a 9 bit to indicate the status
+
+
+### 1001	Grid Illumination		Hard	
+### 85	Maximal Rectangle		Hard	
+### 358	Rearrange String k Distance Apart 	Hard	
+### 381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	
+### 710	Random Pick with Blacklist		Hard	
+### 336	Palindrome Pairs		Hard	
+### 76	Minimum Window Substring		Hard	
+### 30	Substring with Concatenation of All Words		Hard	
+### 1044 Longest Duplicate Substring		Hard	
+### 149	Max Points on a Line		Hard	
