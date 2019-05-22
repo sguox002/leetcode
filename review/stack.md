@@ -695,7 +695,7 @@ C++:
         return "lee215";
     }
 	
-895	Maximum Frequency Stack		Hard	
+### 895	Maximum Frequency Stack		Hard	
 Implement FreqStack, a class which simulates the operation of a stack-like data structure.
 
 FreqStack has two functions:
@@ -703,23 +703,44 @@ FreqStack has two functions:
 push(int x), which pushes an integer x onto the stack.
 pop(), which removes and returns the most frequent element in the stack.
 If there is a tie for most frequent element, the element closest to the top of the stack is removed and returned.
+for example
+the stack from bottom top is [5,7,5,7,4,5]
+pop(), return 5, since it is most frequent, stack [5,7,5,7,4]
+pop(), return 7, since 7 is most frequent and closer top top, [5,7,5,4]
+
 ```cpp
-    unordered_map<int, int> freq;
-    unordered_map<int, stack<int>> m;
+    unordered_map<int, int> freq; //number vs freq
+    unordered_map<int, stack<int>> m; //freq vs stack of elements
     int maxfreq = 0;
 public:
     void push(int x) {
-        maxfreq = max(maxfreq, ++freq[x]);
-        m[freq[x]].push(x);
+        maxfreq = max(maxfreq, ++freq[x]); //update maxfreq and freq[x]
+        m[freq[x]].push(x); //push to the stack with same freq
     }
 
     int pop() {
-        int x = m[maxfreq].top();
+        int x = m[maxfreq].top(); //pop the one with most freq
         m[maxfreq].pop();
-        if (!m[freq[x]--].size()) maxfreq--;
+        if (m[freq[x]].empty()) maxfreq--;
+        freq[x]--;
         return x;
     }
 ```
+for example: stack is [2,3,4,5,5,5]
+we have 2:1, 3:1, 4:1, 5:3 for the frequency
+we have freq vs stack
+1: 2,3,4,5
+2: 5
+3: 5
+pop(), we get 5, stack for freq 3 is emptied. maxfreq=2, freq[5]=2
+pop(), we get 5 from stack for freq 2, 
+pop(), we get 5 from stack for freq 1
+pop(), we get 4 from stack for freq 1
+pop(), we get 3 from stack for freq 1
+pop(), we get 2 from stack for freq 1
+the freq is continuous. 
+
+
 freq hashmap maintains the frequency
 each frequency maintains a stack	
 
