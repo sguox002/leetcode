@@ -1,112 +1,115 @@
 # hashtable
+understand how hashtable and hashset are implemented.
+know hashtable complexity
+hashtable often serves as a intermediate data structure for O(1) complexity, creating a mapping.
 
 ## contents
 
-### 771	Jewels and Stones		Easy	
-### 760	Find Anagram Mappings 	Easy	
-### 961	N-Repeated Element in Size 2N Array		Easy	
-### 1002 Find Common Characters		Easy	
-### 811	Subdomain Visit Count		Easy	
-### 359	Logger Rate Limiter 	Easy	
-### 500	Keyboard Row		Easy	
-### 463	Island Perimeter		Easy	
-### 884	Uncommon Words from Two Sentences		Easy	
-### 266	Palindrome Permutation 	Easy	
-### 136	Single Number		Easy	
-### 575	Distribute Candies		Easy	
-### 706	Design HashMap		Easy	
-### 953	Verifying an Alien Dictionary		Easy	
-### 349	Intersection of Two Arrays		Easy	
-### 690	Employee Importance		Easy	
-### 748	Shortest Completing Word		Easy	
-### 705	Design HashSet		Easy	
-### 389	Find the Difference		Easy	
-### 242	Valid Anagram		Easy	
-### 217	Contains Duplicate		Easy	
-### 387	First Unique Character in a String		Easy	
-### 447	Number of Boomerangs		Easy	
-### 409	Longest Palindrome		Easy	
-### 599	Minimum Index Sum of Two Lists		Easy	
-### 350	Intersection of Two Arrays II		Easy	
-### 202	Happy Number		Easy	
-### 720	Longest Word in Dictionary		Easy	
-### 1	Two Sum		Easy	
-### 594	Longest Harmonious Subsequence		Easy	
-### 246	Strobogrammatic Number 	Easy	
-### 645	Set Mismatch		Easy	
-### 734	Sentence Similarity 	Easy	
-### 970	Powerful Integers		Easy	
-### 438	Find All Anagrams in a String		Easy	
-### 205	Isomorphic Strings		Easy	
-### 624	Maximum Distance in Arrays 	Easy	
-### 219	Contains Duplicate II		Easy	
-### 290	Word Pattern		Easy	
-### 170	Two Sum III - Data structure design 	Easy	
-### 204	Count Primes		Easy	
-
-### 535	Encode and Decode TinyURL		Medium	
-### 739	Daily Temperatures		Medium	
-### 94	Binary Tree Inorder Traversal		Medium	
-### 311	Sparse Matrix Multiplication 	Medium	
-### 451	Sort Characters By Frequency		Medium	
-### 609	Find Duplicate File in System		Medium	
-### 347	Top K Frequent Elements		Medium	
-### 508	Most Frequent Subtree Sum		Medium	
-### 648	Replace Words		Medium	
-### 676	Implement Magic Dictionary		Medium	
-### 781	Rabbits in Forest		Medium	
-### 694	Number of Distinct Islands 	Medium	
-### 981	Time Based Key-Value Store		Medium	
-### 454	4Sum II		Medium	
-### 939	Minimum Area Rectangle		Medium	
-### 249	Group Shifted Strings 	Medium	
-### 554	Brick Wall		Medium	
-### 244	Shortest Word Distance II 	Medium	
-### 49	Group Anagrams		Medium	
-### 718	Maximum Length of Repeated Subarray		Medium	
-### 692	Top K Frequent Words		Medium	
-### 325	Maximum Size Subarray Sum Equals k 	Medium	
-### 974	Subarray Sums Divisible by K		Medium	
-### 36	Valid Sudoku		Medium	
-### 380	Insert Delete GetRandom O(1)		Medium	
-### 525	Contiguous Array		Medium	
-### 560	Subarray Sum Equals K		Medium	
-### 966	Vowel Spellchecker		Medium	
-### 314	Binary Tree Vertical Order Traversal 	Medium	
-### 299	Bulls and Cows		Medium	
-### 957	Prison Cells After N Days		Medium	
-### 930	Binary Subarrays With Sum		Medium	
-### 187	Repeated DNA Sequences		Medium	
-### 274	H-Index		Medium	
-### 954	Array of Doubled Pairs		Medium	
-### 987	Vertical Order Traversal of a Binary Tree		Medium	
-### 356	Line Reflection 	Medium	
-### 18	4Sum		Medium	
-### 3	Longest Substring Without Repeating Characters		Medium	
-### 355	Design Twitter		Medium	
-### 138	Copy List with Random Pointer		Medium	
-### 288	Unique Word Abbreviation 	Medium	
-### 166	Fraction to Recurring Decimal		Medium	
-
-### 895	Maximum Frequency Stack		Hard	
-### 632	Smallest Range		Hard	
-### 159	Longest Substring with At Most Two Distinct Characters 	Hard	
-### 711	Number of Distinct Islands II 	Hard	
-### 770	Basic Calculator IV		Hard	
-### 992	Subarrays with K Different Integers		Hard	
-### 726	Number of Atoms		Hard	
-### 340	Longest Substring with At Most K Distinct Characters 	Hard	
-### 37	Sudoku Solver		Hard	
-### 1001	Grid Illumination		Hard	
-### 85	Maximal Rectangle		Hard	
-### 358	Rearrange String k Distance Apart 	Hard	
-### 381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	
-### 710	Random Pick with Blacklist		Hard	
-### 336	Palindrome Pairs		Hard	
-### 76	Minimum Window Substring		Hard	
-### 30	Substring with Concatenation of All Words		Hard	
-### 1044 Longest Duplicate Substring		Hard	
-### 149	Max Points on a Line		Hard	
+771	Jewels and Stones		Easy	<br/>
+760	Find Anagram Mappings 	Easy	<br/>
+961	N-Repeated Element in Size 2N Array		Easy	<br/>
+1002 Find Common Characters		Easy	<br/>
+811	Subdomain Visit Count		Easy	<br/>
+359	Logger Rate Limiter 	Easy	<br/>
+500	Keyboard Row		Easy	<br/>
+463	Island Perimeter		Easy	<br/>
+884	Uncommon Words from Two Sentences		Easy	<br/>
+266	Palindrome Permutation 	Easy	<br/>
+136	Single Number		Easy	<br/>
+575	Distribute Candies		Easy	<br/>
+706	Design HashMap		Easy	<br/>
+953	Verifying an Alien Dictionary		Easy	<br/>
+349	Intersection of Two Arrays		Easy	<br/>
+690	Employee Importance		Easy	<br/>
+748	Shortest Completing Word		Easy	<br/>
+705	Design HashSet		Easy	<br/>
+389	Find the Difference		Easy	<br/>
+242	Valid Anagram		Easy	<br/>
+217	Contains Duplicate		Easy	<br/>
+387	First Unique Character in a String		Easy	<br/>
+447	Number of Boomerangs		Easy	<br/>
+409	Longest Palindrome		Easy	<br/>
+599	Minimum Index Sum of Two Lists		Easy	<br/>
+350	Intersection of Two Arrays II		Easy	<br/>
+202	Happy Number		Easy	<br/>
+720	Longest Word in Dictionary		Easy	<br/>
+1	Two Sum		Easy	<br/>
+594	Longest Harmonious Subsequence		Easy	<br/>
+246	Strobogrammatic Number 	Easy	<br/>
+645	Set Mismatch		Easy	<br/>
+734	Sentence Similarity 	Easy	<br/>
+970	Powerful Integers		Easy	<br/>
+438	Find All Anagrams in a String		Easy	<br/>
+205	Isomorphic Strings		Easy	<br/>
+624	Maximum Distance in Arrays 	Easy	<br/>
+219	Contains Duplicate II		Easy	<br/>
+290	Word Pattern		Easy	<br/>
+170	Two Sum III - Data structure design 	Easy	<br/>
+204	Count Primes		Easy	<br/>
+<br/>
+535	Encode and Decode TinyURL		Medium	<br/>
+739	Daily Temperatures		Medium	<br/>
+94	Binary Tree Inorder Traversal		Medium	<br/>
+311	Sparse Matrix Multiplication 	Medium	<br/>
+451	Sort Characters By Frequency		Medium	<br/>
+609	Find Duplicate File in System		Medium	<br/>
+347	Top K Frequent Elements		Medium	<br/>
+508	Most Frequent Subtree Sum		Medium	<br/>
+648	Replace Words		Medium	<br/>
+676	Implement Magic Dictionary		Medium	<br/>
+781	Rabbits in Forest		Medium	<br/>
+694	Number of Distinct Islands 	Medium	<br/>
+981	Time Based Key-Value Store		Medium	<br/>
+454	4Sum II		Medium	<br/>
+939	Minimum Area Rectangle		Medium	<br/>
+249	Group Shifted Strings 	Medium	<br/>
+554	Brick Wall		Medium	<br/>
+244	Shortest Word Distance II 	Medium	<br/>
+49	Group Anagrams		Medium	<br/>
+718	Maximum Length of Repeated Subarray		Medium	<br/>
+692	Top K Frequent Words		Medium	<br/>
+325	Maximum Size Subarray Sum Equals k 	Medium	<br/>
+974	Subarray Sums Divisible by K		Medium	<br/>
+36	Valid Sudoku		Medium	<br/>
+380	Insert Delete GetRandom O(1)		Medium	<br/>
+525	Contiguous Array		Medium	<br/>
+560	Subarray Sum Equals K		Medium	<br/>
+966	Vowel Spellchecker		Medium	<br/>
+314	Binary Tree Vertical Order Traversal 	Medium	<br/>
+299	Bulls and Cows		Medium	<br/>
+957	Prison Cells After N Days		Medium	<br/>
+930	Binary Subarrays With Sum		Medium	<br/>
+187	Repeated DNA Sequences		Medium	<br/>
+274	H-Index		Medium	<br/>
+954	Array of Doubled Pairs		Medium	<br/>
+987	Vertical Order Traversal of a Binary Tree		Medium	<br/>
+356	Line Reflection 	Medium	<br/>
+18	4Sum		Medium	<br/>
+3	Longest Substring Without Repeating Characters		Medium	<br/>
+355	Design Twitter		Medium	<br/>
+138	Copy List with Random Pointer		Medium	<br/>
+288	Unique Word Abbreviation 	Medium	<br/>
+166	Fraction to Recurring Decimal		Medium	<br/>
+<br/>
+895	Maximum Frequency Stack		Hard	<br/>
+632	Smallest Range		Hard	<br/>
+159	Longest Substring with At Most Two Distinct Characters 	Hard	<br/>
+711	Number of Distinct Islands II 	Hard	<br/>
+770	Basic Calculator IV		Hard	<br/>
+992	Subarrays with K Different Integers		Hard	<br/>
+726	Number of Atoms		Hard	<br/>
+340	Longest Substring with At Most K Distinct Characters 	Hard	<br/>
+37	Sudoku Solver		Hard	<br/>
+1001	Grid Illumination		Hard	<br/>
+85	Maximal Rectangle		Hard	<br/>
+358	Rearrange String k Distance Apart 	Hard	<br/>
+381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	<br/>
+710	Random Pick with Blacklist		Hard	<br/>
+336	Palindrome Pairs		Hard	<br/>
+76	Minimum Window Substring		Hard	<br/>
+30	Substring with Concatenation of All Words		Hard	<br/>
+1044 Longest Duplicate Substring		Hard	<br/>
+149	Max Points on a Line		Hard	<br/>
 
 ## easy
 ### 771	Jewels and Stones		Easy	
@@ -157,9 +160,13 @@ apparently we can only get half of the types.
 ```	
 ### 706	Design HashMap		Easy	
 hashmap using array of limited size, and each element can store a linked list for collision
-```cpp    vector<list<pair<int,int>>> m_data;
+use c++ std::list for convenience (doubly linked-list)
+use simple key%size for he hash function
+
+```cpp    
+	vector<list<pair<int,int>>> m_data;
     size_t m_size = 10000;
-public:
+
     /** Initialize your data structure here. */
     MyHashMap() {
         m_data.resize(m_size);
@@ -174,7 +181,7 @@ public:
                 return;
             }
         }
-        list.emplace_back(key, value);
+        list.emplace_back(key, value);//in-place construct a pair and insert.
     }
     
     /** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
@@ -217,7 +224,7 @@ convert words and a-z into conventional order and then compare
 
 ### 349	Intersection of Two Arrays		Easy	
 no duplicates allowed in result.
-use set_intersection or hand write
+use set_intersection or hand write. actually we do not need two hashtable. one is easier.
 ```cpp
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
         //use set_intersection
@@ -271,7 +278,7 @@ public:
 ```
 
 ### 705	Design HashSet		Easy	
-similar approach for hashmap
+similar approach for hashmap. but only store the element not the pair.
 
 ### 389	Find the Difference		Easy	
 two strings, only one char is extra, just xor
@@ -1602,15 +1609,242 @@ locked
 each number has a row, col, and a grid. so first we need to exclude those impossibles
 first solve those only one solution and keeps updating.
 can use a 9 bit to indicate the status
+straightforward backtracking solution
+just try to put 1 to 9 for each cell and check if it is valid
+```cpp
+    void solveSudoku(vector<vector<char>>& board) {
+		if(board.size()==0) return;
+		solve(board);
+    }
+	bool solve(vector<vector<char>>& b)
+	{
+		int m=b.size(),n=b[0].size();
+		for(int i=0;i<m;i++)
+		{
+			for(int j=0;j<n;j++)
+			{
+				if(b[i][j]=='.')
+				{
+					for(char c='1';c<='9';c++)
+					{
+						if(isValid(b,i,j,c))
+						{
+							b[i][j]=c;
+							if(solve(b)) return 1;
+							else b[i][j]='.';
+						}
+					}
+				}
+			}
+        }
+		return 0;
+	}
+	bool isValid(vector<vector<char>>& b,int row,int col,char c)
+	{
+		for(int i=0;i<9;i++)
+		{
+			if(b[i][col]!='.' && b[i][col]==c) return 0;
+			if(b[row][i]!='.' && b[row][i]==c) return 0;
+			int r0=3*(row/3)+i/3,c0=3*(col/3)+i%3;
+			if(b[r0][c0]!='.' && b[r0][c0]==c) return 0;
+		}
+		return 1;
+	}
+```	
+complexity O(9^n), n is number of blanks to fill.
+although we can use hashmap to store row, col, and grid, we may reduce from 9 to like 4 or 5
 
+improvements: use bits to record row, col and 3x3 grid.
 
 ### 1001	Grid Illumination		Hard	
+On a N x N grid of cells, each cell (x, y) with 0 <= x < N and 0 <= y < N has a lamp.
+
+Initially, some number of lamps are on.  lamps[i] tells us the location of the i-th lamp that is on.  Each lamp that is on illuminates every square on its x-axis, y-axis, and both diagonals (similar to a Queen in chess).
+
+For the i-th query queries[i] = (x, y), the answer to the query is 1 if the cell (x, y) is illuminated, else 0.
+
+After each query (x, y) [in the order given by queries], we turn off any lamps that are at cell (x, y) or are adjacent 8-directionally (ie., share a corner or edge with cell (x, y).)
+
+Return an array of answers.  Each value answer[i] should be equal to the answer of the i-th query queries[i].
+
+We use a hash map to record number of occurance of row, col, diag1 and diag2 diag1: r-c=const diag2: r+c=const each query will minus the row, col, diag1 and diag2 by 1
+
+```cpp
+    vector<int> gridIllumination(int N, vector<vector<int>>& lamps, vector<vector<int>>& queries) {
+        unordered_map<int,int> rset,cset,diagset1,diagset2;
+        unordered_set<string> lset;
+        for(int i=0;i<lamps.size();i++)
+        {
+            int r=lamps[i][0],c=lamps[i][1];
+            rset[r]++;cset[c]++;diagset1[r-c]++;diagset2[r+c]++;
+            lset.insert(to_string(r)+","+to_string(c));
+        }
+        vector<int> ans;
+        for(int i=0;i<queries.size();i++)
+        {
+            ans.push_back(query(N,queries[i][0],queries[i][1],rset,cset,diagset1,diagset2,lset));
+        }
+        return ans;
+    }
+  int query(int n,int r,int c,unordered_map<int,int>& rset,
+            unordered_map<int,int>& cset,
+            unordered_map<int,int>& dset1,
+            unordered_map<int,int>& dset2,
+            unordered_set<string>& lset)
+  {
+  //for i,j, row i and col j, diag1 r-c=i-j, diag2: r+c=i+j     
+      int ans=rset.count(r) || cset.count(c) || dset1.count(r-c) || dset2.count(r+c);
+      for(int i=-1;i<=1;i++)
+      {
+          for(int j=-1;j<=1;j++)
+          {
+              if(r+i<0 || r+i>=n || c+j<0 || c+j>=n) continue;
+              int rr=r+i,cc=c+j;
+              string s=to_string(r+i)+","+to_string(c+j);
+              if(lset.count(s))
+              {
+                  lset.erase(s);
+                  rset[rr]--;if(rset[rr]==0) rset.erase(rr);
+                  cset[cc]--;if(cset[cc]==0) cset.erase(cc);
+                  dset1[rr-cc]--;if(dset1[rr-cc]==0) dset1.erase(rr-cc);
+                  dset2[rr+cc]--;if(dset2[rr+cc]==0) dset2.erase(rr+cc);
+              }
+          }
+      }
+      return ans;      
+  }
+```  
 ### 85	Maximal Rectangle		Hard	
+see maximal histogram
+
 ### 358	Rearrange String k Distance Apart 	Hard	
+locked
+
 ### 381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	
+see design
+
 ### 710	Random Pick with Blacklist		Hard	
+Given a blacklist B containing unique integers from [0, N), write a function to return a uniform random integer from [0, N) which is NOT in B.
+
+Optimize it such that it minimizes the call to system’s Math.random().
+
+Note:
+
+1 <= N <= 1000000000
+0 <= B.length < min(100000, N)
+[0, N) does NOT include N. See interval notation.
+
+```cpp
+    vector<int> bl;
+    std::default_random_engine generator;
+    std::uniform_int_distribution<int> distribution;
+public:
+    Solution(int N, vector<int> blacklist)
+    {
+        swap(bl, blacklist);
+        sort(bl.begin(), bl.end());
+        for (int i = 0, e = bl.size(); i < e; ++i)
+            bl[i] -= i;
+        
+        distribution = std::uniform_int_distribution<int>(0, N - 1 - bl.size());
+    }
+    
+    int pick() {
+        auto r = distribution(generator);
+        return r + (upper_bound(bl.begin(), bl.end(), r) - bl.begin());
+    }
+```
+c++11 random generator engine, the c rand() generates 0 to 32767 random numbers.
+Let's say sorted array M is the all valid numbers, and X is the actual generated random number. Duo to blacklist, it's index in M may be less. e.g.,
+N = 7, B = [1, 4, 6], then M = [0, 2, 3, 5]. if X == 2, its index is 1 duo to 1 is black listed; if X is 5, its index is 3, duo to both 1 and 4 are black listed. However if X is 0, its index is still 0 has no blacklist number. Here, we know, the difference = X - its index == how many blacklist number <= X.
+Now, use bl[i] to represent the index where it's reduced by i. After generate a random number as the index, add the difference back (using binary search, get the index in bl[] where first greater than the generated number), it's the actual answer.
+
 ### 336	Palindrome Pairs		Hard	
+Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
+brutal force
+```cpp
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        //brutal force approach: 
+        vector<vector<int>> res;
+        vector<int> item(2);
+        for(int i=0;i<words.size();i++)
+        {
+            for(int j=0;j<words.size();j++)
+            {
+                if(i==j) continue;
+                if(is_palindrome(words[i],words[j]))
+                {
+                    item[0]=i;item[1]=j;
+                    res.push_back(item);
+                }
+            }
+        }
+        return res;
+    }
+    bool is_palindrome(const string& a, const string& b)
+    {
+        //concat a and b, however avoid make a string
+        int la=a.size(),lb=b.size();
+        int len=la+lb;
+        int mid=len/2;
+        for(int i=0;i<mid;i++)
+        {
+            //compare i and len-1-i
+            char c,d;
+            int j=len-1-i;
+            c=(i<la)?a[i]:b[i-la];
+            d=(j<la)?a[j]:b[j-la];
+            if(c!=d) return 0;
+        }
+        return 1;
+    }
+```
+can also be approached using trie.
+check endwith (reverse)
+we also need store extra information in the trie, for example the index of the word.
+a list of index integers.
+
 ### 76	Minimum Window Substring		Hard	
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+sliding window using two pointers
+```cpp
+string minWindow(string s, string t) {
+	unordered_map<char, int> mp;	// Statistic for count of char in t
+	for (auto c : t) mp[c]++;
+	// counter represents the number of chars of t to be found in s.
+	int start = 0, end = 0, minStart = 0, minLen = INT_MAX;
+	int slen = s.size(),tlen = t.size();
+		
+	while (end<slen) // Move end to find a valid window.
+    {
+		if (mp[s[end]]>0) tlen--;// If char in s exists in t, decrease counter
+		mp[s[end]]--;// Decrease m[s[end]]. If char does not exist in t, m[s[end]] will be negative.
+		end++;
+		
+		while (tlen == 0) // When we found a valid window, move start to find smaller window.
+        {
+			if(end-start<minLen) 
+            {
+				minStart=start;
+				minLen=end-start;
+			}
+			mp[s[start]]++;
+			
+			if (mp[s[start]]>0) tlen++;// When char exists in t, increase counter.
+			start++;
+		}
+	}
+	if (minLen != INT_MAX)return s.substr(minStart, minLen);
+	return "";
+    }
+```
+	
 ### 30	Substring with Concatenation of All Words		Hard	
-### 1044 Longest Duplicate Substring		Hard	
+see string
+
+### 1044 Longest Duplicate Substring		Hard
+see string
+	
 ### 149	Max Points on a Line		Hard	
+Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+see math
