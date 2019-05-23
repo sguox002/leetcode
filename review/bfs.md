@@ -58,17 +58,17 @@ bfs is most suitable for shortest distance between two nodes<br/>
 126	Word Ladder II		Hard<br/>
 
 ## easy
-559	Maximum Depth of N-ary Tree		Easy	<br/>
+### 559	Maximum Depth of N-ary Tree		Easy	<br/>
 see tree
-429	N-ary Tree Level Order Traversal		Easy	<br/>
+### 429	N-ary Tree Level Order Traversal		Easy	<br/>
 see tree
-690	Employee Importance		Easy	<br/>
+### 690	Employee Importance		Easy	<br/>
 see dfs
-993	Cousins in Binary Tree		Easy	<br/>
+### 993	Cousins in Binary Tree		Easy	<br/>
 see tree
-107	Binary Tree Level Order Traversal II		Easy	<br/>
+### 107	Binary Tree Level Order Traversal II		Easy	<br/>
 see tree
-994	Rotting Oranges		Easy	<br/>
+### 994	Rotting Oranges		Easy	<br/>
 simple, one step bfs
 ```cpp
     int orangesRotting(vector<vector<int>>& grid) {
@@ -107,31 +107,31 @@ simple, one step bfs
     }
 ```	
 
-101	Symmetric Tree		Easy	<br/>
+### 101	Symmetric Tree		Easy	<br/>
 see tree
-111	Minimum Depth of Binary Tree		Easy	<br/>
+### 111	Minimum Depth of Binary Tree		Easy	<br/>
 see tree
 
 ## medium
-513	Find Bottom Left Tree Value		Medium	<br/>
+### 513	Find Bottom Left Tree Value		Medium	<br/>
 see tree
-515	Find Largest Value in Each Tree Row		Medium	<br/>
+### 515	Find Largest Value in Each Tree Row		Medium	<br/>
 see tree
-529	Minesweeper		Medium	<br/>
+### 529	Minesweeper		Medium	<br/>
 see dfs
-323	Number of Connected Components in an Undirected Graph 	Medium	<br/>
+### 323	Number of Connected Components in an Undirected Graph 	Medium	<br/>
 locked. bfs or union-find
-286	Walls and Gates 	Medium	<br/>
+### 286	Walls and Gates 	Medium	<br/>
 locked
-102	Binary Tree Level Order Traversal		Medium	<br/>
+### 102	Binary Tree Level Order Traversal		Medium	<br/>
 see tree
-199	Binary Tree Right Side View		Medium	<br/>
+### 199	Binary Tree Right Side View		Medium	<br/>
 see tree
-490	The Maze 	Medium	<br/>
+### 490	The Maze 	Medium	<br/>
 locked
-863	All Nodes Distance K in Binary Tree		Medium	<br/>
+### 863	All Nodes Distance K in Binary Tree		Medium	<br/>
 see tree
-752	Open the Lock		Medium	<br/>
+### 752	Open the Lock		Medium	<br/>
 You have a lock in front of you with 4 circular wheels. Each wheel has 10 slots: '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'. The wheels can rotate freely and wrap around: for example we can turn '9' to be '0', or '0' to be '9'. Each move consists of turning one wheel one slot.
 
 The lock initially starts at '0000', a string representing the state of the 4 wheels.
@@ -197,18 +197,18 @@ Approach: each digit can add 1 or -1. use bfs to reach the target and skip those
         return -1;
     }
 ```	
-934	Shortest Bridge		Medium	<br/>
+### 934	Shortest Bridge		Medium	<br/>
 see dfs.
 
-505	The Maze II 	Medium	<br/>
+### 505	The Maze II 	Medium	<br/>
 locked
 
-785	Is Graph Bipartite?		Medium	<br/>
+### 785	Is Graph Bipartite?		Medium	<br/>
 see dfs 
-279	Perfect Squares		Medium	<br/>
+### 279	Perfect Squares		Medium	<br/>
 see dp for knapsack
 
-743	Network Delay Time		Medium	<br/>
+### 743	Network Delay Time		Medium	<br/>
 There are N network nodes, labelled 1 to N.
 
 Given times, a list of travel times as directed edges times[i] = (u, v, w), where u is the source node, v is the target node, and w is the time it takes for a signal to travel from source to target.
@@ -292,15 +292,15 @@ dijkstra algorithm
 ```
 dijkstra algorithm usually uses a priority_queue
 
-103	Binary Tree Zigzag Level Order Traversal		Medium	<br/>
+### 103	Binary Tree Zigzag Level Order Traversal		Medium	<br/>
 see tree
-200	Number of Islands		Medium	<br/>
+### 200	Number of Islands		Medium	<br/>
 see union-find
 
-261	Graph Valid Tree 	Medium	<br/>
+### 261	Graph Valid Tree 	Medium	<br/>
 locked
 
-207	Course Schedule		Medium	<br/>
+### 207	Course Schedule		Medium	<br/>
 dfs with three states to detect a cycle. 
 ```cpp
     bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
@@ -327,10 +327,10 @@ dfs with three states to detect a cycle.
 ```
 	
 
-417	Pacific Atlantic Water Flow		Medium	<br/>
+### 417	Pacific Atlantic Water Flow		Medium	<br/>
 see dfs with bitset status
 
-542	01 Matrix		Medium	<br/>
+### 542	01 Matrix		Medium	<br/>
 find the distance to nearest 0
 
 bfs
@@ -384,7 +384,7 @@ bfs
         return -1;
     }
 ```	
-210	Course Schedule II		Medium	<br/>
+### 210	Course Schedule II		Medium	<br/>
 return the ordering of the courses
 approach 1:
 first, generate the graph adjacency matrix
@@ -431,7 +431,7 @@ repeat until there are no source nodes.
         }
     }
 ```	
-787	Cheapest Flights Within K Stops		Medium	<br/>
+### 787	Cheapest Flights Within K Stops		Medium	<br/>
 dijkstra, bellman-ford, bfs, or dp
 ```cpp
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K)
@@ -453,14 +453,14 @@ dijkstra, bellman-ford, bfs, or dp
         return dp[dst][K];
     }
 ```	
-909	Snakes and Ladders		Medium	<br/>
+### 909	Snakes and Ladders		Medium	<br/>
 
-310	Minimum Height Trees		Medium	<br/>
+### 310	Minimum Height Trees		Medium	<br/>
 see tree
-133	Clone Graph		Medium	<br/>
+### 133	Clone Graph		Medium	<br/>
 see hashtable
 
-127	Word Ladder		Medium	<br/>
+### 127	Word Ladder		Medium	<br/>
 from start, each move just change one char.
 return the shortest move.
 
@@ -503,12 +503,12 @@ return the shortest move.
         } 
     } 
 ```	
-130	Surrounded Regions		Medium	<br/>
+### 130	Surrounded Regions		Medium	<br/>
 see union-find
 
 
 ## hard
-773	Sliding Puzzle		Hard	<br/>
+### 773	Sliding Puzzle		Hard	<br/>
 hua-rong-dao game
 return the least number of moves to solve the puzzle.
 
@@ -554,12 +554,22 @@ Use a hashTable to store the visited states.
         return -1;
     }
 ```	
-847	Shortest Path Visiting All Nodes		Hard	<br/>
+### 847	Shortest Path Visiting All Nodes		Hard	<br/>
 An undirected, connected graph of N nodes (labeled 0, 1, 2, ..., N-1) is given as graph.
 
 graph.length = N, and j != i is in the list graph[i] exactly once, if and only if nodes i and j are connected.
 
 Return the length of the shortest path that visits every node. You may start and stop at any node, you may revisit nodes multiple times, and you may reuse edges.
+
+Using a two-dimensional matrix to record the distance from a point through those points.
+Example:
+dp[0][3(00000...00011)] = 2 means the distance starting point 0 through 0, 1 is 2
+dp[1][7(00000...00111)] = 3 means the distance starting point 1 through 0, 1, 2 is 3.
+
+After BFS, we will know the distance through all nodes, compare dp[0][11111...11111](it means that start point 0 through all nodes), dp[1][11111...11111]
+..., dp[n-1][11111...11111], we will get the result.
+
+similarly we use a bfs to reduce the distance.
 
 ```cpp
     struct State{
@@ -598,17 +608,19 @@ Return the length of the shortest path that visits every node. You may start and
     }
 ```	
 
-815	Bus Routes		Hard	<br/>
+### 815	Bus Routes		Hard	<br/>
 We have a list of bus routes. Each routes[i] is a bus route that the i-th bus repeats forever. For example if routes[0] = [1, 5, 7], this means that the first bus (0-th indexed) travels in the sequence 1->5->7->1->5->7->1->... forever.
 
 We start at bus stop S (initially not on a bus), and we want to go to bus stop T. Travelling by buses only, what is the least number of buses we must take to reach our destination? Return -1 if it is not possible.
+
+approach: build a hashmap station vs bus number, and then we have several routes at S and several routes at T.  using BFS to reach T.
 
 ```cpp
     int numBusesToDestination(vector<vector<int>>& routes, int S, int T) {
         //this is a BFS problem
         //need convert the data structure to adjacency data structure
         if(S==T) return 0;
-        unordered_map<int,vector<int>> mp; //each node has a group number
+        unordered_map<int,vector<int>> mp; //each node has a group number: station vs routers
         for(int i=0;i<routes.size();i++)
         {
             for(int j=0;j<routes[i].size();j++) mp[routes[i][j]].push_back(i);
@@ -674,9 +686,22 @@ We start at bus stop S (initially not on a bus), and we want to go to bus stop T
     }
 ```	
 
-301	Remove Invalid Parentheses		Hard	<br/>
+### 301	Remove Invalid Parentheses		Hard	<br/>
 Remove the minimum number of invalid parentheses in order to make the input string valid. Return all possible results.
 approach 1: dfs, from left and right and from right to left.
+
+We all know how to check a string of parentheses is valid using a stack. Or even simpler use a counter.
+The counter will increase when it is ‘(‘ and decrease when it is ‘)’. Whenever the counter is negative, we have more ‘)’ than ‘(‘ in the prefix.
+
+To make the prefix valid, we need to remove a ‘)’. The problem is: which one? The answer is any one in the prefix. However, if we remove any one, we will generate duplicate results, for example: s = ()), we can remove s[1] or s[2] but the result is the same (). Thus, we restrict ourself to remove the first ) in a series of concecutive )s.
+
+After the removal, the prefix is then valid. We then call the function recursively to solve the rest of the string. However, we need to keep another information: the last removal position. If we do not have this position, we will generate duplicate by removing two ‘)’ in two steps only with a different order.
+For this, we keep tracking the last removal position and only remove ‘)’ after that.
+
+Now one may ask. What about ‘(‘? What if s = ‘(()(()’ in which we need remove ‘(‘?
+The answer is: do the same from right to left.
+However a cleverer idea is: reverse the string and reuse the code!
+
 ```cpp
     vector<string> removeInvalidParentheses(string s) {
         vector<string> ans;
@@ -706,8 +731,8 @@ approach 1: dfs, from left and right and from right to left.
         else ans.push_back(rs);//finished right to left
     }
 ```
-407	Trapping Rain Water II		Hard	<br/>
-2d problem
+### 407	Trapping Rain Water II		Hard	<br/>
+### 2d problem
 Given an m x n matrix of positive integers representing the height of each unit cell in a 2D elevation map, compute the volume of water it is able to trap after raining.
 
 bfs
@@ -750,7 +775,7 @@ bfs
     }
 ```
 	
-1036 Escape a Large Maze		Hard	<br/>
+### 1036 Escape a Large Maze		Hard	<br/>
 dfs using radius
 
 ```cpp
@@ -786,14 +811,130 @@ dfs using radius
     }
 ```
 	
-317	Shortest Distance from All Buildings 	Hard	<br/>
+### 317	Shortest Distance from All Buildings 	Hard	<br/>
 locked
-499	The Maze III 	Hard	<br/>
+### 499	The Maze III 	Hard	<br/>
 locked
 
-864	Shortest Path to Get All Keys		Hard	<br/>
-854	K-Similar Strings		Hard	<br/>
-675	Cut Off Trees for Golf Event		Hard	<br/>
+### 864	Shortest Path to Get All Keys		Hard	<br/>
+We are given a 2-dimensional grid. "." is an empty cell, "#" is a wall, "@" is the starting point, ("a", "b", ...) are keys, and ("A", "B", ...) are locks.
+
+We start at the starting point, and one move consists of walking one space in one of the 4 cardinal directions.  We cannot walk outside the grid, or walk into a wall.  If we walk over a key, we pick it up.  We can't walk over a lock unless we have the corresponding key.
+
+For some 1 <= K <= 6, there is exactly one lowercase and one uppercase letter of the first K letters of the English alphabet in the grid.  This means that there is exactly one key for each lock, and one lock for each key; and also that the letters used to represent the keys and locks were chosen in the same order as the English alphabet.
+
+Return the lowest number of moves to acquire all keys.  If it's impossible, return -1.
+
+Use Bit to represent the keys.
+Use State to represent visited states
+
+```java
+    class State {
+        int keys, i, j;
+        State(int keys, int i, int j) {
+            this.keys = keys;
+            this.i = i;
+            this.j = j;
+        }
+    }
+    public int shortestPathAllKeys(String[] grid) {
+        int x = -1, y = -1, m = grid.length, n = grid[0].length(), max = -1;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                char c = grid[i].charAt(j);
+                if (c == '@') {
+                    x = i;
+                    y = j;
+                }
+                if (c >= 'a' && c <= 'f') {
+                    max = Math.max(c - 'a' + 1, max);
+                }
+            }
+        }
+        State start = new State(0, x, y);
+        Queue<State> q = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        visited.add(0 + " " + x + " " + y);
+        q.offer(start);
+        int[][] dirs = new int[][]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int step = 0;
+        while (!q.isEmpty()) {
+            int size = q.size();
+            while (size-- > 0) {
+                State cur = q.poll();
+                if (cur.keys == (1 << max) - 1) {
+                    return step;
+                }
+                for (int[] dir : dirs) {
+                    int i = cur.i + dir[0];
+                    int j = cur.j + dir[1];
+                    int keys = cur.keys;
+                    if (i >= 0 && i < m && j >= 0 && j < n) {
+                        char c = grid[i].charAt(j);
+                        if (c == '#') {
+                            continue;
+                        }
+                        if (c >= 'a' && c <= 'f') {
+                            keys |= 1 << (c - 'a');
+                        }
+                        if (c >= 'A' && c <= 'F' && ((keys >> (c - 'A')) & 1) == 0) {
+                            continue;
+                        }
+                        if (!visited.contains(keys + " " + i + " " + j)) {
+                            visited.add(keys + " " + i + " " + j);
+                            q.offer(new State(keys, i, j));
+                        }
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+```
+	
+
+### 854	K-Similar Strings		Hard	<br/>
+Strings A and B are K-similar (for some non-negative integer K) if we can swap the positions of two letters in A exactly K times so that the resulting string equals B.
+
+Given two anagrams A and B, return the smallest K for which A and B are K-similar.
+
+this is very similar to the sliding puzzle
+```cpp
+    int kSimilarity(string A, string B) {
+        if (A == B) return 0;
+		queue<string> que;
+		unordered_set<string> vis;
+		que.push(A);
+		int ans = 0, len = A.length();
+		while (!que.empty())
+		{
+			ans++;
+			int m = que.size(), i=0;
+			while (m--)
+			{
+				string str = que.front(); que.pop();
+				i = 0;
+				while (str[i] == B[i]) i++;
+				for (int j = i + 1; j < len; j++)
+				{
+					if (str[j] != B[j] && str[j] == B[i])
+					{
+						string temp = str;
+						swap(temp[i], temp[j]);
+						if (temp == B) return ans;
+						if (vis.insert(temp).second) que.push(temp);
+						
+					}
+				}
+			}
+		}
+		return ans;
+    }
+```
+	
+
+### 675	Cut Off Trees for Golf Event		Hard	<br/>
 ```cpp
     int cutOffTree(vector<vector<int>>& forest) {
         vector<vector<int>> trees;
@@ -851,6 +992,73 @@ locked
     }
 ```
 	
-913	Cat and Mouse		Hard	<br/>
-126	Word Ladder II		Hard<br/>
+### 913	Cat and Mouse		Hard	<br/>
+### 126	Word Ladder II		Hard<br/>
+now we need to return the list
 
+I have struggled with this problem for a long time because nearly all the solution on the web is too long or too tricky and can hardly be remembered during the interview.
+
+In fact, this problem can be solved with a very standard BFS process, whose structure could haven been written by you for many many times (using while loop and a queue).
+The following code is written in a very standard BFS method, which is easy to memorize.
+
+The only tricky thing you need to remember is this is a BFS of paths not words!
+So the element is the queue is a vector. That's it.
+```cpp
+    vector<vector<string>> findLadders(string beginWord, string endWord, unordered_set<string> &wordList) {
+        //very interesting problem
+        //It can be solved with standard BFS. The tricky idea is doing BFS of paths instead of words!
+        //Then the queue becomes a queue of paths.
+        vector<vector<string>> ans;
+        queue<vector<string>> paths;
+        wordList.insert(endWord);
+        paths.push({beginWord});
+        int level = 1;
+        int minLevel = INT_MAX;
+        
+        //"visited" records all the visited nodes on this level
+        //these words will never be visited again after this level 
+        //and should be removed from wordList. This is guaranteed
+        // by the shortest path.
+        unordered_set<string> visited; 
+        
+        while (!paths.empty()) {
+            vector<string> path = paths.front();
+            paths.pop();
+            if (path.size() > level) {
+                //reach a new level
+                for (string w : visited) wordList.erase(w);
+                visited.clear();
+                if (path.size() > minLevel)
+                    break;
+                else
+                    level = path.size();
+            }
+            string last = path.back();
+            //find next words in wordList by changing
+            //each element from 'a' to 'z'
+            for (int i = 0; i < last.size(); ++i) {
+                string news = last;
+                for (char c = 'a'; c <= 'z'; ++c) {
+                    news[i] = c;
+                    if (wordList.find(news) != wordList.end()) {
+                    //next word is in wordList
+                    //append this word to path
+                    //path will be reused in the loop
+                    //so copy a new path
+                        vector<string> newpath = path;
+                        newpath.push_back(news);
+                        visited.insert(news);
+                        if (news == endWord) {
+                            minLevel = level;
+                            ans.push_back(newpath);
+                        }
+                        else
+                            paths.push(newpath);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+```
+	
