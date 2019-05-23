@@ -1,75 +1,80 @@
-BFS<br/>
+# BFS<br/>
 bfs uses queue. when the stack using dfs is too deep, bfs could overcome the problem<br/>
 bfs is most suitable for shortest distance between two nodes<br/>
 <br/>
 
 ## contents
-559	Maximum Depth of N-ary Tree		Easy	<br/>
-429	N-ary Tree Level Order Traversal		Easy	<br/>
-690	Employee Importance		Easy	<br/>
-993	Cousins in Binary Tree		Easy	<br/>
-107	Binary Tree Level Order Traversal II		Easy	<br/>
-994	Rotting Oranges		Easy	<br/>
-101	Symmetric Tree		Easy	<br/>
-111	Minimum Depth of Binary Tree		Easy	<br/>
+559	Maximum Depth of N-ary Tree		(-Easy-)	<br/>
+429	N-ary Tree Level Order Traversal		(-Easy-)	<br/>
+690	Employee Importance		(-Easy-)	<br/>
+993	Cousins in Binary Tree		(-Easy-)	<br/>
+107	Binary Tree Level Order Traversal II		(-Easy-)	<br/>
+994	Rotting Oranges		(-Easy-)	<br/>
+101	Symmetric Tree		(-Easy-)	<br/>
+111	Minimum Depth of Binary Tree		(-Easy-)	<br/>
 <br/>
 <br/>
-513	Find Bottom Left Tree Value		Medium	<br/>
-515	Find Largest Value in Each Tree Row		Medium	<br/>
-529	Minesweeper		Medium	<br/>
-323	Number of Connected Components in an Undirected Graph 	Medium	<br/>
-286	Walls and Gates 	Medium	<br/>
-102	Binary Tree Level Order Traversal		Medium	<br/>
-199	Binary Tree Right Side View		Medium	<br/>
-490	The Maze 	Medium	<br/>
-863	All Nodes Distance K in Binary Tree		Medium	<br/>
-752	Open the Lock		Medium	<br/>
-934	Shortest Bridge		Medium	<br/>
-505	The Maze II 	Medium	<br/>
-785	Is Graph Bipartite?		Medium	<br/>
-279	Perfect Squares		Medium	<br/>
-743	Network Delay Time		Medium	<br/>
-103	Binary Tree Zigzag Level Order Traversal		Medium	<br/>
-200	Number of Islands		Medium	<br/>
-261	Graph Valid Tree 	Medium	<br/>
-207	Course Schedule		Medium	<br/>
-417	Pacific Atlantic Water Flow		Medium	<br/>
-542	01 Matrix		Medium	<br/>
-210	Course Schedule II		Medium	<br/>
-787	Cheapest Flights Within K Stops		Medium	<br/>
-909	Snakes and Ladders		Medium	<br/>
-310	Minimum Height Trees		Medium	<br/>
-133	Clone Graph		Medium	<br/>
-127	Word Ladder		Medium	<br/>
-130	Surrounded Regions		Medium	<br/>
+513	Find Bottom Left Tree Value		(-Medium-)	<br/>
+515	Find Largest Value in Each Tree Row		(-Medium-)	<br/>
+529	Minesweeper		(-Medium-)	<br/>
+323	Number of Connected Components in an Undirected Graph 	(-Medium-)	<br/>
+286	Walls and Gates 	(-Medium-)	<br/>
+102	Binary Tree Level Order Traversal		(-Medium-)	<br/>
+199	Binary Tree Right Side View		(-Medium-)	<br/>
+490	The Maze 	(-Medium-)	<br/>
+863	All Nodes Distance K in Binary Tree		(-Medium-)	<br/>
+752	Open the Lock		(-Medium-)	<br/>
+934	Shortest Bridge		(-Medium-)	<br/>
+505	The Maze II 	(-Medium-)	<br/>
+785	Is Graph Bipartite?		(-Medium-)	<br/>
+279	Perfect Squares		(-Medium-)	<br/>
+743	Network Delay Time		(-Medium-)	<br/>
+103	Binary Tree Zigzag Level Order Traversal		(-Medium-)	<br/>
+200	Number of Islands		(-Medium-)	<br/>
+261	Graph Valid Tree 	(-Medium-)	<br/>
+207	Course Schedule		(-Medium-)	<br/>
+417	Pacific Atlantic Water Flow		(-Medium-)	<br/>
+542	01 Matrix		(-Medium-)	<br/>
+210	Course Schedule II		(-Medium-)	<br/>
+787	Cheapest Flights Within K Stops		(-Medium-)	<br/>
+909	Snakes and Ladders		(-Medium-)	<br/>
+310	Minimum Height Trees		(-Medium-)	<br/>
+133	Clone Graph		(-Medium-)	<br/>
+127	Word Ladder		(-Medium-)	<br/>
+130	Surrounded Regions		(-Medium-)	<br/>
 <br/>
-773	Sliding Puzzle		Hard	<br/>
-847	Shortest Path Visiting All Nodes		Hard	<br/>
-815	Bus Routes		Hard	<br/>
-301	Remove Invalid Parentheses		Hard	<br/>
-407	Trapping Rain Water II		Hard	<br/>
-1036 Escape a Large Maze		Hard	<br/>
-317	Shortest Distance from All Buildings 	Hard	<br/>
-499	The Maze III 	Hard	<br/>
-864	Shortest Path to Get All Keys		Hard	<br/>
-854	K-Similar Strings		Hard	<br/>
-675	Cut Off Trees for Golf Event		Hard	<br/>
-913	Cat and Mouse		Hard	<br/>
-126	Word Ladder II		Hard<br/>
+773	Sliding Puzzle		(-Hard-)	<br/>
+847	Shortest Path Visiting All Nodes		(-Hard-)	<br/>
+815	Bus Routes		(-Hard-)	<br/>
+301	Remove Invalid Parentheses		(-Hard-)	<br/>
+407	Trapping Rain Water II		(-Hard-)	<br/>
+1036 Escape a Large Maze		(-Hard-)	<br/>
+317	Shortest Distance from All Buildings 	(-Hard-)	<br/>
+499	The Maze III 	(-Hard-)	<br/>
+864	Shortest Path to Get All Keys		(-Hard-)	<br/>
+854	K-Similar Strings		(-Hard-)	<br/>
+675	Cut Off Trees for Golf Event		(-Hard-)	<br/>
+913	Cat and Mouse		(-Hard-)	<br/>
+126	Word Ladder II		(-Hard-)<br/>
 
-## easy
-### 559	Maximum Depth of N-ary Tree		Easy	<br/>
+## Easy
+### 559	Maximum Depth of N-ary Tree		(-Easy-)	<br/>
 see tree
-### 429	N-ary Tree Level Order Traversal		Easy	<br/>
+### 429	N-ary Tree Level Order Traversal		(-Easy-)	<br/>
 see tree
-### 690	Employee Importance		Easy	<br/>
+### 690	Employee Importance		(-Easy-)	<br/>
 see dfs
-### 993	Cousins in Binary Tree		Easy	<br/>
+### 993	Cousins in Binary Tree		(-Easy-)	<br/>
 see tree
-### 107	Binary Tree Level Order Traversal II		Easy	<br/>
+### 107	Binary Tree Level Order Traversal II		(-Easy-)	<br/>
 see tree
-### 994	Rotting Oranges		Easy	<br/>
-simple, one step bfs
+### 994	Rotting Oranges		(-Easy-)	
+rotten oranage will rot its neighboring oranges in a day. Return the minimum number of minutes that must elapse until no cell has a fresh orange.  If this is impossible, return -1 instead.
+simple, one step bfs<br/>
+first count the number of fresh oranges and do one step bfs (for one day)<br/>
+when bfs cannot reduce the number of fresh oranges, we stop<br/>
+0-empty cell, 1-fresh cell, 2-rotten cell.<br/>
+when a rotten orange rottens its neighboring it shall be excluded from the bfs. (change it to 0)
 ```cpp
     int orangesRotting(vector<vector<int>>& grid) {
         //bfs to rotten the surrounding oranages
@@ -81,6 +86,7 @@ simple, one step bfs
         while(num_fresh)
         {
             int prev=num_fresh;
+			//to avoid repeat, first collect all oranges which need bfs
             vector<vector<int>> ind;
             for(int i=0;i<m;i++)
             {
@@ -99,7 +105,7 @@ simple, one step bfs
     void bfs(vector<vector<int>>& grid,int i,int j,int& num_fresh)
     {
         int m=grid.size(),n=grid[0].size();
-        grid[i][j]=0;
+        grid[i][j]=0;//change to empty cell, since it cannot rotten others
         if(i-1>=0 && i-1<m && grid[i-1][j]==1) {grid[i-1][j]=2;num_fresh--;}
         if(i+1<m && grid[i+1][j]==1) {grid[i+1][j]=2;num_fresh--;}
         if(j-1>=0 && j-1<n && grid[i][j-1]==1) {grid[i][j-1]=2;num_fresh--;}
@@ -107,31 +113,31 @@ simple, one step bfs
     }
 ```	
 
-### 101	Symmetric Tree		Easy	<br/>
+### 101	Symmetric Tree		(-Easy-)	<br/>
 see tree
-### 111	Minimum Depth of Binary Tree		Easy	<br/>
+### 111	Minimum Depth of Binary Tree		(-Easy-)	<br/>
 see tree
 
-## medium
-### 513	Find Bottom Left Tree Value		Medium	<br/>
+## Medium
+### 513	Find Bottom Left Tree Value		(-Medium-)	<br/>
 see tree
-### 515	Find Largest Value in Each Tree Row		Medium	<br/>
+### 515	Find Largest Value in Each Tree Row		(-Medium-)	<br/>
 see tree
-### 529	Minesweeper		Medium	<br/>
+### 529	Minesweeper		(-Medium-)	<br/>
 see dfs
-### 323	Number of Connected Components in an Undirected Graph 	Medium	<br/>
+### 323	Number of Connected Components in an Undirected Graph 	(-Medium-)	<br/>
 locked. bfs or union-find
-### 286	Walls and Gates 	Medium	<br/>
+### 286	Walls and Gates 	(-Medium-)	<br/>
 locked
-### 102	Binary Tree Level Order Traversal		Medium	<br/>
+### 102	Binary Tree Level Order Traversal		(-Medium-)	<br/>
 see tree
-### 199	Binary Tree Right Side View		Medium	<br/>
+### 199	Binary Tree Right Side View		(-Medium-)	<br/>
 see tree
-### 490	The Maze 	Medium	<br/>
+### 490	The Maze 	(-Medium-)	<br/>
 locked
-### 863	All Nodes Distance K in Binary Tree		Medium	<br/>
+### 863	All Nodes Distance K in Binary Tree		(-Medium-)	<br/>
 see tree
-### 752	Open the Lock		Medium	<br/>
+### 752	Open the Lock		(-Medium-)	<br/>
 You have a lock in front of you with 4 circular wheels. Each wheel has 10 slots: '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'. The wheels can rotate freely and wrap around: for example we can turn '9' to be '0', or '0' to be '9'. Each move consists of turning one wheel one slot.
 
 The lock initially starts at '0000', a string representing the state of the 4 wheels.
@@ -140,15 +146,16 @@ You are given a list of deadends dead ends, meaning if the lock displays any of 
 
 Given a target representing the value of the wheels that will unlock the lock, return the minimum total number of turns required to open the lock, or -1 if it is impossible.
 
-Example 1:
-Input: deadends = ["0201","0101","0102","1212","2002"], target = "0202"
-Output: 6
-Explanation:
-A sequence of valid moves would be "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202".
-Note that a sequence like "0000" -> "0001" -> "0002" -> "0102" -> "0202" would be invalid,
-because the wheels of the lock become stuck after the display becomes the dead end "0102
+Example 1:<br/>
+Input: deadends = ["0201","0101","0102","1212","2002"], target = "0202"<br/>
+Output: 6<br/>
+Explanation:<br/>
+A sequence of valid moves would be "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202".<br/>
+Note that a sequence like "0000" -> "0001" -> "0002" -> "0102" -> "0202" would be invalid,<br/>
+because the wheels of the lock become stuck after the display becomes the dead end "0102<br/>
 
-Approach: each digit can add 1 or -1. use bfs to reach the target and skip those deadends.
+Approach: each digit can add 1 or -1. use bfs to reach the target and skip those deadends.<br/>
+
 ```cpp
     int openLock(vector<string>& deadends, string target) {
         unordered_set<string> dead(deadends.begin(),deadends.end());
@@ -197,18 +204,18 @@ Approach: each digit can add 1 or -1. use bfs to reach the target and skip those
         return -1;
     }
 ```	
-### 934	Shortest Bridge		Medium	<br/>
+### 934	Shortest Bridge		(-Medium-)	<br/>
 see dfs.
 
-### 505	The Maze II 	Medium	<br/>
+### 505	The Maze II 	(-Medium-)	<br/>
 locked
 
-### 785	Is Graph Bipartite?		Medium	<br/>
+### 785	Is Graph Bipartite?		(-Medium-)	<br/>
 see dfs 
-### 279	Perfect Squares		Medium	<br/>
+### 279	Perfect Squares		(-Medium-)	<br/>
 see dp for knapsack
 
-### 743	Network Delay Time		Medium	<br/>
+### 743	Network Delay Time		(-Medium-)	<br/>
 There are N network nodes, labelled 1 to N.
 
 Given times, a list of travel times as directed edges times[i] = (u, v, w), where u is the source node, v is the target node, and w is the time it takes for a signal to travel from source to target.
@@ -216,6 +223,10 @@ Given times, a list of travel times as directed edges times[i] = (u, v, w), wher
 Now, we send a signal from a certain node K. How long will it take for all nodes to receive the signal? If it is impossible, return -1.
 
 bellman-ford algorithm
+from k to all other nodes, dist[i] similar to dp
+dp[k]=0
+then we try all edges to relax the distance.
+
 ```cpp
     //Bellman Ford algorithm
     int networkDelayTime(vector<vector<int>>& times, int N, int K) {
@@ -290,17 +301,49 @@ dijkstra algorithm
         return res==INT_MAX?-1:res;
     }
 ```
-dijkstra algorithm usually uses a priority_queue
+dijkstra algorithm usually uses a priority_queue (minheap) always try the min first.
+note: we use n+1 just to avoid node index vs node name difference_type
 
-### 103	Binary Tree Zigzag Level Order Traversal		Medium	<br/>
+```cpp
+	typedef pair<int,int> pii;
+	int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<pii> g[n + 1];
+        for (const auto& t : times) {
+            g[t[0]].push_back({t[1], t[2]});
+        }
+        const int inf = 1e9;
+        vector<int> dist(n + 1, inf);
+        dist[k] = 0;
+        priority_queue<pii, vector<pii>, greater<pii> > pq;
+        pq.push({0, k});
+        int u, v, w;
+		vector<bool> vis(n + 1, false);
+        while (!pq.empty()) {
+            pii p = pq.top(); pq.pop();
+            u = p.second;
+			if (vis[u]) continue;
+            for (auto& to : g[u]) {
+                v = to.first, w = to.second;
+                if (dist[v] > dist[u] + w) {
+                    dist[v] = dist[u] + w;
+                    pq.push({dist[v], v});
+                }
+            }
+			vis[u] = true;
+        }
+        int ans = *max_element(dist.begin() + 1, dist.end());
+        return ans == inf ? -1 : ans;
+    }
+```	
+### 103	Binary Tree Zigzag Level Order Traversal		(-Medium-)	<br/>
 see tree
-### 200	Number of Islands		Medium	<br/>
+### 200	Number of Islands		(-Medium-)	<br/>
 see union-find
 
-### 261	Graph Valid Tree 	Medium	<br/>
+### 261	Graph Valid Tree 	(-Medium-)	<br/>
 locked
 
-### 207	Course Schedule		Medium	<br/>
+### 207	Course Schedule		(-Medium-)	<br/>
 dfs with three states to detect a cycle. 
 ```cpp
     bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
@@ -327,13 +370,12 @@ dfs with three states to detect a cycle.
 ```
 	
 
-### 417	Pacific Atlantic Water Flow		Medium	<br/>
+### 417	Pacific Atlantic Water Flow		(-Medium-)	<br/>
 see dfs with bitset status
 
-### 542	01 Matrix		Medium	<br/>
-find the distance to nearest 0
-
-bfs
+### 542	01 Matrix		(-Medium-)	<br/>
+find the distance to nearest 0<br/>
+then use bfs to update the min value.<br/>
 ```cpp
     vector<vector<int>> updateMatrix(vector<vector<int>>& matrix) {
       //first scan to update all distance=1
@@ -343,7 +385,8 @@ bfs
         
         queue<int> q;
         for(int i=0;i<m;i++)
-            for(int j=0;j<n;j++) if(matrix[i][j]) ans[i][j]=update_closest(matrix,i,j,q);
+            for(int j=0;j<n;j++) 
+				if(matrix[i][j]) ans[i][j]=update_closest(matrix,i,j,q);
         //print(matrix);
         int dir[][2]={{0,1},{0,-1},{1,0},{-1,0}};
         //note process 1 first, 2 second,3,4,5....., otherwise there would have a problem depending on the update sequence
@@ -384,12 +427,13 @@ bfs
         return -1;
     }
 ```	
-### 210	Course Schedule II		Medium	<br/>
-return the ordering of the courses
-approach 1:
-first, generate the graph adjacency matrix
-second, scan for source nodes (no incoming edges), and remove these source nodes 
-repeat until there are no source nodes.
+
+### 210	Course Schedule II		(-Medium-)	<br/>
+return the ordering of the courses<br/>
+approach 1:<br/>
+first, generate the graph adjacency matrix<br/>
+second, scan for source nodes (no incoming edges), and remove these source nodes <br/>
+repeat until there are no source nodes.<br/>
 
 ```cpp
     vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
@@ -431,8 +475,12 @@ repeat until there are no source nodes.
         }
     }
 ```	
-### 787	Cheapest Flights Within K Stops		Medium	<br/>
-dijkstra, bellman-ford, bfs, or dp
+
+### 787	Cheapest Flights Within K Stops		(-Medium-)	<br/>
+dijkstra, bellman-ford, bfs, or dp.<br/>
+dp[dst][k] for the cost from src to dst with k stops.<br/>
+dijkstra or bellman-ford or dp
+
 ```cpp
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K)
     {
@@ -446,23 +494,37 @@ dijkstra, bellman-ford, bfs, or dp
             for(const vector<int>& f: flights) //iterate all flights: f[0]: from, f[1]: to, f[2], price
             {
                 if(dp[f[0]][i-1]<INT_MAX)
-                dp[f[1]][i] = min(dp[f[1]][i], dp[f[0]][i-1] + f[2]);
+					dp[f[1]][i] = min(dp[f[1]][i], dp[f[0]][i-1] + f[2]);
             }
         }
         if(dp[dst][K] == INT_MAX) return -1;
         return dp[dst][K];
     }
 ```	
-### 909	Snakes and Ladders		Medium	<br/>
+### 909	Snakes and Ladders		(-Medium-)	<br/>
+On an N x N board, the numbers from 1 to N*N are written boustrophedonically starting from the bottom left of the board, and alternating direction each row.  For example, for a 6 x 6 board, the numbers are written as follows:
 
-### 310	Minimum Height Trees		Medium	<br/>
+
+You start on square 1 of the board (which is always in the last row and first column).  Each move, starting from square x, consists of the following:
+
+You choose a destination square S with number x+1, x+2, x+3, x+4, x+5, or x+6, provided this number is <= N*N.
+(This choice simulates the result of a standard 6-sided die roll: ie., there are always at most 6 destinations, regardless of the size of the board.)
+If S has a snake or ladder, you move to the destination of that snake or ladder.  Otherwise, you move to S.
+A board square on row r and column c has a "snake or ladder" if board[r][c] != -1.  The destination of that snake or ladder is board[r][c].
+
+Note that you only take a snake or ladder at most once per move: if the destination to a snake or ladder is the start of another snake or ladder, you do not continue moving.  (For example, if the board is `[[4,-1],[-1,3]]`, and on the first move your destination square is `2`, then you finish your first move at `3`, because you do not continue moving to `4`.)
+
+Return the least number of moves required to reach square N*N.  If it is not possible, return -1.
+
+
+### 310	Minimum Height Trees		(-Medium-)	<br/>
 see tree
-### 133	Clone Graph		Medium	<br/>
+### 133	Clone Graph		(-Medium-)	<br/>
 see hashtable
 
-### 127	Word Ladder		Medium	<br/>
-from start, each move just change one char.
-return the shortest move.
+### 127	Word Ladder		(-Medium-)	<br/>
+from start, each move just change one char.<br/>
+return the shortest move.<br/>
 
 ```cpp
     int ladderLength(string beginWord, string endWord, vector<string>& Dict) {
@@ -503,20 +565,20 @@ return the shortest move.
         } 
     } 
 ```	
-### 130	Surrounded Regions		Medium	<br/>
+### 130	Surrounded Regions		(-Medium-)	<br/>
 see union-find
 
 
-## hard
-### 773	Sliding Puzzle		Hard	<br/>
-hua-rong-dao game
-return the least number of moves to solve the puzzle.
+## Hard
+### 773	Sliding Puzzle		(-Hard-)	<br/>
+hua-rong-dao game<br/>
+return the least number of moves to solve the puzzle.<br/>
 
-Consider each state in the board as a graph node, we just need to find out the min distance between start node and final target node "123450". 
-Since it's a single point to single point questions, Dijkstra is not needed here. 
-We can simply use BFS, and also count the level we passed. 
-Every time we swap 0 position in the String to find the next state. 
-Use a hashTable to store the visited states.
+Consider each state in the board as a graph node, we just need to find out the min distance between start node and final target node "123450". <br/>
+Since it's a single point to single point questions, Dijkstra is not needed here. <br/>
+We can simply use BFS, and also count the level we passed. <br/>
+Every time we swap 0 position in the String to find the next state. <br/>
+Use a hashTable to store the visited states.<br/>
 
 ```cpp
     int slidingPuzzle(vector<vector<int>>& board) {
@@ -554,7 +616,7 @@ Use a hashTable to store the visited states.
         return -1;
     }
 ```	
-### 847	Shortest Path Visiting All Nodes		Hard	<br/>
+### 847	Shortest Path Visiting All Nodes		(-Hard-)	<br/>
 An undirected, connected graph of N nodes (labeled 0, 1, 2, ..., N-1) is given as graph.
 
 graph.length = N, and j != i is in the list graph[i] exactly once, if and only if nodes i and j are connected.
@@ -562,14 +624,14 @@ graph.length = N, and j != i is in the list graph[i] exactly once, if and only i
 Return the length of the shortest path that visits every node. You may start and stop at any node, you may revisit nodes multiple times, and you may reuse edges.
 
 Using a two-dimensional matrix to record the distance from a point through those points.
-Example:
-dp[0][3(00000...00011)] = 2 means the distance starting point 0 through 0, 1 is 2
-dp[1][7(00000...00111)] = 3 means the distance starting point 1 through 0, 1, 2 is 3.
+Example:<br/>
+dp[0][3(00000...00011)] = 2 means the distance starting point 0 through 0, 1 is 2<br/>
+dp[1][7(00000...00111)] = 3 means the distance starting point 1 through 0, 1, 2 is 3.<br/>
 
 After BFS, we will know the distance through all nodes, compare dp[0][11111...11111](it means that start point 0 through all nodes), dp[1][11111...11111]
-..., dp[n-1][11111...11111], we will get the result.
+..., dp[n-1][11111...11111], we will get the result.<br/>
 
-similarly we use a bfs to reduce the distance.
+similarly we use a bfs to reduce the distance.<br/>
 
 ```cpp
     struct State{
@@ -608,7 +670,7 @@ similarly we use a bfs to reduce the distance.
     }
 ```	
 
-### 815	Bus Routes		Hard	<br/>
+### 815	Bus Routes		(-Hard-)	<br/>
 We have a list of bus routes. Each routes[i] is a bus route that the i-th bus repeats forever. For example if routes[0] = [1, 5, 7], this means that the first bus (0-th indexed) travels in the sequence 1->5->7->1->5->7->1->... forever.
 
 We start at bus stop S (initially not on a bus), and we want to go to bus stop T. Travelling by buses only, what is the least number of buses we must take to reach our destination? Return -1 if it is not possible.
@@ -638,9 +700,7 @@ approach: build a hashmap station vs bus number, and then we have several routes
                 }
             }
         }
-        //print(connection_mp);
-        //cout<<"S: ";copy(mp[S].begin(),mp[S].end(),ostream_iterator<int>(cout," "));cout<<endl;
-        //cout<<"T: ";copy(mp[T].begin(),mp[T].end(),ostream_iterator<int>(cout," "));cout<<endl;
+
         //S and T could be on one or more groups!
         int min_jmp=INT_MAX;
         for(auto it=mp[S].begin();it!=mp[S].end();it++)
@@ -686,7 +746,7 @@ approach: build a hashmap station vs bus number, and then we have several routes
     }
 ```	
 
-### 301	Remove Invalid Parentheses		Hard	<br/>
+### 301	Remove Invalid Parentheses		(-Hard-)	<br/>
 Remove the minimum number of invalid parentheses in order to make the input string valid. Return all possible results.
 approach 1: dfs, from left and right and from right to left.
 
@@ -731,8 +791,8 @@ However a cleverer idea is: reverse the string and reuse the code!
         else ans.push_back(rs);//finished right to left
     }
 ```
-### 407	Trapping Rain Water II		Hard	<br/>
-### 2d problem
+### 407	Trapping Rain Water II		(-Hard-)	<br/>
+ 2d problem
 Given an m x n matrix of positive integers representing the height of each unit cell in a 2D elevation map, compute the volume of water it is able to trap after raining.
 
 bfs
@@ -775,7 +835,7 @@ bfs
     }
 ```
 	
-### 1036 Escape a Large Maze		Hard	<br/>
+### 1036 Escape a Large Maze		(-Hard-)	<br/>
 dfs using radius
 
 ```cpp
@@ -811,12 +871,12 @@ dfs using radius
     }
 ```
 	
-### 317	Shortest Distance from All Buildings 	Hard	<br/>
+### 317	Shortest Distance from All Buildings 	(-Hard-)	<br/>
 locked
-### 499	The Maze III 	Hard	<br/>
+### 499	The Maze III 	(-Hard-)	<br/>
 locked
 
-### 864	Shortest Path to Get All Keys		Hard	<br/>
+### 864	Shortest Path to Get All Keys		(-Hard-)	<br/>
 We are given a 2-dimensional grid. "." is an empty cell, "#" is a wall, "@" is the starting point, ("a", "b", ...) are keys, and ("A", "B", ...) are locks.
 
 We start at the starting point, and one move consists of walking one space in one of the 4 cardinal directions.  We cannot walk outside the grid, or walk into a wall.  If we walk over a key, we pick it up.  We can't walk over a lock unless we have the corresponding key.
@@ -894,7 +954,7 @@ Use State to represent visited states
 ```
 	
 
-### 854	K-Similar Strings		Hard	<br/>
+### 854	K-Similar Strings		(-Hard-)	<br/>
 Strings A and B are K-similar (for some non-negative integer K) if we can swap the positions of two letters in A exactly K times so that the resulting string equals B.
 
 Given two anagrams A and B, return the smallest K for which A and B are K-similar.
@@ -934,7 +994,7 @@ this is very similar to the sliding puzzle
 ```
 	
 
-### 675	Cut Off Trees for Golf Event		Hard	<br/>
+### 675	Cut Off Trees for Golf Event		(-Hard-)	<br/>
 ```cpp
     int cutOffTree(vector<vector<int>>& forest) {
         vector<vector<int>> trees;
@@ -992,14 +1052,13 @@ this is very similar to the sliding puzzle
     }
 ```
 	
-### 913	Cat and Mouse		Hard	<br/>
-### 126	Word Ladder II		Hard<br/>
-now we need to return the list
+### 913	Cat and Mouse		(-Hard-)	<br/>
 
-I have struggled with this problem for a long time because nearly all the solution on the web is too long or too tricky and can hardly be remembered during the interview.
+### 126	Word Ladder II		(-Hard-)<br/>
+now we need to return the list<br/>
 
 In fact, this problem can be solved with a very standard BFS process, whose structure could haven been written by you for many many times (using while loop and a queue).
-The following code is written in a very standard BFS method, which is easy to memorize.
+The following code is written in a very standard BFS method, which is (-Easy-) to memorize.
 
 The only tricky thing you need to remember is this is a BFS of paths not words!
 So the element is the queue is a vector. That's it.
