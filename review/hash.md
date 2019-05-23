@@ -111,45 +111,46 @@ hashtable often serves as a intermediate data structure for O(1) complexity, cre
 1044 Longest Duplicate Substring		Hard	<br/>
 149	Max Points on a Line		Hard	<br/>
 
-## easy
-### 771	Jewels and Stones		Easy	
+## Easy
+### 771	Jewels and Stones		(-Easy-)
 simple. a list of jewels and a list of stones
 
-### 760	Find Anagram Mappings 	Easy	
+### 760	Find Anagram Mappings 	(-Easy-)
 locked
 
-### 961	N-Repeated Element in Size 2N Array		Easy	
+### 961	N-Repeated Element in Size 2N Array		(-Easy-)
 simple, shown more than once is the answer
 
-### 1002 Find Common Characters		Easy	
+### 1002 Find Common Characters		(-Easy-)
 just count chars in each word and then choose the min of all
 
-### 811	Subdomain Visit Count		Easy
+### 811	Subdomain Visit Count		(-Easy-)
 discuss.leetcode.	com, count each domain
 
-### 359	Logger Rate Limiter 	Easy	
+### 359	Logger Rate Limiter 	(-Easy-)
 locked
 
-### 500	Keyboard Row		Easy	
+### 500	Keyboard Row		(-Easy-)
 simple
 
-### 463	Island Perimeter		Easy	
+### 463	Island Perimeter		(-Easy-)
 this does not need hashtable just check top and left and subtract
 
 
-### 884	Uncommon Words from Two Sentences		Easy	
+### 884	Uncommon Words from Two Sentences		(-Easy-)
 two maps and remove those common
 
-### 266	Palindrome Permutation 	Easy	
+### 266	Palindrome Permutation 	(-Easy-)
 locked
 
-### 136	Single Number		Easy	
+### 136	Single Number		(-Easy-)
 every appear twice except one, using xor
 
-### 575	Distribute Candies		Easy	
-candies: number represent different type
-return max number of candies can give to brothers and sisters.
-apparently we can only get half of the types.
+### 575	Distribute Candies		(-Easy-)
+candies: number represent different type<br/>
+return max number of candies can give to brothers and sisters.<br/>
+apparently we can only get half of the types.<br/>
+
 ```cpp
     int distributeCandies(vector<int>& candies) {
         //build a map with its count
@@ -158,10 +159,10 @@ apparently we can only get half of the types.
         return min(table.size(),candies.size()/2); 
     }
 ```	
-### 706	Design HashMap		Easy	
-hashmap using array of limited size, and each element can store a linked list for collision
-use c++ std::list for convenience (doubly linked-list)
-use simple key%size for he hash function
+### 706	Design HashMap		(-Easy-)
+hashmap using array of limited size, and each element can store a linked list for collision<br/>
+use c++ std::list for convenience (doubly linked-list)<br/>
+use simple key%size for he hash function<br/>
 
 ```cpp    
 	vector<list<pair<int,int>>> m_data;
@@ -205,9 +206,9 @@ use simple key%size for he hash function
     }
 ```
 	
-### 953	Verifying an Alien Dictionary		Easy	
-a-z but in different order, verify the list of words order correct or not
-convert words and a-z into conventional order and then compare
+### 953	Verifying an Alien Dictionary		(-Easy-)
+a-z but in different order, verify the list of words order correct or not<br/>
+convert words and a-z into conventional order and then compare<br/>
 ```cpp
     bool isAlienSorted(vector<string>& words, string order) {
         unordered_map<char,char> mp;
@@ -222,9 +223,10 @@ convert words and a-z into conventional order and then compare
     }
 ```
 
-### 349	Intersection of Two Arrays		Easy	
-no duplicates allowed in result.
-use set_intersection or hand write. actually we do not need two hashtable. one is easier.
+### 349	Intersection of Two Arrays		(-Easy-)
+no duplicates allowed in result.<br/>
+use set_intersection or hand write. actually we do not need two hashtable. one is easier.<br/>
+
 ```cpp
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
         //use set_intersection
@@ -239,14 +241,15 @@ use set_intersection or hand write. actually we do not need two hashtable. one i
         return v;
     }
 ```	
-### 690	Employee Importance		Easy	
+### 690	Employee Importance		(-Easy-)
 see dfs
 
-### 748	Shortest Completing Word		Easy	
-need to complete the license plate using words, 
-sort the words according to length
-if there is tie, return the first
-so use stable_sort
+### 748	Shortest Completing Word		(-Easy-)
+need to complete the license plate using words, <br/>
+sort the words according to length<br/>
+if there is tie, return the first<br/>
+so use stable_sort<br/>
+
 ```cpp
 bool cmp(const string& a,const string& b) {return a.size()<b.size();}
 class Solution {
@@ -277,28 +280,30 @@ public:
 };
 ```
 
-### 705	Design HashSet		Easy	
+### 705	Design HashSet		(-Easy-)
 similar approach for hashmap. but only store the element not the pair.
 
-### 389	Find the Difference		Easy	
+### 389	Find the Difference		(-Easy-)
 two strings, only one char is extra, just xor
 
-### 242	Valid Anagram		Easy	
+### 242	Valid Anagram		(-Easy-)
 simple
 
-### 217	Contains Duplicate		Easy	
+### 217	Contains Duplicate		(-Easy-)
 convert to hashset and check if size is the same
 
-### 387	First Unique Character in a String		Easy	
-count in hashmap and find the first char with counter=1 (two pass)
-or store the index into hash, and loop the hashtable which is more efficient.
+### 387	First Unique Character in a String		(-Easy-)
+count in hashmap and find the first char with counter=1 (two pass)<br/>
+or store the index into hash, and loop the hashtable which is more efficient.<br/>
 
 
-### 447	Number of Boomerangs		Easy	
+### 447	Number of Boomerangs		(-Easy-)
 Given n points in the plane that are all pairwise distinct, a "boomerang" is a tuple of points (i, j, k) such that the distance between i and j equals the distance between i and k (the order of the tuple matters).
 
 Find the number of boomerangs. You may assume that n will be at most 500 and coordinates of points are all in the range [-10000, 10000] (inclusive).
+
 approach: just O(n^2) to get all distance and save into hashmap. 
+
 ```cpp
     int numberOfBoomerangs(vector<pair<int, int>>& points) {
         //brutal force: for each point get the distance to all other points, store the distance in a map
@@ -327,11 +332,11 @@ approach: just O(n^2) to get all distance and save into hashmap.
     }
 ```
 	
-### 409	Longest Palindrome		Easy	
+### 409	Longest Palindrome		(-Easy-)
 Given a string which consists of lowercase or uppercase letters, find the length of the longest palindromes that can be built with those letters.
 
-This is case sensitive, for example "Aa" is not considered a palindrome here.
-only one is allowed to be odd times
+This is case sensitive, for example "Aa" is not considered a palindrome here.<br/>
+only one is allowed to be odd times<br/>
 
 ```cpp
     int longestPalindrome(string s) {
@@ -349,9 +354,9 @@ only one is allowed to be odd times
         
     }
 ```	
-### 599	Minimum Index Sum of Two Lists		Easy	
-common interest with min index sum
-one map is fine, and check against another array.
+### 599	Minimum Index Sum of Two Lists		(-Easy-)
+common interest with min index sum<br/>
+one map is fine, and check against another array.<br/>
 ```cpp
     vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
         vector<string>res;
@@ -365,9 +370,9 @@ one map is fine, and check against another array.
         return res;
     }
 ```	
-### 350	Intersection of Two Arrays II		Easy	
-need keep the duplicates, using hashmap to keep the counters
-or use multiset
+### 350	Intersection of Two Arrays II		(-Easy-)
+need keep the duplicates, using hashmap to keep the counters<br/>
+or use multiset<br/>
 ```cpp
     vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
         vector<int> v(min(nums1.size(),nums2.size()));
@@ -380,14 +385,14 @@ or use multiset
         return v;
     }
 ```	
-### 202	Happy Number		Easy	
+### 202	Happy Number		(-Easy-)
 sum of digit square which equals to 1
 either there is a cycle or go to 1
 
-### 720	Longest Word in Dictionary		Easy	
-the longest word can be built one char by one char from words in the dictionary
-approach 1: each time remove one char at the end. and check if in the dictionary
-approach 2: trie, first insert the longest one, later one we will judge start with.
+### 720	Longest Word in Dictionary		(-Easy-)
+the longest word can be built one char by one char from words in the dictionary<br/>
+approach 1: each time remove one char at the end. and check if in the dictionary<br/>
+approach 2: trie, first insert the longest one, later one we will judge start with.<br/>
 ```cpp
     Trie t;    
     string longestWord(vector<string>& words) {
@@ -410,14 +415,14 @@ approach 2: trie, first insert the longest one, later one we will judge start wi
     }
 ```
 	
-### 1	Two Sum		Easy	
+### 1	Two Sum		(-Easy-)
 trivial
 
-### 594	Longest Harmonious Subsequence		Easy	
-in the array max-min=1 
-find the longest harmoniuos subsequence.
-hashmap to record each number's counters
-then for each number we look for its neighboring
+### 594	Longest Harmonious Subsequence		(-Easy-)
+in the array max-min=1 <br/>
+find the longest harmoniuos subsequence.<br/>
+hashmap to record each number's counters<br/>
+then for each number we look for its neighboring<br/>
 
 ```cpp
     int findLHS(vector<int>& nums) {
@@ -440,26 +445,26 @@ then for each number we look for its neighboring
         return maxlen;
     }
 ```	
-### 246	Strobogrammatic Number 	Easy	
+### 246	Strobogrammatic Number 	(-Easy-)
 locked
 
-### 645	Set Mismatch		Easy	
-### 1 to n, one number converts to other number, so one is missing and one is duplicated.
-find the two numbers
-xor will find a^b
-we need another pass to find the duplicate or the missing. (using seen, change to negative)
+### 645	Set Mismatch		(-Easy-)
+given 1 to n, one number converts to other number, so one is missing and one is duplicated.<br/>
+find the two numbers<br/>
+xor will find a^b<br/>
+we need another pass to find the duplicate or the missing. (using seen, change to negative)<br/>
 
-### 734	Sentence Similarity 	Easy	
+### 734	Sentence Similarity 	(-Easy-)
 locked
 
-### 970	Powerful Integers		Easy	
-z=x^i+y^j
+### 970	Powerful Integers		(-Easy-)
+z=x^i^+y^j^
 just use brutal force
 
-### 438	Find All Anagrams in a String		Easy	
+### 438	Find All Anagrams in a String		(-Easy-)
 sliding window for hashmap
 
-### 205	Isomorphic Strings		Easy	
+### 205	Isomorphic Strings		(-Easy-)
 s and t can be replaced. the two string has the same pattern
 convert a third pattern
 ```cpp
@@ -483,9 +488,9 @@ convert a third pattern
 ```	
 
 
-### 624	Maximum Distance in Arrays 	Easy	
+### 624	Maximum Distance in Arrays 	(-Easy-)
 locked
-### 219	Contains Duplicate II		Easy	
+### 219	Contains Duplicate II		(-Easy-)
 Given an array of integers and an integer k, find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the absolute difference between i and j is at most k.
 ```cpp
     bool containsNearbyDuplicate(vector<int>& nums, int k) {
@@ -500,9 +505,9 @@ Given an array of integers and an integer k, find out whether there are two dist
     }
 ```
 	
-### 290	Word Pattern		Easy	
-very similar to 205, check if the string has the same pattern
-convert to the same pattern for both a and b.
+### 290	Word Pattern		(-Easy-)
+very similar to 205, check if the string has the same pattern<br/>
+convert to the same pattern for both a and b.<br/>
 ```cpp
 bool wordPattern(string pattern, string str) {
     map<char, int> p2i;
@@ -518,10 +523,10 @@ bool wordPattern(string pattern, string str) {
 }
 ```
 
-### 170	Two Sum III - Data structure design 	Easy	
+### 170	Two Sum III - Data structure design 	(-Easy-)
 locked
 
-### 204	Count Primes		Easy	
+### 204	Count Primes		(-Easy-)
 this is a typical problem
 ```cpp
     int countPrimes(int n) {
@@ -539,7 +544,7 @@ this is a typical problem
 ```	
 
 ## medium
-### 535	Encode and Decode TinyURL		Medium	
+### 535	Encode and Decode TinyURL		(-Medium-)
 ```cpp
     string dict = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     int id = 0;
@@ -577,10 +582,11 @@ this is a typical problem
     }
 ```
 
-### 739	Daily Temperatures		Medium	
+### 739	Daily Temperatures		(-Medium-)
 Given a list of daily temperatures T, return a list such that, for each day in the input, tells you how many days you would have to wait until a warmer temperature. If there is no future day for which this is possible, put 0 instead.
 
 For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73], your output should be [1, 1, 4, 2, 1, 1, 0, 0].
+
 stack problem
 ```cpp
     vector<int> dailyTemperatures(vector<int>& T) {
@@ -599,24 +605,24 @@ stack problem
 		return T;
     }
 ```	
-### 94	Binary Tree Inorder Traversal		Medium	
+### 94	Binary Tree Inorder Traversal		(-Medium-)
 see tree
 
-### 311	Sparse Matrix Multiplication 	Medium	
+### 311	Sparse Matrix Multiplication 	(-Medium-)
 locked
-### 451	Sort Characters By Frequency		Medium	
+### 451	Sort Characters By Frequency		(-Medium-)
 trivial, sort the map pairs with second.
 or no sorting put into buckets. upper bound is the string length
 
-### 609	Find Duplicate File in System		Medium	
+### 609	Find Duplicate File in System		(-Medium-)
 see string, use content as key in hashmap
 
-### 347	Top K Frequent Elements		Medium	
+### 347	Top K Frequent Elements		(-Medium-)
 hashmap and then put into priority_queue
 
-### 508	Most Frequent Subtree Sum		Medium	
+### 508	Most Frequent Subtree Sum		(-Medium-)
 see  tree
-### 648	Replace Words		Medium	
+### 648	Replace Words		(-Medium-)
 all words has the prefix is replaced with prefix
 use trie
 ```cpp
@@ -734,10 +740,10 @@ public:
     }
 };
 ```
-### 676	Implement Magic Dictionary		Medium	
-a list of dictionary words. Given a word and if we modify exactly one letter, it will match
+### 676	Implement Magic Dictionary		(-Medium-)
+a list of dictionary words. Given a word and if we modify exactly one letter, it will match<br/>
 one approach: while we build the dictionary we replace each letter with $ and add into it. when check, we replace each letter with $, any string match then success
-or just remove that char.
+or just remove that char.<br/>
 ```cpp
     unordered_map<string,set<string>> mydict;
     MagicDictionary() {
@@ -771,15 +777,15 @@ or just remove that char.
     }
 ```
 	
-### 781	Rabbits in Forest		Medium	
+### 781	Rabbits in Forest		(-Medium-)
 In a forest, each rabbit has some color. Some subset of rabbits (possibly all of them) tell you how many other rabbits have the same color as them. Those answers are placed in an array.
 
 Return the minimum number of rabbits that could be in the forest.
 
-If x+1 rabbits have same color, then we get x+1 rabbits who all answer x.
-now n rabbits answer x.
-If n % (x + 1) == 0, we need n / (x + 1) groups of x + 1 rabbits. (different color group)
-If n % (x + 1) != 0, we need n / (x + 1) + 1 groups of x + 1 rabbits. 
+If x+1 rabbits have same color, then we get x+1 rabbits who all answer x.<br/>
+now n rabbits answer x.<br/>
+If n % (x + 1) == 0, we need n / (x + 1) groups of x + 1 rabbits. (different color group)<br/>
+If n % (x + 1) != 0, we need n / (x + 1) + 1 groups of x + 1 rabbits. <br/>
 
 the number of groups is math.ceil(n / (x + 1)) and it equals to (n + x) / (x + 1) , which is more elegant.
 
@@ -793,16 +799,16 @@ the number of groups is math.ceil(n / (x + 1)) and it equals to (n + x) / (x + 1
     }
 ```
 	
-### 694	Number of Distinct Islands 	Medium	
+### 694	Number of Distinct Islands 	(-Medium-)
 locked
 
-### 981	Time Based Key-Value Store		Medium	
+### 981	Time Based Key-Value Store		(-Medium-)
 Create a timebased key-value store class TimeMap, that supports two operations.
 
-### 1. set(string key, string value, int timestamp)
+ 1. set(string key, string value, int timestamp)
 
 Stores the key and value, along with the given timestamp.
-### 2. get(string key, int timestamp)
+ 2. get(string key, int timestamp)
 
 Returns a value such that set(key, value, timestamp_prev) was called previously, with timestamp_prev <= timestamp.
 If there are multiple such values, it returns the one with the largest timestamp_prev.
@@ -822,9 +828,9 @@ If there are no values, it returns the empty string ("").
     }
 ```
     
-### 454	4Sum II		Medium	
-### 4 lists of numbers choose one from each array a+b+c+d=target
-reduce 4 into 2
+### 454	4Sum II		(-Medium-)
+ Given 4 lists of numbers choose one from each array a+b+c+d=target<br/>
+approach: reduce 4 into 2
 ```cpp
     int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
         //approach build a map of A+B
@@ -851,12 +857,12 @@ reduce 4 into 2
 ```
 	
 
-### 939	Minimum Area Rectangle		Medium	
-the rectangle parallels to the axis xy
-step 1: group points using x coordinate, y sorted
-step 2: iterate to see current x can form a rectangle with previous x (has a same y)
-step 3: get the y intersect
-step 4: compare the min rect area.
+### 939	Minimum Area Rectangle		(-Medium-)
+the rectangle parallels to the axis xy<br/>
+step 1: group points using x coordinate, y sorted<br/>
+step 2: iterate to see current x can form a rectangle with previous x (has a same y)<br/>
+step 3: get the y intersect<br/>
+step 4: compare the min rect area.<br/>
 
 ```cpp
     int minAreaRect(vector<vector<int>>& points) {
@@ -889,19 +895,19 @@ step 4: compare the min rect area.
         return minarea==INT_MAX?0:minarea;
     }
 ```	
-### 249	Group Shifted Strings 	Medium	
+### 249	Group Shifted Strings 	(-Medium-)
 locked
-### 554	Brick Wall		Medium	
+### 554	Brick Wall		(-Medium-)
 There is a brick wall in front of you. The wall is rectangular and has several rows of bricks. The bricks have the same height but different width. You want to draw a vertical line from the top to the bottom and cross the least bricks.
 
 The brick wall is represented by a list of rows. Each row is a list of integers representing the width of each brick in this row from left to right.
 
 If your line go through the edge of a brick, then the brick is not considered as crossed. You need to find out how to draw the line to cross the least bricks and return the number of crossed bricks.
 
-this is a interval problem.
-we store all the junction position in hashmap. position vs occurance.
-we get the most common junctions
-note the last one does not count.
+this is a interval problem.<br/>
+we store all the junction position in hashmap. position vs occurance.<br/>
+we get the most common junctions<br/>
+note the last one does not count.<br/>
 
 ```cpp
     int leastBricks(vector<vector<int>>& wall) {
@@ -920,12 +926,12 @@ note the last one does not count.
         return wall.size()-maxcomm;
     }
 ```	
-### 244	Shortest Word Distance II 	Medium	
+### 244	Shortest Word Distance II 	(-Medium-)
 locked
-### 49	Group Anagrams		Medium	
+### 49	Group Anagrams		(-Medium-)
 sorted as the key
 
-### 718	Maximum Length of Repeated Subarray		Medium	
+### 718	Maximum Length of Repeated Subarray		(-Medium-)
 similar to longest common substr
 dp
 ```cpp
@@ -949,7 +955,7 @@ dp
     }
 ```	
 
-### 692	Top K Frequent Words		Medium	
+### 692	Top K Frequent Words		(-Medium-)
 Given a non-empty list of words, return the k most frequent elements.
 
 Your answer should be sorted by frequency from highest to lowest. If two words have the same frequency, then the word with the lower alphabetical order comes first.
@@ -977,10 +983,10 @@ public:
 };
 ```
 
-### 325	Maximum Size Subarray Sum Equals k 	Medium	
+### 325	Maximum Size Subarray Sum Equals k 	(-Medium-)
 
 	
-### 974	Subarray Sums Divisible by K		Medium	
+### 974	Subarray Sums Divisible by K		(-Medium-)
 hashmap to record the remainder or not using hashmap
 ```cpp
     int subarraysDivByK(vector<int>& A, int K) {
@@ -1003,9 +1009,9 @@ hashmap to record the remainder or not using hashmap
         return ans;
     }
 ```
-### 36	Valid Sudoku		Medium	
-each row, each colum, each 3x3 subbox, contains 1-9 exactly once
-check if not used, then use it.
+### 36	Valid Sudoku		(-Medium-)
+each row, each colum, each 3x3 subbox, contains 1-9 exactly once<br/>
+check if not used, then use it.<br/>
 ```cpp
     bool isValidSudoku(vector<vector<char>>& board) {
         int size=board.size();
@@ -1044,9 +1050,9 @@ check if not used, then use it.
         return mask & (1<<n);
     }
 ```	
-### 380	Insert Delete GetRandom O(1)		Medium	
+### 380	Insert Delete GetRandom O(1)		(-Medium-)
 see design
-### 525	Contiguous Array		Medium	
+### 525	Contiguous Array		(-Medium-)
 Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
 approach: consider it as -1 1 series, accumulate sum would be the same if between range sum is 0
 store the sum vs the index.
@@ -1071,7 +1077,7 @@ int findMaxLength(vector<int>& nums) {
 }
 ```
 
-### 560	Subarray Sum Equals K		Medium	
+### 560	Subarray Sum Equals K		(-Medium-)
 Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
 ```cpp
     int subarraySum(vector<int>& nums, int k) {
@@ -1087,13 +1093,13 @@ Given an array of integers and an integer k, you need to find the total number o
         return cnt;
     }
 ```	
-### 966	Vowel Spellchecker		Medium	
+### 966	Vowel Spellchecker		(-Medium-)
 see string
 
-### 314	Binary Tree Vertical Order Traversal 	Medium	
+### 314	Binary Tree Vertical Order Traversal 	(-Medium-)
 see tree
 
-### 299	Bulls and Cows		Medium	
+### 299	Bulls and Cows		(-Medium-)
 You are playing the following Bulls and Cows game with your friend: You write down a number and ask your friend to guess what the number is. Each time your friend makes a guess, you provide a hint that indicates how many digits in said guess match your secret number exactly in both digit and position (called "bulls") and how many digits match the secret number but locate in the wrong position (called "cows"). Your friend will use successive guesses and hints to eventually derive the secret number.
 
 Write a function to return a hint according to the secret number and friend's guess, use A to indicate the bulls and B to indicate the cows. 
@@ -1130,7 +1136,7 @@ note matched shall be subtracted.
         return to_string(count_a)+"A"+to_string(count_b)+"B";
     }
 ```	
-### 957	Prison Cells After N Days		Medium	
+### 957	Prison Cells After N Days		(-Medium-)
 There are 8 prison cells in a row, and each cell is either occupied or vacant.
 
 Each day, whether the cell is occupied or vacant changes according to the following rules:
@@ -1174,8 +1180,8 @@ cycle detection using hashmap
     }
 ```
 	
-### 930	Binary Subarrays With Sum		Medium	
-In an array A of 0s and 1s, how many non-empty subarrays have sum S?
+### 930	Binary Subarrays With Sum		(-Medium-)
+In an array A of 0s and 1s, how many non-empty subarrays have sum S?<br/>
 a window covering S 1s and calculate the front and after range to move (all 0 which can move freely)
 
 ```cpp
@@ -1200,7 +1206,7 @@ a window covering S 1s and calculate the front and after range to move (all 0 wh
         return ans;
     }
 ```	
-### 187	Repeated DNA Sequences		Medium	
+### 187	Repeated DNA Sequences		(-Medium-)
 All DNA is composed of a series of nucleotides abbreviated as A, C, G, and T, for example: "ACGAATTCCG". When studying DNA, it is sometimes useful to identify repeated sequences within the DNA.
 
 Write a function to find all the 10-letter-long sequences (substrings) that occur more than once in a DNA molecule.
@@ -1268,8 +1274,8 @@ sliding window hash calculation
 ```
 	
 
-### 274	H-Index		Medium	
-### 954	Array of Doubled Pairs		Medium	
+### 274	H-Index		(-Medium-)
+### 954	Array of Doubled Pairs		(-Medium-)
 negative and positive shall be separated to treat, otherwise will cause problem
 ```cpp
     bool canReorderDoubled(vector<int>& A) {
@@ -1302,11 +1308,11 @@ negative and positive shall be separated to treat, otherwise will cause problem
     }
 ```
 	
-### 987	Vertical Order Traversal of a Binary Tree		Medium	
+### 987	Vertical Order Traversal of a Binary Tree		(-Medium-)
 see tree
-### 356	Line Reflection 	Medium	
+### 356	Line Reflection 	(-Medium-)
 locked
-### 18	4Sum		Medium	
+### 18	4Sum		(-Medium-)
 two pointer or array
 O(N^3)
 ```cpp
@@ -1342,9 +1348,9 @@ O(N^3)
     }
 ```
 	
-### 3	Longest Substring Without Repeating Characters		Medium	
-Given a string, find the length of the longest substring without repeating characters.
-this is a highly rated question.
+### 3	Longest Substring Without Repeating Characters		(-Medium-)
+Given a string, find the length of the longest substring without repeating characters.<br/>
+this is a highly rated question.<br/>
 ```cpp
 int lengthOfLongestSubstring(string s) {
         vector<int> dict(256, -1); //char vs the index
@@ -1359,10 +1365,10 @@ int lengthOfLongestSubstring(string s) {
     }
 ```
 
-### 355	Design Twitter		Medium	
+### 355	Design Twitter		(-Medium-)
 see design
 
-### 138	Copy List with Random Pointer		Medium	
+### 138	Copy List with Random Pointer		(-Medium-)
 similar to clone graph id to node and node to id
 ```cpp
     Node* copyRandomList(Node* head) {
@@ -1406,27 +1412,27 @@ similar to clone graph id to node and node to id
 ```
 	
 
-### 288	Unique Word Abbreviation 	Medium	
+### 288	Unique Word Abbreviation 	(-Medium-)
 locked
 
-### 166	Fraction to Recurring Decimal		Medium	
+### 166	Fraction to Recurring Decimal		(-Medium-)
 see math
 
 ## hard
 
-### 895	Maximum Frequency Stack		Hard	
+### 895	Maximum Frequency Stack		(-Hard-)
 see stack, a very interesting problem
 
-### 632	Smallest Range		Hard	
+### 632	Smallest Range		(-Hard-)
 merge sort process, see string
 
-### 159	Longest Substring with At Most Two Distinct Characters 	Hard	
+### 159	Longest Substring with At Most Two Distinct Characters 	(-Hard-)
 locked
-### 711	Number of Distinct Islands II 	Hard	
+### 711	Number of Distinct Islands II 	(-Hard-)
 locked
-### 770	Basic Calculator IV		Hard	
+### 770	Basic Calculator IV		(-Hard-)
 
-### 992	Subarrays with K Different Integers		Hard	
+### 992	Subarrays with K Different Integers		(-Hard-)
 Given an array A of positive integers, call a (contiguous, not necessarily distinct) subarray of A good if the number of different integers in that subarray is exactly K.
 
 (For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3.)
@@ -1434,12 +1440,12 @@ Given an array A of positive integers, call a (contiguous, not necessarily disti
 Return the number of good subarrays of A.
 
 approach:
-use three pointers, i for the left most, j for the mid, k for the right.
-we maintain a hashmap to record the counters in the window
-j to k is the smallest window containing k types of characters
-i to k is the largest window containing k types of characters
-when window contains more chars, we discard A[j] and move i and j to j+1
-we keep shrinking [j,k] to make sure j k is the narrowest range.
+use three pointers, i for the left most, j for the mid, k for the right.<br/>
+we maintain a hashmap to record the counters in the window<br/>
+j to k is the smallest window containing k types of characters<br/>
+i to k is the largest window containing k types of characters<br/>
+when window contains more chars, we discard A[j] and move i and j to j+1<br/>
+we keep shrinking [j,k] to make sure j k is the narrowest range.<br/>
 
 ```cpp
     int subarraysWithKDistinct(vector<int>& A, int K) {
@@ -1467,25 +1473,25 @@ we keep shrinking [j,k] to make sure j k is the narrowest range.
         return ans;
     }
 ```	
-for example [1,2,1,2,3] with k=2
-i=0,j=0,k=0, we had 1:1
-i=0,j=0,k=1, we had 1:1, 2:1, we found [1,2]
-i=0,j=0,k=2, we had 1:2, 2:1, so we move j to 1, i=0,j=1,k=2 we had [2,1] and [1,2,1]
-i=0,j=1,k=3, we had 1:1, 2:2, so we move j to 2, i=0,j=2,k=3, we had [1,2], [2,1,2],[1,2,1,2]
+for example [1,2,1,2,3] with k=2<br/>
+i=0,j=0,k=0, we had 1:1<br/>
+i=0,j=0,k=1, we had 1:1, 2:1, we found [1,2]<br/>
+i=0,j=0,k=2, we had 1:2, 2:1, so we move j to 1, i=0,j=1,k=2 we had [2,1] and [1,2,1]<br/>
+i=0,j=1,k=3, we had 1:1, 2:2, so we move j to 2, i=0,j=2,k=3, we had [1,2], [2,1,2],[1,2,1,2]<br/>
 ....
 
-### 726	Number of Atoms		Hard	
-chemical formula, output the atoms and counts in sorted order (by the atom name)
-for example: "K4(ON(SO3)2)2"
-save K:4 in stack
-save O:1 N:1 in stack
-save S:1 O:3 in stack
-pop stack and *2
-pop stack and *2
-pop stack and *1
+### 726	Number of Atoms		(-Hard-)
+chemical formula, output the atoms and counts in sorted order (by the atom name)<br/>
+for example: "K4(ON(SO3)2)2"<br/>
+save K:4 in stack<br/>
+save O:1 N:1 in stack<br/>
+save S:1 O:3 in stack<br/>
+pop stack and *2<br/>
+pop stack and *2<br/>
+pop stack and *1<br/>
 
-using a stack and recursive could be the possible way.
-straightforward and easy to understand.
+using a stack and recursive could be the possible way.<br/>
+straightforward and easy to understand.<br/>
 ```cpp
     string countOfAtoms(string formula) {
 		stack<map<string,int>> st;
@@ -1537,10 +1543,9 @@ straightforward and easy to understand.
 ```	
 	
 approach: top down method
-step1: assuming we can solve the string from 0 and return a map of atom name vs its counter, then we know the answer.
-step2: solve the problem with formula starting at index i and return a map<string,int>.  and we merge the result with previous
+step1: assuming we can solve the string from 0 and return a map of atom name vs its counter, then we know the answer.<br/>
+step2: solve the problem with formula starting at index i and return a map<string,int>.  and we merge the result with previous<br/>
 step3: 
-
 ```cpp
     string countOfAtoms(string formula) {
         string output;
@@ -1602,15 +1607,15 @@ step3:
     }
 ```	
 
-### 340	Longest Substring with At Most K Distinct Characters 	Hard	
+### 340	Longest Substring with At Most K Distinct Characters 	(-Hard-)
 locked
 
-### 37	Sudoku Solver		Hard	
-each number has a row, col, and a grid. so first we need to exclude those impossibles
-first solve those only one solution and keeps updating.
-can use a 9 bit to indicate the status
-straightforward backtracking solution
-just try to put 1 to 9 for each cell and check if it is valid
+### 37	Sudoku Solver		(-Hard-)
+each number has a row, col, and a grid. so first we need to exclude those impossibles<br/>
+first solve those only one solution and keeps updating.<br/>
+can use a 9 bit to indicate the status<br/>
+straightforward backtracking solution<br/>
+just try to put 1 to 9 for each cell and check if it is valid<br/>
 ```cpp
     void solveSudoku(vector<vector<char>>& board) {
 		if(board.size()==0) return;
@@ -1651,12 +1656,12 @@ just try to put 1 to 9 for each cell and check if it is valid
 		return 1;
 	}
 ```	
-complexity O(9^n), n is number of blanks to fill.
-although we can use hashmap to store row, col, and grid, we may reduce from 9 to like 4 or 5
+complexity O(9^n), n is number of blanks to fill.<br/>
+although we can use hashmap to store row, col, and grid, we may reduce from 9 to like 4 or 5<br/>
 
-improvements: use bits to record row, col and 3x3 grid.
+improvements: use bits to record row, col and 3x3 grid.<br/>
 
-### 1001	Grid Illumination		Hard	
+### 1001	Grid Illumination		(-Hard-)
 On a N x N grid of cells, each cell (x, y) with 0 <= x < N and 0 <= y < N has a lamp.
 
 Initially, some number of lamps are on.  lamps[i] tells us the location of the i-th lamp that is on.  Each lamp that is on illuminates every square on its x-axis, y-axis, and both diagonals (similar to a Queen in chess).
@@ -1714,25 +1719,25 @@ We use a hash map to record number of occurance of row, col, diag1 and diag2 dia
       return ans;      
   }
 ```  
-### 85	Maximal Rectangle		Hard	
+### 85	Maximal Rectangle		(-Hard-)
 see maximal histogram
 
-### 358	Rearrange String k Distance Apart 	Hard	
+### 358	Rearrange String k Distance Apart 	(-Hard-)
 locked
 
-### 381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	
+### 381	Insert Delete GetRandom O(1) - Duplicates allowed		(-Hard-)
 see design
 
-### 710	Random Pick with Blacklist		Hard	
+### 710	Random Pick with Blacklist		(-Hard-)
 Given a blacklist B containing unique integers from [0, N), write a function to return a uniform random integer from [0, N) which is NOT in B.
 
 Optimize it such that it minimizes the call to system’s Math.random().
 
 Note:
 
-1 <= N <= 1000000000
-0 <= B.length < min(100000, N)
-[0, N) does NOT include N. See interval notation.
+1 <= N <= 1000000000<br/>
+0 <= B.length < min(100000, N)<br/>
+[0, N) does NOT include N. See interval notation.<br/>
 
 ```cpp
     vector<int> bl;
@@ -1759,9 +1764,9 @@ Let's say sorted array M is the all valid numbers, and X is the actual generated
 N = 7, B = [1, 4, 6], then M = [0, 2, 3, 5]. if X == 2, its index is 1 duo to 1 is black listed; if X is 5, its index is 3, duo to both 1 and 4 are black listed. However if X is 0, its index is still 0 has no blacklist number. Here, we know, the difference = X - its index == how many blacklist number <= X.
 Now, use bl[i] to represent the index where it's reduced by i. After generate a random number as the index, add the difference back (using binary search, get the index in bl[] where first greater than the generated number), it's the actual answer.
 
-### 336	Palindrome Pairs		Hard	
-Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
-brutal force
+### 336	Palindrome Pairs		(-Hard-)
+Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.<br/>
+brutal force<br/>
 ```cpp
     vector<vector<int>> palindromePairs(vector<string>& words) {
         //brutal force approach: 
@@ -1799,14 +1804,14 @@ brutal force
         return 1;
     }
 ```
-can also be approached using trie.
-check endwith (reverse)
-we also need store extra information in the trie, for example the index of the word.
-a list of index integers.
+can also be approached using trie.<br/>
+check endwith (reverse)<br/>
+we also need store extra information in the trie, for example the index of the word.<br/>
+a list of index integers.<br/>
 
-### 76	Minimum Window Substring		Hard	
-Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
-sliding window using two pointers
+### 76	Minimum Window Substring		(-Hard-)
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).<br/>
+sliding window using two pointers<br/>
 ```cpp
 string minWindow(string s, string t) {
 	unordered_map<char, int> mp;	// Statistic for count of char in t
@@ -1839,12 +1844,12 @@ string minWindow(string s, string t) {
     }
 ```
 	
-### 30	Substring with Concatenation of All Words		Hard	
+### 30	Substring with Concatenation of All Words		(-Hard-)
 see string
 
 ### 1044 Longest Duplicate Substring		Hard
 see string
 	
-### 149	Max Points on a Line		Hard	
+### 149	Max Points on a Line		(-Hard-)
 Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
 see math
