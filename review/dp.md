@@ -1,6 +1,6 @@
 # Chapter 3. dynamic programming
 
-## contents
+## Contents
 
 1025	Divisor Game		Easy	<br/>
 256	Paint House 	Easy	<br/>
@@ -144,17 +144,132 @@
 887	Super Egg Drop		Hard	<br/>
 44	Wildcard Matching		Hard<br/>
 
-## easy
+## 3.2 Stategy games
 
 ### 1025	Divisor Game		Easy
-each take a move N-x, 0<x<N and N%x==0<br/>
-when N=2, A take 1 and B will not be able to move, A win<br/>
-when N=3, A take 1 and A lose.<br/>
+each take a move N-x, 0<x<N and N%x==0
+when N=2, A take 1 and B will not be able to move, A win
+when N=3, A take 1 and A lose.
 
-when N is odd, it only has odd factors, we give B an even number, it will eventually reaches 2, A lose<br/>
-when N is even, A take 1 and B always get odd number, and will eventually get to 3, A win.<br/>
+when N is odd, it only has odd factors, we give B an even number, it will eventually reaches 2, A lose
+when N is even, A take 1 and B always get odd number, and will eventually get to 3, A win.
+
+### 877. Stone Game<br/>
+a list of numbers, picking from either end. who wins<br/>
+we pick positive, the other pick negative, maximize the score. (for the other player it is the same)<br/>
+
+```cpp
+    bool stoneGame(vector<int>& piles) {
+       int n=piles.size();
+       int l=0,r=n-1;
+        //three variables: l, r and id, use -1 as flag is not good
+       vector<vector<int>> dp(n,vector<int>(n,INT_MAX));
+        return helper(piles,dp,0,n-1)>0;
+    }
+    
+    int helper(vector<int>& piles,vector<vector<int>>& dp,int l,int r)
+    {
+        if(l>r) return 0;
+        if(dp[l][r]!=INT_MAX) return dp[l][r];
+        dp[l][r]=max(piles[l]-helper(piles,dp,l+1,r),piles[r]-helper(piles,dp,l,r-1));
+        return dp[l][r];
+    }
+```
+
+### 486. Predict the Winner<br/>
+same as 877, but we can use direct dp max(num[l]-dp[l+1,r],num[r]-dp[l,r-1])<br/>
+l: reverse iteration, r normal iteration<br/>
+bottom up approach:
+
+```cpp
+    bool PredictTheWinner(vector<int>& nums) {
+        int n=nums.size();
+        vector<vector<int>> dp(n,vector<int>(n,INT_MIN)); 
+        //dp[i][j]: the score difference using the subarray from i to j i<=j
+        for(int i=0;i<n;i++) dp[i][i]=nums[i];
+        for(int l=n-2;l>=0;l--)
+        {
+            for(int r=l+1;r<n;r++) //r>=l
+                dp[l][r]=max(dp[l][r],max(nums[l]-dp[l+1][r],nums[r]-dp[l][r-1]));
+        }
+        //print(dp);
+        return dp[0][n-1]>=0;
+    }
+```
+
+### 837. New 21 Game<br/>
+this is like climbing stairs, there are more than two methods to reach a stair<br/>
+ 
+ ```cpp
+     double new21Game(int N, int K, int W) {
+        //this is like climbing stairs. ith position can be obtained
+        //dp[i]=sum(dp[j])/W j=i-1 to i-W
+        if(N>=K+W || K==0) return 1.0;
+        vector<double> dp(K+1); //dp[i] is the probability to reach i points
+        dp[0]=1.0;
+        //dp[i]=sum(dp[j])/W for j=i-1 to i-w
+        double wsum=0;
+
+        for(int i=1;i<=K;i++)
+        {
+            if(i<=W) dp[i]=wsum+=dp[i-1]/W;
+            else {dp[i]=wsum+=(dp[i-1]-dp[i-W-1])/W;}
+        }
+        //copy(dp.begin(),dp.end(),ostream_iterator<double>(cout," "));
+        double ans=0;
+        for(int i=K-1;i>=max(K-W,0);i--)
+        {
+            int d=K-1-i;
+            int len=min(W-d,N-K+1);
+            ans+=len*dp[i]/W;
+        }
+        return ans;
+    }
+```
+
+### 464. Can I Win<br/>
+It is important to get the problem right: the two player adds to the same sum, and who reach the target first wins
+number chosen cannot be reused.<br/>
+- use bitset to indicate number used or not
+- subtract target
+- who reaches 0 wins
+- if other wins, then we lose
+- store solved solutions
+
+```cpp
+    bool canIWin(int m,int sum,int status)
+    {
+        if(sum<=0) return 0; //already to the dead end, but still did not win
+        if(win.count(status)) return 1;
+        if(lose.count(status)) return 0;
+        for(int i=1;i<=m;i++)
+        {
+            int bit=1<<i;
+            if(status & bit) continue; //already solved, need the solved results recorded
+            bool res=canIWin(m,sum-i,status|bit);
+            if(!res) //surely win, why use ! since it is the even times.
+            {
+                win.insert(status);
+                return 1;
+            }
+        }
+        lose.insert(status);//after all trials, cannot win
+        return 0;
+    }
+```
 	
-## --Stock problem--
+## 3.3 single array problems
+
+single array generally is 1d dp problems but sometimes may need 2D<br/>
+several questions need to ask before proceeding: <br/>
+- can sort will be helpful?<br/>
+- left to right or right to left?<br/>
+- how to build a large solution based on smaller solutions?<br/>
+- O(N^2) complexity can be reduced to O(N) complexity?<br/>
+- O(N) storage can be reduced to O(1) storage?<br/>
+
+## 3.3.1 stock problem
+
 get the solution based on previous solution and get the recurrence relation<br/>
 reduce complexity by on-the -fly to update the tempMax<br/>
 each day we have two options: no transaction and sell it.<br/>
@@ -181,8 +296,7 @@ O(n^2) reduced to O(N)
         return dp[n-1];
     }
 ```	
-- tmin can also set as price[0] and then the two statements in the loop shall be reversed.
-- since only involves i-1, we can reduce memory to O(1)
+tmin can also set as price[0] and then the two statements in the loop shall be reversed.
 
 ### 122	Best Time to Buy and Sell Stock		Easy	
 perform as many transactions as possible
@@ -192,8 +306,10 @@ profitable transaction is dp[i-1]+max(price[i]-price[i-1],0] <br/>
 
 
 ### 714. Best Time to Buy and Sell Stock with Transaction Fee<br/>
+can make any number of transactions.<br/>
 dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) for j=0 to i-1<br/>
 sell or not sell on ith day<br/>
+
 ```cpp
     int maxProfit(vector<int>& prices, int fee) {
         //1d DP: dp[i]=max(dp[i-1],dp[j]+price[i]-price[j]-fee) for j=0 to i-1
@@ -307,27 +423,11 @@ O(KN^2) reduce to O(KN)<br/>
         return maxprof;
     }
 ```
-## Climbing stairs & house robbers
+## 3.3.2 Climbing stairs & house robbers
+
 each step have two options<br/>
 each step may have costs<br/>
 boundary condition<br/>
-
-### 746	Min Cost Climbing Stairs		Easy	
-you start from step 0 or step 1 and make a 1-step or 2-step move. you need pay the cost[i] to be able to move
-what is the min cost to reach the top
-dp[i]=min(dp[i-1],dp[i-2])+cost[i], dp[i] is the min cost to be able to move at i.
-so the final answer is min(dp[n-1],dp[n-2])
-```cpp
-    int minCostClimbingStairs(vector<int>& cost) {
-		int n=cost.size();
-        vector<int> dp(n);
-        dp[0]=cost[0],dp[1]=cost[1];
-        for(int i=2;i<n;i++)
-            dp[i]=min(dp[i-1],dp[i-2])+cost[i];
-        return min(n-1],dp[n-2]);
-    }
-```	
-The problem is not well stated. It asks to be able to move over the top, so the top level is actually nth (instead of n-1)
 
 ### 70	Climbing Stairs		Easy	
 n steps. each move 1 or 2 steps. how many distinct ways:<br/>
@@ -352,6 +452,24 @@ fib-sequences, and we do not need to store all elements. (also, fib-sequence sha
 ```	
 though it is simple, but not easy to get to the best.
 
+### 746	Min Cost Climbing Stairs		Easy	
+you start from step 0 or step 1 and make a 1-step or 2-step move. you need pay the cost[i] to be able to move
+what is the min cost to reach the top
+dp[i]=min(dp[i-1],dp[i-2])+cost[i], dp[i] is the min cost to be able to move at i.
+so the final answer is min(dp[n-1],dp[n-2])
+```cpp
+    int minCostClimbingStairs(vector<int>& cost) {
+		int n=cost.size();
+        vector<int> dp(n);
+        dp[0]=cost[0],dp[1]=cost[1];
+        for(int i=2;i<n;i++)
+            dp[i]=min(dp[i-1],dp[i-2])+cost[i];
+        return min(n-1],dp[n-2]);
+    }
+```	
+The problem is not well stated. It asks to be able to move over the top, so the top level is actually nth (instead of n-1)
+
+
 ### 198	House Robber		Easy	
 dp[i]=max(dp[i-1],dp[i-2]+prices[i])
 
@@ -367,8 +485,6 @@ circular, this is two house robber 1 problem<br/>
     int helper(vector<int>& nums, int l, int r)
     {
         vector<int> dp(r+1);
-        //dp[i]=max(dp[i-1],dp[i-2]+a[i])
-        //(l==r) return nums[l];
         dp[l]=nums[l],dp[l+1]=max(nums[l+1],nums[l]);
         for(int i=l+2;i<r;i++)
         {
@@ -379,13 +495,13 @@ circular, this is two house robber 1 problem<br/>
 ```
 
 ### 740. Delete and Earn
-Given an array nums of integers, you can perform operations on the array.
+Given an array nums of integers, you can perform operations on the array.<br/>
 
-In each operation, you pick any nums[i] and delete it to earn nums[i] points. After, you must delete every element equal to nums[i] - 1 or nums[i] + 1.
+In each operation, you pick any nums[i] and delete it to earn nums[i] points. After, you must delete every element equal to nums[i] - 1 or nums[i] + 1.<br/>
 
-You start with 0 points. Return the maximum number of points you can earn by applying such operations.
+You start with 0 points. Return the maximum number of points you can earn by applying such operations.<br/>
 
-put the numbers in contiguous bins
+put the numbers in contiguous bins<br/>
 this is house robber with duplicates (if there are a lot of value=nums[i]). So we use bucket sort (bucket distance is 1)<br/>
 
 ```cpp
@@ -399,90 +515,155 @@ this is house robber with duplicates (if there are a lot of value=nums[i]). So w
     }
 ```
 
+## 3.3.3 two pointers
 
-### 62. Unique Paths
-dp[i,j]=dp[i-1][j]+dp[i,j-1]
-boundary dp[0][1]=1 so we can enter the top left cell
-```cpp
-    int uniquePaths(int m, int n) {
-    //need use dynamic programming p(i,j)=p(i-1,j)+p(i,j-1) if current node is reachable
-    //
-		vector<vector<int>> dp(m+1,vector<int>(n+1,0)); //all initialized as 0
-		dp[0][1]=1; //assuming to the first element is 1
-		for(int i=1;i<=m;i++)
-		{
-			for(int j=1;j<=n;j++)
-			{
-				dp[i][j]=dp[i-1][j]+dp[i][j-1];
-			}
-		}
-		return dp[m][n];
-    }
-```	
+### 312. Burst Balloons.md
+##### problem Summary
+Given a list of balloons with number on it. If a balloon is burst, point num[l] * num * num[r] will be added. (l,r is the adjacent left and right balloon)
+Ask: to return max point we can get
 
-### 64. Minimum Path Sum	
-```cpp
-    int minPathSum(vector<vector<int>>& grid) {
-        //state equation S(i,j)=min(S(i-1,j),S(i,j-1))+grid(i,j)
-        //boundary condition: i=0 case, and j=0 case, toprow and left column
-        //either pad the grid or define the  boundary for S
-        //top row: to each node is the accumulate previous elememts
-        //left col: to each node is the accumulation of previous elements
-        int m=grid.size(),n=grid[0].size();
-        vector<vector<int>> vs(m,vector<int>(n,0));
-        vs[0][0]=grid[0][0];
-        for(int i=1;i<m;i++) vs[i][0]=vs[i-1][0]+grid[i][0];
-        for(int j=1;j<n;j++) vs[0][j]=vs[0][j-1]+grid[0][j];
-        
-        for(int i=1;i<m;i++)
-        {
-            for(int j=1;j<n;j++) 
-                vs[i][j]=min(vs[i-1][j],vs[i][j-1])+grid[i][j];
-        }
-        return vs[m-1][n-1];
-    }
-```	
+##### idea
+1. add a guardian to avoid boundary. add 1 to left and 1 to right
+2. every time we burst a balloon, it depends on the left and right index (we do not want to alter the array and it will be a big mess). It is naturally to use left and right in the dp solutions
+3. Once we want to burst balloon i, its points will be nums[i]*nums[l]*nums[r]. And it leaves two parts l to i-1 and i+1 to r. (Between l and r there are multiple elements, we are just assuming after some bursting, l and r becomes adjacent). This is similar to a reverse process. When we solve l, i, r, the previous problem (l, i-1) and (i+1, r) have all be solved. In another word, those balloons are all bursted already.
+4. so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,l]), i from l to r
 
-### 120. Triangle
-min path sum
+##### code
 ```cpp
-    int minimumTotal(vector<vector<int>>& triangle) {
-        if(!triangle.size()) return 0;
-        if(triangle.size()==1) return triangle[0][0];
-        int level=triangle.size();
-        for(int l=level-2;l>=0;l--)
-        {
-            for(int j=0;j<=l;j++)
-                triangle[l][j]+=min(triangle[l+1][j],triangle[l+1][j+1]);
-        }
-        return triangle[0][0];
+    int maxCoins(vector<int>& nums) {
+        nums.insert(nums.begin(),1);
+        nums.push_back(1);
+        int n=nums.size();
+        vector<vector<int>> dp(n,vector<int>(n));
+        return helper(nums,1,n-2,dp);
     }
-```
-	
-### 357. Count Numbers with Unique Digits
-dp[i] is the number from 10^(i-1) 10^i<br/>
-first digit: 1-9<br/>
-second digit: 0-9 but cannot use previous digit, 9<br/>
-9*9*8*7.....
-```cpp
-    int countNumbersWithUniqueDigits(int n) {
-      int num=0;
-      if(!n) return 1;
-      for(int i=1;i<=n;i++) num+=uniqueNumbers(i);
-      return num;
-    }
-    int uniqueNumbers(int n)
+    int helper(vector<int>& nums,int s,int e,vector<vector<int>>& dp)
     {
-        if(n==1) return 10;
-        int num=9;
-        for(int i=1;i<n;i++) num*=(9-i+1);
-        return num;
+        if(s>e) return 0;
+        if(dp[s][e]>0) return dp[s][e];
+        for(int i=s;i<=e;i++)
+        {
+            dp[s][e]=max(dp[s][e],nums[i]*nums[s-1]*nums[e+1]+helper(nums,s,i-1,dp)+helper(nums,i+1,e,dp));
+        }
+        return dp[s][e];
     }
 ```
-this is more a math problem than a dp problem
-	
 
-## subarray partition problem
+#### comments
+1. start,end are all possible balloon to burst, its left and right are its adjacent. So it is num[i]*num[s-1]*num[e+1]
+2. terminate condition then is s>e (s==e is allowed for a single element left)
+3. dp[s,e] is exactly a subproblem from start to end (a continuous partial array)
+4. These details reflect the correct understanding of the method and shall pay special attention.
+
+
+### 546. Remove Boxes.md
+#### problem Summary
+Given a list of numbers (different colors), every time you can choose to remove continuous same number (box with same color). If you remove k boxes, you get point k^2.
+Return the max point you can get.
+
+#### idea
+for example [1, 3, 2, 2, 2, 3, 4, 3, 1]
+You can remove 2 first, and let the 3 connected together, 9 points
+1,3,3,4,3,1, remove the 4, get 1
+1,3,3,3,1 remove the 3, get 9
+1,1 remove 1, get 4 total: 23
+
+assuming dp[i,j] is the max points you can get from i to j (inclusive). And the final answer would be dp[0, n-1].
+
+we get the group a[i] to a[i+k], assuming the k+1 elements are the same color, then we have two choices:
+
+    group them and get the score and delete them
+    leave them for a while and process other first and hope to have a longer sequence and higher scores.
+
+For the first case, the score is (k+1)^2+subproblem(i+k+1,j)
+for the second case, assuming we find mth element==nums[i] and want to combine with a[i, i+k], then we need solve two subproblem first [i+k, m-1] with no previous same char and [m, j] with previous k+1 same char.
+
+Thus the dp needs to add another dimension k, dp[i][j][k] defines the max score we get from the sequence i to j (inclusive) with number of same color box ahead.
+
+dp[i][j][k]=max((k+1)^2+sub(i+k+1,j,0), sub(i+k+1,m-1,0), sub(m, j, k+1))
+
+#### code
+```cpp
+    int removeBoxes(vector<int> boxes) {
+        int n = boxes.size();
+        vector<vector<vector<int>>> dp(n,vector<vector<int>>(n,vector<int>(n)));
+        return removeBoxesSub(boxes, 0, n - 1, 0, dp);
+    }
+
+    int removeBoxesSub(vector<int>& boxes, int i, int j, int k, vector<vector<vector<int>>>& dp) 
+    {
+        if (i > j) return 0;
+        if (dp[i][j][k] > 0) return dp[i][j][k];
+        for (; i + 1 <= j && boxes[i + 1] == boxes[i]; i++, k++); 
+        // optimization: all boxes of the same color counted continuously from the first box should be grouped together
+        int res = (k + 1) * (k + 1) + removeBoxesSub(boxes, i + 1, j, 0, dp);
+        for (int m = i + 1; m <= j; m++) {
+            if (boxes[i] == boxes[m]) {
+                res = max(res, removeBoxesSub(boxes, i + 1, m - 1, 0, dp) + removeBoxesSub(boxes, m, j, k + 1, dp));
+            }
+        }
+        dp[i][j][k] = res;
+        return res;
+    }
+```
+
+#### comment
+- recursive + memoization is more straightforward.
+- similar problem: 664 strange printer
+
+
+### 903. Valid Permutations for DI Sequence.md
+#### problem Summary
+D: decrease A[i]>A[i+1], I: increase, A[i]<A[i+1]
+Given numbers from 0 to n and DI string of length=n
+Ask: number of valid permutations
+
+#### idea
+let dp[i,j] represents number of valid permutation with string length i (given number 0 to i) and ending number j
+when D: previous number shall be bigger, i.e, j+1 to n, then dp[i,j]=sum(dp[i-1,k]) k=j..i-1 
+when I: previous number shall be smaller, i.e from 0 to j-1 then dp[i,j]=sum(dp[i-1,k]) k=0...j-1
+
+final answer: i=n, ending with 0 to n
+
+boundary condition: It only needs previous row values, so the 0th row shall be provided.
+i=0, dp[0,0]=1
+Actually this is a lower triangle, we do not need to calculate the whole row, they are not used.
+
+#### code
+```cpp
+    int numPermsDISequence(string S) {
+        int n=S.length();
+        vector<vector<int>> dp(n+1,vector<int>(n+1));
+        //dp[i,j] represents len=i, ending with j (j=0 to i)
+        dp[0][0]=1;
+        //for(int i=0;i<=n;i++) dp[0][i]=1;
+        int mod=1e9+7;
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=0;j<=i;j++)
+            {
+                if(S[i-1]=='D') //previous is larger
+                {
+                    for(int k=j;k<i;k++) {dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
+                }
+                else for(int k=0;k<j;k++) {dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
+            }
+        }
+        //print(dp);
+        return accumulate(dp[n].begin(),dp[n].end(),0LL)%mod;
+    }
+```
+
+#### comment
+1. when D, **why sum from j to i-1 instead from j+1 to i**? Because for (0...i-1) cases, k can only change from 0 to i-1. for (0..i) case, j can from 0 to i. The j is used already in the previous solution.
+
+So, why start with j, not j + 1, since the sequence is decreasing to j?
+Thought Experiment: 
+In the sequence with length of i-1, the largest number in this sequence should be i-1. 
+However, when we are dealing with length i and end with j, the previous sequence has already another j and we should also add i to the sequence. What we can do is, add one to all those numbers greater than or equal to j. This operation will make the largest number to be i without breaking the sequence property, also, it will free the j so that we can use it at the end of the sequence. 
+
+## 3.3.4 Subarray partition problem
+
 use some criteria to partition the array into subarrays
 
 ### 53	Maximum Subarray		Easy	
@@ -563,66 +744,6 @@ answer is the accumulation<br/>
     }
 ```	
 
-### 446. Arithmetic Slices II - Subsequence.md
-#### problem summary
-arithmetic subsequence: len>=3 and differene is the same
-ask: number of arithmetic subsequence
-
-#### idea
-Suppose we are adding A[i] to A[0]...A[i-1]. It could form arithmetic subsequence ending with A[i]
-1,3,5: 1 sub
-1,3,5,7: 2 subs
-1,3,5,7,9:
-1,3,5: ending with 5, difference is 2
-3,5,7
-1,3,5,7: ending with 7, difference is 2
-5,7,9
-3,5,7,9
-1,3,5,7,9: ending with 9, difference is 2
-1,5,9: ending with 9, difference is 4
-
-so adding A[i]:
-1. it form a new arithmetic subsequence with difference d, dp[i][d]=1, 
-2. it extends an existent array with difference d, dp[i][d]=sum(dp[j][d]+1), for all j<i when j has d
-  - Why? since we may have duplicate numbers and they count.
-  - what about starting from two elements? 
-  for example 1,2,3, for 2, d=1. dp[2][1]=1, 
-  for 3, we get dp[3][1]=1+1, dp[3][2]=1+0. But we only have 1 subsequence. (so when adding to results, we can just add the dp[j][d].
-3. the final answer is the sum of all endings
-4. since d can be negative range from INT_MIN to INT_MAX, using a hashmap is more suitable
-
-boundary condition
-all zero
-
-#### code
-```cpp
-    int numberOfArithmeticSlices(vector<int>& A) {
-        if(A.empty()) return 0;
-        vector<unordered_map<int,int>> dp(A.size());
-        int res=0;
-        for(int i=1;i<A.size();i++)
-        {
-            for(int j=i-1;j>=0;j--)
-            {
-                long long d=(long long)A[i]-A[j];
-                if(d<=INT_MIN || d>=INT_MAX) continue;
-                dp[i][d]++;
-                if(dp[j].count(d)) 
-                {
-                    dp[i][d]+=dp[j][d];
-                    res+=dp[j][d];//reason we add dp[j][d]: we need to get rid of those two-element slices
-                }
-            }
-            
-        }
-        return res;
-    }
-```
-
-#### comment
-1. using long long for difference is necessary to avoid overflow
-2. we add dp[j][d] to make sure we are only counting len>=3 subsequences. (1 element dp is 0, 2 element dp is 1, 3 element dp is 2)
-
 ### 813. Largest Sum of Averages<br/>
 partition the list into at most k parts and make the sum of average the max.<br/>
 assuming dp[i,k] is the max sum of average for list len=i, and k groups, then we check every j to add one more group<br/>
@@ -647,6 +768,57 @@ dp[i][k]=max(dp[i][k],dp[j][k-1]+double(A[i]-A[j])/(i-j));
         return dp[K][A.size()-1];
     }
 ```
+	
+### 152. Maximum Product Subarray<br/>
+largest product subarray<br/>
+when a negative is involved, max becomes min, min becomes max<br/>
+```cpp
+    int maxProduct(vector<int>& nums) {
+        //max times negative becomes min, min*negative becomes max
+        int imax=nums[0],imin=nums[0];
+        int ans=imax;
+        for(int i=1;i<nums.size();i++)
+        {
+            if(nums[i]<0) swap(imax,imin);
+            imax=max(imax*nums[i],nums[i]);
+            imin=min(imin*nums[i],nums[i]);
+            ans=max(ans,imax);
+        }
+        return ans;
+    }
+```
+
+### 523. Continuous Subarray Sum<br/>
+target: multiples of K<br/>
+accumulate sum (prefix sum). the prefix sum shall %k has the same value<br/>
+```cpp
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        //accumulate first and then check (a-b)%k==0
+        vector<int> accum(nums.size()+1,0);
+        unordered_map<int,vector<int>> cntmap;
+        for(int i=0;i<nums.size();i++) accum[i+1]=accum[i]+nums[i];
+        if(k)
+        for(int i=1;i<accum.size();i++)
+        {
+            int t=accum[i]%k;
+            cntmap[t].push_back(i); //same remainder, 3 the same must be true, 2 possibly be true
+            if(cntmap[t].size()>2) return 1;
+            if(cntmap[t].size()==2)
+            {
+                if(abs(cntmap[t][0]-cntmap[t][1])>1) return 1;
+            }
+        }
+        else
+        for(int i=0;i<accum.size();i++)
+        {
+            for(int j=i+2;j<accum.size();j++)
+                if(accum[j]==accum[i]) return 1;
+        }
+            
+        return 0;
+        
+    }
+```	
 
 ### 410. Split Array Largest Sum.md
 #### problem summary
@@ -715,83 +887,158 @@ If n is the length of array, assume the following constraints are satisfied:
     }
 ```
 
-	
-### 376. Wiggle Subsequence<br/>
-return the max length of the wiggling subsequence<br/>
-- by tracking the number of down and ups
-- when num[i]>num[i-1], we increase up, up[i]=dn[i-1]+1 (since the two are dependent)
-- when num[i]<num[i-1], we increase down
-- equal case: no change
-- final answer shall be the max of up and down ending at the last element
+### 689. Maximum Sum of 3 Non-Overlapping Subarrays.md
+#### problem Summary
+Given a array of length n, and a number k, find 3 non-overlap region with k elements each, make the sum largest.
+Ask: get the starting index of the 3 segment. If there is tie, choose the smaller index (lexigraphically smaller one)
+
+#### idea
+1. There are 3 segments, left, right and mid. left range limits <n-2*k, right range limits >2*k
+2. using dp to update the k window sum for left from left to right (dp[i] is the k-window sum max for 0 to i-1)
+3. using dp to update the k window sum for right from right to left (dp[i] is the k window sum max for i to n)
+4. iterate on all mid position to get the max
+5. find the leftmost index satisfying the max
+
+#### Implementation
 ```cpp
-    int wiggleMaxLength(vector<int>& nums) {
-        if(nums.size()==0) return 0;
-        int up=1,dn=1;
-        for(int i=1;i<nums.size();i++)
+    vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
+        //get the partial sum first
+        int n=nums.size();
+        vector<int> psum(n-k+1);
+        psum[0]=accumulate(nums.begin(),nums.begin()+k,0);
+        for(int i=1;i<n-k+1;i++) psum[i]=psum[i-1]+nums[i+k-1]-nums[i-1];
+        
+        vector<int> leftmax(n-k+1),rightmax(n-k+1);
+        int tmax=INT_MIN;for(int i=0;i<n-k+1;i++) tmax=leftmax[i]=max(tmax,psum[i]);
+        tmax=INT_MIN;for(int i=n-k;i>=0;i--) tmax=rightmax[i]=max(tmax,psum[i]);
+
+        int globalmax=INT_MIN;
+        int mid=0,left=0,right=0;
+        for(int i=k;i<psum.size()-k;i++) //mid can from k to n-k
         {
-            if(nums[i]>nums[i-1]) up=dn+1;
-            if(nums[i]<nums[i-1]) dn=up+1;
-            //cout<<nums[i]<<"\t"<<up<<" "<<dn<<endl;
+            int l=i-k,r=i+k; 
+            int localmax=leftmax[i-k]+psum[i]+rightmax[i+k];
+            if(globalmax<localmax) //use < so equal max will not be counted in
+            {
+                globalmax=localmax;
+                mid=i;left=i-k;right=i+k;
+            }
         }
-        return max(up,dn);
+        
+        for(int i=left-1;i>=0;i--) if(leftmax[i]==leftmax[left]) left--;else break;
+        for(int i=right+1;i<n-k+1;i++) if(rightmax[i]==rightmax[right]) right++;else break;
+        return vector<int>({left,mid,right});
     }
 ```
 
-	
+## 3.3.5 subsequence problems
 
-### 303	Range Sum Query - Immutable		Easy	
-get the sum from i to j (inclusive). note the prefix sum can only give i to j (not including i)
+### 446. Arithmetic Slices II - Subsequence.md
+#### problem summary
+arithmetic subsequence: len>=3 and differene is the same
+ask: number of arithmetic subsequence
+
+#### idea
+Suppose we are adding A[i] to A[0]...A[i-1]. It could form arithmetic subsequence ending with A[i]
+1,3,5: 1 sub
+1,3,5,7: 2 subs
+1,3,5,7,9:
+1,3,5: ending with 5, difference is 2
+3,5,7
+1,3,5,7: ending with 7, difference is 2
+5,7,9
+3,5,7,9
+1,3,5,7,9: ending with 9, difference is 2
+1,5,9: ending with 9, difference is 4
+
+so adding A[i]:
+1. it form a new arithmetic subsequence with difference d, dp[i][d]=1, 
+2. it extends an existent array with difference d, dp[i][d]=sum(dp[j][d]+1), for all j<i when j has d
+  - Why? since we may have duplicate numbers and they count.
+  - what about starting from two elements? 
+  for example 1,2,3, for 2, d=1. dp[2][1]=1, 
+  for 3, we get dp[3][1]=1+1, dp[3][2]=1+0. But we only have 1 subsequence. (so when adding to results, we can just add the dp[j][d].
+3. the final answer is the sum of all endings
+4. since d can be negative range from INT_MIN to INT_MAX, using a hashmap is more suitable
+
+boundary condition
+all zero
+
+#### code
 ```cpp
-    NumArray(vector<int> &nums) { //do the summation once! note the summation includes i,j
-        int sum0=0;
-        sum.push_back(0); //add one zero
-        for(int i=0;i<nums.size();i++)
+    int numberOfArithmeticSlices(vector<int>& A) {
+        if(A.empty()) return 0;
+        vector<unordered_map<int,int>> dp(A.size());
+        int res=0;
+        for(int i=1;i<A.size();i++)
         {
-            sum0+=nums[i];
-            sum.push_back(sum0);
+            for(int j=i-1;j>=0;j--)
+            {
+                long long d=(long long)A[i]-A[j];
+                if(d<=INT_MIN || d>=INT_MAX) continue;
+                dp[i][d]++;
+                if(dp[j].count(d)) 
+                {
+                    dp[i][d]+=dp[j][d];
+                    res+=dp[j][d];//reason we add dp[j][d]: we need to get rid of those two-element slices
+                }
+            }
+            
         }
-    }
-
-    int sumRange(int i, int j) {
-        return sum[j+1]-sum[i];//this will not include nums[i]
+        return res;
     }
 ```
-by adding a 0, prefix[i] does not include nums[i]
-prefix[j+1] include nums[j]
-	
-### 276	Paint Fence 	Easy	
-locked
+#### comment
+1. using long long for difference is necessary to avoid overflow
+2. we add dp[j][d] to make sure we are only counting len>=3 subsequences. (1 element dp is 0, 2 element dp is 1, 3 element dp is 2)
 
-## solve problem using small solutions-build intution
+
+### 940. Distinct Subsequences II.md
+#### problem summary
+Given a string, count all distinct subsequence
+
+#### idea
+for example aba
+a: ending with a
+ab,b: ending with b
+ba,aba: ending with a (a is duplicate and shall be removed)
+
+Since the number of subsequence ending with same char could be very large, it is not suitable to store them in a data structure, hence we need find a way to get rid of those duplicates.
+
+When we add a char to the end, we append a char to all previous string ending with from a to z. This is the key observation.
+we can use an array of 26 to record the number.
+
+adding all numbers together and the letter itself dp[c]=sum(dp(a to z))+1
+
+#### code
+```cpp
+    int distinctSubseqII(string S) {
+        vector<int> dp(26); //store the number of strings ending with a char a to z
+        int mod=1e9+7;
+        for(int i=0;i<S.size();i++)
+        {
+            int ind=S[i]-'a';
+            long long t=0;
+            for(int j=0;j<26;j++) {t+=dp[j];t%=mod;}
+            dp[ind]=t+1; //the letter itself
+        }
+        return accumulate(dp.begin(),dp.end(),0LL)%mod;
+    }
+```
+
+#### comments
+- be sure to use long long to avoid overflow.
+- use 26 char array and update the table is a common practice for string dp problem
+
+
+
+## 3.3.6 solve problem using small solutions-build intution
 sometimes when we do not have explicit recurrence relation. It is still be able to approach using smaller solutions<br/>
 
 ### 338. Counting Bits<br/>
 given a number get all number of 1s in binary for each one.<br/> dp[i]=dp[i/2]+i&1
 need to be O(n) time and space
 n: dp[n/2]+n%2
-
-### 931. Minimum Falling Path Sum<br/>
-given a matrix, element + min(previous row closest three sum)
-```cpp
-    int minFallingPathSum(vector<vector<int>>& A) {
-        //use the matrix A for dp
-        int n=A.size();
-        for(int i=1;i<n;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                if(j>0 && j<n-1)
-                    A[i][j]+=min(min(A[i-1][j-1],A[i-1][j]),A[i-1][j+1]);
-                else if(j==0) A[i][j]+=min(A[i-1][j],A[i-1][j+1]);
-                else A[i][j]+=min(A[i-1][j],A[i-1][j-1]);
-            }
-        }
-        //print(A);
-        int ans=A[n-1][0];
-        for(int i=0;i<n;i++) ans=min(ans,A[n-1][i]);
-        return ans;
-    }
-```	
 
 ### 343. Integer Break<br/>
 make the product the largest.<br/>
@@ -800,8 +1047,12 @@ this is also a math problem. see math
 
 ```cpp
     int integerBreak(int n) {
-        if (n <= 2) return 1;
+        
+        if (n <= 2)
+            return 1;
+
         vector<int> maxArr(n+1, 0);
+                    
         maxArr[1] = 0;
         maxArr[2] = 1; // 2=1+1 so maxArr[2] = 1*1
         
@@ -911,50 +1162,58 @@ use 3 pointers i: *2, j *3, k: *5 represents the current 3 min ugly number.<br/>
     }
 ```
 
-## top down vs bottom up
+### 600. Non-negative Integers without Consecutive Ones.md
+#### problem Summary
+Given n, from 0 to n, return the number of integers whose binary contains no consecuative 1s
 
-### 877. Stone Game<br/>
-a list of numbers, picking from either end. who wins<br/>
-we pick positive, the other pick negative, maximize the score. (for the other player it is the same)<br/>
+#### idea
+1. convert n to binary, it will have m bits
+2. can we solve problem when n=11111..1 with m bits case? 
+Assuming dp[i] is the number of valid string with length i.
+  - if previous bit is 1, then we can only add 0 dp[i][0]=dp[i-1][1]
+  - if previous bit is 0, then we can add 1 or 0 dp[i][0]=dp[i-1][0], dp[i][1]=dp[i-1][1]
+  - above is awkward, if we think in another way, 
+  if we define a[i] as the number of valid strings ending with 0, b[i] is the string ending with 1
+  we can add 0 no matter previous: 
+  a[i]=a[i-1]+b[i-1], 
+  we can add 1 only when previous is 0:
+  b[i]=a[i-1]
+3. subtract all over counted integers when number>n
+-. when binary of N appears 11, we just break, since all next smaller
+-. when binary of N appears 00, over count those ending with 1
 
+#### code
 ```cpp
-    bool stoneGame(vector<int>& piles) {
-       int n=piles.size();
-       int l=0,r=n-1;
-        //three variables: l, r and id, use -1 as flag is not good
-       vector<vector<int>> dp(n,vector<int>(n,INT_MAX));
-        return helper(piles,dp,0,n-1)>0;
-    }
-    
-    int helper(vector<int>& piles,vector<vector<int>>& dp,int l,int r)
-    {
-        if(l>r) return 0;
-        if(dp[l][r]!=INT_MAX) return dp[l][r];
-        dp[l][r]=max(piles[l]-helper(piles,dp,l+1,r),piles[r]-helper(piles,dp,l,r-1));
-        return dp[l][r];
-    }
-```
-
-### 486. Predict the Winner<br/>
-same as 877, but we can use direct dp max(num[l]-dp[l+1,r],num[r]-dp[l,r-1])<br/>
-l: reverse iteration, r normal iteration<br/>
-bottom up approach:
-
-```cpp
-    bool PredictTheWinner(vector<int>& nums) {
-        int n=nums.size();
-        vector<vector<int>> dp(n,vector<int>(n,INT_MIN)); 
-        //dp[i][j]: the score difference using the subarray from i to j i<=j
-        for(int i=0;i<n;i++) dp[i][i]=nums[i];
-        for(int l=n-2;l>=0;l--)
+    int findIntegers(int num) {
+        string s;
+        while(num) {s+=num%2+'0';num/=2;}
+        reverse(s.begin(),s.end());//MSB is at 0
+        int m=s.length();
+        vector<int> dp0(m),dp1(m);
+        dp0[0]=1,dp1[0]=1;
+        for(int i=1;i<m;i++)
         {
-            for(int r=l+1;r<n;r++) //r>=l
-                dp[l][r]=max(dp[l][r],max(nums[l]-dp[l+1][r],nums[r]-dp[l][r-1]));
+            dp0[i]=dp0[i-1]+dp1[i-1];
+            dp1[i]=dp0[i-1];
         }
-        //print(dp);
-        return dp[0][n-1]>=0;
+        int result=dp0[m-1]+dp1[m-1];
+        for(int i=1;i<m;i++)
+        {
+            if(s[i]=='1' && s[i-1]=='1') break;
+            if(s[i]=='0' && s[i-1]=='0') result-=dp1[m-i-1];
+        }
+        return result;
     }
 ```
+
+#### comments
+1. the string of n is in human preference with MSB at the first element in string
+2. when previous of n is 00, we need minus dp1[m-i-1] (those > this number is ith bit is 1)
+3. if we use LSB at 0, it is easier to understand
+
+
+## 3.3.7 top down vs bottom up
+
 	
 ### 638. Shopping Offers<br/>
 better using recursive for this
@@ -1003,277 +1262,145 @@ public:
 
 };
 ```
+### 321. Create Maximum Number.md
+#### problem summary
+from two arrays with numbers 0-9, create k digits which is the max number.
 
-## palindrome
-	
-### 647. Palindromic Substrings<br/>
-Given a string, your task is to count how many palindromic substrings in this string.
+#### idea:
 
-dp[i,j] is the number of p-string for S(i...j)<br/>
-self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]<br/>
-iterate i reverse, j normal<br/>
-```cpp
-    int countSubstrings(string s) {
-        //dp solution: using 2d approach
-        //dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
-        //dp[i,j] is the number of p-string for S(i...j)
-        //i: reverse, j: normal
-        int n=s.size();
-        vector<vector<int>> dp(n,vector<int>(n));
-        for(int i=0;i<n;i++) dp[i][i]=1; //itself is a p-string
-        
-        for(int i=n-2;i>=0;i--) //reverse
-        {
-            for(int j=i+1;j<n;j++) //j>i must be met
-            {
-                int self=isPalindrome(s,i,j);
-                dp[i][j]=self+dp[i][j-1]+dp[i+1][j]-dp[i+1][j-1];
-            }
-        }
-        return dp[0][n-1];
-    }
-    int isPalindrome(string& s,int i,int j)
-    {
-        //two pointer early exit
-        while(i<j) 
-        {
-            if(s[i]==s[j]) {i++,j--;} else return 0;
-        }
-        return 1;
-    }
-```
+try all combinations: i+j=k when get i digits from num1, and j digits from num2 and then merge the two.
 
-### 5. Longest Palindromic Substring
-Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000
-```cpp
-    string longestPalindrome(string s) {
-       //dp solution using i j
-        int n=s.length();
-        vector<vector<int>> dp(n,vector<int>(n)); //initialize to 0
-        //dp(i,j)=length of p-string
-        int ans=0;
-        int start=0;
-        for(int i=0;i<n;i++) {dp[i][i]=1;ans=1;}
-        for(int i=0;i<n-1;i++) 
-        {
-            if(s[i]==s[i+1]) {dp[i][i+1]=2,ans=2,start=i;}
-        }
-        for(int i=n-3;i>=0;i--) //since it needs i+1
-        {
-            for(int j=i+2;j<n;j++) //since it needs j-1
-            {
-                if(s[i]==s[j] && dp[i+1][j-1]) dp[i][j]=dp[i+1][j-1]+2;
-                if(ans<dp[i][j]) ans=dp[i][j],start=i;
-            }
-        }
-        //print(dp);
-        return s.substr(start,ans);
-    }
-```
-lc516 is for sub sequence
+Get k digits from one array: leave the k-1 digits alone, and find the max digit from 0 to n-k. And then search for the 2nd max after the previous max position.
 
-## edit distance
-using insert, delete, replace to make two strings (arrays) to be the same or transform from one to another<br/>
-this can solve a lot of subsequence problems.<br/>
-	
-### 72. Edit Distance	
-insert delete and replace
-min number of operations
-```cpp
-    int minDistance(string s1, string s2) {
-        //note it has three operations!
-		int n=s1.size();
-		int m=s2.size();
-		vector<vector<char>> d(n+1,vector<char>(m+1));
-		for(int i=0;i<=n;i++) d[i][0]=i;
-		for(int j=0;j<=m;j++) d[0][j]=j;
-		short ins,del,match,mismatch;
-		for(int j=1;j<=m;j++)
-		{
-			for(int i=1;i<=n;i++)
-			{
-				ins=d[i][j-1]+1;
-				del=d[i-1][j]+1;
-				match=d[i-1][j-1];
-				mismatch=d[i-1][j-1]+1;//replace
-				if(s1[i-1]==s2[j-1]) //note string start from 0
-					//d[i][j]=min(ins,min(del,match));
-					d[i][j]=match;
-				else
-					d[i][j]=min(ins,min(del,mismatch));
-			}
-		}
-		return d[n][m];   
-    }
-```		
-### 712. Minimum ASCII Delete Sum for Two Strings<br/>
-edit distance dp[i,j]
-```cpp
-    int minimumDeleteSum(string s1, string s2) {
-		int n=s1.size();
-		int m=s2.size();
-		vector<vector<int>> d(n+1,vector<int>(m+1)); //minimum delete sum, (i-1)(j-1)
-		for(int i=1;i<=n;i++) d[i][0]+=d[i-1][0]+s1[i-1];//s2 is empty
-		for(int j=1;j<=m;j++) d[0][j]+=d[0][j-1]+s2[j-1];//s1 is empty
-		int del,match,mismatch;
-		for(int j=1;j<=m;j++)
-		{
-			for(int i=1;i<=n;i++)
-			{
-				match=d[i-1][j-1];
-				mismatch=d[i-1][j-1]+s1[i-1]+s2[j-1];//delete both
-				int del1=d[i-1][j]+s1[i-1]; //delete s1[i-1], when mismatch
-				int del2=d[i][j-1]+s2[j-1]; //delete s2[j-1], when mismatch
-				
-				if(s1[i-1]==s2[j-1]) //note string start from 0
-					d[i][j]=min(match,min(del1,del2));//even it matches we may need delete it
-				else
-					d[i][j]=min(mismatch,min(del1,del2));
-			}   
-		}
-		return d[n][m];           
-    }
-```	
+When merge two arrays, one point need attention: when two elements are the same, we need compare lexicographically the arrays behind them.
 
-### 392. Is Subsequence
-Given a string s and a string t, check if s is subsequence of t.
-edit distance problem, greedy or two pointer
-dp: by deleting char to see if we can reach to the other string<br/>
-greedy: always match the first char using two pointers
-
-```cpp
-    bool isSubsequence(string s, string t) {
-        int m=s.size(),n=t.size();
-        if(m>n) return 0;
-        int j=0;
-        for(int i=0;i<s.size();i++)
-        {
-            char c=s[i];
-            bool found=0;
-            while(j<t.size()) {if(t[j]==c) {j++;found=1;break;}j++;}
-            if(!found) return 0;
-        }
-        return 1;
-    }
-```
-
-### 516. Longest Palindromic Subsequence	
-Given a string s, find the longest palindromic subsequence's length in s
-```cpp
-    int longestPalindromeSubseq(string s) {
-        // dp[i][j] longest palindrome subsequence within s[i...j]
-        //
-        // dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
-        // dp[i][j] = max(dp[i+1][j], dp[i][j-1]) if s[i] != s[j]
-        // 
-        // dp[i][i] = 1. dp[i][i-1] = 0.
-        //
-        // To save space, use 1d array.
-        // i: n-1 -> 0. j : i->n-1
-        
-        int n = s.size();
-        vector<int> dp(n, 0);
-        
-        for(int i = n-1; i >= 0 ; --i) 
-        {
-            int p1, p2 = dp[i];
-            dp[i] = 1;
-            for(int j = i+1; j < n; ++j) 
-            {
-                p1 = dp[j];
-                dp[j] = (s[i] == s[j]) ?  p2+2 : max(p1, dp[j-1]);
-                p2 = p1;
-            }
-        }
-        return dp[n-1];
-    }
-```
-again can convert to edit distance. by reversing the string we are looking for the largest common subsequence.<br/>
-
-```cpp
-    int longestPalindromeSubseq(string s) {
-        string rs=s;
-        reverse(rs.begin(),rs.end());
-        int n=s.size();
-        //align the two strings with min deletion
-        vector<vector<int>> dp(n+1,vector<int>(n+1));
-        for(int i=0;i<=n;i++) dp[0][i]=dp[i][0]=i;
-        //dp(i,j) represents the s0(0...i-1) and s1(0...j-1)
-        for(int i=1;i<=n;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                int t=min(dp[i-1][j],dp[i][j-1])+1; //delete a char from s0 or s1
-                //mismatch or match
-                if(s[i-1]==rs[j-1]) dp[i][j]=dp[i-1][j-1];
-                else dp[i][j]=min(dp[i-1][j-1]+2,t);//delete a char from s0 and s1
-            }
-        }
-        return (2*n-dp[n][n])/2;
-    }
-```
-
-### 97. Interleaving String.md
-#### problem summary: 
-check if s1 and s2 interleaves to s3
-
-#### Approach
-This is similar to a mxn matrix which we can find a path of s3
-
-dp[i, j] represents s1[0...i-1] with s2[0...j-1] can interleave to s3[0...i+j-1]
-
-when s1[i-1]==s3[i+j-1] we may choose s1[i-1], previous solution is dp[i-1, j]
-
-when s2[j-1]==s3[i+j-1], we may choose s2[j-1], previous solution is dp[i, j-1]
-
-when both s1[i-1] and s2[j-1] equals s3[i+j-1] we may choose either of them.
-
-So, the recurrence relation is:
-
-dp[i, j]=(dp[i-1, j] && s1[i-1]==s3[i+j-1]) || (dp[i, j-1] && s2[j-1]==s3[i+j-1])
-
-Boundary condition:
-0th row: when s1 is empty, dp[0,i] depends previous dp[0, i-1] and current char if the same
-
-0th col: when s2 is empty, dp[i,0] depends previous dp[i-1,0] and current char if the same
+For example, 2,1.. and 2,3... If we choose 2 from the 2nd array, then next would 2,1... merge with 3.... and 3 will be chosen and we get 2,3. On the contrary, if we choose 2 from the first array, we then need merge 1... and 2,3..., then we get 2,2 which is not correct.
 
 #### code
 ```cpp
-
-    bool isInterleave(string s1, string s2, string s3) {
-        int n1=s1.size(),n2=s2.size();
-        if(s3.length() != n1+n2) return 0;
-        if(n1==0) return s3==s2;
-        if(n2==0) return s3==s1;
-        vector<vector<bool>> dp(n1+1,vector<bool>(n2+1));
-        dp[0][0]=1; //empty vs empty
-        //boundary condition
-        for(int i=1;i<=n1;i++) dp[i][0]=dp[i-1][0] && (s1[i-1]==s3[i-1]); //j=0, s1 compare with s3
-        for(int j=1;j<=n2;j++) dp[0][j]=dp[0][j-1] && (s2[j-1]==s3[j-1]); //i=0: s2 compare with s3
-        for(int i=1; i<=n1; i++)
+    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
+        int m=nums1.size(),n=nums2.size();
+        //cout<<m<<" "<<n<<" "<<k<<endl;
+        if(k>=m+n)  //just merge the two arrays
+            return merge(nums1,nums2);
+        //try all possible combinations, i from array 1, k-i from array 2
+        //i range is [max(m-k,0),min(k,m)], other array range is [max(n-k,0),min(k,n)]
+        vector<int> ans(k);
+        for(int i=0;i<=min(m,k);i++)
         {
-            for(int j=1; j<=n2; j++)
-            {
-                dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1] ) || (dp[i][j-1] && s2[j-1] == s3[i+j-1] );
-            }
-        }   
-        return dp[n1][n2];
+            if(k-i>nums2.size()) continue;
+            vector<int> a=maxNumber(nums1,i);
+            vector<int> b=maxNumber(nums2,k-i);
+            vector<int> c=merge(a,b);
+            if(lexicographical_compare(ans.begin(),ans.end(),c.begin(),c.end())) ans=c;
+        }
+        return ans;
     }
     
+    vector<int> maxNumber(vector<int>& v,int k) //get k digits from 1 array
+    {
+        int n=v.size();
+        if(k>=n) return v;
+        if(k==0) return vector<int>();
+        vector<int> ans(k);
+        //greedy choice, the leftmost digit is the max from i+[0,n-(k-1))
+        int i=0;
+        for(int j=1;j<=k;j++) //repeat k times
+        {
+            auto it=max_element(v.begin()+i,v.begin()+n-(k-j));
+            i=int(it-v.begin())+1; //now the new pointer
+            ans[j-1]=*it;
+        }
+        return ans;
+    }
+    vector<int> merge(vector<int>& v1,vector<int>& v2)
+    {
+        int i=0,j=0,k=0;
+        vector<int> ans(v1.size()+v2.size());
+        while(i<v1.size() && j<v2.size())
+        {
+            if(v1[i]>v2[j]) {ans[k++]=v1[i++];}
+            else if(v1[i]<v2[j]) {ans[k++]=v2[j++];}
+            else //two number is equal, choose the one behind is larger
+            {
+                if(lexicographical_compare(v1.begin()+i,v1.end(),v2.begin()+j,v2.end())) //v1<v2
+                {ans[k++]=v2[j++];}
+                else {ans[k++]=v1[i++];}
+            }
+        }
+        if(i<v1.size()) copy(v1.begin()+i,v1.end(),ans.begin()+k);
+        if(j<v2.size()) copy(v2.begin()+j,v2.end(),ans.begin()+k);
+        return ans;
+    }
 ```
 
-#### Attention:
-- this is a direct dp problem, which uses dp(i, j) directly for the string s1 with len i and s2 with string j and s3 with len i+j
-- deal with special case: which is easy
-- boundary condition: easy but if incorrectly specified, will get wrong results
-- complexity O(N^2)
+#### comments
+- this is a typical greedy choice problem. The key is if we want k digits from array, we leave space for the unsolved k-1 digits and greedy choose the max.
+- lexicographical_compare is useful for string and array (do not need same length)
+- merge two array
 
 
+### 87. Scramble String.md
+#### problem summary
+partition a string into left and right recursively.
+choose any node and swap its left right branch
+The leaf is a scrambled string of original
 
-## ending with ith element
+Check if a new string is a scramble string of s
+
+#### analysis
+partition at i, left s[0,i) and right [i,n)
+swap left and right: left [i,n) and right [0,i)
+we need recursively check if they are scrambled.
+left vs left and right vs right
+s1[0,i) vs s2[0,i) && s1[i,n) vs s2[i,n)
+left vs right and right vs left
+s1[0,i) vs s2[n-i,i) && s1[i,n) vs s2[0,n-i)
+
+#### code
+```cpp
+    bool isScramble(string s1, string s2) {
+        if(s1==s2) return 1;
+        if(s1.length()!=s2.length()) return 0;
+        int n=s1.length();
+        //check if the histogram the same
+        vector<int> cnt(26);
+        for(int i=0;i<s1.length();i++)
+        {
+            cnt[s1[i]-'a']++;
+            cnt[s2[i]-'a']--;
+        }
+        for(int i=0;i<26;i++) if(cnt[i]) return 0;
+        
+        for(int i=1;i<=n-1;i++) //possible partition position
+        {
+            if(isScramble(s1.substr(0,i),s2.substr(0,i)) && isScramble(s1.substr(i),s2.substr(i))) return 1;
+            if(isScramble(s1.substr(0,i),s2.substr(n-i)) && isScramble(s1.substr(i),s2.substr(0,n-i))) return 1;
+        }
+        return 0;
+    }
+```
+
+#### comment
+- the iteration i is actually the length of the left string, make sure it reaches n-1
+- prune: s1==s2, length not match, histogram match
+- check similar problem 951 Flip Equivalent Binary Trees
+It uses a tree
+```cpp
+    bool flipEquiv(TreeNode* root1, TreeNode* root2) {
+        if(!root1 && !root2) return 1; //both null
+        else if(!root1 || !root2) return 0;
+        if(root1->val!=root2->val) return 0;
+        if(flipEquiv(root1->left,root2->left) && flipEquiv(root1->right,root2->right)) return 1;
+        if(flipEquiv(root1->left,root2->right) && flipEquiv(root1->right,root2->left)) return 1;
+        return 0;
+    }
+```    
+
+
+## 3.3.8 ending with ith element
 
 solve ith based on previous solutions.
-some times ending with some special char or numbers
 
 ### 983. Minimum Cost For Tickets
 In a country popular for train travel, you have planned some train travelling one year in advance.  The days of the year that you will travel is given as an array days.  Each day is an integer from 1 to 365.
@@ -1307,26 +1434,6 @@ typical dp: compare with 1 day, 7 day or 30 day
             //copy(dp.begin(),dp.end(),ostream_iterator<int>(cout," "));cout<<endl;
         }
         return dp[n];
-    }
-```
-
-	
-### 646. Maximum Length of Pair Chain<br/>
-sort the chain according to its start.<br/>
-dp[i] is the number of longest chain for ith pair, it shall be the previous chain+1
-```cpp
-    int findLongestChain(vector<vector<int>>& pairs) {
-        sort(pairs.begin(),pairs.end()); //sort with start
-        vector<int> dp(pairs.size(),1);
-        for(int i=1;i<pairs.size();i++)
-        {
-            //dp[i] is the number of longest chain for ith pair, it shall be the previous chain+1
-            for(int j=i-1;j>=0;j--)
-            {
-                if(pairs[j][1]<pairs[i][0]) {dp[i]=dp[j]+1;break;}
-            }
-        }
-        return dp[pairs.size()-1];
     }
 ```
 
@@ -1364,7 +1471,6 @@ public:
     }
 };
 ```
-
 ### 91. Decode Ways<br/>
 A-Z decode as 1-26<br/>
 given a digit string, return number of decoding ways<br/>
@@ -1393,7 +1499,6 @@ only have two options:
         return dp[s.size()];
     }
 ```
-	
 
 ### 639. Decode Ways II
 * represents any numbers
@@ -1446,6 +1551,63 @@ only have two options:
         }
     }
 ```
+
+### 552. Student Attendance Record II.md
+#### problem summary
+Given string length n, A: Absent, P: Present, L: Late. A rewardable record is: no more than one A, or more than two continuous L
+Return the number of records
+
+#### idea
+This is a typical DP problem.
+Best approach here: https://leetcode.com/problems/student-attendance-record-ii/discuss/101634/Python-DP-with-explanation
+
+1. there is no A
+ending with:
+P: dp[i]=dp[i-1]
+PL: dp[i]=dp[i-2]
+PLL: dp[i]=dp[i-3]
+
+2. With A.
+A can be in any position from 0 to j. When A is at j, it divides the string into two strings with no A case:
+
+left from 0 to i-1: dp(i)
+
+right from i+1 to n-1: dp(n-1-i)
+
+sum(dp(left)*dp(right)) j=0 to i
+
+dp[i]: represents the number of strings without A
+
+boundary: dp[0]=1, 
+dp[1]=2, P, L
+dp[2]=4: PP, PL,LP,LL
+
+#### code
+```cpp
+    int checkRecord(int n) {
+        if(n==0) return 1;
+        if(n==1) return 3;
+        vector<int> dp(n+1);//dp: number of strings without A
+        dp[0]=1;
+        dp[1]=2;
+        dp[2]=4;
+        int mod=1e9+7;
+        for(int i=3;i<=n;i++) dp[i]=((long long)dp[i-1]+dp[i-2]+dp[i-3])%mod;
+        int result=dp[n];
+        
+        for(int i=0;i<=n;i++)
+        {    
+            result+=((long long)dp[i]*dp[n-1-i])%mod;
+            result%=mod;
+        }
+        return result;
+    }
+```
+
+#### comments
+-. dp[i] is the number of strings with length i, without A
+
+-. need use long long for intermediate results to avoid overflow
 
 ### 139. Word Break<br/>
 break the word into dictionary words<br/>
@@ -1530,7 +1692,82 @@ subproblem catsand returns a list:
 "cat sand"
 and then we append the dog which get the final answer.
 3. when the subproblem cannot produce a combination, the result is empty and combine will also produce empty (which is a trick here)
-	
+
+### 472. Concatenated Words.md
+#### problem Summary
+Given a list of words, return all the words in the list which can be combined by other words in the list
+
+#### analysis
+1. Apparently we shall first sort the words according to its length, so we only need to check its front words.
+
+2. if a word is found in it, then it is split into left and right sub-problem.
+
+3. so recursion + memoization could be a solution. Memoization shall record what string is already processed.
+
+4. using a hashset is good for searching.
+
+#### Implementation
+without memoization
+```cpp
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        sort(words.begin(),words.end(),cmp);
+        unordered_set<string> dict;
+        vector<string> ans;
+        unordered_map<string,bool> dp;
+        for(int i=0;i<words.size();i++)
+        {
+            if(canCombine(words[i],dict,dp)) ans.push_back(words[i]);
+            dict.insert(words[i]);
+        }
+        return ans;
+    }
+    //check if a word can be combined using words from a dictionary
+    bool canCombine(string w,unordered_set<string>& dict,unordered_map<string,bool>& dp)
+    {
+        if(dict.empty()) return 0;
+        //if(dp.count(w)) return dp[w];
+        if(dict.count(w)) return dp[w]=1;
+        
+        for(int i=1;i<w.size();i++)
+        {
+            if(dict.count(w.substr(0,i)))
+            {
+                if(canCombine(w.substr(i),dict,dp))
+                {
+                    return dp[w]=1;
+                }
+            }
+        }
+        return dp[w]=0;
+    }
+```
+Note using the recorded result is disabled. Some bugs are with the memoization.
+
+Partial DP solution: dp approach is just used for a single word.
+The idea is similar to the word break, dp[i] represents if i is good cut position
+```cpp
+    bool canCombine(string& word,unordered_set<string>& dict)
+    {
+        if(dict.empty()) return 0;
+        vector<bool> dp(word.length()+1);//dp[i]: [0...i-1] substr can be combined
+        dp[0]=1;//always can form by an empty string
+        for(int i=1;i<=word.length();i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(!dp[j]) continue;//previous one is not a word
+                string t=word.substr(j,i-j);//note substr 2nd is the length
+                if(dict.count(t)) {dp[i]=1;break;} //cannot search the whole set!
+            }
+        }
+        return dp[word.length()];
+    }
+```
+
+The two solutions runs almost the same time.
+
+#### comments
+
 ### 467. Unique Substrings in Wraparound String<br/>
 - ending with different char guarantee the uniqueness.
 - ending with a char, with a length, the substring is fixed (since it is always abcde...zabcd...z
@@ -1574,8 +1811,180 @@ so we take two set, one for final one for intermediate<br/>
         }
         return ms.size();
     }
+```	
+
+## 3.3.9 bfs like 
+### 55. Jump Game
+see greedy or dp
+
+### 975. Odd Even Jump
+1st,3rd,...odd jumps
+2nd,4th....even jumps
+during odd jumps: jump to the first element >=A[i], the value shall be as small as possible
+during even jumps: jump to the first element <=A[i], the value shall be as large as possible
+check all the good starting index so we can reach the end.
+
+Take [5,1,3,4,2] as example.
+
+If we start at 2,
+we can jump either higher first or lower first to the end,
+because we are already at the end.
+higher(2) = true
+lower(2) = true
+
+If we start at 4,
+we can't jump higher, higher(4) = false
+we can jump lower to 2, lower(4) = higher(2) = true
+
+If we start at 3,
+we can jump higher to 4, higher(3) = lower(4) = true
+we can jump lower to 2, lower(3) = higher(2) = true
+
+If we start at 1,
+we can jump higher to 2, higher(1) = lower(2) = true
+we can't jump lower, lower(1) = false
+
+If we start at 5,
+we can't jump higher, higher(5) = false
+we can jump lower to 4, lower(5) = higher(4) = false
+
+```cpp
+    int oddEvenJumps(vector<int>& A) {
+        int n  = A.size(), res = 1;
+        vector<int> higher(n), lower(n);
+        higher[n - 1] = lower[n - 1] = 1;
+        map<int, int> map;
+        map[A[n - 1]] = n - 1;
+        for (int i = n - 2; i >= 0; --i) {
+            auto hi = map.lower_bound(A[i]), lo = map.upper_bound(A[i]);
+            if (hi != map.end()) higher[i] = lower[hi->second];
+            if (lo != map.begin()) lower[i] = higher[(--lo)->second];
+            if (higher[i]) res++;
+            map[A[i]] = i;
+        }
+        return res;
+    }
 ```
-## longest/shortest subsequence
+
+### 403. Frog Jump.md
+#### problem summary
+A list of stone at different positions in ascending order and first stone is always 0, and first jump is always 1.
+frog can only jump on the stones
+if previous jump is k, next jump can only be k+1, k, or k-1 steps.
+Ask: check if the frog can reach the end.
+
+#### idea
+seems like a dfs problem. At every stone, we have 3 options, k, k+1, k-1. If none can reach next stone, we are done here and return 0.
+suppose we take k step to reach stone pos[i]:
+next is subproblem 
+
+canCross(stones, i, k+1), 
+canCross(stones, i, k), 
+canCross(stones,i, k-1)
+
+#### code
+```cpp
+    unordered_map<int,bool> mp;
+    bool canCross(vector<int>& stones) {
+        //dfs
+        return helper(stones,0,1);// || helper(stones,1,2);
+    }
+    bool helper(vector<int>& stones,int ind,int nextstep) //step is previous step used
+    {
+        if(nextstep<=0) return 0;
+        int key=ind | (nextstep<<11);
+        if(mp.count(key)) return mp[key];
+        if(stones[ind]+nextstep==stones.back()) return 1;
+        int next=stones[ind]+nextstep;
+        int it=lower_bound(stones.begin()+ind,stones.end(),next)-stones.begin();
+        
+        if(it<stones.size() && stones[it]==next) 
+            return mp[key]=helper(stones,it,nextstep+1) || helper(stones,it,nextstep) || helper(stones,it,nextstep-1);
+        return 0;
+    }
+```
+
+#### comment
+- dfs has to be with memoization since dfs is O(2^n)
+- use nextstep is easier.
+
+### 871. Minimum Number of Refueling Stops.md
+#### problem summary
+given initial milage, a list of station at different position with adding milage. Find the min number of refueling station to reach target.
+
+#### idea
+This is similar to the super egg drop problem.
+
+By solving an equivalent dp problem: what is the max distance using a number of refuelings
+
+assuming dp[i] is the max distance using i refueling stations
+
+dp[i]=max(dp[i], dp[i-1]+gas[j]) with constrains dp[i-1]>=pos[j] (You have to be able to reach pos[j] to add the gas[j])
+
+#### code
+```cpp
+    int minRefuelStops(int target, int startFuel, vector<vector<int>>& stations) {
+        int n=stations.size();
+        vector<int> dp(n+1); //the largest miles at each station
+        dp[0]=startFuel;
+        for(int i=0;i<n;i++) //iterate on all stations
+        {
+            int pos=stations[i][0],gas=stations[i][1];
+            for(int j=i;j>=0;j--)
+            {
+                if(dp[j]>=pos) dp[j+1]=max(dp[j+1],dp[j]+gas);  //previous station needs update
+            }
+        }
+        for(int i=0;i<=n;i++) if(dp[i]>=target) return i;
+        return -1;
+    }
+ ```
+ 
+ #### comments
+ - need iterate all stations and cannot early exit since each station may contribute to the max distance
+
+
+### 517. Super Washing Machines.md
+#### problem Summary
+a list of washing machine with some clothes inside, each move choose any number of machine and passing one clothes to machines on its left or right side.
+
+Ask: the min number of move to make each machine the same load
+
+#### idea
+target is the average load. We can elmininate those illegal cases. and then subtract the average. The new target will be 0.
+A machine with positive value can only pass out clothes.
+1. from left to right, we shall give all its load to right to make it 0 (does not matter it is negative or positive). number of move is abs(value). That is like accumulate.
+
+2. the least steps we need to eventually finish this process is determined by the peak of abs(cnt) and the max of "gain/lose" array
+refer to:
+https://leetcode.com/problems/super-washing-machines/discuss/99185/Super-Short-and-Easy-Java-O(n)-Solution
+
+
+#### code
+```cpp
+    int findMinMoves(vector<int>& machines) {
+        int n=machines.size();
+        int avg=accumulate(machines.begin(),machines.end(),0);
+        if(avg%n) return -1;
+        avg/=n;
+        for(int i=0;i<n;i++) machines[i]-=avg;
+        int max0=0,cnt=0;
+        for(int i=0;i<n;i++)
+        {
+            cnt+=machines[i];
+            max0=max(max0,max(abs(cnt),machines[i]));
+        }
+        return max0;
+    }
+```
+
+#### comments
+1. the machine with largest load shall give away all of it. That is one bound
+2. at ith position, the prefix sum is another bound: which shall pass out or pass in to it. That is another bound.
+3. be sure to include max0 self in the max function, otherwise it will only use current (local) max. 
+
+
+## 3.3.10 longest/shortest subsequence
 
 ### 1027. Longest Arithmetic Sequence	
 get sequence with previous with same difference
@@ -1594,6 +2003,59 @@ dp[diff][index] equals to the length of arithmetic sequence at index with differ
     }
 ```
 
+### 646. Maximum Length of Pair Chain<br/>
+sort the chain according to its start.<br/>
+dp[i] is the number of longest chain for ith pair, it shall be the previous chain+1
+```cpp
+    int findLongestChain(vector<vector<int>>& pairs) {
+        sort(pairs.begin(),pairs.end()); //sort with start
+        vector<int> dp(pairs.size(),1);
+        for(int i=1;i<pairs.size();i++)
+        {
+            //dp[i] is the number of longest chain for ith pair, it shall be the previous chain+1
+            for(int j=i-1;j>=0;j--)
+            {
+                if(pairs[j][1]<pairs[i][0]) {dp[i]=dp[j]+1;break;}
+            }
+        }
+        return dp[pairs.size()-1];
+    }
+```
+
+### 368. Largest Divisible Subset<br/>
+find the largest subset which Si%Sj=0 (they are a part of geometric series)<br/>
+dp with backtrace ability, we need keep the previous information.<br/>
+dp with a bit complexity<br/>
+```cpp
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0) return vector<int>();
+        sort(nums.begin(),nums.end());
+        
+        vector<int> dp(n,1); //l
+        vector<int> prev(n,-1);
+        for(int i=1;i<n;i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(nums[i]%nums[j]==0) 
+                {
+                    dp[i]=max(dp[i],dp[j]+1);
+                    if(dp[i]==dp[j]+1) prev[i]=j;
+                }
+            }
+        }
+        int ind=max_element(dp.begin(),dp.end())-dp.begin();
+        vector<int> ans;
+        while(ind>=0)
+        {
+            ans.push_back(nums[ind]);
+            ind=prev[ind];
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+```
 
 ### 873. Length of Longest Fibonacci Subsequence
 two pointers with dp
@@ -1794,6 +2256,35 @@ using stack
 	}
 ```
 
+### 5. Longest Palindromic Substring
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000
+```cpp
+    string longestPalindrome(string s) {
+       //dp solution using i j
+        int n=s.length();
+        vector<vector<int>> dp(n,vector<int>(n)); //initialize to 0
+        //dp(i,j)=length of p-string
+        int ans=0;
+        int start=0;
+        for(int i=0;i<n;i++) {dp[i][i]=1;ans=1;}
+        for(int i=0;i<n-1;i++) 
+        {
+            if(s[i]==s[i+1]) {dp[i][i+1]=2,ans=2,start=i;}
+        }
+        for(int i=n-3;i>=0;i--) //since it needs i+1
+        {
+            for(int j=i+2;j<n;j++) //since it needs j-1
+            {
+                if(s[i]==s[j] && dp[i+1][j-1]) dp[i][j]=dp[i+1][j-1]+2;
+                if(ans<dp[i][j]) ans=dp[i][j],start=i;
+            }
+        }
+        //print(dp);
+        return s.substr(start,ans);
+    }
+```
+lc516 is for sub sequence
+
 ### 960. Delete Columns to Make Sorted III	
 delete columns of chars to make row sorted.
 
@@ -1823,7 +2314,58 @@ longest increasing subsequence for all strings
     }
 ```	
 
-## knapsack problem
+### 354. Russian Doll Envelopes.md
+#### problem Summary
+Given a list of envelopes with width and height. What is the max number of envelops we can russian doll (one put inside another if width and height are both smaller. Rotation is not allowed.
+
+Input: [[5,4],[6,4],[6,7],[2,3]]
+Output: 3 
+
+Explanation: The maximum number of envelopes you can Russian doll is 3 ([2,3] => [5,4] => [6,7]).
+
+#### analysis
+It is natural to compare each evelope with all others. We can sort the envelpes so that larger one only need to compare with previous smaller ones. (save by half)
+
+2d sort: first sort by width, if width is the same, sort by height.
+
+dp[i] represents the largest russian doll ending at i, dp[i]=max(dp[i],dp[j]+1) if j can fit into i
+
+The answer is max(dp[i]).
+
+boundary condition:
+each envelope itself counts 1: dp[i]=1;
+
+This problem seems not that hard.
+
+#### Implementation
+```cpp
+bool cmp(pair<int,int> a,pair<int,int> b) {return a.first<b.first || (a.first==b.first && a.second<b.second);}
+class Solution {
+public:
+    bool canfit(pair<int,int> a,pair<int,int> b) {return a.first<b.first && a.second<b.second;}
+    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+        int n=envelopes.size();
+        if(n==0) return 0;
+        sort(envelopes.begin(),envelopes.end(),cmp);
+        vector<int> dp(n,1); //dp[i] largest number ending at i (i is the outer envelope)
+        for(int i=1;i<n;i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(canfit(envelopes[j],envelopes[i])) dp[i]=max(dp[i],dp[j]+1);
+            }
+        }
+        return *max_element(dp.begin(),dp.end());
+    }
+};
+```
+
+#### comments:
+- boundary is critical for the correctness.
+
+
+## 3.4 knapsack problem
+
 with repetition, without repetition
 
 ### 322. Coin Change-min number<br/>
@@ -2160,7 +2702,779 @@ dp[0,0]=1, there is one way to reach 0 and 0 people
 - there is multiple way to reach p, g, the total method shall be sum of them, similar to climbing stairs
 
 
-## dfs/recursion with memoization
+
+## 3.5 2D problems
+either a 2D matrix or 2 arrays or 2 strings, or multiple arrays or strings
+
+## 3.5.1 simple 2d matrix traverse
+
+### 62. Unique Paths
+dp[i,j]=dp[i-1][j]+dp[i,j-1]
+boundary dp[0][1]=1 so we can enter the top left cell
+```cpp
+    int uniquePaths(int m, int n) {
+    //need use dynamic programming p(i,j)=p(i-1,j)+p(i,j-1) if current node is reachable
+    //
+		vector<vector<int>> dp(m+1,vector<int>(n+1,0)); //all initialized as 0
+		dp[0][1]=1; //assuming to the first element is 1
+		for(int i=1;i<=m;i++)
+		{
+			for(int j=1;j<=n;j++)
+			{
+				dp[i][j]=dp[i-1][j]+dp[i][j-1];
+			}
+		}
+		return dp[m][n];
+    }
+```	
+
+### 64. Minimum Path Sum	
+```cpp
+    int minPathSum(vector<vector<int>>& grid) {
+        //state equation S(i,j)=min(S(i-1,j),S(i,j-1))+grid(i,j)
+        //boundary condition: i=0 case, and j=0 case, toprow and left column
+        //either pad the grid or define the  boundary for S
+        //top row: to each node is the accumulate previous elememts
+        //left col: to each node is the accumulation of previous elements
+        int m=grid.size(),n=grid[0].size();
+        vector<vector<int>> vs(m,vector<int>(n,0));
+        vs[0][0]=grid[0][0];
+        for(int i=1;i<m;i++) vs[i][0]=vs[i-1][0]+grid[i][0];
+        for(int j=1;j<n;j++) vs[0][j]=vs[0][j-1]+grid[0][j];
+        
+        for(int i=1;i<m;i++)
+        {
+            for(int j=1;j<n;j++) 
+                vs[i][j]=min(vs[i-1][j],vs[i][j-1])+grid[i][j];
+        }
+        return vs[m-1][n-1];
+    }
+```	
+### 931. Minimum Falling Path Sum<br/>
+given a matrix, element + min(previous row closest three sum)
+```cpp
+    int minFallingPathSum(vector<vector<int>>& A) {
+        //use the matrix A for dp
+        int n=A.size();
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(j>0 && j<n-1)
+                    A[i][j]+=min(min(A[i-1][j-1],A[i-1][j]),A[i-1][j+1]);
+                else if(j==0) A[i][j]+=min(A[i-1][j],A[i-1][j+1]);
+                else A[i][j]+=min(A[i-1][j],A[i-1][j-1]);
+            }
+        }
+        //print(A);
+        int ans=A[n-1][0];
+        for(int i=0;i<n;i++) ans=min(ans,A[n-1][i]);
+        return ans;
+    }
+```	
+
+### 120. Triangle<br/>
+min path sum
+```cpp
+    int minimumTotal(vector<vector<int>>& triangle) {
+        if(!triangle.size()) return 0;
+        if(triangle.size()==1) return triangle[0][0];
+        int level=triangle.size();
+        for(int l=level-2;l>=0;l--)
+        {
+            for(int j=0;j<=l;j++)
+                triangle[l][j]+=min(triangle[l+1][j],triangle[l+1][j+1]);
+        }
+        return triangle[0][0];
+    }
+```
+
+### 576. Out of Boundary Path<br/>
+quite a few similar problems. using recursion<br/>
+```cpp    
+    int dp[50][50][51];
+    Solution() {memset(dp,-1,sizeof(dp));}
+    int findPaths(int m, int n, int N, int i, int j) {
+        if(i<0 || i>=m || j<0 ||j>=n)  return 1;
+        if(N<=0) return 0;
+        if(dp[i][j][N]!=-1) return dp[i][j][N];
+        int mod=1e9+7;
+        dp[i][j][N]=findPaths(m,n,N-1,i-1,j)%mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i+1,j)%mod;dp[i][j][N]%=mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i,j-1)%mod;dp[i][j][N]%=mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i,j+1)%mod;dp[i][j][N]%=mod;
+        return dp[i][j][N];
+    }
+```
+
+### 174. Dungeon Game.md
+##### problem Summary
+positive: add power
+negative: reduce power
+power need >=1 to be alive
+
+#### Approach
+reverse traverse
+
+##### code
+```cpp
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        //this shall be done in reverse order from bottom-right to top-left
+        int m=dungeon.size(),n=dungeon[0].size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1,INT_MAX));
+        //add a right, bottom cell as 1 so that we can apply +1 to the min
+        dp[m][n-1]=dp[m-1][n]=1;
+        for(int i=m-1;i>=0;i--)
+        {
+            for(int j=n-1;j>=0;j--)
+            {
+                int t=min(dp[i+1][j],dp[i][j+1])-dungeon[i][j];
+                dp[i][j]=t<=0?1:t; //we need at least add 1 to it
+            }
+        }
+        return dp[0][0];
+        
+    }
+```
+
+### 741. cherry pickup.md
+#### problem Summary
+This is a pretty hard DP problem.
+
+matrix: 0 empty, 1 cherry -1: thorn
+
+You need go roundtrip from top left to bottom right and back to top left and get the max cherry.
+
+### Approach:
+
+- intuitively way that maximizes the first pass and changes the optimal path and then finds the second pass optimal path will not work. Since this will only maximize the first pass and the global optimal is not guaranteed.
+
+- From top left to bottom right is equivalent to from bottom right to top left
+
+- The correct approach is to try the two passes simultaneously and make the two passes optimal. The only constraint is: the two passes cannot pick up the same cherry twice.
+
+- for a matrix n x n, one trip takes 2N-1 steps. We can try all possible locations for two passes for each step and this is the key point. i.e., the first pass goes to (i,j) and second pass goes to (p,q) and i+j=p+q=steps. The only constraint is (i, j)=(p, q). The cherry picked up at these two locations are grid[i, j]+grid[p, q].
+
+- From previous position to current (i,j) and (p,q), the previous combination could be the following: (i-1, j, p-1, q, k-1) (i-1, j, p, q-1, k-1) (i, j-1, p-1, q, k-1) (i, j-1, p, q-1, k-1). k is the number of steps.
+
+- So the recurrence relation is dp(i, j, p, q, k)=max(dp(i-1, j, p-1, q, k-1), dp(i-1, j, p, q-1, k-1), dp(i, j-1, p-1, q, k-1), dp(i, j-1, p, q-1, k-1))+grid(i, j)+grid(p,q).
+
+- Since i and j are associated, also p and q are associated, dp shall not use i and j, but we need use i and p, or j and q. (the x coordinate for two positions or y coordinates for the two passes).
+
+    - dp(i-1, j, p-1, q, k-1) reduced to dp(i-1, p-1, k-1)
+
+    - dp(i-1, j, p, q-1, k-1) reduced to dp(i-1, p, k-1)
+
+    - dp(i, j-1, p-1, q, k-1) reduced to dp(i, p-1, k-1)
+
+    - dp(i, j-1, p, q-1, k-1) reduced to dp(i, p, k-1)
+    
+Since only k-1 iteration is involved, we may not need the 3rd dimension, but extra care is needed, generally reverse iteration is required to avoid using updated values.
+
+And finally we reached the solution:
+
+Attention:
+
+Since we reduce the 3d problem into 2d problem we need do reverse iteration to use n-1 values
+
+when grid[x][y]<0, we need set dp[x1][x2]=-1 it is necessary since it is dp[x1][x2][n]! and dp[x1][x2][n-1] may be >0 but dp[x1][x2][n] may be <0. Need to keep updating.
+
+two legs can cross the same position, but can only pick the cherry once.
+
+#### code
+```cpp
+    int cherryPickup(vector<vector<int>>& grid) {
+        int n=grid.size();
+        vector<vector<int>> dp(n,vector<int>(n,-1));
+        dp[0][0]=grid[0][0];
+        for(int nstep=1;nstep<2*n-1;nstep++)
+        {
+            for(int x1=n-1;x1>=0;x1--)
+            {
+                for(int x2=n-1;x2>=0;x2--) //can share the same position but cannot pick twice
+                {
+                    int y1=nstep-x1,y2=nstep-x2;
+                    if(y1<0 || y2<0 ||y1>=n || y2>=n) continue;
+                    if(grid[x1][y1]<0 || grid[x2][y2]<0) {dp[x1][x2]=-1;continue;}
+                    int delta=grid[x1][y1];
+                    if(x1!=x2) delta+=grid[x2][y2];
+                    int best=-1;
+                    if(x1 && x2 && dp[x1-1][x2-1]>=0) best=max(best,dp[x1-1][x2-1]+delta);
+                    if(y1 && x2 && dp[x1][x2-1]>=0) best=max(best,dp[x1][x2-1]+delta);
+                    if(x1 && y2 && dp[x1-1][x2]>=0) best=max(best,dp[x1-1][x2]+delta);
+                    if(y1 && y2 && dp[x1][x2]>=0) best=max(best,dp[x1][x2]+delta); 
+                    dp[x1][x2]=best; 
+                }
+            }
+        }
+        return dp[n-1][n-1]==-1?0:dp[n-1][n-1];
+    }
+
+```
+
+### Attention:
+- this is a 3d problem with space reduced to 2d, especial care needs attention. one is the reverse iteration, one is setting dp to be -1 when there is a thorn at either position
+- cannot pick the same cherry
+- initialize to -1 to mark. do not have to be int_min which makes things more complicated.
+- complexity O(N^3)
+
+##### comment
+- need initialize to be int-max
+- initial to be 1 so that they can enter the two cells
+
+## 3.6 two choices
+
+### 376. Wiggle Subsequence<br/>
+return the max length of the wiggling subsequence<br/>
+- by tracking the number of down and ups
+- when num[i]>num[i-1], we increase up, up[i]=dn[i-1]+1 (since the two are dependent)
+- when num[i]<num[i-1], we increase down
+- equal case: no change
+- final answer shall be the max of up and down ending at the last element
+```cpp
+    int wiggleMaxLength(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int up=1,dn=1;
+        for(int i=1;i<nums.size();i++)
+        {
+            if(nums[i]>nums[i-1]) up=dn+1;
+            if(nums[i]<nums[i-1]) dn=up+1;
+            //cout<<nums[i]<<"\t"<<up<<" "<<dn<<endl;
+        }
+        return max(up,dn);
+    }
+```
+
+### 801. Minimum Swaps To Make Sequences Increasing<br/>
+two arrays, swap at the same position to make both array sorted<br/>
+two cases:<br/>
+- A[i]>A[i-1] && B[i]>B[i-1]: no swap, then i-1 no swap, swap then swap i-1
+- A[i]>B[i-1] && B[i]>A[i-1]: no swap, then swap i-1. swap i, then no swap i-1
+- Note: the two cases may overlap, so second case we need take the min
+
+```cpp
+    int minSwap(vector<int>& A, vector<int>& B) {
+        int n=A.size();
+        vector<int> swap(n,INT_MAX),no_swap(n,INT_MAX); 
+        //swap(n) represent min swap when we swap n
+        //no_swap(n) represent min swaps when we do not swap n
+        swap[0]=1; //if we swap 0
+        no_swap[0]=0;
+        for(int i=1;i<n;i++)
+        {
+            if(A[i-1]<A[i] && B[i-1]<B[i]) //adding a[i] still sorted
+            {
+                //if we swap i, we also need swap i-1
+                swap[i]=swap[i-1]+1;
+                //if we do not swap i, we also not swap i-1
+                no_swap[i]=no_swap[i-1];
+            }
+            if(A[i-1]<B[i] && B[i-1]<A[i]) //not sorted, or sorted (there is overlapping with previous condition)
+            {
+                //if we swap i, we shall not swap i-1
+                swap[i]=min(swap[i],no_swap[i-1]+1);
+                //if we not swap i, we need swap i-1
+                no_swap[i]=min(no_swap[i],swap[i-1]);
+            }
+        }
+        return min(swap[n-1],no_swap[n-1]);
+    }
+```
+
+## 3.7 pattern matching
+
+### 10. Regular Expression Matching
+##### problem summary
+'.' matches any single char and 
+'*' matches 0 or more of preceding char
+
+##### idea
+1. two string direct dp problem, dp[i, j] represents if s[0...i-1] matches p[0...j-1]
+2. p[j-1] is letter or ., dp[i, j]=dp[i-1, j-1]&&(s[i-1]==p[j-1]||p[j-1]=='.')
+3. p[j-1]=='*', assuming previous char is a, then a*
+  - matches 0 char, previous char is skipped, a* matches empty, dp[i,j]=dp[i,j-2] (s(0...i-1) matches p(0...j-3). Note: we are using previous solution for current solution!)
+  - matches 1 char, then dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i,j-1] (a* counts as one a, s(0..i-1) matches p[0..j-2])
+  - matches more than 1 char, a* represents multiple a, dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i-1,j] (depends s(0...i-2) matches p(0...j-1)). Actually this case is included in match 1 char.
+4. boundary condition
+  - dp[0,0]=1, empty vs empty
+  - p empty, s non-empty, all false, col 0 shall not be included in loop.
+  - s empty, p non-empty, must have .* letter* to match 0 char dp[0,i]=dp[0, i-2] && p[j-1]=='*'
+5. extra complexity: it involves p[j-2] and dp[j-2], which indicates that row 1 needs to be included in boundary. A common approach is: we do not involve the boundary except col 0, but using the recurrence relation to process the boundary. This is much simpler in some cases when the boundary is not so straightforward.
+
+##### code
+```cpp
+    bool isMatch(string s, string p) {
+        int m=s.size(),n=p.size();
+        vector<vector<bool>> dp(m+1,vector<bool>(n+1));
+        dp[0][0]=1;
+        //p is empty, s non-empty all false is straightforward dp[i][0]=0
+        //put other boundary in loops
+        for(int i=0;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(p[j-1]!='*') dp[i][j]=i && dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='.');
+                else dp[i][j]=(j>1 &&dp[i][j-2]) 
+                    || (i && j>1 && dp[i][j-1] && (s[i-1]==p[j-2] || p[j-2]=='.'))
+                    || (i && j>1 && dp[i-1][j] && (s[i-1]==p[j-2] || p[j-2]=='.'));
+            }
+        }
+        return dp[m][n];
+    }
+  ```
+  
+  ##### comments
+  1. when boundary is hard to write, include it in the loop
+  2. a* matches empty, then it means previous solution shall be s(0..i-1) matches p(0..j-3), which is dp[i, j-2]
+  3. a* matches 1, then it means previous solution is s(0..i-2) matches p(0..j-1) which is dp[i-1,j]
+  4. the last condition can be skipped.
+  
+ 
+ ###  Wildcard Matching.md
+#### problem summary
+given input string s and match pattern p, ? matches any single char, * matches 0 or more chars.
+Check if p matches s.
+
+#### idea
+1. two string problem is a 2d dp problem. assuming dp[i, j] represents if s(0..i-1) matches p(0...j-1)
+2. when add p[j], it could be a letter, a ? or a *
+  - a letter: dp[i, j]=dp[i-1, j-1]&& s[i]==p[j]
+  - a ?, always match dp[i, j]=dp[i-1, j-1]
+  - a *, 
+    - matches 0 char, dp[i, j]=dp[i-1, j]
+    - matches 1 or more chars, dp[i, j]=dp[i,j-1] (s can advance one, but p cannot)
+    - so when p[j-1]=='*' dp[i,j]=dp[i-1,j]||dp[i, j-1]
+3. boundary condition
+  -. dp[0, 0]: empty vs empty always true
+  -. p empty, s non-empty, no match
+  -. s empty, p non-empty, then p can only contains *
+    
+#### code
+```cpp
+    bool isMatch(string s, string p) {
+        int m=s.size(),n=p.size();
+        vector<vector<bool>> dp(m+1,vector<bool>(n+1));
+        dp[0][0]=1;
+        for(int i=1;i<=n;i++) dp[0][i]=dp[0][i-1] && p[i-1]=='*';
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(p[j-1]!='*') dp[i][j]=dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='?');
+                else dp[i][j]=dp[i-1][j]||dp[i][j-1];
+            }
+        }
+        return dp[m][n];
+    }
+```
+
+#### comments
+  - complexity O(m*n)
+  - one subtle point: when * matches 0, we need advance p, when * matches 1 or more char, s need advance, p cannot (leaving it for latter match).
+  - direct dp for two string problem. 
+  - similar problem regular expression matching
+  
+ ### 115. Distinct Subsequences.md
+ ##### problem Summary
+return the number of distinct subsequence of S which is equal to t.
+
+##### idea
+this is two string compare with only deletion in S is allowed,
+The number of distinct subsequence is similar to climbing stairs.
+
+if s[i-1]!=t[j-1], dp[i,j]=d[i-1,j] where we need skip this char
+else we have two choices use this char or not: if we use dp[i,j]=dp[i-1,j-1]
+if we do not use dp[i,j]=dp[i-1,j]
+
+This is also similar to walking in a 2d matrix.
+
+##### code
+```cpp
+    int numDistinct(string s, string t) {
+        //dp edit distance
+        int m=s.size(),n=t.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        //dp[i,j] represent number of subsequence for s(0...i) vs t[0..j]
+        //allowing only deletion from s
+        //boundary: dp[0,0]=1
+        for(int i=0;i<=m;i++) dp[i][0]=1; //when t is empty, need delete all s
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(s[i-1]!=t[j-1]) dp[i][j]=dp[i-1][j]; //need delete this char, i proceed one
+                else dp[i][j]=dp[i-1][j-1]+dp[i-1][j]; //delete: i proceed one, keep: dp[i-1][j-1]
+            }
+        }
+        return dp[m][n];
+    }
+``` 
+
+##### comments
+- the key is when we delete char i-1, why it is dp[i-1,j] instead of dp[i-1,j-1]?
+
+## 3.8 palindrome
+	
+### 647. Palindromic Substrings<br/>
+Given a string, your task is to count how many palindromic substrings in this string.
+
+dp[i,j] is the number of p-string for S(i...j)<br/>
+self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]<br/>
+iterate i reverse, j normal<br/>
+```cpp
+    int countSubstrings(string s) {
+        //dp solution: using 2d approach
+        //dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
+        //dp[i,j] is the number of p-string for S(i...j)
+        //i: reverse, j: normal
+        int n=s.size();
+        vector<vector<int>> dp(n,vector<int>(n));
+        for(int i=0;i<n;i++) dp[i][i]=1; //itself is a p-string
+        
+        for(int i=n-2;i>=0;i--) //reverse
+        {
+            for(int j=i+1;j<n;j++) //j>i must be met
+            {
+                int self=isPalindrome(s,i,j);
+                dp[i][j]=self+dp[i][j-1]+dp[i+1][j]-dp[i+1][j-1];
+            }
+        }
+        return dp[0][n-1];
+    }
+    int isPalindrome(string& s,int i,int j)
+    {
+        //two pointer early exit
+        while(i<j) 
+        {
+            if(s[i]==s[j]) {i++,j--;} else return 0;
+        }
+        return 1;
+    }
+```
+
+### 132. Palindrome Partitioning II.md
+##### problem summary
+find the min number of cut to make s a list of palindrome strings
+
+##### idea
+assuming dp[i] is the number of min cut at position i, previous cut position is at j
+s[i..j] has to be a palindrome string then
+dp[i]=min(dp[i],dp[j]+1) for all dp[j]>0 && s[i..j] is palindrome
+
+fixing the end is kind of clumsy for palindrome problem, if we consider i as the center and grows both end:
+1. odd length with center at i and with radius j, s[i-j, i+j]
+2. even length with center at i+0.5 and with radius j, s[i-j+1,i+j]
+
+dp[i+j+1]=min(dp[i+j+1],dp[i-j]+1) odd
+dp[i+j+1]=min(dp[i+j+1],dp[i-j+1]+1) even
+
+Boundary condition:
+max number of cuts for s with i length s[i]=i-1 (by cutting into a single characters)
+
+##### code
+```cpp
+    int minCut(string s) {
+        int n=s.size();
+        vector<int> dp(n+1);
+        for(int i=0;i<=n;i++) dp[i]=i-1;
+        int j=0;
+        for(int i=0;i<n;i++)
+        {
+            //odd expanding
+            j=0;while(i-j>=0 && i+j<n && s[i+j]==s[i-j]) dp[i+j+1]=min(dp[i+j+1],dp[i-j]+1),j++;
+            //even expanding
+            j=0;while(i-j+1>=0 && i+j<n  && s[i+j]==s[i-j+1]) dp[i+j+1]=min(dp[i+j+1],dp[i-j+1]+1),j++;
+        }
+        return dp[n];
+    }
+```
+
+##### comments
+- dp[0]=-1 is necessary since dp[1] has to be 0 for one char. 
+
+### 730. Count Different Palindromic Subsequences.md
+#### problem Summary
+Given a string of length n, find the number of different Palindrome subsequences, string has only a,b,c,d
+Attention: it asks for **subsequences**, not substring
+
+#### ideas
+1. it is easy to extend to 26 chars
+
+2. a palindrome string can be from i to j. It is naturally use a start, end pair, or a start, length pair to indicate a palindrome string.
+
+3. dp natural thinking: we start from the (i,len) subproblem and extend to see if we can solve bigger problem
+assuming we add a char to s[i, i+len-1] (we use xxxx to indicat the string which is palindrome):
+
+4. if we define dp[i,len,x] as the number of different pal-subsequence starting at i, with length=len, with start/end char =x
+
+if s[i]!='x', we can ignore (remove) first char, dp[i,len,x]=dp[i+1,len-1,x]
+else if s[j]!='x', we can ignore (remove) last char, dp[i,len,x]=dp[i,len-1,x] (the head is x but tail is not)
+
+if both are x: 
+dp[i,len,x]=dp[i+1,len-2,'a']+dp[i+1,len-2,'b']+dp[i+1,len-2,'c']+dp[i+1,len-2,'d']+2
+
+why?
+  - we are adding one x to the head and one x to the tail, which makes xa..ax, xb..bx, xc..cx, xd..dx all different pal-subsequence. Since we are making the length increased by 2, and they are all different.
+  
+  - +2: we can add x and xx into it since we add two x into previous solution, and we at least have length>=3
+  
+for example: we have aabaa, the subsequence start and end with a:
+
+a,aa,aaa,aaaa,aba,aabaa
+
+when add a to head and tail, they become:
+
+aaa,aaaa,aaaaaa,aabaa,aaabaaa
+
+and we add a and aa into it.
+
+5. since it only involves len-2, len-1 and len, we only need 3 matrices.
+
+6. The final answer is the sum of start=0, len=n, and char=a, b, c, d
+
+#### Implementation
+```cpp
+    int countPalindromicSubsequences(string S) {
+       int n=S.length();
+        int mod=1e9+7;
+        //dp[i][len][c]: represents starting at i, with length=len start and ending with c
+        vector<vector<int>> dp0(n,vector<int>(4)),dp1(n,vector<int>(4)),dp2(n,vector<int>(4));
+        //dp0:len, dp1: len-1, dp2: len-2
+        for(int len=1;len<=n;len++)
+        {
+            for(int i=0;i+len<=n;i++)
+            {
+                for(int j=0;j<4;j++)
+                {
+                    dp0[i][j]=0;
+                    if(len==1) {dp0[i][j]=(S[i]=='a'+j);continue;}
+                    if(S[i]!='a'+j) dp0[i][j]=dp1[i+1][j];//dp[i][len][c]=dp[i+1][len-1][c]
+                    else if(S[i+len-1]!='a'+j) dp0[i][j]=dp1[i][j];//dp[i,len,c]=dp[i,len-1,c]
+                    else //both ==x
+                    {
+                        dp0[i][j]=2;
+                        if(len>2) for(int k=0;k<4;k++) {dp0[i][j]+=dp2[i+1][k];dp0[i][j]%=mod;} //dp[i+1,len-2,k]
+                    }
+                    dp0[i][j]%=mod;
+                }
+            }
+            //len increase
+            dp2=dp1;
+            dp1=dp0;
+        }
+        //final answer is sum(dp[0,n,c])
+        return accumulate(dp0[0].begin(),dp0[0].end(),0LL)%mod;
+    }
+```
+
+#### comments
+- it needs subsequence, not substring, this is very important to the understanding of the algorithm
+- need special treat len=1 case
+- need special treat len==2 case when add two char (empty)
+- when an iteration on len is done, we need update len-1->len-2, len->len-1
+- every time len shall be initialized since we reuse the matrix. that is why dp2[i][x]=0 is needed. Attention shall be paid to this.
+
+
+
+## 3.9 edit distance
+using insert, delete, replace to make two strings (arrays) to be the same or transform from one to another<br/>
+this can solve a lot of subsequence problems.<br/>
+	
+### 72. Edit Distance	
+insert delete and replace
+min number of operations
+```cpp
+    int minDistance(string s1, string s2) {
+        //note it has three operations!
+		int n=s1.size();
+		int m=s2.size();
+		vector<vector<char>> d(n+1,vector<char>(m+1));
+		for(int i=0;i<=n;i++) d[i][0]=i;
+		for(int j=0;j<=m;j++) d[0][j]=j;
+		short ins,del,match,mismatch;
+		for(int j=1;j<=m;j++)
+		{
+			for(int i=1;i<=n;i++)
+			{
+				ins=d[i][j-1]+1;
+				del=d[i-1][j]+1;
+				match=d[i-1][j-1];
+				mismatch=d[i-1][j-1]+1;//replace
+				if(s1[i-1]==s2[j-1]) //note string start from 0
+					//d[i][j]=min(ins,min(del,match));
+					d[i][j]=match;
+				else
+					d[i][j]=min(ins,min(del,mismatch));
+			}
+		}
+		return d[n][m];   
+    }
+```		
+### 712. Minimum ASCII Delete Sum for Two Strings<br/>
+edit distance dp[i,j]
+```cpp
+    int minimumDeleteSum(string s1, string s2) {
+		int n=s1.size();
+		int m=s2.size();
+		vector<vector<int>> d(n+1,vector<int>(m+1)); //minimum delete sum, (i-1)(j-1)
+		for(int i=1;i<=n;i++) d[i][0]+=d[i-1][0]+s1[i-1];//s2 is empty
+		for(int j=1;j<=m;j++) d[0][j]+=d[0][j-1]+s2[j-1];//s1 is empty
+		int del,match,mismatch;
+		for(int j=1;j<=m;j++)
+		{
+			for(int i=1;i<=n;i++)
+			{
+				match=d[i-1][j-1];
+				mismatch=d[i-1][j-1]+s1[i-1]+s2[j-1];//delete both
+				int del1=d[i-1][j]+s1[i-1]; //delete s1[i-1], when mismatch
+				int del2=d[i][j-1]+s2[j-1]; //delete s2[j-1], when mismatch
+				
+				if(s1[i-1]==s2[j-1]) //note string start from 0
+					d[i][j]=min(match,min(del1,del2));//even it matches we may need delete it
+				else
+					d[i][j]=min(mismatch,min(del1,del2));
+			}   
+		}
+		return d[n][m];           
+    }
+```	
+
+### 392. Is Subsequence
+Given a string s and a string t, check if s is subsequence of t.
+edit distance problem, greedy or two pointer
+dp: by deleting char to see if we can reach to the other string<br/>
+greedy: always match the first char using two pointers
+
+```cpp
+    bool isSubsequence(string s, string t) {
+        int m=s.size(),n=t.size();
+        if(m>n) return 0;
+        int j=0;
+        for(int i=0;i<s.size();i++)
+        {
+            char c=s[i];
+            bool found=0;
+            while(j<t.size()) {if(t[j]==c) {j++;found=1;break;}j++;}
+            if(!found) return 0;
+        }
+        return 1;
+    }
+```
+
+### 516. Longest Palindromic Subsequence	
+Given a string s, find the longest palindromic subsequence's length in s
+```cpp
+    int longestPalindromeSubseq(string s) {
+        // dp[i][j] longest palindrome subsequence within s[i...j]
+        //
+        // dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
+        // dp[i][j] = max(dp[i+1][j], dp[i][j-1]) if s[i] != s[j]
+        // 
+        // dp[i][i] = 1. dp[i][i-1] = 0.
+        //
+        // To save space, use 1d array.
+        // i: n-1 -> 0. j : i->n-1
+        
+        int n = s.size();
+        vector<int> dp(n, 0);
+        
+        for(int i = n-1; i >= 0 ; --i) 
+        {
+            int p1, p2 = dp[i];
+            dp[i] = 1;
+            for(int j = i+1; j < n; ++j) 
+            {
+                p1 = dp[j];
+                dp[j] = (s[i] == s[j]) ?  p2+2 : max(p1, dp[j-1]);
+                p2 = p1;
+            }
+        }
+        return dp[n-1];
+    }
+```
+again can convert to edit distance. by reversing the string we are looking for the largest common subsequence.<br/>
+
+```cpp
+    int longestPalindromeSubseq(string s) {
+        string rs=s;
+        reverse(rs.begin(),rs.end());
+        int n=s.size();
+        //align the two strings with min deletion
+        vector<vector<int>> dp(n+1,vector<int>(n+1));
+        for(int i=0;i<=n;i++) dp[0][i]=dp[i][0]=i;
+        //dp(i,j) represents the s0(0...i-1) and s1(0...j-1)
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                int t=min(dp[i-1][j],dp[i][j-1])+1; //delete a char from s0 or s1
+                //mismatch or match
+                if(s[i-1]==rs[j-1]) dp[i][j]=dp[i-1][j-1];
+                else dp[i][j]=min(dp[i-1][j-1]+2,t);//delete a char from s0 and s1
+            }
+        }
+        return (2*n-dp[n][n])/2;
+    }
+```
+
+### 97. Interleaving String.md
+#### problem summary: 
+check if s1 and s2 interleaves to s3
+
+#### Approach
+This is similar to a mxn matrix which we can find a path of s3
+
+dp[i, j] represents s1[0...i-1] with s2[0...j-1] can interleave to s3[0...i+j-1]
+
+when s1[i-1]==s3[i+j-1] we may choose s1[i-1], previous solution is dp[i-1, j]
+
+when s2[j-1]==s3[i+j-1], we may choose s2[j-1], previous solution is dp[i, j-1]
+
+when both s1[i-1] and s2[j-1] equals s3[i+j-1] we may choose either of them.
+
+So, the recurrence relation is:
+
+dp[i, j]=(dp[i-1, j] && s1[i-1]==s3[i+j-1]) || (dp[i, j-1] && s2[j-1]==s3[i+j-1])
+
+Boundary condition:
+0th row: when s1 is empty, dp[0,i] depends previous dp[0, i-1] and current char if the same
+
+0th col: when s2 is empty, dp[i,0] depends previous dp[i-1,0] and current char if the same
+
+#### code
+```cpp
+
+    bool isInterleave(string s1, string s2, string s3) {
+        int n1=s1.size(),n2=s2.size();
+        if(s3.length() != n1+n2) return 0;
+        if(n1==0) return s3==s2;
+        if(n2==0) return s3==s1;
+        vector<vector<bool>> dp(n1+1,vector<bool>(n2+1));
+        dp[0][0]=1; //empty vs empty
+        //boundary condition
+        for(int i=1;i<=n1;i++) dp[i][0]=dp[i-1][0] && (s1[i-1]==s3[i-1]); //j=0, s1 compare with s3
+        for(int j=1;j<=n2;j++) dp[0][j]=dp[0][j-1] && (s2[j-1]==s3[j-1]); //i=0: s2 compare with s3
+        for(int i=1; i<=n1; i++)
+        {
+            for(int j=1; j<=n2; j++)
+            {
+                dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1] ) || (dp[i][j-1] && s2[j-1] == s3[i+j-1] );
+            }
+        }   
+        return dp[n1][n2];
+    }
+    
+```
+
+#### Attention:
+- this is a direct dp problem, which uses dp(i, j) directly for the string s1 with len i and s2 with string j and s3 with len i+j
+- deal with special case: which is easy
+- boundary condition: easy but if incorrectly specified, will get wrong results
+- complexity O(N^2)
+
+
+
+## 3.10 dfs/recursion with memoization
 
 ### 688. Knight Probability in Chessboard<br/>
 at most k moves, the probability that the knight in the board<br/>
@@ -2276,6 +3590,7 @@ recursive approach
     }
 ```
 
+	
 ### 95. Unique Binary Search Trees II<br/>
 dp. combine with left and right
 ```cpp
@@ -2305,86 +3620,176 @@ dp. combine with left and right
     }
 ```    
 	
-### 576. Out of Boundary Path<br/>
-quite a few similar problems. using recursion<br/>
-```cpp    
-    int dp[50][50][51];
-    Solution() {memset(dp,-1,sizeof(dp));}
-    int findPaths(int m, int n, int N, int i, int j) {
-        if(i<0 || i>=m || j<0 ||j>=n)  return 1;
-        if(N<=0) return 0;
-        if(dp[i][j][N]!=-1) return dp[i][j][N];
-        int mod=1e9+7;
-        dp[i][j][N]=findPaths(m,n,N-1,i-1,j)%mod;
-        dp[i][j][N]+=findPaths(m,n,N-1,i+1,j)%mod;dp[i][j][N]%=mod;
-        dp[i][j][N]+=findPaths(m,n,N-1,i,j-1)%mod;dp[i][j][N]%=mod;
-        dp[i][j][N]+=findPaths(m,n,N-1,i,j+1)%mod;dp[i][j][N]%=mod;
-        return dp[i][j][N];
+
+## 3.11 shortest distance
+dijkstra, bellman-ford, bfs, dp
+
+### 787. Cheapest Flights Within K Stops<br/>
+define dp[i,k] is the min cost from start to j with at most k stops<br/>
+the key is we add one stop j: dp[j,k-1]+price[i,j] to minimize the cost<br/>
+
+#### problem Summary
+
+from src to dst, find the cheapest cost using at most k stops
+
+#### idea
+
+- since src is fixed, we only need calculate src to all other airport min cost and the answer is src to dst. Why we care about other dest, that is the nature of dp. We solve our problem from other solved problems.
+
+- No need 3D space. Assuming dp[j, k] is the min cost from src to j using at most k stops.
+
+- The key idea using dp approach is:
+
+when we have k-1 stops, we add one more stop to check if the cost will be relaxed.
+
+assuming the added airport is m, then dp[j, k]=min(dp[j, k], dp[m, k-1]+prices[m, j])
+
+Boundary condition:
+
+    1. src to src is 0
+    2. src to other station directly is given in flights
+    
+#### code
+```cpp
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        vector<vector<int>> prices(n,vector<int>(n,INT_MAX)),dp(n,vector<int>(K+1,INT_MAX));
+       
+        for(int i=0;i<flights.size();i++) 
+        {
+            if(flights[i][0]==src) dp[flights[i][1]][0]=flights[i][2];
+            prices[flights[i][0]][flights[i][1]]=flights[i][2];
+        }
+              
+        for(int k=0;k<=K;k++) dp[src][k]=0;
+        
+        for(int k=1;k<=K;k++)
+        {
+            //add one stop based on previous k-1 stop
+            for(int j=0;j<n;j++)
+            {
+                if(src==j) continue;
+                for(int m=0;m<n;m++)
+                {
+                    if(dp[m][k-1]!=INT_MAX && prices[m][j]!=INT_MAX)
+                    dp[j][k]=min(dp[j][k],dp[m][k-1]+prices[m][j]);
+                }
+            }
+
+        }
+        return dp[dst][K]==INT_MAX?-1:dp[dst][K];
+    }
+ ```
+ #### comments on the code
+ - we build a matrix on the prices, which may have other way to just use the flights, but it is not important
+ - boundary: src to src is 0, src to other is given
+ - there are quite a few similar problems with at most k times, they are all approached with similar idea: compare add one time on previous k-1 or not add. dp[k-1], dp[k-1]+one transaction.
+ - based on above conclusion, there is another equivalent coding:
+ ```cpp
+         for(int k=1;k<=K;k++)
+        {
+            //add one stop based on previous k-1 stop
+            for(int j=0;j<n;j++)
+            {
+                if(src==j) continue;
+                dp[j][k]=dp[j][k-1]; //not add one stop
+                for(int m=0;m<n;m++)
+                {
+                    if(dp[m][k-1]!=INT_MAX && prices[m][j]!=INT_MAX)
+                    dp[j][k]=min(dp[j][k-1],dp[m][k-1]+prices[m][j]);
+                }
+            }
+        }
+```        
+
+### 847. Shortest Path Visiting All Nodes.md
+#### problem summary
+Given a graph with n nodes, the array gives the connected nodes to ith node. Graph is undirected. number of nodes <=12
+Ask: get the min length to visit all nodes
+
+#### analysis
+1. We shall try all nodes as the starting node.
+2. using bitset as the visited for a limited number of nodes
+3. shortest path problem generally uses bfs. Here we shall solve n node bfs
+4. The key idea: when we add a node's children through some paths (indicated by the status) makes the length shorter. Then we need relax the length to the child
+
+BFS procedure for one starting node:
+-. push the node in the queue, set the bit
+-. iterate on its children, relax the distance (initialize to max)
+-. push the children node into queue
+-. until queue is empty
+
+for n nodes the bfs is similar. Just push all starting nodes in the queue. The later starting nodes keeps on relaxing the distances.
+May worth a try to test if run n separate bfs the same.
+
+The final answer is starting nodes is min for all i and status is 0b1111111..1.
+
+dp[i,status] represents starting node i, status: all nodes visited.
+
+#### code
+```cpp
+    struct State{
+        int mask,source;
+        State(int m,int s):mask(m),source(s){}
+    };
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int m=graph.size();
+        int len=1<<m;
+        vector<vector<int>> dp(m,vector<int>(len,m*m));
+        queue<State> qs;
+        for(int i=0;i<m;i++) 
+        {
+            dp[i][1<<i]=0; //self to self distance is 0
+            qs.push(State(1<<i,i)); //try all nodes as starting
+        }
+        while(!qs.empty()) //until no node is in the queue, which means no node can make it closer
+        {
+            State state=qs.front();qs.pop();
+            for(int next:graph[state.source]) //connected nodes
+            {
+                int nextmask=state.mask|(1<<next);
+                if(dp[next][nextmask]>dp[state.source][state.mask]+1) //if passing its parent node can be closer
+                {
+                    dp[next][nextmask]=dp[state.source][state.mask]+1;
+                    qs.push(State(nextmask,next));//bfs next layer
+                }
+            }
+        }
+        //shortest path 
+        int ans=INT_MAX;
+        for(int i=0;i<m;i++) ans=min(ans,dp[i][(1<<m)-1]);
+        return ans;
     }
 ```
-	
-### 838. Push Dominoes
-There are N dominoes in a line, and we place each domino vertically upright.
 
-In the beginning, we simultaneously push some of the dominoes either to the left or to the right.
+#### comment
 
-Whether be pushed or not, depend on the shortest distance to 'L' and 'R'.
-Also the direction matters.
-Base on this idea, you can do the same thing inspired by this problem.
-https://leetcode.com/problems/shortest-distance-to-a-character/discuss/125788/
+### 1000. Minimum Cost to Merge Stones	
+There are N piles of stones arranged in a row.  The i-th pile has stones[i] stones.
 
-Here is another idea that focus on 'L' and 'R'.
-'R......R' => 'RRRRRRRR'
-'R......L' => 'RRRRLLLL' or 'RRRR.LLLL'
-'L......R' => 'L......R'
-'L......L' => 'LLLLLLLL
+A move consists of merging exactly K consecutive piles into one pile, and the cost of this move is equal to the total number of stones in these K piles.
+
+Find the minimum cost to merge all piles of stones into one pile.  If it is impossible, return -1.
 
 ```cpp
-    string pushDominoes(string d) {
-        d = 'L' + d + 'R';
-        string res = "";
-        for (int i = 0, j = 1; j < d.length(); ++j) {
-            if (d[j] == '.') continue;
-            int middle = j - i - 1;
-            if (i > 0) res += d[i];
-            if (d[i] == d[j]) res += string(middle, d[i]);
-            else if (d[i] == 'L' && d[j] == 'R') res += string(middle, '.');
-            else res += string(middle / 2, 'R') + string(middle % 2,'.') + string(middle / 2, 'L');
-            i = j;
-        }
-        return res;
+    int mergeStones(vector<int>& stones, int K)
+    {
+        int N = (int)stones.size();
+        if((N - 1) % (K - 1)) return -1;
+
+        vector<int> sum(N + 1, 0);
+        for(int i = 0; i < N; i++) sum[i + 1] = sum[i] + stones[i];
+
+        vector<vector<int> > dp(N + 1, vector<int>(N, 0));
+        for(int l = K; l <= N; l++)
+            for(int i = 0; i + l <= N; i++)
+            {
+                dp[l][i] = 10000;
+                for(int k = 1; k < l; k += K - 1)
+                    dp[l][i] = min(dp[l][i], dp[k][i] + dp[l - k][i + k]);
+                if((l - 1) % (K - 1) == 0) dp[l][i] += sum[i + l] - sum[i];
+            }
+        return dp[N][0];
     }
-```
-	
-### 764. Largest Plus Sign<br/>
-in four directions, using dp to get the largest radius (including itself)<br/>
-then the larget radius is the min of the 4 directions<br/>
-```cpp
-int orderOfLargestPlusSign(int N, vector<vector<int>>& mines) {
-    vector<vector<int>> grid(N, vector<int>(N, N));
-        
-    for (auto& m : mines) {
-        grid[m[0]][m[1]] = 0;
-    }
-        
-    for (int i = 0; i < N; i++) {
-        for (int j = 0, k = N - 1, l = 0, r = 0, u = 0, d = 0; j < N; j++, k--) {
-            grid[i][j] = min(grid[i][j], l = (grid[i][j] == 0 ? 0 : l + 1));
-            grid[i][k] = min(grid[i][k], r = (grid[i][k] == 0 ? 0 : r + 1));
-            grid[j][i] = min(grid[j][i], u = (grid[j][i] == 0 ? 0 : u + 1));
-            grid[k][i] = min(grid[k][i], d = (grid[k][i] == 0 ? 0 : d + 1));
-        }
-    }
-        
-    int res = 0;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            res = max(res, grid[i][j]);
-        }
-    }
-        
-    return res;
-}
 ```
 
 ### 1039. Minimum Score Triangulation of Polygon
@@ -2415,138 +3820,90 @@ The score of this triangulation is dp[i][j], dp[i][k] + dp[k][j] + A[i] * A[j] *
         return dp[0][n - 1];
     }
 ```
-	
-### 790. Domino and Tromino Tiling<br/>
-we have I shape and L shape, to build 2*N tile, what is the number of combinations<br/>
-this is actually hard.<br/>
-we have two shapes ending: one is flat at the end and one is L shaped at the end
-- g(i) represents the number of combinations ending with flat
-- u(i) represents the number of combinations ending with L shape
+
+### 943. Find the Shortest Superstring
+Given an array A of strings, find any smallest string that contains each string in A as a substring.
+
+We may assume that no string in A is substring of another string in A.
 
 ```cpp
-    int numTilings(int N) 
-    {
-        vector<long long> g(N+1),u(N+1);
-        int mod=1000000007;
-        g[0]=0; g[1]=1; g[2]=2;
-        u[0]=0; u[1]=1; u[2]=2;
-        
-        for(int i=3;i<=N;i++)
+    string shortestSuperstring(vector<string>& A) {
+        int n=A.size(); //number of nodes
+        vector<vector<int>> graph(n,vector<int>(n));
+        for(int i=0;i<n;i++)
         {
-            u[i] = (u[i-1] + g[i-1]           )   %mod;
-            g[i] = (g[i-1] + g[i-2] + 2*u[i-2])   %mod;
-        }
-        return g[N]%mod;
-    }
-```   
- 	
-### 368. Largest Divisible Subset<br/>
-find the largest subset which Si%Sj=0 (they are a part of geometric series)<br/>
-dp with backtrace ability, we need keep the previous information.<br/>
-dp with a bit complexity<br/>
-```cpp
-    vector<int> largestDivisibleSubset(vector<int>& nums) {
-        int n=nums.size();
-        if(n==0) return vector<int>();
-        sort(nums.begin(),nums.end());
-        
-        vector<int> dp(n,1); //l
-        vector<int> prev(n,-1);
-        for(int i=1;i<n;i++)
-        {
-            for(int j=i-1;j>=0;j--)
-            {
-                if(nums[i]%nums[j]==0) 
-                {
-                    dp[i]=max(dp[i],dp[j]+1);
-                    if(dp[i]==dp[j]+1) prev[i]=j;
-                }
-            }
-        }
-        int ind=max_element(dp.begin(),dp.end())-dp.begin();
-        vector<int> ans;
-        while(ind>=0)
-        {
-            ans.push_back(nums[ind]);
-            ind=prev[ind];
-        }
-        reverse(ans.begin(),ans.end());
-        return ans;
-    }
-```
-
-## shortest distance
-dijkstra, bellman-ford, bfs, dp
-
-### 787. Cheapest Flights Within K Stops<br/>
-define dp[i,k] is the min cost from start to j with at most k stops<br/>
-the key is we add one stop j: dp[j,k-1]+price[i,j] to minimize the cost<br/>
-
-```cpp
-    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
-        vector<vector<int>> prices(n,vector<int>(n,INT_MAX)),dp(n,vector<int>(K+1,INT_MAX));
-        for(int i=0;i<flights.size();i++) 
-        {
-            if(flights[i][0]==src) dp[flights[i][1]][0]=flights[i][2];
-            prices[flights[i][0]][flights[i][1]]=flights[i][2];
-        }
-        for(int k=0;k<=K;k++) dp[src][k]=0;
-        for(int k=1;k<=K;k++)
-        {
-            //add one stop based on previous k-1 stop
             for(int j=0;j<n;j++)
             {
-                if(src==j) continue;
-                for(int m=0;m<n;m++)
-                {
-                    if(dp[m][k-1]!=INT_MAX && prices[m][j]!=INT_MAX)
-                    dp[j][k]=min(dp[j][k],dp[m][k-1]+prices[m][j]);
-                }
+                graph[i][j]=calc(A[i],A[j]);
+                graph[j][i]=calc(A[j],A[i]);
             }
         }
-        return dp[dst][K]==INT_MAX?-1:dp[dst][K];
-    }
-```    
-
-### 801. Minimum Swaps To Make Sequences Increasing<br/>
-two arrays, swap at the same position to make both array sorted<br/>
-two cases:<br/>
-- A[i]>A[i-1] && B[i]>B[i-1]: no swap, then i-1 no swap, swap then swap i-1
-- A[i]>B[i-1] && B[i]>A[i-1]: no swap, then swap i-1. swap i, then no swap i-1
-- Note: the two cases may overlap, so second case we need take the min
-
-```cpp
-    int minSwap(vector<int>& A, vector<int>& B) {
-        int n=A.size();
-        vector<int> swap(n,INT_MAX),no_swap(n,INT_MAX); 
-        //swap(n) represent min swap when we swap n
-        //no_swap(n) represent min swaps when we do not swap n
-        swap[0]=1; //if we swap 0
-        no_swap[0]=0;
-        for(int i=1;i<n;i++)
+        //dp: also need keep the path
+        //other dimension shall be the bitset
+        int m=1<<n;
+        vector<vector<int>> dp(m,vector<int>(n,INT_MAX)),path(m,vector<int>(n));
+        int last=-1,gmin=INT_MAX;
+        //dp[i,j]: min distance starting from node j and visiting other nodes indicated in the bitset
+        for(int i=1;i<m;i++) //0x0001 to 0xffff
         {
-            if(A[i-1]<A[i] && B[i-1]<B[i]) //adding a[i] still sorted
+            for(int j=0;j<n;j++)
             {
-                //if we swap i, we also need swap i-1
-                swap[i]=swap[i-1]+1;
-                //if we do not swap i, we also not swap i-1
-                no_swap[i]=no_swap[i-1];
-            }
-            if(A[i-1]<B[i] && B[i-1]<A[i]) //not sorted, or sorted (there is overlapping with previous condition)
-            {
-                //if we swap i, we shall not swap i-1
-                swap[i]=min(swap[i],no_swap[i-1]+1);
-                //if we not swap i, we need swap i-1
-                no_swap[i]=min(no_swap[i],swap[i-1]);
+                if(i & (1<<j)) //if node j is visited
+                {
+                    int prev=i-(1<<j); //previous status
+                    if(prev==0) dp[i][j]=A[j].length();
+                    else //try to use other edge to relax  
+                    {
+                        for(int k=0;k<n;k++)
+                        {
+                            if(dp[prev][k]<INT_MAX && dp[i][j]>dp[prev][k]+graph[k][j])
+                            {
+                                dp[i][j]=dp[prev][k]+graph[k][j];
+                                path[i][j]=k; //save the node
+                            }
+                        }
+                    }
+                }
+                if(i==m-1 && gmin>dp[i][j]) {gmin=dp[i][j];last=j;}
             }
         }
-        return min(swap[n-1],no_swap[n-1]);
+
+        //backtrace to get the results, path stored in path[i][j]
+        int curr=m-1; //0xffff
+        vector<int> seq;
+        cout<<last<<endl;
+        while(curr)
+        {
+            seq.push_back(last);
+            int t=path[curr][last];
+            curr-=(1<<last);
+            last=t;
+        }
+        //now connect the strings
+        string ans=A[seq.back()];//the first
+        for(int i=seq.size()-2;i>=0;i--)
+        {
+            //cout<<seq[i]<<": ";
+            int num_app=graph[seq[i+1]][seq[i]];
+            int len=A[seq[i]].length();
+            //cout<<len<<" "<<num_app<<endl;
+            ans+=A[seq[i]].substr(len-num_app);
+        }
+        return ans;
+    }
+    
+    int calc(string& a,string& b)
+    {
+        int m=a.size(),n=b.size();
+        for(int i=1;i<a.size();i++) //no duplicates
+        {
+            if(b.substr(0,m-i)==a.substr(i)) return n-(m-i);
+        }
+        return n;
     }
 ```
 
-
-
-
+## 3.11 misc
 
 ### 221. Maximal Square<br/>
 finding the max square with all 1s<br/>
@@ -2582,122 +3939,7 @@ keep updating its max range at j (left and right) using the height as the min he
         return max_area*max_area;
     }
 ```
-
-
-
-### 152. Maximum Product Subarray<br/>
-largest product subarray<br/>
-when a negative is involved, max becomes min, min becomes max<br/>
-```cpp
-    int maxProduct(vector<int>& nums) {
-        //max times negative becomes min, min*negative becomes max
-        int imax=nums[0],imin=nums[0];
-        int ans=imax;
-        for(int i=1;i<nums.size();i++)
-        {
-            if(nums[i]<0) swap(imax,imin);
-            imax=max(imax*nums[i],nums[i]);
-            imin=min(imin*nums[i],nums[i]);
-            ans=max(ans,imax);
-        }
-        return ans;
-    }
-```
-
-### 837. New 21 Game<br/>
-this is like climbing stairs, there are more than two methods to reach a stair<br/>
- 
- ```cpp
-     double new21Game(int N, int K, int W) {
-        //this is like climbing stairs. ith position can be obtained
-        //dp[i]=sum(dp[j])/W j=i-1 to i-W
-        if(N>=K+W || K==0) return 1.0;
-        vector<double> dp(K+1); //dp[i] is the probability to reach i points
-        dp[0]=1.0;
-        //dp[i]=sum(dp[j])/W for j=i-1 to i-w
-        double wsum=0;
-
-        for(int i=1;i<=K;i++)
-        {
-            if(i<=W) dp[i]=wsum+=dp[i-1]/W;
-            else {dp[i]=wsum+=(dp[i-1]-dp[i-W-1])/W;}
-        }
-        //copy(dp.begin(),dp.end(),ostream_iterator<double>(cout," "));
-        double ans=0;
-        for(int i=K-1;i>=max(K-W,0);i--)
-        {
-            int d=K-1-i;
-            int len=min(W-d,N-K+1);
-            ans+=len*dp[i]/W;
-        }
-        return ans;
-    }
-```
-
-### 464. Can I Win<br/>
-It is important to get the problem right: the two player adds to the same sum, and who reach the target first wins
-number chosen cannot be reused.<br/>
-- use bitset to indicate number used or not
-- subtract target
-- who reaches 0 wins
-- if other wins, then we lose
-- store solved solutions
-
-```cpp
-    bool canIWin(int m,int sum,int status)
-    {
-        if(sum<=0) return 0; //already to the dead end, but still did not win
-        if(win.count(status)) return 1;
-        if(lose.count(status)) return 0;
-        for(int i=1;i<=m;i++)
-        {
-            int bit=1<<i;
-            if(status & bit) continue; //already solved, need the solved results recorded
-            bool res=canIWin(m,sum-i,status|bit);
-            if(!res) //surely win, why use ! since it is the even times.
-            {
-                win.insert(status);
-                return 1;
-            }
-        }
-        lose.insert(status);//after all trials, cannot win
-        return 0;
-    }
-```
-
-### 523. Continuous Subarray Sum<br/>
-target: multiples of K<br/>
-accumulate sum (prefix sum). the prefix sum shall %k has the same value<br/>
-```cpp
-    bool checkSubarraySum(vector<int>& nums, int k) {
-        //accumulate first and then check (a-b)%k==0
-        vector<int> accum(nums.size()+1,0);
-        unordered_map<int,vector<int>> cntmap;
-        for(int i=0;i<nums.size();i++) accum[i+1]=accum[i]+nums[i];
-        if(k)
-        for(int i=1;i<accum.size();i++)
-        {
-            int t=accum[i]%k;
-            cntmap[t].push_back(i); //same remainder, 3 the same must be true, 2 possibly be true
-            if(cntmap[t].size()>2) return 1;
-            if(cntmap[t].size()==2)
-            {
-                if(abs(cntmap[t][0]-cntmap[t][1])>1) return 1;
-            }
-        }
-        else
-        for(int i=0;i<accum.size();i++)
-        {
-            for(int j=i+2;j<accum.size();j++)
-                if(accum[j]==accum[i]) return 1;
-        }
-            
-        return 0;
-        
-    }
-```
 	
-
 ## hard
 
 ### 982. Triples with Bitwise AND Equal To Zero
@@ -2743,473 +3985,6 @@ dp[i][j] represents the number of combinations if we pick i numbers where the AN
 the and result is always a int.
 
 
-
-### 975. Odd Even Jump
-1st,3rd,...odd jumps
-2nd,4th....even jumps
-during odd jumps: jump to the first element >=A[i], the value shall be as small as possible
-during even jumps: jump to the first element <=A[i], the value shall be as large as possible
-check all the good starting index so we can reach the end.
-
-Take [5,1,3,4,2] as example.
-
-If we start at 2,
-we can jump either higher first or lower first to the end,
-because we are already at the end.
-higher(2) = true
-lower(2) = true
-
-If we start at 4,
-we can't jump higher, higher(4) = false
-we can jump lower to 2, lower(4) = higher(2) = true
-
-If we start at 3,
-we can jump higher to 4, higher(3) = lower(4) = true
-we can jump lower to 2, lower(3) = higher(2) = true
-
-If we start at 1,
-we can jump higher to 2, higher(1) = lower(2) = true
-we can't jump lower, lower(1) = false
-
-If we start at 5,
-we can't jump higher, higher(5) = false
-we can jump lower to 4, lower(5) = higher(4) = false
-
-```cpp
-    int oddEvenJumps(vector<int>& A) {
-        int n  = A.size(), res = 1;
-        vector<int> higher(n), lower(n);
-        higher[n - 1] = lower[n - 1] = 1;
-        map<int, int> map;
-        map[A[n - 1]] = n - 1;
-        for (int i = n - 2; i >= 0; --i) {
-            auto hi = map.lower_bound(A[i]), lo = map.upper_bound(A[i]);
-            if (hi != map.end()) higher[i] = lower[hi->second];
-            if (lo != map.begin()) lower[i] = higher[(--lo)->second];
-            if (higher[i]) res++;
-            map[A[i]] = i;
-        }
-        return res;
-    }
-```
-	
-
-### 10. Regular Expression Matching
-##### problem summary
-'.' matches any single char and 
-'*' matches 0 or more of preceding char
-
-##### idea
-1. two string direct dp problem, dp[i, j] represents if s[0...i-1] matches p[0...j-1]
-2. p[j-1] is letter or ., dp[i, j]=dp[i-1, j-1]&&(s[i-1]==p[j-1]||p[j-1]=='.')
-3. p[j-1]=='*', assuming previous char is a, then a*
-  - matches 0 char, previous char is skipped, a* matches empty, dp[i,j]=dp[i,j-2] (s(0...i-1) matches p(0...j-3). Note: we are using previous solution for current solution!)
-  - matches 1 char, then dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i,j-1] (a* counts as one a, s(0..i-1) matches p[0..j-2])
-  - matches more than 1 char, a* represents multiple a, dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i-1,j] (depends s(0...i-2) matches p(0...j-1)). Actually this case is included in match 1 char.
-4. boundary condition
-  - dp[0,0]=1, empty vs empty
-  - p empty, s non-empty, all false, col 0 shall not be included in loop.
-  - s empty, p non-empty, must have .* letter* to match 0 char dp[0,i]=dp[0, i-2] && p[j-1]=='*'
-5. extra complexity: it involves p[j-2] and dp[j-2], which indicates that row 1 needs to be included in boundary. A common approach is: we do not involve the boundary except col 0, but using the recurrence relation to process the boundary. This is much simpler in some cases when the boundary is not so straightforward.
-
-##### code
-```cpp
-    bool isMatch(string s, string p) {
-        int m=s.size(),n=p.size();
-        vector<vector<bool>> dp(m+1,vector<bool>(n+1));
-        dp[0][0]=1;
-        //p is empty, s non-empty all false is straightforward dp[i][0]=0
-        //put other boundary in loops
-        for(int i=0;i<=m;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                if(p[j-1]!='*') dp[i][j]=i && dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='.');
-                else dp[i][j]=(j>1 &&dp[i][j-2]) 
-                    || (i && j>1 && dp[i][j-1] && (s[i-1]==p[j-2] || p[j-2]=='.'))
-                    || (i && j>1 && dp[i-1][j] && (s[i-1]==p[j-2] || p[j-2]=='.'));
-            }
-        }
-        return dp[m][n];
-    }
-  ```
-  
-  ##### comments
-  1. when boundary is hard to write, include it in the loop
-  2. a* matches empty, then it means previous solution shall be s(0..i-1) matches p(0..j-3), which is dp[i, j-2]
-  3. a* matches 1, then it means previous solution is s(0..i-2) matches p(0..j-1) which is dp[i-1,j]
-  4. the last condition can be skipped.
-
- ### 115. Distinct Subsequences.md
- ##### problem Summary
-return the number of distinct subsequence of S which is equal to t.
-
-##### idea
-this is two string compare with only deletion in S is allowed,
-The number of distinct subsequence is similar to climbing stairs.
-
-if s[i-1]!=t[j-1], dp[i,j]=d[i-1,j] where we need skip this char
-else we have two choices use this char or not: if we use dp[i,j]=dp[i-1,j-1]
-if we do not use dp[i,j]=dp[i-1,j]
-
-This is also similar to walking in a 2d matrix.
-
-##### code
-```cpp
-    int numDistinct(string s, string t) {
-        //dp edit distance
-        int m=s.size(),n=t.size();
-        vector<vector<int>> dp(m+1,vector<int>(n+1));
-        //dp[i,j] represent number of subsequence for s(0...i) vs t[0..j]
-        //allowing only deletion from s
-        //boundary: dp[0,0]=1
-        for(int i=0;i<=m;i++) dp[i][0]=1; //when t is empty, need delete all s
-        for(int i=1;i<=m;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                if(s[i-1]!=t[j-1]) dp[i][j]=dp[i-1][j]; //need delete this char, i proceed one
-                else dp[i][j]=dp[i-1][j-1]+dp[i-1][j]; //delete: i proceed one, keep: dp[i-1][j-1]
-            }
-        }
-        return dp[m][n];
-    }
-```
-
-##### comments
-- the key is when we delete char i-1, why it is dp[i-1,j] instead of dp[i-1,j-1]?
-
-### 132. Palindrome Partitioning II.md
-##### problem summary
-find the min number of cut to make s a list of palindrome strings
-
-##### idea
-assuming dp[i] is the number of min cut at position i, previous cut position is at j
-s[i..j] has to be a palindrome string then
-dp[i]=min(dp[i],dp[j]+1) for all dp[j]>0 && s[i..j] is palindrome
-
-fixing the end is kind of clumsy for palindrome problem, if we consider i as the center and grows both end:
-1. odd length with center at i and with radius j, s[i-j, i+j]
-2. even length with center at i+0.5 and with radius j, s[i-j+1,i+j]
-
-dp[i+j+1]=min(dp[i+j+1],dp[i-j]+1) odd
-dp[i+j+1]=min(dp[i+j+1],dp[i-j+1]+1) even
-
-Boundary condition:
-max number of cuts for s with i length s[i]=i-1 (by cutting into a single characters)
-
-##### code
-```cpp
-    int minCut(string s) {
-        int n=s.size();
-        vector<int> dp(n+1);
-        for(int i=0;i<=n;i++) dp[i]=i-1;
-        int j=0;
-        for(int i=0;i<n;i++)
-        {
-            //odd expanding
-            j=0;while(i-j>=0 && i+j<n && s[i+j]==s[i-j]) dp[i+j+1]=min(dp[i+j+1],dp[i-j]+1),j++;
-            //even expanding
-            j=0;while(i-j+1>=0 && i+j<n  && s[i+j]==s[i-j+1]) dp[i+j+1]=min(dp[i+j+1],dp[i-j+1]+1),j++;
-        }
-        return dp[n];
-    }
-```
-
-##### comments
-- dp[0]=-1 is necessary since dp[1] has to be 0 for one char. 
-
-
-### 174. Dungeon Game.md
-##### problem Summary
-positive: add power
-negative: reduce power
-power need >=1 to be alive
-
-#### Approach
-reverse traverse
-
-##### code
-```cpp
-    int calculateMinimumHP(vector<vector<int>>& dungeon) {
-        //this shall be done in reverse order from bottom-right to top-left
-        int m=dungeon.size(),n=dungeon[0].size();
-        vector<vector<int>> dp(m+1,vector<int>(n+1,INT_MAX));
-        //add a right, bottom cell as 1 so that we can apply +1 to the min
-        dp[m][n-1]=dp[m-1][n]=1;
-        for(int i=m-1;i>=0;i--)
-        {
-            for(int j=n-1;j>=0;j--)
-            {
-                int t=min(dp[i+1][j],dp[i][j+1])-dungeon[i][j];
-                dp[i][j]=t<=0?1:t; //we need at least add 1 to it
-            }
-        }
-        return dp[0][0];
-        
-    }
-```
-
-##### comment
-- need initialize to be int-max
-- initial to be 1 so that they can enter the two cells
-
-### 312. Burst Balloons.md
-##### problem Summary
-Given a list of balloons with number on it. If a balloon is burst, point num[l] * num * num[r] will be added. (l,r is the adjacent left and right balloon)
-Ask: to return max point we can get
-
-##### idea
-1. add a guardian to avoid boundary. add 1 to left and 1 to right
-2. every time we burst a balloon, it depends on the left and right index (we do not want to alter the array and it will be a big mess). It is naturally to use left and right in the dp solutions
-3. Once we want to burst balloon i, its points will be nums[i]*nums[l]*nums[r]. And it leaves two parts l to i-1 and i+1 to r. (Between l and r there are multiple elements, we are just assuming after some bursting, l and r becomes adjacent). This is similar to a reverse process. When we solve l, i, r, the previous problem (l, i-1) and (i+1, r) have all be solved. In another word, those balloons are all bursted already.
-4. so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,l]), i from l to r
-
-##### code
-```cpp
-    int maxCoins(vector<int>& nums) {
-        nums.insert(nums.begin(),1);
-        nums.push_back(1);
-        int n=nums.size();
-        vector<vector<int>> dp(n,vector<int>(n));
-        return helper(nums,1,n-2,dp);
-    }
-    int helper(vector<int>& nums,int s,int e,vector<vector<int>>& dp)
-    {
-        if(s>e) return 0;
-        if(dp[s][e]>0) return dp[s][e];
-        for(int i=s;i<=e;i++)
-        {
-            dp[s][e]=max(dp[s][e],nums[i]*nums[s-1]*nums[e+1]+helper(nums,s,i-1,dp)+helper(nums,i+1,e,dp));
-        }
-        return dp[s][e];
-    }
-```
-
-#### comments
-1. start,end are all possible balloon to burst, its left and right are its adjacent. So it is num[i]*num[s-1]*num[e+1]
-2. terminate condition then is s>e (s==e is allowed for a single element left)
-3. dp[s,e] is exactly a subproblem from start to end (a continuous partial array)
-4. These details reflect the correct understanding of the method and shall pay special attention.
-
-
-
-### 321. Create Maximum Number.md
-#### problem summary
-from two arrays with numbers 0-9, create k digits which is the max number.
-
-#### idea:
-
-try all combinations: i+j=k when get i digits from num1, and j digits from num2 and then merge the two.
-
-Get k digits from one array: leave the k-1 digits alone, and find the max digit from 0 to n-k. And then search for the 2nd max after the previous max position.
-
-When merge two arrays, one point need attention: when two elements are the same, we need compare lexicographically the arrays behind them.
-
-For example, 2,1.. and 2,3... If we choose 2 from the 2nd array, then next would 2,1... merge with 3.... and 3 will be chosen and we get 2,3. On the contrary, if we choose 2 from the first array, we then need merge 1... and 2,3..., then we get 2,2 which is not correct.
-
-#### code
-```cpp
-    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
-        int m=nums1.size(),n=nums2.size();
-        //cout<<m<<" "<<n<<" "<<k<<endl;
-        if(k>=m+n)  //just merge the two arrays
-            return merge(nums1,nums2);
-        //try all possible combinations, i from array 1, k-i from array 2
-        //i range is [max(m-k,0),min(k,m)], other array range is [max(n-k,0),min(k,n)]
-        vector<int> ans(k);
-        for(int i=0;i<=min(m,k);i++)
-        {
-            if(k-i>nums2.size()) continue;
-            vector<int> a=maxNumber(nums1,i);
-            vector<int> b=maxNumber(nums2,k-i);
-            vector<int> c=merge(a,b);
-            if(lexicographical_compare(ans.begin(),ans.end(),c.begin(),c.end())) ans=c;
-        }
-        return ans;
-    }
-    
-    vector<int> maxNumber(vector<int>& v,int k) //get k digits from 1 array
-    {
-        int n=v.size();
-        if(k>=n) return v;
-        if(k==0) return vector<int>();
-        vector<int> ans(k);
-        //greedy choice, the leftmost digit is the max from i+[0,n-(k-1))
-        int i=0;
-        for(int j=1;j<=k;j++) //repeat k times
-        {
-            auto it=max_element(v.begin()+i,v.begin()+n-(k-j));
-            i=int(it-v.begin())+1; //now the new pointer
-            ans[j-1]=*it;
-        }
-        return ans;
-    }
-    vector<int> merge(vector<int>& v1,vector<int>& v2)
-    {
-        int i=0,j=0,k=0;
-        vector<int> ans(v1.size()+v2.size());
-        while(i<v1.size() && j<v2.size())
-        {
-            if(v1[i]>v2[j]) {ans[k++]=v1[i++];}
-            else if(v1[i]<v2[j]) {ans[k++]=v2[j++];}
-            else //two number is equal, choose the one behind is larger
-            {
-                if(lexicographical_compare(v1.begin()+i,v1.end(),v2.begin()+j,v2.end())) //v1<v2
-                {ans[k++]=v2[j++];}
-                else {ans[k++]=v1[i++];}
-            }
-        }
-        if(i<v1.size()) copy(v1.begin()+i,v1.end(),ans.begin()+k);
-        if(j<v2.size()) copy(v2.begin()+j,v2.end(),ans.begin()+k);
-        return ans;
-    }
-```
-
-#### comments
-- this is a typical greedy choice problem. The key is if we want k digits from array, we leave space for the unsolved k-1 digits and greedy choose the max.
-- lexicographical_compare is useful for string and array (do not need same length)
-- merge two array
-
-### 354. Russian Doll Envelopes.md
-#### problem Summary
-Given a list of envelopes with width and height. What is the max number of envelops we can russian doll (one put inside another if width and height are both smaller. Rotation is not allowed.
-
-Input: [[5,4],[6,4],[6,7],[2,3]]
-Output: 3 
-
-Explanation: The maximum number of envelopes you can Russian doll is 3 ([2,3] => [5,4] => [6,7]).
-
-#### analysis
-It is natural to compare each evelope with all others. We can sort the envelpes so that larger one only need to compare with previous smaller ones. (save by half)
-
-2d sort: first sort by width, if width is the same, sort by height.
-
-dp[i] represents the largest russian doll ending at i, dp[i]=max(dp[i],dp[j]+1) if j can fit into i
-
-The answer is max(dp[i]).
-
-boundary condition:
-each envelope itself counts 1: dp[i]=1;
-
-This problem seems not that hard.
-
-#### Implementation
-```cpp
-bool cmp(pair<int,int> a,pair<int,int> b) {return a.first<b.first || (a.first==b.first && a.second<b.second);}
-class Solution {
-public:
-    bool canfit(pair<int,int> a,pair<int,int> b) {return a.first<b.first && a.second<b.second;}
-    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
-        int n=envelopes.size();
-        if(n==0) return 0;
-        sort(envelopes.begin(),envelopes.end(),cmp);
-        vector<int> dp(n,1); //dp[i] largest number ending at i (i is the outer envelope)
-        for(int i=1;i<n;i++)
-        {
-            for(int j=i-1;j>=0;j--)
-            {
-                if(canfit(envelopes[j],envelopes[i])) dp[i]=max(dp[i],dp[j]+1);
-            }
-        }
-        return *max_element(dp.begin(),dp.end());
-    }
-};
-```
-
-#### comments:
-- boundary is critical for the correctness.
-
-
-
-
-### 403. Frog Jump.md
-#### problem summary
-A list of stone at different positions in ascending order and first stone is always 0, and first jump is always 1.
-frog can only jump on the stones
-if previous jump is k, next jump can only be k+1, k, or k-1 steps.
-Ask: check if the frog can reach the end.
-
-#### idea
-seems like a dfs problem. At every stone, we have 3 options, k, k+1, k-1. If none can reach next stone, we are done here and return 0.
-suppose we take k step to reach stone pos[i]:
-next is subproblem 
-
-canCross(stones, i, k+1), 
-canCross(stones, i, k), 
-canCross(stones,i, k-1)
-
-#### code
-```cpp
-    unordered_map<int,bool> mp;
-    bool canCross(vector<int>& stones) {
-        //dfs
-        return helper(stones,0,1);// || helper(stones,1,2);
-    }
-    bool helper(vector<int>& stones,int ind,int nextstep) //step is previous step used
-    {
-        if(nextstep<=0) return 0;
-        int key=ind | (nextstep<<11);
-        if(mp.count(key)) return mp[key];
-        if(stones[ind]+nextstep==stones.back()) return 1;
-        int next=stones[ind]+nextstep;
-        int it=lower_bound(stones.begin()+ind,stones.end(),next)-stones.begin();
-        
-        if(it<stones.size() && stones[it]==next) 
-            return mp[key]=helper(stones,it,nextstep+1) || helper(stones,it,nextstep) || helper(stones,it,nextstep-1);
-        return 0;
-    }
-```
-
-#### comment
-- dfs has to be with memoization since dfs is O(2^n)
-- use nextstep is easier.
-
-
-###  Wildcard Matching.md
-#### problem summary
-given input string s and match pattern p, ? matches any single char, * matches 0 or more chars.
-Check if p matches s.
-
-#### idea
-1. two string problem is a 2d dp problem. assuming dp[i, j] represents if s(0..i-1) matches p(0...j-1)
-2. when add p[j], it could be a letter, a ? or a *
-  - a letter: dp[i, j]=dp[i-1, j-1]&& s[i]==p[j]
-  - a ?, always match dp[i, j]=dp[i-1, j-1]
-  - a *, 
-    - matches 0 char, dp[i, j]=dp[i-1, j]
-    - matches 1 or more chars, dp[i, j]=dp[i,j-1] (s can advance one, but p cannot)
-    - so when p[j-1]=='*' dp[i,j]=dp[i-1,j]||dp[i, j-1]
-3. boundary condition
-  -. dp[0, 0]: empty vs empty always true
-  -. p empty, s non-empty, no match
-  -. s empty, p non-empty, then p can only contains *
-    
-#### code
-```cpp
-    bool isMatch(string s, string p) {
-        int m=s.size(),n=p.size();
-        vector<vector<bool>> dp(m+1,vector<bool>(n+1));
-        dp[0][0]=1;
-        for(int i=1;i<=n;i++) dp[0][i]=dp[0][i-1] && p[i-1]=='*';
-        for(int i=1;i<=m;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                if(p[j-1]!='*') dp[i][j]=dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='?');
-                else dp[i][j]=dp[i-1][j]||dp[i][j-1];
-            }
-        }
-        return dp[m][n];
-    }
-```
-
-#### comments
-  - complexity O(m*n)
-  - one subtle point: when * matches 0, we need advance p, when * matches 1 or more char, s need advance, p cannot (leaving it for latter match).
-  - direct dp for two string problem. 
-  - similar problem regular expression matching
-  
 
 ### 466. Count The Repetitions.md
 #### problem summary
@@ -3283,80 +4058,7 @@ When a repeat pattern is found, i%s1.length appeared in the hashmap, then we can
 - some apparent non-match shall be pruned first, including length problem and s2 is not a subset of s1.
 - I tried to find an equation but failed many times, and has to switch to above solution
 
-### 472. Concatenated Words.md
-#### problem Summary
-Given a list of words, return all the words in the list which can be combined by other words in the list
 
-#### analysis
-1. Apparently we shall first sort the words according to its length, so we only need to check its front words.
-
-2. if a word is found in it, then it is split into left and right sub-problem.
-
-3. so recursion + memoization could be a solution. Memoization shall record what string is already processed.
-
-4. using a hashset is good for searching.
-
-#### Implementation
-without memoization
-```cpp
-    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
-        sort(words.begin(),words.end(),cmp);
-        unordered_set<string> dict;
-        vector<string> ans;
-        unordered_map<string,bool> dp;
-        for(int i=0;i<words.size();i++)
-        {
-            if(canCombine(words[i],dict,dp)) ans.push_back(words[i]);
-            dict.insert(words[i]);
-        }
-        return ans;
-    }
-    //check if a word can be combined using words from a dictionary
-    bool canCombine(string w,unordered_set<string>& dict,unordered_map<string,bool>& dp)
-    {
-        if(dict.empty()) return 0;
-        //if(dp.count(w)) return dp[w];
-        if(dict.count(w)) return dp[w]=1;
-        
-        for(int i=1;i<w.size();i++)
-        {
-            if(dict.count(w.substr(0,i)))
-            {
-                if(canCombine(w.substr(i),dict,dp))
-                {
-                    return dp[w]=1;
-                }
-            }
-        }
-        return dp[w]=0;
-    }
-```
-Note using the recorded result is disabled. Some bugs are with the memoization.
-
-Partial DP solution: dp approach is just used for a single word.
-The idea is similar to the word break, dp[i] represents if i is good cut position
-```cpp
-    bool canCombine(string& word,unordered_set<string>& dict)
-    {
-        if(dict.empty()) return 0;
-        vector<bool> dp(word.length()+1);//dp[i]: [0...i-1] substr can be combined
-        dp[0]=1;//always can form by an empty string
-        for(int i=1;i<=word.length();i++)
-        {
-            for(int j=0;j<i;j++)
-            {
-                if(!dp[j]) continue;//previous one is not a word
-                string t=word.substr(j,i-j);//note substr 2nd is the length
-                if(dict.count(t)) {dp[i]=1;break;} //cannot search the whole set!
-            }
-        }
-        return dp[word.length()];
-    }
-```
-
-The two solutions runs almost the same time.
-
-#### comments
 
 
 ### 514. Freedom Trail.md
@@ -3412,207 +4114,8 @@ Ask: the minimum steps (rotation + selection)
 - previous position is the list of previous position, initialized as 0, since 0th char is at 0 move position
 - start is the key position
 
-### 517. Super Washing Machines.md
-#### problem Summary
-a list of washing machine with some clothes inside, each move choose any number of machine and passing one clothes to machines on its left or right side.
-
-Ask: the min number of move to make each machine the same load
-
-#### idea
-target is the average load. We can elmininate those illegal cases. and then subtract the average. The new target will be 0.
-A machine with positive value can only pass out clothes.
-1. from left to right, we shall give all its load to right to make it 0 (does not matter it is negative or positive). number of move is abs(value). That is like accumulate.
-
-2. the least steps we need to eventually finish this process is determined by the peak of abs(cnt) and the max of "gain/lose" array
-refer to:
-https://leetcode.com/problems/super-washing-machines/discuss/99185/Super-Short-and-Easy-Java-O(n)-Solution
 
 
-#### code
-```cpp
-    int findMinMoves(vector<int>& machines) {
-        int n=machines.size();
-        int avg=accumulate(machines.begin(),machines.end(),0);
-        if(avg%n) return -1;
-        avg/=n;
-        for(int i=0;i<n;i++) machines[i]-=avg;
-        int max0=0,cnt=0;
-        for(int i=0;i<n;i++)
-        {
-            cnt+=machines[i];
-            max0=max(max0,max(abs(cnt),machines[i]));
-        }
-        return max0;
-    }
-```
-
-#### comments
-1. the machine with largest load shall give away all of it. That is one bound
-2. at ith position, the prefix sum is another bound: which shall pass out or pass in to it. That is another bound.
-3. be sure to include max0 self in the max function, otherwise it will only use current (local) max. 
-
-### 546. Remove Boxes.md
-#### problem Summary
-Given a list of numbers (different colors), every time you can choose to remove continuous same number (box with same color). If you remove k boxes, you get point k^2.
-Return the max point you can get.
-
-#### idea
-for example [1, 3, 2, 2, 2, 3, 4, 3, 1]
-You can remove 2 first, and let the 3 connected together, 9 points
-1,3,3,4,3,1, remove the 4, get 1
-1,3,3,3,1 remove the 3, get 9
-1,1 remove 1, get 4 total: 23
-
-assuming dp[i,j] is the max points you can get from i to j (inclusive). And the final answer would be dp[0, n-1].
-
-we get the group a[i] to a[i+k], assuming the k+1 elements are the same color, then we have two choices:
-
-    group them and get the score and delete them
-    leave them for a while and process other first and hope to have a longer sequence and higher scores.
-
-For the first case, the score is (k+1)^2+subproblem(i+k+1,j)
-for the second case, assuming we find mth element==nums[i] and want to combine with a[i, i+k], then we need solve two subproblem first [i+k, m-1] with no previous same char and [m, j] with previous k+1 same char.
-
-Thus the dp needs to add another dimension k, dp[i][j][k] defines the max score we get from the sequence i to j (inclusive) with number of same color box ahead.
-
-dp[i][j][k]=max((k+1)^2+sub(i+k+1,j,0), sub(i+k+1,m-1,0), sub(m, j, k+1))
-
-#### code
-```cpp
-    int removeBoxes(vector<int> boxes) {
-        int n = boxes.size();
-        vector<vector<vector<int>>> dp(n,vector<vector<int>>(n,vector<int>(n)));
-        return removeBoxesSub(boxes, 0, n - 1, 0, dp);
-    }
-
-    int removeBoxesSub(vector<int>& boxes, int i, int j, int k, vector<vector<vector<int>>>& dp) 
-    {
-        if (i > j) return 0;
-        if (dp[i][j][k] > 0) return dp[i][j][k];
-        for (; i + 1 <= j && boxes[i + 1] == boxes[i]; i++, k++); 
-        // optimization: all boxes of the same color counted continuously from the first box should be grouped together
-        int res = (k + 1) * (k + 1) + removeBoxesSub(boxes, i + 1, j, 0, dp);
-        for (int m = i + 1; m <= j; m++) {
-            if (boxes[i] == boxes[m]) {
-                res = max(res, removeBoxesSub(boxes, i + 1, m - 1, 0, dp) + removeBoxesSub(boxes, m, j, k + 1, dp));
-            }
-        }
-        dp[i][j][k] = res;
-        return res;
-    }
-```
-
-#### comment
-- recursive + memoization is more straightforward.
-- similar problem: 664 strange printer
-
-### 552. Student Attendance Record II.md
-#### problem summary
-Given string length n, A: Absent, P: Present, L: Late. A rewardable record is: no more than one A, or more than two continuous L
-Return the number of records
-
-#### idea
-This is a typical DP problem.
-Best approach here: https://leetcode.com/problems/student-attendance-record-ii/discuss/101634/Python-DP-with-explanation
-
-1. there is no A
-ending with:
-P: dp[i]=dp[i-1]
-PL: dp[i]=dp[i-2]
-PLL: dp[i]=dp[i-3]
-
-2. With A.
-A can be in any position from 0 to j. When A is at j, it divides the string into two strings with no A case:
-
-left from 0 to i-1: dp(i)
-
-right from i+1 to n-1: dp(n-1-i)
-
-sum(dp(left)*dp(right)) j=0 to i
-
-dp[i]: represents the number of strings without A
-
-boundary: dp[0]=1, 
-dp[1]=2, P, L
-dp[2]=4: PP, PL,LP,LL
-
-#### code
-```cpp
-    int checkRecord(int n) {
-        if(n==0) return 1;
-        if(n==1) return 3;
-        vector<int> dp(n+1);//dp: number of strings without A
-        dp[0]=1;
-        dp[1]=2;
-        dp[2]=4;
-        int mod=1e9+7;
-        for(int i=3;i<=n;i++) dp[i]=((long long)dp[i-1]+dp[i-2]+dp[i-3])%mod;
-        int result=dp[n];
-        
-        for(int i=0;i<=n;i++)
-        {    
-            result+=((long long)dp[i]*dp[n-1-i])%mod;
-            result%=mod;
-        }
-        return result;
-    }
-```
-
-#### comments
--. dp[i] is the number of strings with length i, without A
-
--. need use long long for intermediate results to avoid overflow
-
-### 600. Non-negative Integers without Consecutive Ones.md
-#### problem Summary
-Given n, from 0 to n, return the number of integers whose binary contains no consecuative 1s
-
-#### idea
-1. convert n to binary, it will have m bits
-2. can we solve problem when n=11111..1 with m bits case? 
-Assuming dp[i] is the number of valid string with length i.
-  - if previous bit is 1, then we can only add 0 dp[i][0]=dp[i-1][1]
-  - if previous bit is 0, then we can add 1 or 0 dp[i][0]=dp[i-1][0], dp[i][1]=dp[i-1][1]
-  - above is awkward, if we think in another way, 
-  if we define a[i] as the number of valid strings ending with 0, b[i] is the string ending with 1
-  we can add 0 no matter previous: 
-  a[i]=a[i-1]+b[i-1], 
-  we can add 1 only when previous is 0:
-  b[i]=a[i-1]
-3. subtract all over counted integers when number>n
--. when binary of N appears 11, we just break, since all next smaller
--. when binary of N appears 00, over count those ending with 1
-
-#### code
-```cpp
-    int findIntegers(int num) {
-        string s;
-        while(num) {s+=num%2+'0';num/=2;}
-        reverse(s.begin(),s.end());//MSB is at 0
-        int m=s.length();
-        vector<int> dp0(m),dp1(m);
-        dp0[0]=1,dp1[0]=1;
-        for(int i=1;i<m;i++)
-        {
-            dp0[i]=dp0[i-1]+dp1[i-1];
-            dp1[i]=dp0[i-1];
-        }
-        int result=dp0[m-1]+dp1[m-1];
-        for(int i=1;i<m;i++)
-        {
-            if(s[i]=='1' && s[i-1]=='1') break;
-            if(s[i]=='0' && s[i-1]=='0') result-=dp1[m-i-1];
-        }
-        return result;
-    }
-```
-
-#### comments
-1. the string of n is in human preference with MSB at the first element in string
-2. when previous of n is 00, we need minus dp1[m-i-1] (those > this number is ith bit is 1)
-3. if we use LSB at 0, it is easier to understand
-
-  
 ### 629. K Inverse Pairs Array.md
 #### problem summary
 given 1 to n, get the number of combinations that having exactly k inverse pairs
@@ -3716,288 +4219,6 @@ We don't need the k dimension in this case, since number of char does not matter
 #### comments
 - please refer to remove boxes, which is almost the same.
 
-### 689. Maximum Sum of 3 Non-Overlapping Subarrays.md
-#### problem Summary
-Given a array of length n, and a number k, find 3 non-overlap region with k elements each, make the sum largest.
-Ask: get the starting index of the 3 segment. If there is tie, choose the smaller index (lexigraphically smaller one)
-
-#### idea
-1. There are 3 segments, left, right and mid. left range limits <n-2*k, right range limits >2*k
-2. using dp to update the k window sum for left from left to right (dp[i] is the k-window sum max for 0 to i-1)
-3. using dp to update the k window sum for right from right to left (dp[i] is the k window sum max for i to n)
-4. iterate on all mid position to get the max
-5. find the leftmost index satisfying the max
-
-#### Implementation
-```cpp
-    vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
-        //get the partial sum first
-        int n=nums.size();
-        vector<int> psum(n-k+1);
-        psum[0]=accumulate(nums.begin(),nums.begin()+k,0);
-        for(int i=1;i<n-k+1;i++) psum[i]=psum[i-1]+nums[i+k-1]-nums[i-1];
-        
-        vector<int> leftmax(n-k+1),rightmax(n-k+1);
-        int tmax=INT_MIN;for(int i=0;i<n-k+1;i++) tmax=leftmax[i]=max(tmax,psum[i]);
-        tmax=INT_MIN;for(int i=n-k;i>=0;i--) tmax=rightmax[i]=max(tmax,psum[i]);
-
-        int globalmax=INT_MIN;
-        int mid=0,left=0,right=0;
-        for(int i=k;i<psum.size()-k;i++) //mid can from k to n-k
-        {
-            int l=i-k,r=i+k; 
-            int localmax=leftmax[i-k]+psum[i]+rightmax[i+k];
-            if(globalmax<localmax) //use < so equal max will not be counted in
-            {
-                globalmax=localmax;
-                mid=i;left=i-k;right=i+k;
-            }
-        }
-        
-        for(int i=left-1;i>=0;i--) if(leftmax[i]==leftmax[left]) left--;else break;
-        for(int i=right+1;i<n-k+1;i++) if(rightmax[i]==rightmax[right]) right++;else break;
-        return vector<int>({left,mid,right});
-    }
-```
-
-### 730. Count Different Palindromic Subsequences.md
-#### problem Summary
-Given a string of length n, find the number of different Palindrome subsequences, string has only a,b,c,d
-Attention: it asks for **subsequences**, not substring
-
-#### ideas
-1. it is easy to extend to 26 chars
-
-2. a palindrome string can be from i to j. It is naturally use a start, end pair, or a start, length pair to indicate a palindrome string.
-
-3. dp natural thinking: we start from the (i,len) subproblem and extend to see if we can solve bigger problem
-assuming we add a char to s[i, i+len-1] (we use xxxx to indicat the string which is palindrome):
-
-4. if we define dp[i,len,x] as the number of different pal-subsequence starting at i, with length=len, with start/end char =x
-
-if s[i]!='x', we can ignore (remove) first char, dp[i,len,x]=dp[i+1,len-1,x]
-else if s[j]!='x', we can ignore (remove) last char, dp[i,len,x]=dp[i,len-1,x] (the head is x but tail is not)
-
-if both are x: 
-dp[i,len,x]=dp[i+1,len-2,'a']+dp[i+1,len-2,'b']+dp[i+1,len-2,'c']+dp[i+1,len-2,'d']+2
-
-why?
-  - we are adding one x to the head and one x to the tail, which makes xa..ax, xb..bx, xc..cx, xd..dx all different pal-subsequence. Since we are making the length increased by 2, and they are all different.
-  
-  - +2: we can add x and xx into it since we add two x into previous solution, and we at least have length>=3
-  
-for example: we have aabaa, the subsequence start and end with a:
-
-a,aa,aaa,aaaa,aba,aabaa
-
-when add a to head and tail, they become:
-
-aaa,aaaa,aaaaaa,aabaa,aaabaaa
-
-and we add a and aa into it.
-
-5. since it only involves len-2, len-1 and len, we only need 3 matrices.
-
-6. The final answer is the sum of start=0, len=n, and char=a, b, c, d
-
-#### Implementation
-```cpp
-    int countPalindromicSubsequences(string S) {
-       int n=S.length();
-        int mod=1e9+7;
-        //dp[i][len][c]: represents starting at i, with length=len start and ending with c
-        vector<vector<int>> dp0(n,vector<int>(4)),dp1(n,vector<int>(4)),dp2(n,vector<int>(4));
-        //dp0:len, dp1: len-1, dp2: len-2
-        for(int len=1;len<=n;len++)
-        {
-            for(int i=0;i+len<=n;i++)
-            {
-                for(int j=0;j<4;j++)
-                {
-                    dp0[i][j]=0;
-                    if(len==1) {dp0[i][j]=(S[i]=='a'+j);continue;}
-                    if(S[i]!='a'+j) dp0[i][j]=dp1[i+1][j];//dp[i][len][c]=dp[i+1][len-1][c]
-                    else if(S[i+len-1]!='a'+j) dp0[i][j]=dp1[i][j];//dp[i,len,c]=dp[i,len-1,c]
-                    else //both ==x
-                    {
-                        dp0[i][j]=2;
-                        if(len>2) for(int k=0;k<4;k++) {dp0[i][j]+=dp2[i+1][k];dp0[i][j]%=mod;} //dp[i+1,len-2,k]
-                    }
-                    dp0[i][j]%=mod;
-                }
-            }
-            //len increase
-            dp2=dp1;
-            dp1=dp0;
-        }
-        //final answer is sum(dp[0,n,c])
-        return accumulate(dp0[0].begin(),dp0[0].end(),0LL)%mod;
-    }
-```
-
-#### comments
-- it needs subsequence, not substring, this is very important to the understanding of the algorithm
-- need special treat len=1 case
-- need special treat len==2 case when add two char (empty)
-- when an iteration on len is done, we need update len-1->len-2, len->len-1
-- every time len shall be initialized since we reuse the matrix. that is why dp2[i][x]=0 is needed. Attention shall be paid to this.
-
-
-
-### 741. cherry pickup.md
-#### problem Summary
-This is a pretty hard DP problem.
-
-matrix: 0 empty, 1 cherry -1: thorn
-
-You need go roundtrip from top left to bottom right and back to top left and get the max cherry.
-
-### Approach:
-
-- intuitively way that maximizes the first pass and changes the optimal path and then finds the second pass optimal path will not work. Since this will only maximize the first pass and the global optimal is not guaranteed.
-
-- From top left to bottom right is equivalent to from bottom right to top left
-
-- The correct approach is to try the two passes simultaneously and make the two passes optimal. The only constraint is: the two passes cannot pick up the same cherry twice.
-
-- for a matrix n x n, one trip takes 2N-1 steps. We can try all possible locations for two passes for each step and this is the key point. i.e., the first pass goes to (i,j) and second pass goes to (p,q) and i+j=p+q=steps. The only constraint is (i, j)=(p, q). The cherry picked up at these two locations are grid[i, j]+grid[p, q].
-
-- From previous position to current (i,j) and (p,q), the previous combination could be the following: (i-1, j, p-1, q, k-1) (i-1, j, p, q-1, k-1) (i, j-1, p-1, q, k-1) (i, j-1, p, q-1, k-1). k is the number of steps.
-
-- So the recurrence relation is dp(i, j, p, q, k)=max(dp(i-1, j, p-1, q, k-1), dp(i-1, j, p, q-1, k-1), dp(i, j-1, p-1, q, k-1), dp(i, j-1, p, q-1, k-1))+grid(i, j)+grid(p,q).
-
-- Since i and j are associated, also p and q are associated, dp shall not use i and j, but we need use i and p, or j and q. (the x coordinate for two positions or y coordinates for the two passes).
-
-    - dp(i-1, j, p-1, q, k-1) reduced to dp(i-1, p-1, k-1)
-
-    - dp(i-1, j, p, q-1, k-1) reduced to dp(i-1, p, k-1)
-
-    - dp(i, j-1, p-1, q, k-1) reduced to dp(i, p-1, k-1)
-
-    - dp(i, j-1, p, q-1, k-1) reduced to dp(i, p, k-1)
-    
-Since only k-1 iteration is involved, we may not need the 3rd dimension, but extra care is needed, generally reverse iteration is required to avoid using updated values.
-
-And finally we reached the solution:
-
-Attention:
-
-Since we reduce the 3d problem into 2d problem we need do reverse iteration to use n-1 values
-
-when grid[x][y]<0, we need set dp[x1][x2]=-1 it is necessary since it is dp[x1][x2][n]! and dp[x1][x2][n-1] may be >0 but dp[x1][x2][n] may be <0. Need to keep updating.
-
-two legs can cross the same position, but can only pick the cherry once.
-
-#### code
-```cpp
-    int cherryPickup(vector<vector<int>>& grid) {
-        int n=grid.size();
-        vector<vector<int>> dp(n,vector<int>(n,-1));
-        dp[0][0]=grid[0][0];
-        for(int nstep=1;nstep<2*n-1;nstep++)
-        {
-            for(int x1=n-1;x1>=0;x1--)
-            {
-                for(int x2=n-1;x2>=0;x2--) //can share the same position but cannot pick twice
-                {
-                    int y1=nstep-x1,y2=nstep-x2;
-                    if(y1<0 || y2<0 ||y1>=n || y2>=n) continue;
-                    if(grid[x1][y1]<0 || grid[x2][y2]<0) {dp[x1][x2]=-1;continue;}
-                    int delta=grid[x1][y1];
-                    if(x1!=x2) delta+=grid[x2][y2];
-                    int best=-1;
-                    if(x1 && x2 && dp[x1-1][x2-1]>=0) best=max(best,dp[x1-1][x2-1]+delta);
-                    if(y1 && x2 && dp[x1][x2-1]>=0) best=max(best,dp[x1][x2-1]+delta);
-                    if(x1 && y2 && dp[x1-1][x2]>=0) best=max(best,dp[x1-1][x2]+delta);
-                    if(y1 && y2 && dp[x1][x2]>=0) best=max(best,dp[x1][x2]+delta); 
-                    dp[x1][x2]=best; 
-                }
-            }
-        }
-        return dp[n-1][n-1]==-1?0:dp[n-1][n-1];
-    }
-
-```
-
-### Attention:
-- this is a 3d problem with space reduced to 2d, especial care needs attention. one is the reverse iteration, one is setting dp to be -1 when there is a thorn at either position
-- cannot pick the same cherry
-- initialize to -1 to mark. do not have to be int_min which makes things more complicated.
-- complexity O(N^3)
-
-### 787. Cheapest Flights Within K Stops.md
-#### problem Summary
-
-from src to dst, find the cheapest cost using at most k stops
-
-#### idea
-
-- since src is fixed, we only need calculate src to all other airport min cost and the answer is src to dst. Why we care about other dest, that is the nature of dp. We solve our problem from other solved problems.
-
-- No need 3D space. Assuming dp[j, k] is the min cost from src to j using at most k stops.
-
-- The key idea using dp approach is:
-
-when we have k-1 stops, we add one more stop to check if the cost will be relaxed.
-
-assuming the added airport is m, then dp[j, k]=min(dp[j, k], dp[m, k-1]+prices[m, j])
-
-Boundary condition:
-
-    1. src to src is 0
-    2. src to other station directly is given in flights
-    
-#### code
-```cpp
-    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
-        vector<vector<int>> prices(n,vector<int>(n,INT_MAX)),dp(n,vector<int>(K+1,INT_MAX));
-       
-        for(int i=0;i<flights.size();i++) 
-        {
-            if(flights[i][0]==src) dp[flights[i][1]][0]=flights[i][2];
-            prices[flights[i][0]][flights[i][1]]=flights[i][2];
-        }
-              
-        for(int k=0;k<=K;k++) dp[src][k]=0;
-        
-        for(int k=1;k<=K;k++)
-        {
-            //add one stop based on previous k-1 stop
-            for(int j=0;j<n;j++)
-            {
-                if(src==j) continue;
-                for(int m=0;m<n;m++)
-                {
-                    if(dp[m][k-1]!=INT_MAX && prices[m][j]!=INT_MAX)
-                    dp[j][k]=min(dp[j][k],dp[m][k-1]+prices[m][j]);
-                }
-            }
-
-        }
-        return dp[dst][K]==INT_MAX?-1:dp[dst][K];
-    }
- ```
- #### comments on the code
- - we build a matrix on the prices, which may have other way to just use the flights, but it is not important
- - boundary: src to src is 0, src to other is given
- - there are quite a few similar problems with at most k times, they are all approached with similar idea: compare add one time on previous k-1 or not add. dp[k-1], dp[k-1]+one transaction.
- - based on above conclusion, there is another equivalent coding:
- ```cpp
-         for(int k=1;k<=K;k++)
-        {
-            //add one stop based on previous k-1 stop
-            for(int j=0;j<n;j++)
-            {
-                if(src==j) continue;
-                dp[j][k]=dp[j][k-1]; //not add one stop
-                for(int m=0;m<n;m++)
-                {
-                    if(dp[m][k-1]!=INT_MAX && prices[m][j]!=INT_MAX)
-                    dp[j][k]=min(dp[j][k-1],dp[m][k-1]+prices[m][j]);
-                }
-            }
-        }
-```        
 
 ### 818. Race Car.md
 #### problem summary
@@ -4038,68 +4259,6 @@ stop when it is 0
 #### comments
 - 1 to 2^n only n accelerations
 - recursive with memoization is needed to avoid repeative solving same problems.
-
-### 847. Shortest Path Visiting All Nodes.md
-#### problem summary
-Given a graph with n nodes, the array gives the connected nodes to ith node. Graph is undirected. number of nodes <=12
-Ask: get the min length to visit all nodes
-
-#### analysis
-1. We shall try all nodes as the starting node.
-2. using bitset as the visited for a limited number of nodes
-3. shortest path problem generally uses bfs. Here we shall solve n node bfs
-4. The key idea: when we add a node's children through some paths (indicated by the status) makes the length shorter. Then we need relax the length to the child
-
-BFS procedure for one starting node:
--. push the node in the queue, set the bit
--. iterate on its children, relax the distance (initialize to max)
--. push the children node into queue
--. until queue is empty
-
-for n nodes the bfs is similar. Just push all starting nodes in the queue. The later starting nodes keeps on relaxing the distances.
-May worth a try to test if run n separate bfs the same.
-
-The final answer is starting nodes is min for all i and status is 0b1111111..1.
-
-dp[i,status] represents starting node i, status: all nodes visited.
-
-#### code
-```cpp
-    struct State{
-        int mask,source;
-        State(int m,int s):mask(m),source(s){}
-    };
-    int shortestPathLength(vector<vector<int>>& graph) {
-        int m=graph.size();
-        int len=1<<m;
-        vector<vector<int>> dp(m,vector<int>(len,m*m));
-        queue<State> qs;
-        for(int i=0;i<m;i++) 
-        {
-            dp[i][1<<i]=0; //self to self distance is 0
-            qs.push(State(1<<i,i)); //try all nodes as starting
-        }
-        while(!qs.empty()) //until no node is in the queue, which means no node can make it closer
-        {
-            State state=qs.front();qs.pop();
-            for(int next:graph[state.source]) //connected nodes
-            {
-                int nextmask=state.mask|(1<<next);
-                if(dp[next][nextmask]>dp[state.source][state.mask]+1) //if passing its parent node can be closer
-                {
-                    dp[next][nextmask]=dp[state.source][state.mask]+1;
-                    qs.push(State(nextmask,next));//bfs next layer
-                }
-            }
-        }
-        //shortest path 
-        int ans=INT_MAX;
-        for(int i=0;i<m;i++) ans=min(ans,dp[i][(1<<m)-1]);
-        return ans;
-    }
-```
-
-#### comment
 
 
 
@@ -4161,102 +4320,6 @@ Since left and right are updated row by row, and we guarantee the height[j] with
 #### comment
 1. when meet 0, set left[j]=0 or right[j]=n is necessary since next row update left[j] or right[j] will be bound by previous row. 
 2. similar problem maximal square can also be solved using similar code, except the area shall be the min of height and width
-
-
-
-
-
-### 87. Scramble String.md
-#### problem summary
-partition a string into left and right recursively.
-choose any node and swap its left right branch
-The leaf is a scrambled string of original
-
-Check if a new string is a scramble string of s
-
-#### analysis
-partition at i, left s[0,i) and right [i,n)
-swap left and right: left [i,n) and right [0,i)
-we need recursively check if they are scrambled.
-left vs left and right vs right
-s1[0,i) vs s2[0,i) && s1[i,n) vs s2[i,n)
-left vs right and right vs left
-s1[0,i) vs s2[n-i,i) && s1[i,n) vs s2[0,n-i)
-
-#### code
-```cpp
-    bool isScramble(string s1, string s2) {
-        if(s1==s2) return 1;
-        if(s1.length()!=s2.length()) return 0;
-        int n=s1.length();
-        //check if the histogram the same
-        vector<int> cnt(26);
-        for(int i=0;i<s1.length();i++)
-        {
-            cnt[s1[i]-'a']++;
-            cnt[s2[i]-'a']--;
-        }
-        for(int i=0;i<26;i++) if(cnt[i]) return 0;
-        
-        for(int i=1;i<=n-1;i++) //possible partition position
-        {
-            if(isScramble(s1.substr(0,i),s2.substr(0,i)) && isScramble(s1.substr(i),s2.substr(i))) return 1;
-            if(isScramble(s1.substr(0,i),s2.substr(n-i)) && isScramble(s1.substr(i),s2.substr(0,n-i))) return 1;
-        }
-        return 0;
-    }
-```
-
-#### comment
-- the iteration i is actually the length of the left string, make sure it reaches n-1
-- prune: s1==s2, length not match, histogram match
-- check similar problem 951 Flip Equivalent Binary Trees
-It uses a tree
-```cpp
-    bool flipEquiv(TreeNode* root1, TreeNode* root2) {
-        if(!root1 && !root2) return 1; //both null
-        else if(!root1 || !root2) return 0;
-        if(root1->val!=root2->val) return 0;
-        if(flipEquiv(root1->left,root2->left) && flipEquiv(root1->right,root2->right)) return 1;
-        if(flipEquiv(root1->left,root2->right) && flipEquiv(root1->right,root2->left)) return 1;
-        return 0;
-    }
-```    
-### 871. Minimum Number of Refueling Stops.md
-#### problem summary
-given initial milage, a list of station at different position with adding milage. Find the min number of refueling station to reach target.
-
-#### idea
-This is similar to the super egg drop problem.
-
-By solving an equivalent dp problem: what is the max distance using a number of refuelings
-
-assuming dp[i] is the max distance using i refueling stations
-
-dp[i]=max(dp[i], dp[i-1]+gas[j]) with constrains dp[i-1]>=pos[j] (You have to be able to reach pos[j] to add the gas[j])
-
-#### code
-```cpp
-    int minRefuelStops(int target, int startFuel, vector<vector<int>>& stations) {
-        int n=stations.size();
-        vector<int> dp(n+1); //the largest miles at each station
-        dp[0]=startFuel;
-        for(int i=0;i<n;i++) //iterate on all stations
-        {
-            int pos=stations[i][0],gas=stations[i][1];
-            for(int j=i;j>=0;j--)
-            {
-                if(dp[j]>=pos) dp[j+1]=max(dp[j+1],dp[j]+gas);  //previous station needs update
-            }
-        }
-        for(int i=0;i<=n;i++) if(dp[i]>=target) return i;
-        return -1;
-    }
- ```
- 
- #### comments
- - need iterate all stations and cannot early exit since each station may contribute to the max distance
-
 
 
 ### 887. Super Egg Drop.md
@@ -4336,55 +4399,6 @@ dp[k, m-1] using m-1 moves and k eggs, the max number of floors we can check (hi
 
 Above solution can be reduced to 1D since it only involves with m-1. Please attention if using 1D, need to reverse iterate on k since we don't want to use the updated dp[k-1][m] to replace dp[k-1][m-1].
 
-### 903. Valid Permutations for DI Sequence.md
-#### problem Summary
-D: decrease A[i]>A[i+1], I: increase, A[i]<A[i+1]
-Given numbers from 0 to n and DI string of length=n
-Ask: number of valid permutations
-
-#### idea
-let dp[i,j] represents number of valid permutation with string length i (given number 0 to i) and ending number j
-when D: previous number shall be bigger, i.e, j+1 to n, then dp[i,j]=sum(dp[i-1,k]) k=j..i-1 
-when I: previous number shall be smaller, i.e from 0 to j-1 then dp[i,j]=sum(dp[i-1,k]) k=0...j-1
-
-final answer: i=n, ending with 0 to n
-
-boundary condition: It only needs previous row values, so the 0th row shall be provided.
-i=0, dp[0,0]=1
-Actually this is a lower triangle, we do not need to calculate the whole row, they are not used.
-
-#### code
-```cpp
-    int numPermsDISequence(string S) {
-        int n=S.length();
-        vector<vector<int>> dp(n+1,vector<int>(n+1));
-        //dp[i,j] represents len=i, ending with j (j=0 to i)
-        dp[0][0]=1;
-        //for(int i=0;i<=n;i++) dp[0][i]=1;
-        int mod=1e9+7;
-        for(int i=1;i<=n;i++)
-        {
-            for(int j=0;j<=i;j++)
-            {
-                if(S[i-1]=='D') //previous is larger
-                {
-                    for(int k=j;k<i;k++) {dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
-                }
-                else for(int k=0;k<j;k++) {dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
-            }
-        }
-        //print(dp);
-        return accumulate(dp[n].begin(),dp[n].end(),0LL)%mod;
-    }
-```
-
-#### comment
-1. when D, **why sum from j to i-1 instead from j+1 to i**? Because for (0...i-1) cases, k can only change from 0 to i-1. for (0..i) case, j can from 0 to i. The j is used already in the previous solution.
-
-So, why start with j, not j + 1, since the sequence is decreasing to j?
-Thought Experiment: 
-In the sequence with length of i-1, the largest number in this sequence should be i-1. 
-However, when we are dealing with length i and end with j, the previous sequence has already another j and we should also add i to the sequence. What we can do is, add one to all those numbers greater than or equal to j. This operation will make the largest number to be i without breaking the sequence property, also, it will free the j so that we can use it at the end of the sequence. 
 
 ### 920. Number of Music Playlists.md
 #### problem Summary
@@ -4451,43 +4465,6 @@ dp[n,n]=n! (when n songs and list is also n, any permutation is fine)
 - has to use long long for the type since dp[n,l]+= will overflow and we have no way to avoid that
 - make sure n>K is added otherwise it will add a negative value
 - The main difficulty of the problem is the thinking process or the dp methodology.
-
-### 940. Distinct Subsequences II.md
-#### problem summary
-Given a string, count all distinct subsequence
-
-#### idea
-for example aba
-a: ending with a
-ab,b: ending with b
-ba,aba: ending with a (a is duplicate and shall be removed)
-
-Since the number of subsequence ending with same char could be very large, it is not suitable to store them in a data structure, hence we need find a way to get rid of those duplicates.
-
-When we add a char to the end, we append a char to all previous string ending with from a to z. This is the key observation.
-we can use an array of 26 to record the number.
-
-adding all numbers together and the letter itself dp[c]=sum(dp(a to z))+1
-
-#### code
-```cpp
-    int distinctSubseqII(string S) {
-        vector<int> dp(26); //store the number of strings ending with a char a to z
-        int mod=1e9+7;
-        for(int i=0;i<S.size();i++)
-        {
-            int ind=S[i]-'a';
-            long long t=0;
-            for(int j=0;j<26;j++) {t+=dp[j];t%=mod;}
-            dp[ind]=t+1; //the letter itself
-        }
-        return accumulate(dp.begin(),dp.end(),0LL)%mod;
-    }
-```
-
-#### comments
-- be sure to use long long to avoid overflow.
-- use 26 char array and update the table is a common practice for string dp problem
 
 
 
@@ -4577,87 +4554,6 @@ min number of sticker to be used to spell out the target
         }
         dp[target]=min_stick;
         return min_stick;
-    }
-```
-### 943. Find the Shortest Superstring
-Given an array A of strings, find any smallest string that contains each string in A as a substring.
-
-We may assume that no string in A is substring of another string in A.
-
-```cpp
-    string shortestSuperstring(vector<string>& A) {
-        int n=A.size(); //number of nodes
-        vector<vector<int>> graph(n,vector<int>(n));
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                graph[i][j]=calc(A[i],A[j]);
-                graph[j][i]=calc(A[j],A[i]);
-            }
-        }
-        //dp: also need keep the path
-        //other dimension shall be the bitset
-        int m=1<<n;
-        vector<vector<int>> dp(m,vector<int>(n,INT_MAX)),path(m,vector<int>(n));
-        int last=-1,gmin=INT_MAX;
-        //dp[i,j]: min distance starting from node j and visiting other nodes indicated in the bitset
-        for(int i=1;i<m;i++) //0x0001 to 0xffff
-        {
-            for(int j=0;j<n;j++)
-            {
-                if(i & (1<<j)) //if node j is visited
-                {
-                    int prev=i-(1<<j); //previous status
-                    if(prev==0) dp[i][j]=A[j].length();
-                    else //try to use other edge to relax  
-                    {
-                        for(int k=0;k<n;k++)
-                        {
-                            if(dp[prev][k]<INT_MAX && dp[i][j]>dp[prev][k]+graph[k][j])
-                            {
-                                dp[i][j]=dp[prev][k]+graph[k][j];
-                                path[i][j]=k; //save the node
-                            }
-                        }
-                    }
-                }
-                if(i==m-1 && gmin>dp[i][j]) {gmin=dp[i][j];last=j;}
-            }
-        }
-
-        //backtrace to get the results, path stored in path[i][j]
-        int curr=m-1; //0xffff
-        vector<int> seq;
-        cout<<last<<endl;
-        while(curr)
-        {
-            seq.push_back(last);
-            int t=path[curr][last];
-            curr-=(1<<last);
-            last=t;
-        }
-        //now connect the strings
-        string ans=A[seq.back()];//the first
-        for(int i=seq.size()-2;i>=0;i--)
-        {
-            //cout<<seq[i]<<": ";
-            int num_app=graph[seq[i+1]][seq[i]];
-            int len=A[seq[i]].length();
-            //cout<<len<<" "<<num_app<<endl;
-            ans+=A[seq[i]].substr(len-num_app);
-        }
-        return ans;
-    }
-    
-    int calc(string& a,string& b)
-    {
-        int m=a.size(),n=b.size();
-        for(int i=1;i<a.size();i++) //no duplicates
-        {
-            if(b.substr(0,m-i)==a.substr(i)) return n-(m-i);
-        }
-        return n;
     }
 ```
 
@@ -4773,34 +4669,7 @@ Given a positive integer N, return the number of positive integers less than or 
 ```
 
 
-### 1000. Minimum Cost to Merge Stones	
-There are N piles of stones arranged in a row.  The i-th pile has stones[i] stones.
 
-A move consists of merging exactly K consecutive piles into one pile, and the cost of this move is equal to the total number of stones in these K piles.
-
-Find the minimum cost to merge all piles of stones into one pile.  If it is impossible, return -1.
-
-```cpp
-    int mergeStones(vector<int>& stones, int K)
-    {
-        int N = (int)stones.size();
-        if((N - 1) % (K - 1)) return -1;
-
-        vector<int> sum(N + 1, 0);
-        for(int i = 0; i < N; i++) sum[i + 1] = sum[i] + stones[i];
-
-        vector<vector<int> > dp(N + 1, vector<int>(N, 0));
-        for(int l = K; l <= N; l++)
-            for(int i = 0; i + l <= N; i++)
-            {
-                dp[l][i] = 10000;
-                for(int k = 1; k < l; k += K - 1)
-                    dp[l][i] = min(dp[l][i], dp[k][i] + dp[l - k][i + k]);
-                if((l - 1) % (K - 1) == 0) dp[l][i] += sum[i + l] - sum[i];
-            }
-        return dp[N][0];
-    }
-```
 
 ### 902. Numbers At Most N Given Digit Set
 We have a sorted set of digits D, a non-empty subset of {'1','2','3','4','5','6','7','8','9'}.  (Note that '0' is not included.)
@@ -4831,5 +4700,140 @@ Return the number of positive integers that can be written (using the digits of 
     }
 ```
 
+## misc
 
+### 357. Count Numbers with Unique Digits<br/>
+dp[i] is the number from 10^(i-1) 10^i<br/>
+first digit: 1-9<br/>
+second digit: 0-9 but cannot use previous digit, 9<br/>
+9*9*8*7.....
+```cpp
+    int countNumbersWithUniqueDigits(int n) {
+      int num=0;
+      if(!n) return 1;
+      for(int i=1;i<=n;i++) num+=uniqueNumbers(i);
+      return num;
+    }
+    int uniqueNumbers(int n)
+    {
+        if(n==1) return 10;
+        int num=9;
+        for(int i=1;i<n;i++) num*=(9-i+1);
+        return num;
+    }
+```
+this is more a math problem than a dp problem
+	
+
+
+### 303	Range Sum Query - Immutable		Easy	
+get the sum from i to j (inclusive). note the prefix sum can only give i to j (not including i)
+```cpp
+    NumArray(vector<int> &nums) { //do the summation once! note the summation includes i,j
+        int sum0=0;
+        sum.push_back(0); //add one zero
+        for(int i=0;i<nums.size();i++)
+        {
+            sum0+=nums[i];
+            sum.push_back(sum0);
+        }
+    }
+
+    int sumRange(int i, int j) {
+        return sum[j+1]-sum[i];//this will not include nums[i]
+    }
+```
+by adding a 0, prefix[i] does not include nums[i]
+prefix[j+1] include nums[j]
+	
+### 838. Push Dominoes
+There are N dominoes in a line, and we place each domino vertically upright.
+
+In the beginning, we simultaneously push some of the dominoes either to the left or to the right.
+
+Whether be pushed or not, depend on the shortest distance to 'L' and 'R'.
+Also the direction matters.
+Base on this idea, you can do the same thing inspired by this problem.
+https://leetcode.com/problems/shortest-distance-to-a-character/discuss/125788/
+
+Here is another idea that focus on 'L' and 'R'.
+'R......R' => 'RRRRRRRR'
+'R......L' => 'RRRRLLLL' or 'RRRR.LLLL'
+'L......R' => 'L......R'
+'L......L' => 'LLLLLLLL
+
+```cpp
+    string pushDominoes(string d) {
+        d = 'L' + d + 'R';
+        string res = "";
+        for (int i = 0, j = 1; j < d.length(); ++j) {
+            if (d[j] == '.') continue;
+            int middle = j - i - 1;
+            if (i > 0) res += d[i];
+            if (d[i] == d[j]) res += string(middle, d[i]);
+            else if (d[i] == 'L' && d[j] == 'R') res += string(middle, '.');
+            else res += string(middle / 2, 'R') + string(middle % 2,'.') + string(middle / 2, 'L');
+            i = j;
+        }
+        return res;
+    }
+```
+	
+### 764. Largest Plus Sign<br/>
+in four directions, using dp to get the largest radius (including itself)<br/>
+then the larget radius is the min of the 4 directions<br/>
+```cpp
+int orderOfLargestPlusSign(int N, vector<vector<int>>& mines) {
+    vector<vector<int>> grid(N, vector<int>(N, N));
+        
+    for (auto& m : mines) {
+        grid[m[0]][m[1]] = 0;
+    }
+        
+    for (int i = 0; i < N; i++) {
+        for (int j = 0, k = N - 1, l = 0, r = 0, u = 0, d = 0; j < N; j++, k--) {
+            grid[i][j] = min(grid[i][j], l = (grid[i][j] == 0 ? 0 : l + 1));
+            grid[i][k] = min(grid[i][k], r = (grid[i][k] == 0 ? 0 : r + 1));
+            grid[j][i] = min(grid[j][i], u = (grid[j][i] == 0 ? 0 : u + 1));
+            grid[k][i] = min(grid[k][i], d = (grid[k][i] == 0 ? 0 : d + 1));
+        }
+    }
+        
+    int res = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            res = max(res, grid[i][j]);
+        }
+    }
+        
+    return res;
+}
+```
+
+
+	
+### 790. Domino and Tromino Tiling<br/>
+we have I shape and L shape, to build 2*N tile, what is the number of combinations<br/>
+this is actually hard.<br/>
+we have two shapes ending: one is flat at the end and one is L shaped at the end
+- g(i) represents the number of combinations ending with flat
+- u(i) represents the number of combinations ending with L shape
+
+```cpp
+    int numTilings(int N) 
+    {
+        vector<long long> g(N+1),u(N+1);
+        int mod=1000000007;
+        g[0]=0; g[1]=1; g[2]=2;
+        u[0]=0; u[1]=1; u[2]=2;
+        
+        for(int i=3;i<=N;i++)
+        {
+            u[i] = (u[i-1] + g[i-1]           )   %mod;
+            g[i] = (g[i-1] + g[i-2] + 2*u[i-2])   %mod;
+        }
+        return g[N]%mod;
+    }
+```   
+ 	
 	
