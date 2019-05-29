@@ -147,20 +147,17 @@
 ## easy
 
 ### 1025	Divisor Game		Easy
-each take a move N-x, 0<x<N and N%x==0
-when N=2, A take 1 and B will not be able to move, A win
-when N=3, A take 1 and A lose.
+each take a move N-x, 0<x<N and N%x==0<br/>
+when N=2, A take 1 and B will not be able to move, A win<br/>
+when N=3, A take 1 and A lose.<br/>
 
-when N is odd, it only has odd factors, we give B an even number, it will eventually reaches 2, A lose
-when N is even, A take 1 and B always get odd number, and will eventually get to 3, A win.
+when N is odd, it only has odd factors, we give B an even number, it will eventually reaches 2, A lose<br/>
+when N is even, A take 1 and B always get odd number, and will eventually get to 3, A win.<br/>
 	
-### 256	Paint House 	Easy	
-locked
-
-## stock problem
-get the solution based on previous solution and get the recurrence relation
-reduce complexity by on-the -fly to update the tempMax
-each day we have two options: no transaction and sell it.
+## --Stock problem--
+get the solution based on previous solution and get the recurrence relation<br/>
+reduce complexity by on-the -fly to update the tempMax<br/>
+each day we have two options: no transaction and sell it.<br/>
 
 ### 121	Best Time to Buy and Sell Stock		Easy	
 perform at most 1 transaction. <br/>
@@ -184,7 +181,8 @@ O(n^2) reduced to O(N)
         return dp[n-1];
     }
 ```	
-tmin can also set as price[0] and then the two statements in the loop shall be reversed.
+- tmin can also set as price[0] and then the two statements in the loop shall be reversed.
+- since only involves i-1, we can reduce memory to O(1)
 
 ### 122	Best Time to Buy and Sell Stock		Easy	
 perform as many transactions as possible
@@ -309,7 +307,7 @@ O(KN^2) reduce to O(KN)<br/>
         return maxprof;
     }
 ```
-## climbing stairs & house robbers
+## Climbing stairs & house robbers
 each step have two options<br/>
 each step may have costs<br/>
 boundary condition<br/>
@@ -445,7 +443,7 @@ boundary dp[0][1]=1 so we can enter the top left cell
     }
 ```	
 
-### 120. Triangle<br/>
+### 120. Triangle
 min path sum
 ```cpp
     int minimumTotal(vector<vector<int>>& triangle) {
@@ -461,7 +459,7 @@ min path sum
     }
 ```
 	
-### 357. Count Numbers with Unique Digits<br/>
+### 357. Count Numbers with Unique Digits
 dp[i] is the number from 10^(i-1) 10^i<br/>
 first digit: 1-9<br/>
 second digit: 0-9 but cannot use previous digit, 9<br/>
@@ -565,6 +563,66 @@ answer is the accumulation<br/>
     }
 ```	
 
+### 446. Arithmetic Slices II - Subsequence.md
+#### problem summary
+arithmetic subsequence: len>=3 and differene is the same
+ask: number of arithmetic subsequence
+
+#### idea
+Suppose we are adding A[i] to A[0]...A[i-1]. It could form arithmetic subsequence ending with A[i]
+1,3,5: 1 sub
+1,3,5,7: 2 subs
+1,3,5,7,9:
+1,3,5: ending with 5, difference is 2
+3,5,7
+1,3,5,7: ending with 7, difference is 2
+5,7,9
+3,5,7,9
+1,3,5,7,9: ending with 9, difference is 2
+1,5,9: ending with 9, difference is 4
+
+so adding A[i]:
+1. it form a new arithmetic subsequence with difference d, dp[i][d]=1, 
+2. it extends an existent array with difference d, dp[i][d]=sum(dp[j][d]+1), for all j<i when j has d
+  - Why? since we may have duplicate numbers and they count.
+  - what about starting from two elements? 
+  for example 1,2,3, for 2, d=1. dp[2][1]=1, 
+  for 3, we get dp[3][1]=1+1, dp[3][2]=1+0. But we only have 1 subsequence. (so when adding to results, we can just add the dp[j][d].
+3. the final answer is the sum of all endings
+4. since d can be negative range from INT_MIN to INT_MAX, using a hashmap is more suitable
+
+boundary condition
+all zero
+
+#### code
+```cpp
+    int numberOfArithmeticSlices(vector<int>& A) {
+        if(A.empty()) return 0;
+        vector<unordered_map<int,int>> dp(A.size());
+        int res=0;
+        for(int i=1;i<A.size();i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                long long d=(long long)A[i]-A[j];
+                if(d<=INT_MIN || d>=INT_MAX) continue;
+                dp[i][d]++;
+                if(dp[j].count(d)) 
+                {
+                    dp[i][d]+=dp[j][d];
+                    res+=dp[j][d];//reason we add dp[j][d]: we need to get rid of those two-element slices
+                }
+            }
+            
+        }
+        return res;
+    }
+```
+
+#### comment
+1. using long long for difference is necessary to avoid overflow
+2. we add dp[j][d] to make sure we are only counting len>=3 subsequences. (1 element dp is 0, 2 element dp is 1, 3 element dp is 2)
+
 ### 813. Largest Sum of Averages<br/>
 partition the list into at most k parts and make the sum of average the max.<br/>
 assuming dp[i,k] is the max sum of average for list len=i, and k groups, then we check every j to add one more group<br/>
@@ -589,6 +647,74 @@ dp[i][k]=max(dp[i][k],dp[j][k-1]+double(A[i]-A[j])/(i-j));
         return dp[K][A.size()-1];
     }
 ```
+
+### 410. Split Array Largest Sum.md
+#### problem summary
+Given an array which consists of non-negative integers and an integer m, you can split the array into m non-empty continuous subarrays. Write an algorithm to minimize the largest sum among these m subarrays.
+
+Note:
+If n is the length of array, assume the following constraints are satisfied:
+
+1 ≤ n ≤ 1000
+1 ≤ m ≤ min(50, n)
+
+#### analysis
+1. the min sum is the max element in the array, the largest sum is the total sum of the array
+2. accumulate ths sum, and array is sorted, segment sum is easily calculated using a[i]-a[j]
+3. use binary search until we reach m segments, the idea is:
+- use the mid=(lbound+ubound)/2
+- if more than m part is needed, mid value is too small, lbound=mid+1
+- if less than m part is obtained, mid value is too large, ubound=mid-1
+- find how many part is easier given the max sum target. Just iterate and cut. We can consider this is greedy.
+
+#### Implementation
+```cpp
+    int splitArray(vector<int>& nums, int m) {
+        //the sum is between the max and the sum of all elements
+        //use the mid value to split and use the greedy algorithm to form split arrays
+        //if more than m can be obtained, the mid value is smaller, 
+        //if less than m can be obtained, the mid value is larger
+        
+        int lbound=*max_element(nums.begin(),nums.end());
+        int ubound=accumulate(nums.begin(),nums.end(),0);
+        if(m<=1) return ubound;
+        if(m>=nums.size()) return lbound;
+        for(int i=1;i<nums.size();i++) nums[i]+=nums[i-1];//accumulate sum, and they are sorted
+        int mid,maxsum;
+        int numseg=0;
+        while(lbound<=ubound)
+        {
+            mid=(lbound+ubound)/2;
+            numseg=calcNumSeg(nums,mid,maxsum);
+            if(numseg>m) {lbound=mid+1;}
+            else {ubound=mid-1;}
+        }
+        return lbound;//maxsum;
+    }
+    int calcNumSeg(vector<int>& nums,int midval,int& maxsum)
+    {
+        int cnt=0,i=0,prevsum=0;
+        maxsum=0;
+        while(i<nums.size())
+        {
+            int ind=int(upper_bound(nums.begin()+i,nums.end(),midval+prevsum)-nums.begin());
+            if(ind!=nums.size()) 
+            {
+                maxsum=max(maxsum,nums[ind-1]-prevsum);
+                i=ind;
+                prevsum=nums[ind-1];
+            }
+            else 
+            {
+                maxsum=max(maxsum,nums[ind-1]-prevsum);
+                i=ind;
+            }
+            cnt++;
+        }
+        return cnt;
+    }
+```
+
 	
 ### 376. Wiggle Subsequence<br/>
 return the max length of the wiggling subsequence<br/>
@@ -674,12 +800,8 @@ this is also a math problem. see math
 
 ```cpp
     int integerBreak(int n) {
-        
-        if (n <= 2)
-            return 1;
-
+        if (n <= 2) return 1;
         vector<int> maxArr(n+1, 0);
-                    
         maxArr[1] = 0;
         maxArr[2] = 1; // 2=1+1 so maxArr[2] = 1*1
         
@@ -921,6 +1043,35 @@ iterate i reverse, j normal<br/>
     }
 ```
 
+### 5. Longest Palindromic Substring
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000
+```cpp
+    string longestPalindrome(string s) {
+       //dp solution using i j
+        int n=s.length();
+        vector<vector<int>> dp(n,vector<int>(n)); //initialize to 0
+        //dp(i,j)=length of p-string
+        int ans=0;
+        int start=0;
+        for(int i=0;i<n;i++) {dp[i][i]=1;ans=1;}
+        for(int i=0;i<n-1;i++) 
+        {
+            if(s[i]==s[i+1]) {dp[i][i+1]=2,ans=2,start=i;}
+        }
+        for(int i=n-3;i>=0;i--) //since it needs i+1
+        {
+            for(int j=i+2;j<n;j++) //since it needs j-1
+            {
+                if(s[i]==s[j] && dp[i+1][j-1]) dp[i][j]=dp[i+1][j-1]+2;
+                if(ans<dp[i][j]) ans=dp[i][j],start=i;
+            }
+        }
+        //print(dp);
+        return s.substr(start,ans);
+    }
+```
+lc516 is for sub sequence
+
 ## edit distance
 using insert, delete, replace to make two strings (arrays) to be the same or transform from one to another<br/>
 this can solve a lot of subsequence problems.<br/>
@@ -1122,6 +1273,7 @@ Boundary condition:
 ## ending with ith element
 
 solve ith based on previous solutions.
+some times ending with some special char or numbers
 
 ### 983. Minimum Cost For Tickets
 In a country popular for train travel, you have planned some train travelling one year in advance.  The days of the year that you will travel is given as an array days.  Each day is an integer from 1 to 365.
@@ -1213,6 +1365,36 @@ public:
 };
 ```
 
+### 91. Decode Ways<br/>
+A-Z decode as 1-26<br/>
+given a digit string, return number of decoding ways<br/>
+only have two options:
+- the number itself 
+- the number combine with previous digit
+```cpp
+    int numDecodings(string s) {
+        //read it into 1 to 26, seems dfs or dp problem
+        //dp[i] is number of decodings for s[0...i-1]
+        if(s.size()==0 || s[0]=='0') return 0;
+        vector<int> dp(s.size()+1,0);
+        dp[0]=1; //empty string only has 0 way to decode
+        dp[1]=(s[0]!='0');
+        for(int i=2;i<=s.size();i++)
+        {
+            if(s[i-1]=='0') //can only combine with previous!, one case: previous is also zero then no choice
+                dp[i]=dp[i-2];
+            else //non zero digit
+            {
+                int a=(s[i-2]-'0')*10+s[i-1]-'0';
+                if(a>10 && a<=26) dp[i]=dp[i-2]+dp[i-1]; //can add or not add, two choices
+                else dp[i]=dp[i-1];//this char cannot combine with previous
+            }
+        }
+        return dp[s.size()];
+    }
+```
+	
+
 ### 639. Decode Ways II
 * represents any numbers
 ```cpp
@@ -1265,6 +1447,134 @@ public:
     }
 ```
 
+### 139. Word Break<br/>
+break the word into dictionary words<br/>
+iterate and break the problem into a word + a smaller subproblem.<br/>
+direct dp:<br/>
+we mark the possible cut positions and when we iterate more, we check [j, i] if is also a word in the dict.<br/>
+```cpp
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> ms(wordDict.begin(),wordDict.end());
+        vector<bool> dp(s.size()+1);
+        dp[0]=1; //empty s
+        for(int i=1;i<=s.size();i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(dp[j])
+                {
+                    if(ms.count(s.substr(j,i-j))) {dp[i]=1;break;}
+                }
+            }
+        }
+        return dp[s.size()];
+    }
+```
+
+### 140. Word Break II.md
+##### problem Summary
+Given a string, and a list of words in dictionary, return all possible combinations using words in dictionary
+
+##### idea
+since we need combine words by words, using recursive + memoization is simpler. 
+We use the front as the sub problem and the ending as the solved, which makes combination easier.
+It uses the last word (may have different) recursively added.
+for example "catsanddog" dict=["cat","cats","and","sand","dog"]
+dog + sub problem catsand
+and + sub problem cats -> cats and dog
+sand + sub problem cat -> cat sand dog
+
+
+```cpp
+    unordered_map<string, vector<string>> m;
+
+    vector<string> combine(string word, vector<string> prev)
+    {
+        for(int i=0;i<prev.size();++i)
+            prev[i]+=" "+word;
+        return prev;
+    }
+
+    vector<string> wordBreak(string s, vector<string>& wordDict) 
+    {
+        unordered_set<string> dict(wordDict.begin(),wordDict.end());
+        return wordBreak(s,dict);
+    }    
+
+    vector<string> wordBreak(string s, unordered_set<string>& dict) 
+    {
+        if(m.count(s)) return m[s]; //take from memory
+        vector<string> result;
+        if(dict.count(s)){result.push_back(s);} //a whole string is a word
+        for(int i=s.size()-1;i>=0;i--)
+        {
+            string word=s.substr(i);
+            if(dict.count(word))
+            {
+                string rem=s.substr(0,i);
+                vector<string> prev=combine(word,wordBreak(rem,dict));
+                result.insert(result.end(),prev.begin(), prev.end());
+            }
+        }
+        m[s]=result; //memorize
+        return result;
+    }
+```    
+
+##### comments
+1. the code is hard to understand. The prev is the solution for the front subproblem which returns a list of words (already combined), so we just append the later word into each of it. It uses the sub-problem: the string return a list of combined words (doing the cut and combination the same time)
+2. for the above example:
+dog + subproblem(catsand)
+subproblem catsand returns a list:
+"cats and"
+"cat sand"
+and then we append the dog which get the final answer.
+3. when the subproblem cannot produce a combination, the result is empty and combine will also produce empty (which is a trick here)
+	
+### 467. Unique Substrings in Wraparound String<br/>
+- ending with different char guarantee the uniqueness.
+- ending with a char, with a length, the substring is fixed (since it is always abcde...zabcd...z
+
+```cpp
+    int findSubstringInWraproundString(string p) {
+        int n=p.size();
+        vector<int> dp(26);
+        int maxlen=1;
+        for(int i=0;i<n;i++)
+        {
+            int ind=p[i]-'a';
+            if(i&& (p[i]==p[i-1]+1 || p[i]+25==p[i-1])) maxlen++;
+            else maxlen=1;
+            dp[ind]=max(dp[ind],maxlen);
+        }
+        return accumulate(dp.begin(),dp.end(),0);
+    }
+```
+
+### 898. Bitwise ORs of Subarrays<br/>
+for all subarray, bit or of all elements, return number of possible results<br/>
+for input ABC<br/>
+A<br/>
+A|B, B<br/>
+A|B|C, B|C,C<br/>
+so we take two set, one for final one for intermediate<br/>
+
+```cpp
+    int subarrayBitwiseORs(vector<int>& A) {
+        unordered_set<int> ms,tmp;
+        for(int i=0;i<A.size();i++)
+        {
+            if(i && A[i]==A[i-1]) continue;
+            unordered_set<int> tt;
+            for(auto it=tmp.begin();it!=tmp.end();it++)
+                tt.insert(*it|A[i]);
+            tt.insert(A[i]);
+            tmp=tt;
+            ms.insert(tmp.begin(),tmp.end());
+        }
+        return ms.size();
+    }
+```
 ## longest/shortest subsequence
 
 ### 1027. Longest Arithmetic Sequence	
@@ -1483,6 +1793,35 @@ using stack
 		return maxlen;
 	}
 ```
+
+### 960. Delete Columns to Make Sorted III	
+delete columns of chars to make row sorted.
+
+longest increasing subsequence for all strings
+
+```cpp
+    int minDeletionSize(vector<string>& A) {
+        //longest increasing subsequence for all strings
+        int m=A.size(),n=A[0].size();
+        vector<int> dp(n);
+        //check each column to see if it satisfy > previous
+        int maxlen=0;
+        for(int i=0;i<n;i++)
+        {
+            for(int k=0;k<i;k++) //compare to all previous
+            {
+                bool sorted=1;
+                for(int j=0;j<m;j++) //all string
+                {
+                    if(A[j][i]<A[j][k]) {sorted=0;break;} //current i,k cannot be combined   
+                }
+                if(sorted) dp[i]=max(dp[i],dp[k]+1);
+            }
+            maxlen=max(maxlen,dp[i]+1);
+        }
+        return n-maxlen;
+    }
+```	
 
 ## knapsack problem
 with repetition, without repetition
@@ -1937,6 +2276,53 @@ recursive approach
     }
 ```
 
+### 95. Unique Binary Search Trees II<br/>
+dp. combine with left and right
+```cpp
+    vector<TreeNode*> genTree(int start,int end)
+    {
+        vector<TreeNode*> ans;
+        if(start>end) {ans.push_back(NULL);return ans;}
+        //if(start==end) return vector<TreeNode*>(1,new TreeNode(start));
+        for(int i=start;i<=end;i++)
+        {
+            vector<TreeNode*> left=genTree(start,i-1);
+            vector<TreeNode*> right=genTree(i+1,end);
+            //combine the left right, note left or right could be empty
+
+            for(int l=0;l<left.size();l++)
+            {
+                for(int r=0;r<right.size();r++)
+                {
+                    TreeNode *root=new TreeNode(i);    
+                    root->left=left[l];
+                    root->right=right[r];
+                    ans.push_back(root);
+                }
+            }
+        }
+        return ans;
+    }
+```    
+	
+### 576. Out of Boundary Path<br/>
+quite a few similar problems. using recursion<br/>
+```cpp    
+    int dp[50][50][51];
+    Solution() {memset(dp,-1,sizeof(dp));}
+    int findPaths(int m, int n, int N, int i, int j) {
+        if(i<0 || i>=m || j<0 ||j>=n)  return 1;
+        if(N<=0) return 0;
+        if(dp[i][j][N]!=-1) return dp[i][j][N];
+        int mod=1e9+7;
+        dp[i][j][N]=findPaths(m,n,N-1,i-1,j)%mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i+1,j)%mod;dp[i][j][N]%=mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i,j-1)%mod;dp[i][j][N]%=mod;
+        dp[i][j][N]+=findPaths(m,n,N-1,i,j+1)%mod;dp[i][j][N]%=mod;
+        return dp[i][j][N];
+    }
+```
+	
 ### 838. Push Dominoes
 There are N dominoes in a line, and we place each domino vertically upright.
 
@@ -2030,48 +2416,6 @@ The score of this triangulation is dp[i][j], dp[i][k] + dp[k][j] + A[i] * A[j] *
     }
 ```
 	
-
-
-
-
-
-
-
-
-
-	
-	
-
-	
-### 95. Unique Binary Search Trees II<br/>
-dp. combine with left and right
-```cpp
-    vector<TreeNode*> genTree(int start,int end)
-    {
-        vector<TreeNode*> ans;
-        if(start>end) {ans.push_back(NULL);return ans;}
-        //if(start==end) return vector<TreeNode*>(1,new TreeNode(start));
-        for(int i=start;i<=end;i++)
-        {
-            vector<TreeNode*> left=genTree(start,i-1);
-            vector<TreeNode*> right=genTree(i+1,end);
-            //combine the left right, note left or right could be empty
-
-            for(int l=0;l<left.size();l++)
-            {
-                for(int r=0;r<right.size();r++)
-                {
-                    TreeNode *root=new TreeNode(i);    
-                    root->left=left[l];
-                    root->right=right[r];
-                    ans.push_back(root);
-                }
-            }
-        }
-        return ans;
-    }
-```    
-	
 ### 790. Domino and Tromino Tiling<br/>
 we have I shape and L shape, to build 2*N tile, what is the number of combinations<br/>
 this is actually hard.<br/>
@@ -2096,32 +2440,6 @@ we have two shapes ending: one is flat at the end and one is L shaped at the end
     }
 ```   
  	
-### 139. Word Break<br/>
-break the word into dictionary words<br/>
-iterate and break the problem into a word + a smaller subproblem.<br/>
-direct dp:<br/>
-we mark the possible cut positions and when we iterate more, we check [j, i] if is also a word in the dict.<br/>
-```cpp
-    bool wordBreak(string s, vector<string>& wordDict) {
-        unordered_set<string> ms(wordDict.begin(),wordDict.end());
-        vector<bool> dp(s.size()+1);
-        dp[0]=1; //empty s
-        for(int i=1;i<=s.size();i++)
-        {
-            for(int j=i-1;j>=0;j--)
-            {
-                if(dp[j])
-                {
-                    if(ms.count(s.substr(j,i-j))) {dp[i]=1;break;}
-                }
-            }
-        }
-        return dp[s.size()];
-    }
-```
-	
-
-
 ### 368. Largest Divisible Subset<br/>
 find the largest subset which Si%Sj=0 (they are a part of geometric series)<br/>
 dp with backtrace ability, we need keep the previous information.<br/>
@@ -2226,50 +2544,9 @@ two cases:<br/>
     }
 ```
 
-### 467. Unique Substrings in Wraparound String<br/>
-- ending with different char guarantee the uniqueness.
-- ending with a char, with a length, the substring is fixed (since it is always abcde...zabcd...z
 
-```cpp
-    int findSubstringInWraproundString(string p) {
-        int n=p.size();
-        vector<int> dp(26);
-        int maxlen=1;
-        for(int i=0;i<n;i++)
-        {
-            int ind=p[i]-'a';
-            if(i&& (p[i]==p[i-1]+1 || p[i]+25==p[i-1])) maxlen++;
-            else maxlen=1;
-            dp[ind]=max(dp[ind],maxlen);
-        }
-        return accumulate(dp.begin(),dp.end(),0);
-    }
-```
 
-### 898. Bitwise ORs of Subarrays<br/>
-for all subarray, bit or of all elements, return number of possible results<br/>
-for input ABC<br/>
-A<br/>
-A|B, B<br/>
-A|B|C, B|C,C<br/>
-so we take two set, one for final one for intermediate<br/>
 
-```cpp
-    int subarrayBitwiseORs(vector<int>& A) {
-        unordered_set<int> ms,tmp;
-        for(int i=0;i<A.size();i++)
-        {
-            if(i && A[i]==A[i-1]) continue;
-            unordered_set<int> tt;
-            for(auto it=tmp.begin();it!=tmp.end();it++)
-                tt.insert(*it|A[i]);
-            tt.insert(A[i]);
-            tmp=tt;
-            ms.insert(tmp.begin(),tmp.end());
-        }
-        return ms.size();
-    }
-```
 
 ### 221. Maximal Square<br/>
 finding the max square with all 1s<br/>
@@ -2306,23 +2583,7 @@ keep updating its max range at j (left and right) using the height as the min he
     }
 ```
 
-### 576. Out of Boundary Path<br/>
-quite a few similar problems. using recursion<br/>
-```cpp    
-    int dp[50][50][51];
-    Solution() {memset(dp,-1,sizeof(dp));}
-    int findPaths(int m, int n, int N, int i, int j) {
-        if(i<0 || i>=m || j<0 ||j>=n)  return 1;
-        if(N<=0) return 0;
-        if(dp[i][j][N]!=-1) return dp[i][j][N];
-        int mod=1e9+7;
-        dp[i][j][N]=findPaths(m,n,N-1,i-1,j)%mod;
-        dp[i][j][N]+=findPaths(m,n,N-1,i+1,j)%mod;dp[i][j][N]%=mod;
-        dp[i][j][N]+=findPaths(m,n,N-1,i,j-1)%mod;dp[i][j][N]%=mod;
-        dp[i][j][N]+=findPaths(m,n,N-1,i,j+1)%mod;dp[i][j][N]%=mod;
-        return dp[i][j][N];
-    }
-```
+
 
 ### 152. Maximum Product Subarray<br/>
 largest product subarray<br/>
@@ -2343,36 +2604,6 @@ when a negative is involved, max becomes min, min becomes max<br/>
     }
 ```
 
-### 5. Longest Palindromic Substring
-Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000
-```cpp
-    string longestPalindrome(string s) {
-       //dp solution using i j
-        int n=s.length();
-        vector<vector<int>> dp(n,vector<int>(n)); //initialize to 0
-        //dp(i,j)=length of p-string
-        int ans=0;
-        int start=0;
-        for(int i=0;i<n;i++) {dp[i][i]=1;ans=1;}
-        for(int i=0;i<n-1;i++) 
-        {
-            if(s[i]==s[i+1]) {dp[i][i+1]=2,ans=2,start=i;}
-        }
-        for(int i=n-3;i>=0;i--) //since it needs i+1
-        {
-            for(int j=i+2;j<n;j++) //since it needs j-1
-            {
-                if(s[i]==s[j] && dp[i+1][j-1]) dp[i][j]=dp[i+1][j-1]+2;
-                if(ans<dp[i][j]) ans=dp[i][j],start=i;
-            }
-        }
-        //print(dp);
-        return s.substr(start,ans);
-    }
-```
-lc516 is for sub sequence
-
- 
 ### 837. New 21 Game<br/>
 this is like climbing stairs, there are more than two methods to reach a stair<br/>
  
@@ -2466,35 +2697,7 @@ accumulate sum (prefix sum). the prefix sum shall %k has the same value<br/>
     }
 ```
 	
-### 91. Decode Ways<br/>
-A-Z decode as 1-26<br/>
-given a digit string, return number of decoding ways<br/>
-only have two options:
-- the number itself 
-- the number combine with previous digit
-```cpp
-    int numDecodings(string s) {
-        //read it into 1 to 26, seems dfs or dp problem
-        //dp[i] is number of decodings for s[0...i-1]
-        if(s.size()==0 || s[0]=='0') return 0;
-        vector<int> dp(s.size()+1,0);
-        dp[0]=1; //empty string only has 0 way to decode
-        dp[1]=(s[0]!='0');
-        for(int i=2;i<=s.size();i++)
-        {
-            if(s[i-1]=='0') //can only combine with previous!, one case: previous is also zero then no choice
-                dp[i]=dp[i-2];
-            else //non zero digit
-            {
-                int a=(s[i-2]-'0')*10+s[i-1]-'0';
-                if(a>10 && a<=26) dp[i]=dp[i-2]+dp[i-1]; //can add or not add, two choices
-                else dp[i]=dp[i-1];//this char cannot combine with previous
-            }
-        }
-        return dp[s.size()];
-    }
-```
-	
+
 ## hard
 
 ### 982. Triples with Bitwise AND Equal To Zero
@@ -2539,34 +2742,7 @@ dp[i][j] represents the number of combinations if we pick i numbers where the AN
 
 the and result is always a int.
 
-### 960. Delete Columns to Make Sorted III	
-delete columns of chars to make row sorted.
 
-longest increasing subsequence for all strings
-
-```cpp
-    int minDeletionSize(vector<string>& A) {
-        //longest increasing subsequence for all strings
-        int m=A.size(),n=A[0].size();
-        vector<int> dp(n);
-        //check each column to see if it satisfy > previous
-        int maxlen=0;
-        for(int i=0;i<n;i++)
-        {
-            for(int k=0;k<i;k++) //compare to all previous
-            {
-                bool sorted=1;
-                for(int j=0;j<m;j++) //all string
-                {
-                    if(A[j][i]<A[j][k]) {sorted=0;break;} //current i,k cannot be combined   
-                }
-                if(sorted) dp[i]=max(dp[i],dp[k]+1);
-            }
-            maxlen=max(maxlen,dp[i]+1);
-        }
-        return n-maxlen;
-    }
-```	
 
 ### 975. Odd Even Jump
 1st,3rd,...odd jumps
@@ -2744,67 +2920,6 @@ max number of cuts for s with i length s[i]=i-1 (by cutting into a single charac
 - dp[0]=-1 is necessary since dp[1] has to be 0 for one char. 
 
 
-
-### 140. Word Break II.md
-##### problem Summary
-Given a string, and a list of words in dictionary, return all possible combinations using words in dictionary
-
-##### idea
-since we need combine words by words, using recursive + memoization is simpler. 
-We use the front as the sub problem and the ending as the solved, which makes combination easier.
-It uses the last word (may have different) recursively added.
-for example "catsanddog" dict=["cat","cats","and","sand","dog"]
-dog + sub problem catsand
-and + sub problem cats -> cats and dog
-sand + sub problem cat -> cat sand dog
-
-
-```cpp
-    unordered_map<string, vector<string>> m;
-
-    vector<string> combine(string word, vector<string> prev)
-    {
-        for(int i=0;i<prev.size();++i)
-            prev[i]+=" "+word;
-        return prev;
-    }
-
-    vector<string> wordBreak(string s, vector<string>& wordDict) 
-    {
-        unordered_set<string> dict(wordDict.begin(),wordDict.end());
-        return wordBreak(s,dict);
-    }    
-
-    vector<string> wordBreak(string s, unordered_set<string>& dict) 
-    {
-        if(m.count(s)) return m[s]; //take from memory
-        vector<string> result;
-        if(dict.count(s)){result.push_back(s);} //a whole string is a word
-        for(int i=s.size()-1;i>=0;i--)
-        {
-            string word=s.substr(i);
-            if(dict.count(word))
-            {
-                string rem=s.substr(0,i);
-                vector<string> prev=combine(word,wordBreak(rem,dict));
-                result.insert(result.end(),prev.begin(), prev.end());
-            }
-        }
-        m[s]=result; //memorize
-        return result;
-    }
-```    
-
-##### comments
-1. the code is hard to understand. The prev is the solution for the front subproblem which returns a list of words (already combined), so we just append the later word into each of it. It uses the sub-problem: the string return a list of combined words (doing the cut and combination the same time)
-2. for the above example:
-dog + subproblem(catsand)
-subproblem catsand returns a list:
-"cats and"
-"cat sand"
-and then we append the dog which get the final answer.
-3. when the subproblem cannot produce a combination, the result is empty and combine will also produce empty (which is a trick here)
-
 ### 174. Dungeon Game.md
 ##### problem Summary
 positive: add power
@@ -2878,83 +2993,6 @@ Ask: to return max point we can get
 4. These details reflect the correct understanding of the method and shall pay special attention.
 
 
-
-### 321. Create Maximum Number.md
-#### problem summary
-from two arrays with numbers 0-9, create k digits which is the max number.
-
-#### idea:
-
-try all combinations: i+j=k when get i digits from num1, and j digits from num2 and then merge the two.
-
-Get k digits from one array: leave the k-1 digits alone, and find the max digit from 0 to n-k. And then search for the 2nd max after the previous max position.
-
-When merge two arrays, one point need attention: when two elements are the same, we need compare lexicographically the arrays behind them.
-
-For example, 2,1.. and 2,3... If we choose 2 from the 2nd array, then next would 2,1... merge with 3.... and 3 will be chosen and we get 2,3. On the contrary, if we choose 2 from the first array, we then need merge 1... and 2,3..., then we get 2,2 which is not correct.
-
-#### code
-```cpp
-    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
-        int m=nums1.size(),n=nums2.size();
-        //cout<<m<<" "<<n<<" "<<k<<endl;
-        if(k>=m+n)  //just merge the two arrays
-            return merge(nums1,nums2);
-        //try all possible combinations, i from array 1, k-i from array 2
-        //i range is [max(m-k,0),min(k,m)], other array range is [max(n-k,0),min(k,n)]
-        vector<int> ans(k);
-        for(int i=0;i<=min(m,k);i++)
-        {
-            if(k-i>nums2.size()) continue;
-            vector<int> a=maxNumber(nums1,i);
-            vector<int> b=maxNumber(nums2,k-i);
-            vector<int> c=merge(a,b);
-            if(lexicographical_compare(ans.begin(),ans.end(),c.begin(),c.end())) ans=c;
-        }
-        return ans;
-    }
-    
-    vector<int> maxNumber(vector<int>& v,int k) //get k digits from 1 array
-    {
-        int n=v.size();
-        if(k>=n) return v;
-        if(k==0) return vector<int>();
-        vector<int> ans(k);
-        //greedy choice, the leftmost digit is the max from i+[0,n-(k-1))
-        int i=0;
-        for(int j=1;j<=k;j++) //repeat k times
-        {
-            auto it=max_element(v.begin()+i,v.begin()+n-(k-j));
-            i=int(it-v.begin())+1; //now the new pointer
-            ans[j-1]=*it;
-        }
-        return ans;
-    }
-    vector<int> merge(vector<int>& v1,vector<int>& v2)
-    {
-        int i=0,j=0,k=0;
-        vector<int> ans(v1.size()+v2.size());
-        while(i<v1.size() && j<v2.size())
-        {
-            if(v1[i]>v2[j]) {ans[k++]=v1[i++];}
-            else if(v1[i]<v2[j]) {ans[k++]=v2[j++];}
-            else //two number is equal, choose the one behind is larger
-            {
-                if(lexicographical_compare(v1.begin()+i,v1.end(),v2.begin()+j,v2.end())) //v1<v2
-                {ans[k++]=v2[j++];}
-                else {ans[k++]=v1[i++];}
-            }
-        }
-        if(i<v1.size()) copy(v1.begin()+i,v1.end(),ans.begin()+k);
-        if(j<v2.size()) copy(v2.begin()+j,v2.end(),ans.begin()+k);
-        return ans;
-    }
-```
-
-#### comments
-- this is a typical greedy choice problem. The key is if we want k digits from array, we leave space for the unsolved k-1 digits and greedy choose the max.
-- lexicographical_compare is useful for string and array (do not need same length)
-- merge two array
 
 ### 321. Create Maximum Number.md
 #### problem summary
@@ -3127,72 +3165,6 @@ canCross(stones,i, k-1)
 - dfs has to be with memoization since dfs is O(2^n)
 - use nextstep is easier.
 
-### 410. Split Array Largest Sum.md
-#### problem summary
-Given an array which consists of non-negative integers and an integer m, you can split the array into m non-empty continuous subarrays. Write an algorithm to minimize the largest sum among these m subarrays.
-
-Note:
-If n is the length of array, assume the following constraints are satisfied:
-
-1 ≤ n ≤ 1000
-1 ≤ m ≤ min(50, n)
-
-#### analysis
-1. the min sum is the max element in the array, the largest sum is the total sum of the array
-2. accumulate ths sum, and array is sorted, segment sum is easily calculated using a[i]-a[j]
-3. use binary search until we reach m segments, the idea is:
-- use the mid=(lbound+ubound)/2
-- if more than m part is needed, mid value is too small, lbound=mid+1
-- if less than m part is obtained, mid value is too large, ubound=mid-1
-- find how many part is easier given the max sum target. Just iterate and cut. We can consider this is greedy.
-
-#### Implementation
-```cpp
-    int splitArray(vector<int>& nums, int m) {
-        //the sum is between the max and the sum of all elements
-        //use the mid value to split and use the greedy algorithm to form split arrays
-        //if more than m can be obtained, the mid value is smaller, 
-        //if less than m can be obtained, the mid value is larger
-        
-        int lbound=*max_element(nums.begin(),nums.end());
-        int ubound=accumulate(nums.begin(),nums.end(),0);
-        if(m<=1) return ubound;
-        if(m>=nums.size()) return lbound;
-        for(int i=1;i<nums.size();i++) nums[i]+=nums[i-1];//accumulate sum, and they are sorted
-        int mid,maxsum;
-        int numseg=0;
-        while(lbound<=ubound)
-        {
-            mid=(lbound+ubound)/2;
-            numseg=calcNumSeg(nums,mid,maxsum);
-            if(numseg>m) {lbound=mid+1;}
-            else {ubound=mid-1;}
-        }
-        return lbound;//maxsum;
-    }
-    int calcNumSeg(vector<int>& nums,int midval,int& maxsum)
-    {
-        int cnt=0,i=0,prevsum=0;
-        maxsum=0;
-        while(i<nums.size())
-        {
-            int ind=int(upper_bound(nums.begin()+i,nums.end(),midval+prevsum)-nums.begin());
-            if(ind!=nums.size()) 
-            {
-                maxsum=max(maxsum,nums[ind-1]-prevsum);
-                i=ind;
-                prevsum=nums[ind-1];
-            }
-            else 
-            {
-                maxsum=max(maxsum,nums[ind-1]-prevsum);
-                i=ind;
-            }
-            cnt++;
-        }
-        return cnt;
-    }
-```
 
 ###  Wildcard Matching.md
 #### problem summary
@@ -3238,65 +3210,6 @@ Check if p matches s.
   - direct dp for two string problem. 
   - similar problem regular expression matching
   
-### 446. Arithmetic Slices II - Subsequence.md
-#### problem summary
-arithmetic subsequence: len>=3 and differene is the same
-ask: number of arithmetic subsequence
-
-#### idea
-Suppose we are adding A[i] to A[0]...A[i-1]. It could form arithmetic subsequence ending with A[i]
-1,3,5: 1 sub
-1,3,5,7: 2 subs
-1,3,5,7,9:
-1,3,5: ending with 5, difference is 2
-3,5,7
-1,3,5,7: ending with 7, difference is 2
-5,7,9
-3,5,7,9
-1,3,5,7,9: ending with 9, difference is 2
-1,5,9: ending with 9, difference is 4
-
-so adding A[i]:
-1. it form a new arithmetic subsequence with difference d, dp[i][d]=1, 
-2. it extends an existent array with difference d, dp[i][d]=sum(dp[j][d]+1), for all j<i when j has d
-  - Why? since we may have duplicate numbers and they count.
-  - what about starting from two elements? 
-  for example 1,2,3, for 2, d=1. dp[2][1]=1, 
-  for 3, we get dp[3][1]=1+1, dp[3][2]=1+0. But we only have 1 subsequence. (so when adding to results, we can just add the dp[j][d].
-3. the final answer is the sum of all endings
-4. since d can be negative range from INT_MIN to INT_MAX, using a hashmap is more suitable
-
-boundary condition
-all zero
-
-#### code
-```cpp
-    int numberOfArithmeticSlices(vector<int>& A) {
-        if(A.empty()) return 0;
-        vector<unordered_map<int,int>> dp(A.size());
-        int res=0;
-        for(int i=1;i<A.size();i++)
-        {
-            for(int j=i-1;j>=0;j--)
-            {
-                long long d=(long long)A[i]-A[j];
-                if(d<=INT_MIN || d>=INT_MAX) continue;
-                dp[i][d]++;
-                if(dp[j].count(d)) 
-                {
-                    dp[i][d]+=dp[j][d];
-                    res+=dp[j][d];//reason we add dp[j][d]: we need to get rid of those two-element slices
-                }
-            }
-            
-        }
-        return res;
-    }
-```
-
-#### comment
-1. using long long for difference is necessary to avoid overflow
-2. we add dp[j][d] to make sure we are only counting len>=3 subsequences. (1 element dp is 0, 2 element dp is 1, 3 element dp is 2)
 
 ### 466. Count The Repetitions.md
 #### problem summary
@@ -3498,10 +3411,6 @@ Ask: the minimum steps (rotation + selection)
 #### comments
 - previous position is the list of previous position, initialized as 0, since 0th char is at 0 move position
 - start is the key position
-
-
-
-
 
 ### 517. Super Washing Machines.md
 #### problem Summary
