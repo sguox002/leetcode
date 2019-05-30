@@ -147,17 +147,17 @@
 ## 3.2 Stategy games
 
 ### 1025	Divisor Game		Easy
-each take a move N-x, 0<x<N and N%x==0
-when N=2, A take 1 and B will not be able to move, A win
-when N=3, A take 1 and A lose.
+each take a move N-x, 0<x<N and N%x==0<br/>
+when N=2, A take 1 and B will not be able to move, A win<br/>
+when N=3, A take 1 and A lose.<br/>
 
-when N is odd, it only has odd factors, we give B an even number, it will eventually reaches 2, A lose
-when N is even, A take 1 and B always get odd number, and will eventually get to 3, A win.
+when N is odd, it only has odd factors, we give B an even number, it will eventually reaches 2, A lose<br/>
+when N is even, A take 1 and B always get odd number, and will eventually get to 3, A win.<br/>
 
 ### 877. Stone Game<br/>
 a list of numbers, picking from either end. who wins<br/>
 we pick positive, the other pick negative, maximize the score. (for the other player it is the same)<br/>
-
+choosing from either end is easier, choosing from anywhere is much harder.<br/>
 ```cpp
     bool stoneGame(vector<int>& piles) {
        int n=piles.size();
@@ -176,10 +176,10 @@ we pick positive, the other pick negative, maximize the score. (for the other pl
     }
 ```
 
-### 486. Predict the Winner<br/>
+### 486. Predict the Winner
 same as 877, but we can use direct dp max(num[l]-dp[l+1,r],num[r]-dp[l,r-1])<br/>
 l: reverse iteration, r normal iteration<br/>
-bottom up approach:
+bottom up approach: (when there is a lot of overlaps, bottom up has advantages <br/>
 
 ```cpp
     bool PredictTheWinner(vector<int>& nums) {
@@ -197,9 +197,16 @@ bottom up approach:
     }
 ```
 
-### 837. New 21 Game<br/>
+### 837. New 21 Game
+Alice plays the following game, loosely based on the card game "21".
+
+Alice starts with 0 points, and draws numbers while she has less than K points.  During each draw, she gains an integer number of points randomly from the range [1, W], where W is an integer.  Each draw is independent and the outcomes have equal probabilities.
+
+Alice stops drawing numbers when she gets K or more points.  What is the probability that she has N or less points?
+
 this is like climbing stairs, there are more than two methods to reach a stair<br/>
- 
+combined with sliding window.
+
  ```cpp
      double new21Game(int N, int K, int W) {
         //this is like climbing stairs. ith position can be obtained
@@ -227,14 +234,14 @@ this is like climbing stairs, there are more than two methods to reach a stair<b
     }
 ```
 
-### 464. Can I Win<br/>
-It is important to get the problem right: the two player adds to the same sum, and who reach the target first wins
+### 464. Can I Win
+It is important to get the problem right: the two player adds to the same sum, and who reach the target first wins<br/>
 number chosen cannot be reused.<br/>
-- use bitset to indicate number used or not
-- subtract target
-- who reaches 0 wins
-- if other wins, then we lose
-- store solved solutions
+- use bitset to indicate number used or not<br/>
+- subtract target<br/>
+- who reaches 0 wins<br/>
+- if other wins, then we lose<br/>
+- store solved solutions<br/>
 
 ```cpp
     bool canIWin(int m,int sum,int status)
@@ -274,7 +281,7 @@ get the solution based on previous solution and get the recurrence relation<br/>
 reduce complexity by on-the -fly to update the tempMax<br/>
 each day we have two options: no transaction and sell it.<br/>
 
-### 121	Best Time to Buy and Sell Stock		Easy	
+### 121	Best Time to Buy and Sell Stock		(-Easy-)
 perform at most 1 transaction. <br/>
 intuition is straightforward, today sell and buy at previous min<br/>
 dp[i] is the max profit selling at ith day: sell at ith day or not doing anything on ith day<br/>
@@ -298,11 +305,11 @@ O(n^2) reduced to O(N)
 ```	
 tmin can also set as price[0] and then the two statements in the loop shall be reversed.
 
-### 122	Best Time to Buy and Sell Stock		Easy	
+### 122	Best Time to Buy and Sell Stock		(-Easy-)
 perform as many transactions as possible
 the profit shall be accumulated from previous transactions<br/>
 
-profitable transaction is dp[i-1]+max(price[i]-price[i-1],0] <br/>
+profitable transaction is dp[i-1]+max(price[i]-price[i-1],0) <br/>
 
 
 ### 714. Best Time to Buy and Sell Stock with Transaction Fee<br/>
@@ -350,9 +357,9 @@ dp[j-2] is the profit before we buy at jth day (sell at two days ago)<br/>
         return dp[n+1];
     }
 ```
-no operation dp[i-1]
-sell on ith day: dp[j-2]+price[i-2]-price[j-2]. why on jth day buy in, the profit is dp[j-2] (two days ago)
-Note the j iteration shall from i. 
+no operation dp[i-1]<br/>
+sell on ith day: dp[j-2]+price[i-2]-price[j-2]. why on jth day buy in, the profit is dp[j-2] (two days ago)<br/>
+Note the j iteration shall from i. <br/>
 
 ### 123. Best Time to Buy and Sell Stock III	
 at most two transactions<br/>
@@ -429,7 +436,7 @@ each step have two options<br/>
 each step may have costs<br/>
 boundary condition<br/>
 
-### 70	Climbing Stairs		Easy	
+### 70	Climbing Stairs		(-Easy-)
 n steps. each move 1 or 2 steps. how many distinct ways:<br/>
 dp[i]=dp[i-1]+dp[i-2]<br/>
 dp[0]=1,dp[1]=2;<br/>
@@ -452,11 +459,12 @@ fib-sequences, and we do not need to store all elements. (also, fib-sequence sha
 ```	
 though it is simple, but not easy to get to the best.
 
-### 746	Min Cost Climbing Stairs		Easy	
-you start from step 0 or step 1 and make a 1-step or 2-step move. you need pay the cost[i] to be able to move
-what is the min cost to reach the top
-dp[i]=min(dp[i-1],dp[i-2])+cost[i], dp[i] is the min cost to be able to move at i.
-so the final answer is min(dp[n-1],dp[n-2])
+### 746	Min Cost Climbing Stairs		(-Easy-)
+you start from step 0 or step 1 and make a 1-step or 2-step move. you need pay the cost[i] to be able to move<br/>
+what is the min cost to reach the top<br/>
+dp[i]=min(dp[i-1],dp[i-2])+cost[i], dp[i] is the min cost to be able to move at i.<br/>
+so the final answer is min(dp[n-1],dp[n-2])<br/>
+
 ```cpp
     int minCostClimbingStairs(vector<int>& cost) {
 		int n=cost.size();
@@ -470,7 +478,7 @@ so the final answer is min(dp[n-1],dp[n-2])
 The problem is not well stated. It asks to be able to move over the top, so the top level is actually nth (instead of n-1)
 
 
-### 198	House Robber		Easy	
+### 198	House Robber		(-Easy-)
 dp[i]=max(dp[i-1],dp[i-2]+prices[i])
 
 ### 213. House Robber II<br/>
@@ -524,8 +532,11 @@ Ask: to return max point we can get
 
 ##### idea
 1. add a guardian to avoid boundary. add 1 to left and 1 to right
+
 2. every time we burst a balloon, it depends on the left and right index (we do not want to alter the array and it will be a big mess). It is naturally to use left and right in the dp solutions
+
 3. Once we want to burst balloon i, its points will be nums[i]*nums[l]*nums[r]. And it leaves two parts l to i-1 and i+1 to r. (Between l and r there are multiple elements, we are just assuming after some bursting, l and r becomes adjacent). This is similar to a reverse process. When we solve l, i, r, the previous problem (l, i-1) and (i+1, r) have all be solved. In another word, those balloons are all bursted already.
+
 4. so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,l]), i from l to r
 
 ##### code
@@ -550,37 +561,37 @@ Ask: to return max point we can get
 ```
 
 #### comments
-1. start,end are all possible balloon to burst, its left and right are its adjacent. So it is num[i]*num[s-1]*num[e+1]
-2. terminate condition then is s>e (s==e is allowed for a single element left)
-3. dp[s,e] is exactly a subproblem from start to end (a continuous partial array)
-4. These details reflect the correct understanding of the method and shall pay special attention.
+1. start,end are all possible balloon to burst, its left and right are its adjacent. So it is num[i]*num[s-1]*num[e+1]<br/>
+2. terminate condition then is s>e (s==e is allowed for a single element left)<br/>
+3. dp[s,e] is exactly a subproblem from start to end (a continuous partial array)<br/>
+4. These details reflect the correct understanding of the method and shall pay special attention.<br/>
 
 
 ### 546. Remove Boxes.md
 #### problem Summary
-Given a list of numbers (different colors), every time you can choose to remove continuous same number (box with same color). If you remove k boxes, you get point k^2.
-Return the max point you can get.
+Given a list of numbers (different colors), every time you can choose to remove continuous same number (box with same color). If you remove k boxes, you get point k^2.<br/>
+Return the max point you can get.<br/>
 
 #### idea
-for example [1, 3, 2, 2, 2, 3, 4, 3, 1]
-You can remove 2 first, and let the 3 connected together, 9 points
-1,3,3,4,3,1, remove the 4, get 1
-1,3,3,3,1 remove the 3, get 9
-1,1 remove 1, get 4 total: 23
+for example [1, 3, 2, 2, 2, 3, 4, 3, 1]<br/>
+You can remove 2 first, and let the 3 connected together, 9 points<br/>
+1,3,3,4,3,1, remove the 4, get 1<br/>
+1,3,3,3,1 remove the 3, get 9<br/>
+1,1 remove 1, get 4 total: 23<br/>
 
-assuming dp[i,j] is the max points you can get from i to j (inclusive). And the final answer would be dp[0, n-1].
+assuming dp[i,j] is the max points you can get from i to j (inclusive). And the final answer would be dp[0, n-1].<br/>
 
-we get the group a[i] to a[i+k], assuming the k+1 elements are the same color, then we have two choices:
+we get the group a[i] to a[i+k], assuming the k+1 elements are the same color, then we have two choices:<br/>
 
-    group them and get the score and delete them
-    leave them for a while and process other first and hope to have a longer sequence and higher scores.
+    group them and get the score and delete them<br/>
+    leave them for a while and process other first and hope to have a longer sequence and higher scores.<br/>
 
-For the first case, the score is (k+1)^2+subproblem(i+k+1,j)
-for the second case, assuming we find mth element==nums[i] and want to combine with a[i, i+k], then we need solve two subproblem first [i+k, m-1] with no previous same char and [m, j] with previous k+1 same char.
+For the first case, the score is (k+1)^2+subproblem(i+k+1,j)<br/>
+for the second case, assuming we find mth element==nums[i] and want to combine with a[i, i+k], then we need solve two subproblem first [i+k, m-1] with no previous same char and [m, j] with previous k+1 same char.<br/>
 
-Thus the dp needs to add another dimension k, dp[i][j][k] defines the max score we get from the sequence i to j (inclusive) with number of same color box ahead.
+Thus the dp needs to add another dimension k, dp[i][j][k] defines the max score we get from the sequence i to j (inclusive) with number of same color box ahead.<br/>
 
-dp[i][j][k]=max((k+1)^2+sub(i+k+1,j,0), sub(i+k+1,m-1,0), sub(m, j, k+1))
+dp[i][j][k]=max((k+1)^2+sub(i+k+1,j,0), sub(i+k+1,m-1,0), sub(m, j, k+1))<br/>
 
 #### code
 ```cpp
@@ -611,6 +622,52 @@ dp[i][j][k]=max((k+1)^2+sub(i+k+1,j,0), sub(i+k+1,m-1,0), sub(m, j, k+1))
 - recursive + memoization is more straightforward.
 - similar problem: 664 strange printer
 
+
+### 664. Strange Printer.md
+#### problem summary
+Printer each move prints a list of same characters. Next print will be on the previous print, covering those under.
+Given a string, get the min number of moves
+
+#### idea
+1. the number of same char does not matter (different from previous problem on remove boxes which is depending on k)
+2. when same char is separated, either we connect them or print differently. That is why it is the same as removing boxes.
+
+We don't need the k dimension in this case, since number of char does not matter.
+3. this is similar to a series of overlapped segments, greedy choice will not work.
+
+#### code
+```cpp
+    int strangePrinter(string s) {
+        if(s.length()<1) return 0;
+        string ss;
+        //reduce the string first to avoid time or space TLE
+        char c=s[0];
+        ss+=s[0];
+        for(int i=1;i<s.length();i++) if(s[i]!=c) {c=s[i];ss+=s[i];}
+        s=ss;
+        int n=s.length();
+        vector<vector<int>> dp(n,vector<int>(n));
+        return helper(s,dp,0,n-1);
+    }
+    int helper(string& s,vector<vector<int>>& dp,int i,int j)
+    {
+        if(i>j) return 0;
+        if(i==j) return 1;
+        if(dp[i][j]) return dp[i][j];
+        //k is the number of same char
+        int res=1+helper(s,dp,i+1,j);//no char attached
+        for(int m=i+1;m<=j;m++)
+        {
+            if(s[m]==s[i])
+                res=min(res,helper(s,dp,i+1,m-1)+helper(s,dp,m,j));
+        }
+        dp[i][j]=res;
+        return res;
+    }
+```
+
+#### comments
+- please refer to remove boxes, which is almost the same.
 
 ### 903. Valid Permutations for DI Sequence.md
 #### problem Summary
@@ -666,7 +723,7 @@ However, when we are dealing with length i and end with j, the previous sequence
 
 use some criteria to partition the array into subarrays
 
-### 53	Maximum Subarray		Easy	
+### 53	Maximum Subarray		(-Easy-)
 get the max sum of the subarray.<br/>
 subarray with the max sum.<br/>
 when previous sum is negative we shall not attach to previous, and that is the key.<br/>
@@ -4173,53 +4230,6 @@ dp[i,0]=1
 - why dp[0,0]=1?
 
 
-### 664. Strange Printer.md
-#### problem summary
-Printer each move prints a list of same characters. Next print will be on the previous print, covering those under.
-Given a string, get the min number of moves
-
-#### idea
-1. the number of same char does not matter (different from previous problem on remove boxes which is depending on k)
-2. when same char is separated, either we connect them or print differently. That is why it is the same as removing boxes.
-
-We don't need the k dimension in this case, since number of char does not matter.
-3. this is similar to a series of overlapped segments, greedy choice will not work.
-
-#### code
-```cpp
-    int strangePrinter(string s) {
-        if(s.length()<1) return 0;
-        string ss;
-        //reduce the string first to avoid time or space TLE
-        char c=s[0];
-        ss+=s[0];
-        for(int i=1;i<s.length();i++) if(s[i]!=c) {c=s[i];ss+=s[i];}
-        s=ss;
-        int n=s.length();
-        vector<vector<int>> dp(n,vector<int>(n));
-        return helper(s,dp,0,n-1);
-    }
-    int helper(string& s,vector<vector<int>>& dp,int i,int j)
-    {
-        if(i>j) return 0;
-        if(i==j) return 1;
-        if(dp[i][j]) return dp[i][j];
-        //k is the number of same char
-        int res=1+helper(s,dp,i+1,j);//no char attached
-        for(int m=i+1;m<=j;m++)
-        {
-            if(s[m]==s[i])
-                res=min(res,helper(s,dp,i+1,m-1)+helper(s,dp,m,j));
-        }
-        dp[i][j]=res;
-        return res;
-    }
-```
-
-#### comments
-- please refer to remove boxes, which is almost the same.
-
-
 ### 818. Race Car.md
 #### problem summary
 Initial position 0 and speed +1, and given a target>0
@@ -4726,7 +4736,7 @@ this is more a math problem than a dp problem
 	
 
 
-### 303	Range Sum Query - Immutable		Easy	
+### 303	Range Sum Query - Immutable		(-Easy-)
 get the sum from i to j (inclusive). note the prefix sum can only give i to j (not including i)
 ```cpp
     NumArray(vector<int> &nums) { //do the summation once! note the summation includes i,j
