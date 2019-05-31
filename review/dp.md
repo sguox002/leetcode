@@ -146,7 +146,7 @@
 
 ## 3.2 Stategy games
 
-### 1025	Divisor Game		Easy
+### 1025	Divisor Game		Easy **
 each take a move N-x, 0<x<N and N%x==0<br/>
 when N=2, A take 1 and B will not be able to move, A win<br/>
 when N=3, A take 1 and A lose.<br/>
@@ -154,10 +154,12 @@ when N=3, A take 1 and A lose.<br/>
 when N is odd, it only has odd factors, we give B an even number, it will eventually reaches 2, A lose<br/>
 when N is even, A take 1 and B always get odd number, and will eventually get to 3, A win.<br/>
 
-### 877. Stone Game<br/>
+### 877. Stone Game **
 a list of numbers, picking from either end. who wins<br/>
 we pick positive, the other pick negative, maximize the score. (for the other player it is the same)<br/>
 choosing from either end is easier, choosing from anywhere is much harder.<br/>
+choose left, reduce it to l+1 to r subproblem, choose right, reduce to l,r-1 subproblem.
+
 ```cpp
     bool stoneGame(vector<int>& piles) {
        int n=piles.size();
@@ -175,11 +177,19 @@ choosing from either end is easier, choosing from anywhere is much harder.<br/>
         return dp[l][r];
     }
 ```
-
-### 486. Predict the Winner
+There is direct answer based on greedy approach (really smart):
+number of piles are even, total stones are odd. 
+       //odd indexed stone vs even indexed stone not equal
+        //if odd>even we always choose odd, otherwise we always choose even
+        //if even, we choose 0, they can only choose 1 and n-1 (odd)
+        //if odd, we choose n-1, they can only choose 0 and n-2 (even)
+	
+### 486. Predict the Winner **
 same as 877, but we can use direct dp max(num[l]-dp[l+1,r],num[r]-dp[l,r-1])<br/>
 l: reverse iteration, r normal iteration<br/>
 bottom up approach: (when there is a lot of overlaps, bottom up has advantages <br/>
+- boundary case: l==r, choose num[l]
+- use num[l]-dp[l+1,r] to reflect the other side.
 
 ```cpp
     bool PredictTheWinner(vector<int>& nums) {
@@ -197,15 +207,16 @@ bottom up approach: (when there is a lot of overlaps, bottom up has advantages <
     }
 ```
 
-### 837. New 21 Game
+### 837. New 21 Game ***
 Alice plays the following game, loosely based on the card game "21".
 
 Alice starts with 0 points, and draws numbers while she has less than K points.  During each draw, she gains an integer number of points randomly from the range [1, W], where W is an integer.  Each draw is independent and the outcomes have equal probabilities.
 
 Alice stops drawing numbers when she gets K or more points.  What is the probability that she has N or less points?
 
-this is like climbing stairs, there are more than two methods to reach a stair<br/>
+this is like climbing stairs, there are more than two methods to reach a stair, but has W choices (1 to W) <br/>
 combined with sliding window.
+when Alice has K-W to K-1 points, she can draw more.
 
  ```cpp
      double new21Game(int N, int K, int W) {
@@ -217,6 +228,7 @@ combined with sliding window.
         //dp[i]=sum(dp[j])/W for j=i-1 to i-w
         double wsum=0;
 
+		//sliding window to get the probability to dp[K]
         for(int i=1;i<=K;i++)
         {
             if(i<=W) dp[i]=wsum+=dp[i-1]/W;
@@ -224,7 +236,7 @@ combined with sliding window.
         }
         //copy(dp.begin(),dp.end(),ostream_iterator<double>(cout," "));
         double ans=0;
-        for(int i=K-1;i>=max(K-W,0);i--)
+        for(int i=K-1;i>=max(K-W,0);i--) //we can draw one more from K-1 to K-W
         {
             int d=K-1-i;
             int len=min(W-d,N-K+1);
@@ -234,16 +246,28 @@ combined with sliding window.
     }
 ```
 
-### 464. Can I Win
-It is important to get the problem right: the two player adds to the same sum, and who reach the target first wins<br/>
+### 464. Can I Win ***
+It is important to get the problem right: Given the max number N you can choose from 1 to N and a target number.<br/>
+maxN<=20 so we can use bits, which is a regular practice.<br/>
+the two player adds to the same sum, and who reach the target first wins<br/>
 number chosen cannot be reused.<br/>
 - use bitset to indicate number used or not<br/>
 - subtract target<br/>
 - who reaches 0 wins<br/>
 - if other wins, then we lose<br/>
 - store solved solutions<br/>
+this is a recursion or dfs approach.
 
 ```cpp
+    unordered_set<int> win,lose;
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        //recursive approach, repeat all choice and reduce problem into smaller one
+        //record all solved solution
+        if(desiredTotal<=maxChoosableInteger) return 1;
+        if(desiredTotal>maxChoosableInteger*(maxChoosableInteger+1)/2) return 0;
+        int status=0;
+        return canIWin(maxChoosableInteger,desiredTotal,status);
+    }
     bool canIWin(int m,int sum,int status)
     {
         if(sum<=0) return 0; //already to the dead end, but still did not win
@@ -285,8 +309,9 @@ each day we have two options: no transaction and sell it.<br/>
 perform at most 1 transaction. <br/>
 intuition is straightforward, today sell and buy at previous min<br/>
 dp[i] is the max profit selling at ith day: sell at ith day or not doing anything on ith day<br/>
-dp[i]=max(dp[i-1],prices[i]-min(price[j]))<br/>
+dp[i]=max(dp[i-1],prices[i]-min(price[j])) j=0 to i-1<br/>
 O(n^2) reduced to O(N)
+
 ```cpp
     int maxProfit(vector<int>& prices) {
         //dp[i]: is the max profit at ith day
@@ -477,6 +502,8 @@ so the final answer is min(dp[n-1],dp[n-2])<br/>
 ```	
 The problem is not well stated. It asks to be able to move over the top, so the top level is actually nth (instead of n-1)
 
+### 837. New 21 Game ***
+see above, also a similar climbing stairs problem.
 
 ### 198	House Robber		(-Easy-)
 dp[i]=max(dp[i-1],dp[i-2]+prices[i])
@@ -525,7 +552,7 @@ this is house robber with duplicates (if there are a lot of value=nums[i]). So w
 
 ## 3.3.3 two pointers
 
-### 312. Burst Balloons.md
+### 312. Burst Balloons.md ****
 ##### problem Summary
 Given a list of balloons with number on it. If a balloon is burst, point num[l] * num * num[r] will be added. (l,r is the adjacent left and right balloon)
 Ask: to return max point we can get
@@ -537,7 +564,13 @@ Ask: to return max point we can get
 
 3. Once we want to burst balloon i, its points will be nums[i]*nums[l]*nums[r]. And it leaves two parts l to i-1 and i+1 to r. (Between l and r there are multiple elements, we are just assuming after some bursting, l and r becomes adjacent). This is similar to a reverse process. When we solve l, i, r, the previous problem (l, i-1) and (i+1, r) have all be solved. In another word, those balloons are all bursted already.
 
-4. so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,l]), i from l to r
+4. so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,r]), i from l to r
+
+this is actually the reverse thinking process.
+assuming ith balloon is the last one to burst, then its left and right are defined.
+it also break into 0 to i-1 and i+1 to n two subproblems with left and right boundary defined (i act as left and right boundary for each subproblem).
+all the balloons are bursted before the baloon i.
+
 
 ##### code
 ```cpp
@@ -546,7 +579,7 @@ Ask: to return max point we can get
         nums.push_back(1);
         int n=nums.size();
         vector<vector<int>> dp(n,vector<int>(n));
-        return helper(nums,1,n-2,dp);
+        return helper(nums,1,n-2,dp); //1 to n-2 as the last one to burst using 0 and n-1 as boundary
     }
     int helper(vector<int>& nums,int s,int e,vector<vector<int>>& dp)
     {
@@ -554,7 +587,7 @@ Ask: to return max point we can get
         if(dp[s][e]>0) return dp[s][e];
         for(int i=s;i<=e;i++)
         {
-            dp[s][e]=max(dp[s][e],nums[i]*nums[s-1]*nums[e+1]+helper(nums,s,i-1,dp)+helper(nums,i+1,e,dp));
+            dp[s][e]=max(dp[s][e],nums[i]*nums[s-1]*nums[e+1]+helper(nums,s,i-1,dp)+helper(nums,i+1,e,dp)); //s-1 and e+1 are the non-changed left and right boundary
         }
         return dp[s][e];
     }
@@ -700,10 +733,12 @@ Actually this is a lower triangle, we do not need to calculate the whole row, th
             for(int j=0;j<=i;j++)
             {
                 if(S[i-1]=='D') //previous is larger
-                {
-                    for(int k=j;k<i;k++) {dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
-                }
-                else for(int k=0;k<j;k++) {dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
+                    for(int k=j;k<i;k++) 
+						{dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
+
+                else 
+					for(int k=0;k<j;k++) 
+						{dp[i][j]+=dp[i-1][k];dp[i][j]%=mod;}
             }
         }
         //print(dp);
@@ -781,7 +816,7 @@ Step 3 return the maximum of those three answer.
 ```	
 
 ### 413. Arithmetic Slices<br/>
-return the number of arithmetic slices in the array A.
+return the number of arithmetic slices in the array A.<br/>
 dp[i] means the number of arithmetic slices ending with A[i]<br/>
 dp[i]=dp[i-1]+1 if it satisfy arithmetic<br/>
 answer is the accumulation<br/>
@@ -826,7 +861,7 @@ dp[i][k]=max(dp[i][k],dp[j][k-1]+double(A[i]-A[j])/(i-j));
     }
 ```
 	
-### 152. Maximum Product Subarray<br/>
+### 152. Maximum Product Subarray
 largest product subarray<br/>
 when a negative is involved, max becomes min, min becomes max<br/>
 ```cpp
@@ -848,6 +883,8 @@ when a negative is involved, max becomes min, min becomes max<br/>
 ### 523. Continuous Subarray Sum<br/>
 target: multiples of K<br/>
 accumulate sum (prefix sum). the prefix sum shall %k has the same value<br/>
+K==0 or K!=0 shall be treated differently <br/>
+
 ```cpp
     bool checkSubarraySum(vector<int>& nums, int k) {
         //accumulate first and then check (a-b)%k==0
@@ -943,6 +980,7 @@ If n is the length of array, assume the following constraints are satisfied:
         return cnt;
     }
 ```
+this is common practice using binary search for the m partition problems.
 
 ### 689. Maximum Sum of 3 Non-Overlapping Subarrays.md
 #### problem Summary
@@ -989,8 +1027,9 @@ Ask: get the starting index of the 3 segment. If there is tie, choose the smalle
 ```
 
 ## 3.3.5 subsequence problems
+for current element it can connected to existing prior sequence or it starts a new sequence.
 
-### 446. Arithmetic Slices II - Subsequence.md
+### 446. Arithmetic Slices II - Subsequence.md ****
 #### problem summary
 arithmetic subsequence: len>=3 and differene is the same
 ask: number of arithmetic subsequence
@@ -1050,7 +1089,7 @@ all zero
 2. we add dp[j][d] to make sure we are only counting len>=3 subsequences. (1 element dp is 0, 2 element dp is 1, 3 element dp is 2)
 
 
-### 940. Distinct Subsequences II.md
+### 940. Distinct Subsequences II.md ****
 #### problem summary
 Given a string, count all distinct subsequence
 
@@ -1092,35 +1131,33 @@ adding all numbers together and the letter itself dp[c]=sum(dp(a to z))+1
 ## 3.3.6 solve problem using small solutions-build intution
 sometimes when we do not have explicit recurrence relation. It is still be able to approach using smaller solutions<br/>
 
-### 338. Counting Bits<br/>
+### 338. Counting Bits **
 given a number get all number of 1s in binary for each one.<br/> dp[i]=dp[i/2]+i&1
 need to be O(n) time and space
 n: dp[n/2]+n%2
 
-### 343. Integer Break<br/>
+### 343. Integer Break ***
 make the product the largest.<br/>
 j*(i-j) vs j*dp[i-j], break into j and i-j two numbers<br/>
 this is also a math problem. see math
 
 ```cpp
     int integerBreak(int n) {
-        
-        if (n <= 2)
-            return 1;
-
-        vector<int> maxArr(n+1, 0);
+        if (n <= 2) return 1; //2=1+1
+		vector<int> dp(n+1, 0);
                     
-        maxArr[1] = 0;
-        maxArr[2] = 1; // 2=1+1 so maxArr[2] = 1*1
+        dp[1] = 0;
+        dp[2] = 1; // 2=1+1 so maxArr[2] = 1*1
         
         for (int i=3; i<=n; i++) {
             for (int j=1; j<i; j++) {
-                maxArr[i] = max(maxArr[i], max(j*(i-j), j*maxArr[i-j]));
+                dp[i] = max(dp[i], max(j*(i-j), j*dp[i-j]));
             }
         }
-        return maxArr[n];
+        return dp[n];
     }
 ```	
+see also math solutions. first reduce it by 3 until to 4.
 
 ### 650. 2 Keys Keyboard<br/>
 copy all and paste two operations<br/>
@@ -1273,7 +1310,7 @@ Assuming dp[i] is the number of valid string with length i.
 
 	
 ### 638. Shopping Offers<br/>
-better using recursive for this
+better using recursive for this, bactracking problem.
 ```cpp
 void operator+=(vector<int> &a, const vector<int> &b) {
     for (int i = 0; i < a.size(); i++)
