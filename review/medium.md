@@ -2161,21 +2161,19 @@ At each iteration, insertion sort removes one element from the input data, finds
 It repeats until no input elements remain.
 ```cpp
     ListNode* insertionSortList(ListNode* head) {
-		if(!head) return 0;
-		ListNode* dummy=new ListNode(0);
-		//dummy->next=head;//this line shall be commented
-		ListNode* p=head,*prev=dummy;
-		p=p->next;
+        ListNode* dummy=new ListNode(0);
+		//two separate lists
+		ListNode *p=head,*prev=dummy;
 		while(p)
 		{
-			ListNode* n=p->next;
+			ListNode* next=p->next;
 			prev=dummy;
-			while(p->val>prev->next->val) prev=prev->next;
-			//insert the node here
-			ListNode* next=prev->next;
+			while(prev->next && p->val>prev->next->val) prev=prev->next;
+			//insert the node
+			ListNode* n=prev->next;
 			prev->next=p;
-			p->next=next;
-			p=n;
+			p->next=n;
+			p=next;
 		}
 		return dummy->next;
     }
