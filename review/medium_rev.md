@@ -100,6 +100,9 @@ simple using stack when we meet a operator we perform calculation and put back
 row sorted, column sorted.
 do it from bottom left so row is ascending, col is descending only one choice
 similar 74: sorted as a 1d array
+328	Odd Even Linked List    		49.1%	Medium	
+sort first odd and then even.
+break into two lists and then connect
 
 easy to medium **
 17	Letter Combinations of a Phone Number    		41.6%	Medium	
@@ -412,6 +415,27 @@ knapsack or coin change problem.
 284	Peeking Iterator    		40.6%	Medium	
 c++ concepts
 call base member function and copy constructor
+
+319	Bulb Switcher    		43.9%	Medium	
+
+322	Coin Change    		30.4%	Medium	
+min number of coins, if cannot add up, return -1
+knapsack with reusage of coins
+```cpp
+    int coinChange(vector<int>& coins, int amount) {
+		int n=coins.size();
+		vector<int> dp(amount+1,INT_MAX);
+		dp[0]=0;
+		for(int i=1;i<=amount;i++)
+		{
+			for(auto c: coins){
+				if(i>=c && dp[i-c]!=INT_MAX) {dp[i]=min(dp[i],dp[i-c]+1);}
+			}
+		}
+		return dp[amount]==INT_MAX?-1:dp[amount];
+    }
+```	
+
 
 medium ***
 11	Container With Most Water    		44.6%	Medium	
@@ -1769,27 +1793,405 @@ russian doll envelopes
 	
 304	Range Sum Query 2D - Immutable    		32.3%	Medium	
 306	Additive Number    		28.3%	Medium	
+similar problem 842. Split Array into Fibonacci Sequence
+the first two number determines the whole string
+a+b=c, if a has m digits, b has n digits, c has at least max(m,n) digits.
+the first two number can use up to half of the total length
+dfs to try all combinations
+a can have 1 digit to n/2-1 digits
+b can have 1 digit to n/2-1 digits
+total_len=m+n+max(m,n). m+n<2/3len
+for long string, it is very easy overflow so using string add
+
+```cpp
+    bool isAdditiveNumber(string num) {
+		int n=num.size();
+		for(int i=1;i<=(n+1)/2;i++)
+		{
+			for(int j=1;i+j<=(n+1)*2/3;j++)
+			{
+				if(valid_fib(num,i,j)) return 1;
+			}
+		}
+		return 0;
+    }
+	bool valid_fib(string& num,int l1,int l2)
+	{
+		string a=num.substr(0,l1),b=num.substr(l1,l2);
+        if(a.length()>1 && a[0]=='0') return 0;
+        if(b.length()>1 && b[0]=='0') return 0;
+		int l=l1+l2;
+        bool valid=0;
+		while(l<num.size()){
+            string s=stringadd(a,b);
+            //cout<<a<<" "<<b<<endl;
+			if(num.substr(l,s.size())!=s) return 0;
+            valid=1;
+			l+=s.length();
+			a=b,b=s;
+		}
+		return valid;
+	}
+    string stringadd(string& a,string& b){
+        string ans;
+        int cf=0;
+        int m=a.size(),n=b.size();
+        int i=m-1,j=n-1;
+        while(cf || i>=0 || j>=0)
+        {
+            int d=(i>=0?a[i]-'0':0)+(j>=0?b[j]-'0':0)+cf;
+            ans+=d%10+'0';
+            cf=d/10;
+            i--,j--;
+        }
+        return {ans.rbegin(),ans.rend()};
+    }
+```	
+-. use string add to do large number addition
+-. number cannot start with 0
+-. have to have at least 3 numbers (if it skip the loop it is incorrect)
+-. a can up to half length, a+b can up to 2/3 length
+
+842	Split Array into Fibonacci Sequence    		34.6%	Medium	
+need return any valid sequence, each number limits as integer, so up to 9 digits.
+use backtracking
+```cpp
+    vector<int> splitIntoFibonacci(string S) {
+		vector<int> ans;
+		dfs(S,0,ans);
+		return ans;
+    }
+	bool dfs(string& s,int ind,vector<int>& ans)
+	{
+		int n=s.size();
+		if(ind>=n && ans.size()>=3) return 1;
+		int maxsize=s[ind]=='0'?1:10;
+		for(int i=1;i<=maxsize && ind+i<=s.size();i++)
+		{
+			long a=stoll(s.substr(ind,i));
+			if(a>INT_MAX) return 0;
+			int sz=ans.size();
+			if(sz>=2 && (long)ans[sz-1]+ans[sz-2]<a) return 0;
+			if(sz<=1 || (long)ans[sz-1]+ans[sz-2]==a){
+				ans.push_back(a);
+				if(dfs(s,ind+i,ans)) return 1;
+				ans.pop_back();
+			}
+		}
+		return 0;
+	}
+```	
+be sure to use long for intermediate calculation
+
 
 307	Range Sum Query - Mutable    		28.6%	Medium	
-309	Best Time to Buy and Sell Stock with Cooldown    		44.0%	Medium	
-310	Minimum Height Trees    		30.1%	Medium	
-311	Sparse Matrix Multiplication    		56.3%	Medium	
+find the range sum [i,j]
+update(i,val) will change the value at i
+prefix sum: range sum=prefix[j]-prefix[i-1]
+update val[i] will change all the prefix sum including val[i] by adding the difference
+```cpp
+    vector<int> prefix;
+	
+	NumArray(vector<int>& nums) {
+        //data=nums;
+		prefix.push_back(0);
+		for(int i: nums) prefix.push_back(prefix.back()+i);
+    }
+    
+    void update(int i, int val) {
+        int old=prefix[i+1]-prefix[i];
+		int diff=val-old;
+		for(int j=i+1;j<prefix.size();j++) prefix[j]+=diff;
+    }
+    
+    int sumRange(int i, int j) {
+        return prefix[j+1]-prefix[i];
+    }
+```
+this introduce a new data structure called segment tree
+a segment tree is a binary tree with each node a segment.
+it can have O(logn) complexity
+```cpp
+struct SegmentTreeNode {
+    int start, end, sum;
+    SegmentTreeNode* left;
+    SegmentTreeNode* right;
+    SegmentTreeNode(int a, int b):start(a),end(b),sum(0),left(nullptr),right(nullptr){}
+};
+class NumArray {
+    SegmentTreeNode* root;
+public:
+    NumArray(vector<int> &nums) {
+        int n = nums.size();
+        root = buildTree(nums,0,n-1);
+    }
+   
+    void update(int i, int val) {
+        modifyTree(i,val,root);
+    }
 
+    int sumRange(int i, int j) {
+        return queryTree(i, j, root);
+    }
+    SegmentTreeNode* buildTree(vector<int> &nums, int start, int end) {
+        if(start > end) return nullptr;
+        SegmentTreeNode* root = new SegmentTreeNode(start,end);
+        if(start == end) {
+            root->sum = nums[start];
+            return root;
+        }
+        int mid = start + (end - start) / 2;
+        root->left = buildTree(nums,start,mid);
+        root->right = buildTree(nums,mid+1,end);
+        root->sum = root->left->sum + root->right->sum;
+        return root;
+    }
+    int modifyTree(int i, int val, SegmentTreeNode* root) {
+        if(root == nullptr) return 0;
+        int diff;
+        if(root->start == i && root->end == i) {
+            diff = val - root->sum;
+            root->sum = val;
+            return diff;
+        }
+        int mid = (root->start + root->end) / 2;
+        if(i > mid) {
+            diff = modifyTree(i,val,root->right);
+        } else {
+            diff = modifyTree(i,val,root->left);
+        }
+        root->sum = root->sum + diff;
+        return diff;
+    }
+    int queryTree(int i, int j, SegmentTreeNode* root) {
+        if(root == nullptr) return 0;
+        if(root->start == i && root->end == j) return root->sum;
+        int mid = (root->start + root->end) / 2;
+        if(i > mid) return queryTree(i,j,root->right);
+        if(j <= mid) return queryTree(i,j,root->left);
+        return queryTree(i,mid,root->left) + queryTree(mid+1,j,root->right);
+    }
+};
+```
+
+309	Best Time to Buy and Sell Stock with Cooldown    		44.0%	Medium	
+
+310	Minimum Height Trees    		30.1%	Medium	
+undirected graph choose any node as the root and return those nodes will min height
+remove all leaf node until there is one or two nodes
 
 318	Maximum Product of Word Lengths    		48.5%	Medium	
-319	Bulb Switcher    		43.9%	Medium	
-320	Generalized Abbreviation    		48.8%	Medium	
-322	Coin Change    		30.4%	Medium	
-323	Number of Connected Components in an Undirected Graph    		52.0%	Medium	
+leni*lenj and word[i] and word[j] shares no common character
+group the length into hashset
+using bit & to judge if they have common chars
+
+```cpp
+    int maxProduct(vector<string>& words) {
+		int maxprod=0;
+		vector<int> hash(words.size());
+		for(int i=0;i<words.size();i++)
+		{
+			string& s=words[i];
+			int t=0;
+			for(auto c: s) t|=(1<<(c-'a'));
+			hash[i]=t;
+            //cout<<s<<":"<<t<<endl;
+			for(int j=i-1;j>=0;j--){
+				if((hash[i]&hash[j])==0) 
+                {
+                    int t=words[i].length()*words[j].length();
+                    maxprod=max(maxprod,t);
+                }
+			}
+		}
+		return maxprod;
+	}
+    
+```	
+- use | to indicate the char existence
+- use & to judge no common
+- note the bit has low priority, add ()
+
+
 324	Wiggle Sort II    		28.0%	Medium	
-325	Maximum Size Subarray Sum Equals k    		44.7%	Medium	
-328	Odd Even Linked List    		49.1%	Medium	
+in-place O(n) sort so that a[0]<a[1]>a[2]<a[3]....
+greedy: a[0],a[2]... is the sorted first half, a[1],a[3].... is the 2nd half
+first break the array into half (for odd sized, the first half (n+1)/2)
+O(nlogn)
+or find the median value. nth_element
+
+O(1) uses index mapping. don't know what it is.
+
 331	Verify Preorder Serialization of a Binary Tree    		38.6%	Medium	
+null node is saved as #
+The observation is important:
+
+Denote the number of null nodes as nullCnt, the number of actual nodes as nodeCnt.
+
+For a binary tree, the number of null nodes is always the number of actual nodes plus 1. nullCnt==nodeCnt+1;
+
+So,
+
+if nullCnt>nodeCnt+1, the tree is invalid.
+if nullCnt<nodeCnt+1, the tree is incomplete.
+if nullCnt==nodeCnt+1, the tree is complete and can't be extended.
+We just need to keep track of nullCnt and nodeCnt as we go through the sequence and check these conditions above.
+
+Actually, recording nullCnt-nodeCnt is enough, so you can further improve the code.
+
+all non-null node provides 2 outdegree and 1 indegree (2 children and 1 parent), except root
+all null node provides 0 outdegree and 1 indegree (0 child and 1 parent).
+
+Suppose we try to build this tree. During building, we record the difference between out degree and in degree diff = outdegree - indegree. When the next node comes, we then decrease diff by 1, because the node provides an in degree. If the node is not null, we increase diff by 2, because it provides two out degrees. If a serialization is correct, diff should never be negative and diff will be zero when finished.
+
+```cpp
+public boolean isValidSerialization(String preorder) {
+    String[] nodes = preorder.split(",");
+    int diff = 1;
+    for (String node: nodes) {
+        if (--diff < 0) return false;
+        if (!node.equals("#")) diff += 2;
+    }
+    return diff == 0;
+}
+```
+
+this is like validate the parenthesis, we can use stack
+```cpp
+    public boolean isValidSerialization(String preorder) {
+        // using a stack, scan left to right
+        // case 1: we see a number, just push it to the stack
+        // case 2: we see #, check if the top of stack is also #
+        // if so, pop #, pop the number in a while loop, until top of stack is not #
+        // if not, push it to stack
+        // in the end, check if stack size is 1, and stack top is #
+        if (preorder == null) {
+            return false;
+        }
+        Stack<String> st = new Stack<>();
+        String[] strs = preorder.split(",");
+        for (int pos = 0; pos < strs.length; pos++) {
+            String curr = strs[pos];
+            while (curr.equals("#") && !st.isEmpty() && st.peek().equals(curr)) {
+                st.pop();
+                if (st.isEmpty()) {
+                    return false;
+                }
+                st.pop();
+            }
+            st.push(curr);
+        }
+        return st.size() == 1 && st.peek().equals("#");
+    }
+```
+	
 332	Reconstruct Itinerary    		31.4%	Medium	
+from JFK, return the smallest order.
+build a graph data structure and always tries the smallest first
+data structure is more important. need visit all nodes same time as it appears.
+so need a mechanism to record the visit of all the stations.
+only when success, we add the result.
+```cpp
+unordered_map<string, multiset<string>> targets;
+vector<string> route;
+vector<string> findItinerary(vector<pair<string, string>> tickets) {
+    for (auto ticket : tickets)
+        targets[ticket[0]].insert(ticket[1]);
+    visit("JFK");
+    return vector<string>(route.rbegin(), route.rend());
+}
+
+void visit(string airport) {
+    while (targets[airport].size()) {
+        string next = *targets[airport].begin();
+        targets[airport].erase(targets[airport].begin());
+        visit(next);
+    }
+    route.push_back(airport);
+}
+```
+note multiset is necessary since it may contain cycles around two airports.
+
+```cpp
+    vector<string> findItinerary(vector<pair<string, string>> tickets) {
+        multiset<pair<string,string>> tset(tickets.begin(),tickets.end());
+        unordered_map<string,multiset<string>> mp;
+        for(int i=0;i<tickets.size();i++) mp[tickets[i].first].insert(tickets[i].second);
+        vector<string> ans;
+        ans.push_back("JFK");
+        dfs(mp,"JFK",tset,ans);
+        return ans;
+    }
+    
+    bool dfs(unordered_map<string,multiset<string>>& mp,string node,multiset<pair<string,string>>& to_visit,vector<string>& ans)
+    {
+        
+        //cout<<node<<" "<<to_visit.size()<<endl;
+        if(to_visit.size()==0) return 1;
+        if(mp[node].size()==0) return 0;
+        
+        for(auto it=mp[node].begin();it!=mp[node].end();it++)
+        {
+            string next=*it;
+            //mp need delete this
+            //mp[node].erase(next);//mp cannot be modified since the path may fail
+            pair<string,string> p=make_pair(node,next);
+            auto it1=to_visit.find(p);
+            if(it1!=to_visit.end())
+            {
+                //cout<<node<<"->"<<next<<" ";
+                to_visit.erase(it1);//remove this edge
+                ans.push_back(next);
+                if(dfs(mp,next,to_visit,ans)) {return 1;}
+                to_visit.insert(p);//put back this edge if failed
+                //cout<<"pop "<<ans.back()<<endl;
+                ans.pop_back();
+            }
+        }
+        return 0;
+    }
+```	
+	
+
 333	Largest BST Subtree    		33.0%	Medium	
 334	Increasing Triplet Subsequence    		39.6%	Medium	
+O(n) time and O(1) space
+return if there is such sequence
+stack could be a good choice (we need to keep updating the min and second min so not very good)
+
+```cpp
+bool increasingTriplet(vector<int>& nums) {
+    int c1 = INT_MAX, c2 = INT_MAX;
+    for (int x : nums) {
+        if (x <= c1) {
+            c1 = x;           // c1 is min seen so far (it's a candidate for 1st element)
+        } else if (x <= c2) { // here when x > c1, i.e. x might be either c2 or c3
+            c2 = x;           // x is better than the current c2, store it
+        } else {              // here when we have/had c1 < c2 already and x > c2
+            return true;      // the increasing subsequence of 3 elements exists
+        }
+    }
+    return false;
+}
+```	
+need use <= for compare, how to make sure c1 appears in front of c2?
+initial : [1, 2, 0, 3], small = MAX, big = MAX
+loop1 : [1, 2, 0, 3], small = 1, big = MAX
+loop2 : [1, 2, 0, 3], small = 1, big = 2
+loop3 : [1, 2, 0, 3], small = 0, big = 2 // <- Uh oh, 0 technically appeared after 2
+loop4 : return true since 3 > small && 3 > big // Isn't this a violation??
+
+If you observe carefully, the moment we updated big from MAX to some other value, that means that there clearly was a value less than it (which would have been assigned to small in the past). What this means is that once you find a value bigger than big, you've implicitly found an increasing triplet.
+
+
 337	House Robber III    		48.0%	Medium	
+in binary tree
+
 338	Counting Bits    		64.7%	Medium	
+from 0 to N, counting number of 1s in each number. O(n) space and time requirement.
+dp[i]=dp[i/2]+i&1
+or dp[i]=dp[i&(i-1)]+1
+
 341	Flatten Nested List Iterator    		47.9%	Medium	
 343	Integer Break    		47.8%	Medium	
 347	Top K Frequent Elements    		54.9%	Medium	
@@ -2023,7 +2425,7 @@ russian doll envelopes
 837	New 21 Game    		31.3%	Medium	
 838	Push Dominoes    		43.7%	Medium	
 841	Keys and Rooms    		60.2%	Medium	
-842	Split Array into Fibonacci Sequence    		34.6%	Medium	
+
 845	Longest Mountain in Array    		34.2%	Medium	
 846	Hand of Straights    		49.1%	Medium	
 848	Shifting Letters    		40.6%	Medium	
