@@ -394,6 +394,25 @@ int rangeBitwiseAnd(int m, int n) {
 }
 ```	
 
+279	Perfect Squares    		41.9%	Medium	
+find the least number of squares added up to a target
+knapsack or coin change problem.
+```cpp
+    int numSquares(int n) {
+		vector<int> dp(n+1,INT_MAX);//dp[i] represent for target i, the min number of squares
+		dp[0]=0;dp[1]=1;
+		for(int t=2;t<=n;t++){
+			for(int j=1;j*j<=t;j++){
+				if(j*j<=t) dp[t]=min(dp[t],dp[t-j*j]+1);
+			}
+		}
+		return dp[n];
+	}
+```
+284	Peeking Iterator    		40.6%	Medium	
+c++ concepts
+call base member function and copy constructor
+
 medium ***
 11	Container With Most Water    		44.6%	Medium	
 two pointer, move the smaller side pointer
@@ -1608,39 +1627,149 @@ if on both side, then root is the answer
 	}
 ```
 241	Different Ways to Add Parentheses    		49.9%	Medium	
-244	Shortest Word Distance II    		47.2%	Medium	
-245	Shortest Word Distance III    		53.4%	Medium	
-247	Strobogrammatic Number II    		44.3%	Medium	
-249	Group Shifted Strings    		48.8%	Medium	
-250	Count Univalue Subtrees    		48.7%	Medium	
-251	Flatten 2D Vector    		43.8%	Medium	
-253	Meeting Rooms II    		42.9%	Medium	
-254	Factor Combinations    		44.3%	Medium	
-255	Verify Preorder Sequence in Binary Search Tree    		43.5%	Medium	
-259	3Sum Smaller    		44.9%	Medium	
+first recursive, divide and conquer
+
+```cpp
+    vector<int> diffWaysToCompute(string input) {
+        vector<int> result;
+        int size = input.size();
+        for (int i = 0; i < size; i++) {
+            char cur = input[i];
+            if (cur == '+' || cur == '-' || cur == '*') {
+                // Split input string into two parts and solve them recursively
+                vector<int> result1 = diffWaysToCompute(input.substr(0, i));
+                vector<int> result2 = diffWaysToCompute(input.substr(i+1));
+                for (auto n1 : result1) {
+                    for (auto n2 : result2) {
+                        if (cur == '+')
+                            result.push_back(n1 + n2);
+                        else if (cur == '-')
+                            result.push_back(n1 - n2);
+                        else
+                            result.push_back(n1 * n2);    
+                    }
+                }
+            }
+        }
+        // if the input string contains only number
+        if (result.empty())
+            result.push_back(atoi(input.c_str()));
+        return result;
+    }
+};
+```
+
+add memoization
+```cpp
+	vector<int> diffWaysToCompute(string input) {
+		unordered_map<string, vector<int>> dpMap;
+		return computeWithDP(input, dpMap);
+	}
+
+	vector<int> computeWithDP(string input, unordered_map<string, vector<int>> &dpMap) {
+		vector<int> result;
+		int size = input.size();
+		for (int i = 0; i < size; i++) {
+			char cur = input[i];
+			if (cur == '+' || cur == '-' || cur == '*') {
+				// Split input string into two parts and solve them recursively
+				vector<int> result1, result2;
+				string substr = input.substr(0, i);
+				// check if dpMap has the result for substr
+				if (dpMap.find(substr) != dpMap.end())
+					result1 = dpMap[substr];
+				else
+					result1 = computeWithDP(substr, dpMap);
+
+				substr = input.substr(i + 1);
+				if (dpMap.find(substr) != dpMap.end())
+					result2 = dpMap[substr];
+				else
+					result2 = computeWithDP(substr, dpMap);
+				
+				for (auto n1 : result1) {
+					for (auto n2 : result2) {
+						if (cur == '+')
+							result.push_back(n1 + n2);
+						else if (cur == '-')
+							result.push_back(n1 - n2);
+						else
+							result.push_back(n1 * n2);
+					}
+				}
+			}
+		}
+		// if the input string contains only number
+		if (result.empty())
+			result.push_back(atoi(input.c_str()));
+		// save to dpMap
+		dpMap[input] = result;
+		return result;
+	}
+```
+	
+
 260	Single Number III    		57.0%	Medium	
-261	Graph Valid Tree    		39.9%	Medium	
+similar 136, one element appears once other appear twice (using xor)
+similar 137, one element appears once other appear three times (using true table)
+this problem is to apply xor three times.
+
 264	Ugly Number II    		36.4%	Medium	
-267	Palindrome Permutation II    		33.7%	Medium	
-271	Encode and Decode Strings    		26.7%	Medium	
+dp simple
+
 274	H-Index    		34.6%	Medium	
 275	H-Index II    		35.5%	Medium	
-277	Find the Celebrity    		36.8%	Medium	
-279	Perfect Squares    		41.9%	Medium	
-280	Wiggle Sort    		61.0%	Medium	
-281	Zigzag Iterator    		56.0%	Medium	
-284	Peeking Iterator    		40.6%	Medium	
+
+
 285	Inorder Successor in BST    		34.7%	Medium	
 286	Walls and Gates    		49.5%	Medium	
 287	Find the Duplicate Number    		49.6%	Medium	
+n+1 integers from 1 to n. find the duplicate one.
+this type of problem often uses list cycle or change to negative to mark seen
+if we consider the A[i] as the next index, so all index are valid and therefore there is a cycle
+The important: all values are from 1 to n and there is no 0, so A[0] is not part of any cycle.
+except A[0] is the entry point and it is the duplicate number
+see 142. Linked list cycle II
+
 288	Unique Word Abbreviation    		20.0%	Medium	
 289	Game of Life    		45.4%	Medium	
+cell depends on its 8 neighbors. 
+live neighbor cells <2, it dies
+[2,3], lives
+>3: it dies
+==3: dead cell become live
+approach 1: use a copy and it is straighforward
+approach 2: in place (use high bit)
+
+
 294	Flip Game II    		48.3%	Medium	
 298	Binary Tree Longest Consecutive Sequence    		44.0%	Medium	
 299	Bulls and Cows    		39.4%	Medium	
 300	Longest Increasing Subsequence    		40.8%	Medium	
+this is a vrey typical dp problem
+dp[i]=max(dp[i],dp[j]+1) if A[i]>A[j]
+```cpp
+    int lengthOfLIS(vector<int>& nums) {
+		int n=nums.size();
+        if(n==0) return 0;
+		vector<int> dp(n,1);
+		for(int i=1;i<n;i++)
+		{
+			for(int j=i-1;j>=0;j--)
+				if(nums[i]>nums[j]) dp[i]=max(dp[i],dp[j]+1);
+		}
+		return *max_element(dp.begin(),dp.end());
+    }
+```
+similar problems:
+increasing triplet subsequences
+max length of pair chain
+number of longest increasing subsequences
+russian doll envelopes
+	
 304	Range Sum Query 2D - Immutable    		32.3%	Medium	
 306	Additive Number    		28.3%	Medium	
+
 307	Range Sum Query - Mutable    		28.6%	Medium	
 309	Best Time to Buy and Sell Stock with Cooldown    		44.0%	Medium	
 310	Minimum Height Trees    		30.1%	Medium	
