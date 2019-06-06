@@ -499,6 +499,38 @@ knapsack with reusage of coins
 ```	
 
 
+393	UTF-8 Validation    		35.9%	Medium	
+   Char. number range  |        UTF-8 octet sequence
+      (hexadecimal)    |              (binary)
+   --------------------+---------------------------------------------
+   0000 0000-0000 007F | 0xxxxxxx
+   0000 0080-0000 07FF | 110xxxxx 10xxxxxx
+   0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
+   0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+```cpp
+    bool validUtf8(vector<int>& data) {
+        int count = 0;
+        for (auto c : data) {
+            if (count == 0) {
+                if ((c >> 5) == 0b110) count = 1;
+                else if ((c >> 4) == 0b1110) count = 2;
+                else if ((c >> 3) == 0b11110) count = 3;
+                else if ((c >> 7)) return false;
+            } else {
+                if ((c >> 6) != 0b10) return false;
+                count--;
+            }
+        }
+        return count == 0;
+    }
+```
+need to observe the rule!!
+
+397	Integer Replacement    		31.4%	Medium	
+greedy. n is even n/2, n is odd we add+1 or -1.
+divide is fast, so if we +1 or -1 to make it 4 multiples it will be faster
+If n + 1 % 4 == 0, replace n with n + 1 will short the path. Otherwise, replace n with n - 1 is always the right direction.
+
 medium ***
 11	Container With Most Water    		44.6%	Medium	
 two pointer, move the smaller side pointer
@@ -2254,44 +2286,7 @@ from 0 to N, counting number of 1s in each number. O(n) space and time requireme
 dp[i]=dp[i/2]+i&1
 or dp[i]=dp[i&(i-1)]+1
 
-341	Flatten Nested List Iterator    		47.9%	Medium	
-has a base class NestedInteger
-has member :
-isInteger
-getInteger
-getList
-using a stack to store the recursive relation or a vector
-stack is better since it will remove the first element first
-every time call has next we decompose a list until we get an integer
 
-```cpp
-	stack<NestedInteger> st;
-    NestedIterator(vector<NestedInteger> &nestedList) {
-        for(int i=nestedList.size()-1;i>=0;i--)
-			st.push(nestedList[i]);
-    }
-
-    int next() {
-		if(hasNext()){
-			auto t=st.top();
-			st.pop();
-			return t.getInteger();
-		}
-    }
-
-    bool hasNext() {
-        while(st.size()){
-			auto curr=st.top();
-			if(curr.isInteger()) return 1;
-			st.pop();
-			auto t=curr.getList();
-			int sz=t.size();
-			for(int i=sz-1;i>=0;i--)
-				st.push(t[i]);
-		}
-		return 0;
-    }
-```	
 343	Integer Break    		47.8%	Medium	
 dp or math, break into a series sum which product is the largest.
 
@@ -2312,41 +2307,6 @@ unfollow(followerId, followeeId): Follower unfollows a followee.
 372	Super Pow    		35.6%	Medium	
 math problem on modulus
 
-373	Find K Pairs with Smallest Sums    		33.8%	Medium	
-two sorted array and find the k pairs with smallest sum
-the elements can be used multiple times
-using merge sort. or pq.
-for example: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
-approach 1: m*n sum push into pq
-```cpp
-	struct comp{
-		bool operator()(const vector<int>& a,const vector<int>& b){
-			return a[0]+a[1]<b[0]+b[1];
-		}
-	};
-    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-		vector<vector<int>> ans;
-		priority_queue<vector<int>,vector<vector<int>>,comp> pq;
-		for(int i: num1)
-			for(int j: nums2){
-				pq.push({i,j});
-				if(pq.size()>k) pq.pop();
-			}
-		while(pq.size()){
-			ans.push_back(pq.top());
-			pq.pop();
-		}
-		return {ans.rbegin(),ans.rend()};
-    }
-```	
-however we did not take advantage that two arrays are sorted and above solution is very slow.
-
-378	Kth Smallest Element in a Sorted Matrix    		49.4%	Medium
-row and columns are sorted
-find the kth element in 2D
-we can build a pq. 
-this is the same as 373 with multiple sorted lists involved
-	
 
 375	Guess Number Higher or Lower II    		37.7%	Medium	
 376	Wiggle Subsequence    		37.4%	Medium	
@@ -2365,7 +2325,6 @@ if current one vs previous forms up, then up=dn+1 (previous longest dn)
 ```
 this is a reduced memory version of 2d dp
 
-377	Combination Sum IV    		43.7%	Medium	
 379	Design Phone Directory    		41.2%	Medium	
 380	Insert Delete GetRandom O(1)    		42.8%	Medium	
 random choose: hashmap to record iterator information, vector to store the data
@@ -2407,43 +2366,6 @@ public:
 ```
 rand to choose 0 to i to swap.
 
-385	Mini Parser    		31.8%	Medium	
-this is very similar to the problem 341
-given a string, we need to serialize the nestedInteger object
-serializing and deserializing used to read/write the objects, which are often required.
-[123,[456,[789]]]
-this is a nestedInteger with a integer and another nestedInteger [456,[789]]
-base class NestedInteger has:
-default constructor
-constructor
-isInteger
-getIntegersetInteger
-add
-getList
-
-recursive:
-```cpp
-    NestedInteger deserialize(string s) {
-        istringstream in(s);
-        return deserialize(in);
-    }
-
-    NestedInteger deserialize(istringstream &in) {
-        int number;
-        if (in >> number) //a number
-            return NestedInteger(number);
-        in.clear();
-        in.get(); //start with [
-        NestedInteger list;
-        while (in.peek() != ']') {
-            list.add(deserialize(in));
-            if (in.peek() == ',')
-                in.get();
-        }
-        in.get();
-        return list;
-    }
-```	
 
 386	Lexicographical Numbers    		46.1%	Medium	
 O(nlogn) algorithm, n up to 5,000,000
@@ -2498,40 +2420,40 @@ int lastRemaining(int n) {
 }
 ```
 
-
-393	UTF-8 Validation    		35.9%	Medium	
-   Char. number range  |        UTF-8 octet sequence
-      (hexadecimal)    |              (binary)
-   --------------------+---------------------------------------------
-   0000 0000-0000 007F | 0xxxxxxx
-   0000 0080-0000 07FF | 110xxxxx 10xxxxxx
-   0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
-   0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-```cpp
-    bool validUtf8(vector<int>& data) {
-        int count = 0;
-        for (auto c : data) {
-            if (count == 0) {
-                if ((c >> 5) == 0b110) count = 1;
-                else if ((c >> 4) == 0b1110) count = 2;
-                else if ((c >> 3) == 0b11110) count = 3;
-                else if ((c >> 7)) return false;
-            } else {
-                if ((c >> 6) != 0b10) return false;
-                count--;
-            }
-        }
-        return count == 0;
-    }
-```
-need to observe the rule!!
-	
-394	Decode String    		44.9%	Medium	
-stack and recursion problem!
-
 395	Longest Substring with At Least K Repeating Characters    		38.6%	Medium	
+using two pointer to define a range, and count number of unique letters and each letter's count.
+all chars appear less than k times shall be discarded.
+two pointer is not that easy
+aaabb
+bbaaa
+ababa
+need another counter to record the frequency
+
+use divide and conquer: found those char with freq<K and divide it into left and right.
+
+```cpp
+    int longestSubstring(string s, int k) {
+        //divide and conquer using recursion
+        if(s.size()<k) return 0;
+        int mp[26]={0};
+        for(int i=0;i<s.size();i++) mp[s[i]-'a']++;
+        //find the first one with count<k it is not included
+        int indx=-1;
+        for(int i=0;i<s.size();i++)
+        {
+            if(mp[s[i]-'a']<k) {indx=i;break;}
+        }
+        if(indx<0) return s.size();
+        
+        int left=longestSubstring(s.substr(0,indx),k);
+        int right=longestSubstring(s.substr(indx+1),k);
+        return max(left,right);
+    }
+```	
+
 396	Rotate Function    		35.1%	Medium	
-397	Integer Replacement    		31.4%	Medium	
+
+
 398	Random Pick Index    		49.9%	Medium	
 399	Evaluate Division    		47.5%	Medium	
 402	Remove K Digits    		26.6%	Medium	
@@ -3185,6 +3107,81 @@ using height, then it is similar to max rectangle in histogram
     }
 ```	
 
+341	Flatten Nested List Iterator    		47.9%	Medium	
+has a base class NestedInteger
+has member :
+isInteger
+getInteger
+getList
+using a stack to store the recursive relation or a vector
+stack is better since it will remove the first element first
+every time call has next we decompose a list until we get an integer
+
+```cpp
+	stack<NestedInteger> st;
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        for(int i=nestedList.size()-1;i>=0;i--)
+			st.push(nestedList[i]);
+    }
+
+    int next() {
+		if(hasNext()){
+			auto t=st.top();
+			st.pop();
+			return t.getInteger();
+		}
+    }
+
+    bool hasNext() {
+        while(st.size()){
+			auto curr=st.top();
+			if(curr.isInteger()) return 1;
+			st.pop();
+			auto t=curr.getList();
+			int sz=t.size();
+			for(int i=sz-1;i>=0;i--)
+				st.push(t[i]);
+		}
+		return 0;
+    }
+```	
+385	Mini Parser    		31.8%	Medium	
+this is very similar to the problem 341
+given a string, we need to serialize the nestedInteger object
+serializing and deserializing used to read/write the objects, which are often required.
+[123,[456,[789]]]
+this is a nestedInteger with a integer and another nestedInteger [456,[789]]
+base class NestedInteger has:
+default constructor
+constructor
+isInteger
+getIntegersetInteger
+add
+getList
+
+recursive:
+```cpp
+    NestedInteger deserialize(string s) {
+        istringstream in(s);
+        return deserialize(in);
+    }
+
+    NestedInteger deserialize(istringstream &in) {
+        int number;
+        if (in >> number) //a number
+            return NestedInteger(number);
+        in.clear();
+        in.get(); //start with [
+        NestedInteger list;
+        while (in.peek() != ']') {
+            list.add(deserialize(in));
+            if (in.peek() == ',')
+                in.get();
+        }
+        in.get();
+        return list;
+    }
+```	
 	
 hard medium *****
 137	Single Number II     		45.9%	Medium	
@@ -3337,4 +3334,170 @@ integer overflow, but this pass all tests by limiting all numbers in int range.
         return dp[target];
     }
 ```	
+
+394	Decode String    		44.9%	Medium	
+stack and recursion problem!
+approach 1: using stack but no recursion.
+approach 2: no stack but uses recursion
+approach 3: use position and keep updating
+
+"3[a2[c]]"->3[acc]->accaccacc
+between a paired [] it is a subproblem, we may need two stacks
+3[a]2[bc]: copy 3, a, copy 2, bc
+3[a2[c]]: push 3, push a, 2 c, acc and copy 3 times
+```cpp
+    string decodeString(string s) {
+        string ans;
+        stack<string> strs;
+        stack<int> copies;
+        int num=0;
+        for(char c: s){
+            if(isdigit(c)) num=num*10+c-'0';
+            else if(isalpha(c)) ans+=c;
+            else if(c=='['){
+                strs.push(ans);
+                copies.push(num);
+                num=0,ans="";
+            }
+            else{
+                string t=ans;
+                int n=copies.top();
+                //cout<<t<<": "<<n<<endl;
+                while(--n>0) ans+=t;
+                ans=strs.top()+ans;
+                strs.pop(),copies.pop();
+            }
+        }
+        return ans;
+    }
+```	
+recurive: only the start char to end, no ending specified.
+
+```cpp
+    string decodeString(string s) {
+        int i = 0;
+        return decodeString(s, i);
+    }
+	string decodeString(string& s,int& i)
+	{
+		string ans;
+		while(i<s.length() && s[i]!=']'){
+			if(!isdigit(s[i]) ans+=s[i++];
+			else{
+				int n=0;
+				while(i<s.length() && isdigit(s[i]) n=n*10+s[i++]-'0';
+				i++;//[
+				string t=decodeString(s,i);
+				i++;//]
+				while(n--) ans+=t;
+			}
+		}
+		return ans;
+	}
+```
+this problem is very similar to the atom problem. 726 bunber of atoms, use lower and upper case
+
+373	Find K Pairs with Smallest Sums    		33.8%	Medium	
+two sorted array and find the k pairs with smallest sum
+the elements can be used multiple times
+using merge sort. or pq.
+for example: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+approach 1: m*n sum push into pq
+```cpp
+	struct comp{
+		bool operator()(const vector<int>& a,const vector<int>& b){
+			return a[0]+a[1]<b[0]+b[1];
+		}
+	};
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+		vector<vector<int>> ans;
+		priority_queue<vector<int>,vector<vector<int>>,comp> pq;
+		for(int i: num1)
+			for(int j: nums2){
+				pq.push({i,j});
+				if(pq.size()>k) pq.pop();
+			}
+		while(pq.size()){
+			ans.push_back(pq.top());
+			pq.pop();
+		}
+		return {ans.rbegin(),ans.rend()};
+    }
+```	
+however we did not take advantage that two arrays are sorted and above solution is very slow.
+minheap:
+first using the first row combined with the first element in row 2, put them in minheap
+
+every time when we get the min suppose it is M[i,j], then the next larger would be among M[i+1,j] and M[i,j+1]
+note some elements will be pushed several times and causes wrong results.
+```cpp
+	struct comp{
+		bool operator()(const vector<int>& a,const vector<int>& b){
+			return a[0]+a[1]>b[0]+b[1];
+		}
+	};
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+		vector<vector<int>> ans;
+        if(nums1.empty() || nums2.empty() || k<=0) return ans;
+        unordered_set<int> visited;
+        int m=nums1.size(),n=nums2.size();
+		priority_queue<vector<int>,vector<vector<int>>,comp> pq;//pq store a,b,i,j
+		pq.push({nums1[0],nums2[0],0,0});
+        
+		while(k-- && pq.size()){
+			auto t=pq.top();pq.pop();
+			ans.push_back({t[0],t[1]});
+            
+			int i=t[2],j=t[3];
+			if(i+1<nums1.size() && j<nums2.size() && !visited.count((i+1)*n+j)) {
+                pq.push({nums1[i+1],nums2[j],i+1,j});
+                visited.insert((i+1)*n+j);
+            }
+			if(j+1<nums2.size() && i<nums1.size() && !visited.count(i*n+j+1) ) {
+                pq.push({nums1[i],nums2[j+1],i,j+1});
+                visited.insert(i*n+j+1);
+            }
+		}
+		return ans;
+    }
+```	
+we need to introduce a hashset to mark visited.
+
+378	Kth Smallest Element in a Sorted Matrix    		49.4%	Medium
+row and columns are sorted
+find the kth element in 2D
+we can build a pq. 
+this is the same as 373 with multiple sorted lists involved
+use similar code:
+	
+	struct comp{
+		bool operator()(const vector<int>& a,const vector<int>& b){
+			return a[0]>b[0];
+		}
+	};    
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+		int ans;
+        int n=matrix.size();
+        unordered_set<int> visited;
+        
+		priority_queue<vector<int>,vector<vector<int>>,comp> pq;//pq store a,b,i,j
+		pq.push({matrix[0][0],0});
+        
+		while(k-- && pq.size()){
+			auto t=pq.top();pq.pop();
+			int i=t[1]/n,j=t[1]%n;
+			ans=t[0];
+			if(i+1<n && j<n && !visited.count((i+1)*n+j)) {
+                pq.push({matrix[i+1][j],(i+1)*n+j});
+                visited.insert((i+1)*n+j);
+            }
+			if(j+1<n && i<n && !visited.count(i*n+j+1) ) {
+                pq.push({matrix[i][j+1],i*n+j+1});
+                visited.insert(i*n+j+1);
+            }
+		}
+		return ans;
+    }
+```
+we can use bool array for visited to speed
 
