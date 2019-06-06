@@ -103,6 +103,68 @@ similar 74: sorted as a 1d array
 328	Odd Even Linked List    		49.1%	Medium	
 sort first odd and then even.
 break into two lists and then connect
+347	Top K Frequent Elements    		54.9%	Medium	
+hashmap and then put into a pq
+```cpp
+	struct comp{
+		bool operator()(const pair<int,int>& a,const pair<int,int>& b){
+			return a.second<b.second;
+		}
+	};
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+		unordered_map<int,int> mp;
+		for(int i: nums) mp[i]++;
+		priority_queue<pair<int,int>>,vector<pair<int,int>>,comp> pq(mp.begin(),mp.end());
+		vector<int> ans;
+		while(k){
+			auto t=pq.top();
+			pq.pop();
+			ans.push_back(t.first);
+		}
+		return ans;
+    }
+```	
+357	Count Numbers with Unique Digits    		46.9%	Medium	
+combination and permutations
+
+360	Sort Transformed Array    		46.8%	Medium	
+361	Bomb Enemy    		43.3%	Medium	
+362	Design Hit Counter    		59.0%	Medium	
+364	Nested List Weight Sum II    		57.7%	Medium	
+365	Water and Jug Problem    		28.9%	Medium	
+math problem
+
+366	Find Leaves of Binary Tree    		65.7%	Medium	
+368	Largest Divisible Subset    		34.8%	Medium	
+sort and similar to find the longest subsequence Si%Sj
+but need get the list so use backtracking or dp with previous information
+
+```cpp
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+    }
+```	
+
+369	Plus One Linked List    		56.2%	Medium	
+392	Is Subsequence    		46.8%	Medium	
+two pointer or edit distance
+```
+    bool isSubsequence(string s, string t) {
+		int i=0,j=0;
+		while(i<s.size() && j<t.size())
+		{
+			if(s[i]==s[j]) i++;
+			j++;
+		}
+		return i==s.size() && j<=t.size();
+    }
+```	
+similar problems:
+word frequency
+kth largest element in an array
+sort characters by frequency
+split array into consecutive subsequences
+top k frequent words
+k closest points to origin
 
 easy to medium **
 17	Letter Combinations of a Phone Number    		41.6%	Medium	
@@ -2193,40 +2255,280 @@ dp[i]=dp[i/2]+i&1
 or dp[i]=dp[i&(i-1)]+1
 
 341	Flatten Nested List Iterator    		47.9%	Medium	
+has a base class NestedInteger
+has member :
+isInteger
+getInteger
+getList
+using a stack to store the recursive relation or a vector
+stack is better since it will remove the first element first
+every time call has next we decompose a list until we get an integer
+
+```cpp
+	stack<NestedInteger> st;
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        for(int i=nestedList.size()-1;i>=0;i--)
+			st.push(nestedList[i]);
+    }
+
+    int next() {
+		if(hasNext()){
+			auto t=st.top();
+			st.pop();
+			return t.getInteger();
+		}
+    }
+
+    bool hasNext() {
+        while(st.size()){
+			auto curr=st.top();
+			if(curr.isInteger()) return 1;
+			st.pop();
+			auto t=curr.getList();
+			int sz=t.size();
+			for(int i=sz-1;i>=0;i--)
+				st.push(t[i]);
+		}
+		return 0;
+    }
+```	
 343	Integer Break    		47.8%	Medium	
-347	Top K Frequent Elements    		54.9%	Medium	
+dp or math, break into a series sum which product is the largest.
+
 348	Design Tic-Tac-Toe    		49.7%	Medium	
 351	Android Unlock Patterns    		45.8%	Medium	
 353	Design Snake Game    		30.5%	Medium	
 355	Design Twitter    		27.3%	Medium	
+Design a simplified version of Twitter where users can post tweets, follow/unfollow another user and is able to see the 10 most recent tweets in the user's news feed. Your design should support the following methods:
+
+postTweet(userId, tweetId): Compose a new tweet.
+getNewsFeed(userId): Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent.
+follow(followerId, followeeId): Follower follows a followee.
+unfollow(followerId, followeeId): Follower unfollows a followee.
+
+
 356	Line Reflection    		30.9%	Medium	
-357	Count Numbers with Unique Digits    		46.9%	Medium	
-360	Sort Transformed Array    		46.8%	Medium	
-361	Bomb Enemy    		43.3%	Medium	
-362	Design Hit Counter    		59.0%	Medium	
-364	Nested List Weight Sum II    		57.7%	Medium	
-365	Water and Jug Problem    		28.9%	Medium	
-366	Find Leaves of Binary Tree    		65.7%	Medium	
-368	Largest Divisible Subset    		34.8%	Medium	
-369	Plus One Linked List    		56.2%	Medium	
 370	Range Addition    		60.5%	Medium	
 372	Super Pow    		35.6%	Medium	
+math problem on modulus
+
 373	Find K Pairs with Smallest Sums    		33.8%	Medium	
+two sorted array and find the k pairs with smallest sum
+the elements can be used multiple times
+using merge sort. or pq.
+for example: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+approach 1: m*n sum push into pq
+```cpp
+	struct comp{
+		bool operator()(const vector<int>& a,const vector<int>& b){
+			return a[0]+a[1]<b[0]+b[1];
+		}
+	};
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+		vector<vector<int>> ans;
+		priority_queue<vector<int>,vector<vector<int>>,comp> pq;
+		for(int i: num1)
+			for(int j: nums2){
+				pq.push({i,j});
+				if(pq.size()>k) pq.pop();
+			}
+		while(pq.size()){
+			ans.push_back(pq.top());
+			pq.pop();
+		}
+		return {ans.rbegin(),ans.rend()};
+    }
+```	
+however we did not take advantage that two arrays are sorted and above solution is very slow.
+
+378	Kth Smallest Element in a Sorted Matrix    		49.4%	Medium
+row and columns are sorted
+find the kth element in 2D
+we can build a pq. 
+this is the same as 373 with multiple sorted lists involved
+	
+
 375	Guess Number Higher or Lower II    		37.7%	Medium	
 376	Wiggle Subsequence    		37.4%	Medium	
+dp using up and dn
+if current one vs previous forms up, then up=dn+1 (previous longest dn)
+```cpp
+    int wiggleMaxLength(vector<int>& nums) {
+		if(nums.size()==0) return 0;
+		int up=1,dn=1;
+		for(int i=1;i<nums.size();i++){
+			if(nums[i]<nums[i-1]) dn=up+1;
+			else if(nums[i]>nums[i-1]) up=dn+1;
+		}
+		return max(up,dn);
+    }
+```
+this is a reduced memory version of 2d dp
+
 377	Combination Sum IV    		43.7%	Medium	
-378	Kth Smallest Element in a Sorted Matrix    		49.4%	Medium	
 379	Design Phone Directory    		41.2%	Medium	
 380	Insert Delete GetRandom O(1)    		42.8%	Medium	
+random choose: hashmap to record iterator information, vector to store the data
+
 382	Linked List Random Node    		49.3%	Medium	
+hashmap to map id to node and node to id
+
 384	Shuffle an Array    		50.0%	Medium	
+randomly get its permutations
+```cpp
+    vector<int> arr, idx;
+public:
+    Solution(vector<int> nums) {
+        srand(time(NULL));
+        arr.resize(nums.size());
+        idx.resize(nums.size());
+        for (int i=0;i<nums.size();i++){
+            arr[i] = nums[i];
+            idx[i] = nums[i];
+        }
+    }
+    
+    /** Resets the array to its original configuration and return it. */
+    vector<int> reset() {
+        for (int i=0;i<arr.size();i++)
+            arr[i] = idx[i];
+        return arr;    
+    }
+    
+    /** Returns a random shuffling of the array. */
+    vector<int> shuffle() {
+         int i,j;
+         for (i = arr.size() - 1; i > 0; i--) {
+            j = rand() % (i + 1);
+            swap(arr[i], arr[j]);
+         }
+         return arr;    
+    }
+```
+rand to choose 0 to i to swap.
+
 385	Mini Parser    		31.8%	Medium	
+this is very similar to the problem 341
+given a string, we need to serialize the nestedInteger object
+serializing and deserializing used to read/write the objects, which are often required.
+[123,[456,[789]]]
+this is a nestedInteger with a integer and another nestedInteger [456,[789]]
+base class NestedInteger has:
+default constructor
+constructor
+isInteger
+getIntegersetInteger
+add
+getList
+
+recursive:
+```cpp
+    NestedInteger deserialize(string s) {
+        istringstream in(s);
+        return deserialize(in);
+    }
+
+    NestedInteger deserialize(istringstream &in) {
+        int number;
+        if (in >> number) //a number
+            return NestedInteger(number);
+        in.clear();
+        in.get(); //start with [
+        NestedInteger list;
+        while (in.peek() != ']') {
+            list.add(deserialize(in));
+            if (in.peek() == ',')
+                in.get();
+        }
+        in.get();
+        return list;
+    }
+```	
+
 386	Lexicographical Numbers    		46.1%	Medium	
+O(nlogn) algorithm, n up to 5,000,000
+```cpp
+bool cmp(int a,int b) {return to_string(a) < to_string(b);}
+class Solution {
+public:
+    vector<int> lexicalOrder(int n) {
+        vector<int> ans(n);
+        for(int i=0;i<n;i++) ans[i]=i+1;
+        sort(ans.begin(),ans.end(),cmp);
+        return ans;
+    }
+};
+```
+not good enough, but we can use simple approach to arrange the nubers
+
+Just repeatedly try from 1 to 9, 1 -> 10 -> 100 first, and then plus 1 to the deepest number. Take 13 as example:
+1 -> 10 -> (100) -> 11 -> (110) -> 12 -> (120) -> 13 -> (130) -> (14) -> 2 -> (20) ... -> 9 -> (90)
+
+```cpp
+    vector<int> lexicalOrder(int n) {
+        vector<int> res;
+        helper(1, n, res);
+        return res;
+    }
+    
+    void helper(int target, int n, vector<int>& res) {
+        if (target > n) return;
+        res.push_back(target);
+        helper(target * 10, n, res);
+        if (target % 10 != 9) helper(target+1, n, res);
+    }
+```
+	
 388	Longest Absolute File Path    		39.2%	Medium	
+\n: number \n is the level
+.: the file name
+
 390	Elimination Game    		43.4%	Medium	
-392	Is Subsequence    		46.8%	Medium	
+array 1 to n, first from left to right, every 2 eliminated
+then right to left, every 2 eliminated.
+return the last element left.
+
+After first elimination, all the numbers left are even numbers.
+Divide by 2, we get a continuous new sequence from 1 to n / 2.
+For this sequence we start from right to left as the first elimination.
+Then the original result should be two times the mirroring result of lastRemaining(n / 2).
+```cpp
+int lastRemaining(int n) {
+    return n == 1 ? 1 : 2 * (1 + n / 2 - lastRemaining(n / 2));
+}
+```
+
+
 393	UTF-8 Validation    		35.9%	Medium	
+   Char. number range  |        UTF-8 octet sequence
+      (hexadecimal)    |              (binary)
+   --------------------+---------------------------------------------
+   0000 0000-0000 007F | 0xxxxxxx
+   0000 0080-0000 07FF | 110xxxxx 10xxxxxx
+   0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
+   0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+```cpp
+    bool validUtf8(vector<int>& data) {
+        int count = 0;
+        for (auto c : data) {
+            if (count == 0) {
+                if ((c >> 5) == 0b110) count = 1;
+                else if ((c >> 4) == 0b1110) count = 2;
+                else if ((c >> 3) == 0b11110) count = 3;
+                else if ((c >> 7)) return false;
+            } else {
+                if ((c >> 6) != 0b10) return false;
+                count--;
+            }
+        }
+        return count == 0;
+    }
+```
+need to observe the rule!!
+	
 394	Decode String    		44.9%	Medium	
+stack and recursion problem!
+
 395	Longest Substring with At Least K Repeating Characters    		38.6%	Medium	
 396	Rotate Function    		35.1%	Medium	
 397	Integer Replacement    		31.4%	Medium	
