@@ -166,6 +166,10 @@ split array into consecutive subsequences
 top k frequent words
 k closest points to origin
 
+445	Add Two Numbers II    		50.1%	Medium	
+linked list MSB to LSB.
+reverse first
+
 easy to medium **
 17	Letter Combinations of a Phone Number    		41.6%	Medium	
 typical backtracking problem
@@ -530,6 +534,45 @@ need to observe the rule!!
 greedy. n is even n/2, n is odd we add+1 or -1.
 divide is fast, so if we +1 or -1 to make it 4 multiples it will be faster
 If n + 1 % 4 == 0, replace n with n + 1 will short the path. Otherwise, replace n with n - 1 is always the right direction.
+
+433	Minimum Genetic Mutation    		38.1%	Medium	
+gene sequence is 8 chars long, ACGT only
+a mutation: one char changed only
+bank: all valid gene sequence
+min number of permutations from start to end.
+bfs to get the min distance: 
+```cpp
+    int minMutation(string start, string end, vector<string>& bank) {
+		unordered_set<string> ms(bank.begin(),bank.end()),visited;
+		queue<string> q;
+		char gene[]={'A','C','G','T'};
+		q.push(start);
+		visited.insert(start);
+		int step=0;
+		while(q.size()){
+			int sz=q.size();
+			for(int i=0;i<sz;i++){
+				string s=q.front();
+				q.pop();
+				for(char& c: s){
+					char oc=c;
+					for(char tc: gene){
+						if(tc==c) continue;
+						c=tc;
+						if(visited.count(s) || !ms.count(s)) {c=oc;continue;}
+                        //cout<<s<<endl;
+						if(s==end) return step+1;
+						q.push(s),visited.insert(s);
+						c=oc;
+					}
+				}
+			}
+			step++;
+		}
+		return -1;
+	}
+```	
+note need restore the string at two branches.
 
 medium ***
 11	Container With Most Water    		44.6%	Medium	
@@ -2420,62 +2463,455 @@ int lastRemaining(int n) {
 }
 ```
 
-395	Longest Substring with At Least K Repeating Characters    		38.6%	Medium	
-using two pointer to define a range, and count number of unique letters and each letter's count.
-all chars appear less than k times shall be discarded.
-two pointer is not that easy
-aaabb
-bbaaa
-ababa
-need another counter to record the frequency
 
-use divide and conquer: found those char with freq<K and divide it into left and right.
 
+396	Rotate Function    		35.1%	Medium	
+find the math relation
 ```cpp
-    int longestSubstring(string s, int k) {
-        //divide and conquer using recursion
-        if(s.size()<k) return 0;
-        int mp[26]={0};
-        for(int i=0;i<s.size();i++) mp[s[i]-'a']++;
-        //find the first one with count<k it is not included
-        int indx=-1;
-        for(int i=0;i<s.size();i++)
+    int maxRotateFunction(vector<int>& A) {
+        //this is the inner product of two vectors
+        //derived from the recursive relation F(k)-F(k-1)=Sum(A)-nA(n-k)
+        int sum=0,allsum=0;
+        int n=A.size();
+        for(int i=0;i<n;i++) {sum+=A[i];allsum+=i*A[i];}//F(0) and sum(A)
+        int maxsum=allsum;
+        for(int i=1;i<n;i++)
         {
-            if(mp[s[i]-'a']<k) {indx=i;break;}
+            allsum+=sum-n*A[n-i];
+            if(allsum>maxsum) maxsum=allsum;
         }
-        if(indx<0) return s.size();
-        
-        int left=longestSubstring(s.substr(0,indx),k);
-        int right=longestSubstring(s.substr(indx+1),k);
-        return max(left,right);
+        return maxsum;
     }
 ```	
 
-396	Rotate Function    		35.1%	Medium	
-
-
 398	Random Pick Index    		49.9%	Medium	
+random return the index of the target (duplicate may exist)
+similar problem:
+linked list random node
+random pick with blacklist
+random pick with weight
+
+```cpp
+vector<int> _nums;
+public:
+    Solution(vector<int> nums) {
+        _nums = nums;
+    }
+
+    int pick(int target) {
+        int n = 0, ans = -1;
+        for(int i = 0 ; i < _nums.size(); i++)
+        {
+            if(_nums[i] != target) continue;
+            if(n == 0){ans = i; n++;}
+            else
+            {
+                n++;
+                if(rand() % n == 0){ans = i;}// with prob 1/(n+1) to replace the previous index
+            }
+        }
+        return ans;
+    }
+```
+	
 399	Evaluate Division    		47.5%	Medium	
+dfs relation
+
 402	Remove K Digits    		26.6%	Medium	
+remove k digit to make it smaller
+from left to right, remove peaks
+if left, remove the right digits
+remove leading zeros
+```cpp
+string removeKdigits(string num, int k) {
+        string res;
+        int keep = num.size() - k;
+        for (int i=0; i<num.size(); i++) {
+            while (res.size()>0 && res.back()>num[i] && k>0) {
+                res.pop_back();
+                k--;
+            }
+            res.push_back(num[i]);
+        }
+        res.erase(keep, string::npos);
+        
+        // trim leading zeros
+        int s = 0;
+        while (s<(int)res.size()-1 && res[s]=='0')  s++;
+        res.erase(0, s);
+        
+        return res=="" ? "0" : res;
+    }
+```
+
 406	Queue Reconstruction by Height    		59.8%	Medium	
+[[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+[7,0],[7,1]
+[7,0],[6,1],[7,1]
+[5,0],[7,0],[6,1],[7,1]
+[5,0],[7,0],[5,2],[6,1],[7,1]
+[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]
+first put the tallest in order and then insert lowers at its place
+so every time when we insert, all elements are taller than it.
+
+
 413	Arithmetic Slices    		55.8%	Medium	
+return the number of arithmetic sequence
+simple dp
+
 416	Partition Equal Subset Sum    		40.6%	Medium	
+two subsets
+simple knapsack, jsut choose one set equal to sum/2
+
 417	Pacific Atlantic Water Flow    		37.4%	Medium	
+upper left belongs to pacific, lower right belongs to atlantic
+find those cells can flow to both
+starting from upper left boundary and lower right boundary
+assuming the ocean is INT_MIN and we are seeking larger values
+if a cell can be reached by both, then it is a choice
+dfs
+```cpp
+    vector<pair<int, int>> res;
+    vector<vector<int>> visited;
+    void dfs(vector<vector<int>>& matrix, int x, int y, int pre, int preval){
+        if (x < 0 || x >= matrix.size() || y < 0 || y >= matrix[0].size()  
+                || matrix[x][y] < pre || (visited[x][y] & preval) == preval) 
+            return;
+        visited[x][y] |= preval;
+        if (visited[x][y] == 3) res.push_back({x, y});
+        dfs(matrix, x + 1, y, matrix[x][y], visited[x][y]); 
+        dfs(matrix, x - 1, y, matrix[x][y], visited[x][y]);
+        dfs(matrix, x, y + 1, matrix[x][y], visited[x][y]); 
+        dfs(matrix, x, y - 1, matrix[x][y], visited[x][y]);
+    }
+
+    vector<pair<int, int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        if (matrix.empty()) return res;
+        int m = matrix.size(), n = matrix[0].size();
+        visited.resize(m, vector<int>(n, 0));
+        for (int i = 0; i < m; i++) 
+        {
+            dfs(matrix, i, 0, INT_MIN, 1);
+            dfs(matrix, i, n - 1, INT_MIN, 2);
+        }
+        for (int i = 0; i < n; i++) 
+        {
+            dfs(matrix, 0, i, INT_MIN, 1);
+            dfs(matrix, m - 1, i, INT_MIN, 2);
+        }
+        return res;
+    }
+```
+	
 418	Sentence Screen Fitting    		31.1%	Medium	
+
 419	Battleships in a Board    		65.7%	Medium	
+battle ship can only be horizontal or vertical
+and have space to separate
+```cpp
+        //bfs search similar to island
+        //but we need use O(1) and one pass
+        int m=board.size(),n=board[0].size();
+        int ans=0;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                //a battle ship will have a . at least one direction, left, right, up or down
+                //or a battle ship is surrounded by dots
+                if(board[i][j]=='X' && (i==0 || board[i-1][j]!='X') && (j==0 || board[i][j-1]!='X')) ans++;
+            }
+        }
+        return ans;
+    }
+```
 421	Maximum XOR of Two Numbers in an Array    		51.0%	Medium	
+need O(n) time
+from MSB to LSB, divide into two different groups
+and again and again. unless we do not have two choices.
+2 group->4 groups->8 groups....
+for example we have: 
+101,110,100 vs 011,001 for bit 2
+01,10,00 vs 11,01 for bit 1 
+left one, zero, right one zero
+
+{01,00}+{10} vs {11},{01}
+{01,00} vs {11} and {10} vs {01} all get 1 for bit1
+for bit0: 
+
+approach: from MSB to LSB check bit by bit. when a bit is done mask it by 1
+put in hash table, by & the mask (the lower bits are all cleared).
+candidate set the ith bit to be 1, then we must be able to find A^B=candidate
+it is equivalent A=B^candidate.
+
+
+```cpp
+    int findMaximumXOR(vector<int>& nums) {
+        //use a hashmap to store 01 set from MSB to LSB
+        //gradually grows the bits and use the completed bits as mask to filter out those numbers
+
+        int max = 0, mask = 0;
+        unordered_set<int> t;
+        // search from left to right, find out for each bit is there 
+        // two numbers that has different value
+        for (int i = 31; i >= 0; i--)
+        {
+            // mask contains the bits considered so far
+            mask |= (1 << i);
+            t.clear();
+            // store prefix of all number with right i bits discarded
+            for (int j=0;j<nums.size();j++) t.insert(mask & nums[j]);//the first several bits
+            // now find out if there are two prefix with different i-th bit
+            // if there is, the new max should be current max with one 1 bit at i-th position, which is candidate
+            // and the two prefix, say A and B, satisfies:
+            // A ^ B = candidate
+            // so we also have A ^ candidate = B or B ^ candidate = A
+            // thus we can use this method to find out if such A and B exists in the set 
+            int candidate = max | (1<<i);
+            for (auto it=t.begin();it!=t.end();it++)
+            {
+                int prefix=*it;
+                if (t.find(prefix ^ candidate) != t.end())
+                {
+                    max = candidate;
+                    break;
+                }
+            }
+        }
+        return max;
+    }
+```
+it natually becomes a trie
+for example: [3,10,5,25,2,8]
+因为二进制元素只有0,1。考虑使用二叉树来构建前缀树。
+
+根节点为符号位0
+从高位到低位依次构建
+左子树为1节点，又子树为0节点
+[3,10,5,25,2,8] 按照以上规则构建如下图（省略高位0）
+
+```cpp
+struct TrieNode{
+    int val;
+    TrieNode *left;
+    TrieNode *right;
+    TrieNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+class Solution {
+public:
+
+    int findMaximumXOR(vector<int>& nums) {
+        TrieNode* root = new TrieNode(0);
+
+
+        //建树
+        TrieNode* curNode = root;
+        for(int i = 0; i < nums.size(); i++){
+            for(int j = 31; j >= 0; j--) {
+                int tmp = nums[i] & (1 << j);
+                if(tmp == 0){
+                    if(!curNode->right){
+                        curNode->right = new TrieNode(0);
+                    }
+                    curNode = curNode->right;
+                }else{
+                    if(!curNode->left){
+                        curNode->left = new TrieNode(1);
+                    }
+                    curNode = curNode->left;
+                }
+                //cout << curNode->val;
+            }
+            //cout << endl;
+            curNode = root;
+        }
+
+        //匹配最大异或值
+        int max = 0;
+        for(int i = 0; i < nums.size(); i++){
+            int res = 0;
+            for(int j = 31; j >= 0; j--){
+                int tmp = nums[i] & (1 << j);
+                //cout << (1 << j) << "\t" << tmp << endl;
+                if(curNode->left && curNode->right){
+                    if(tmp == 0){
+                        curNode = curNode->left;
+                    }else {
+                        curNode = curNode->right;
+                    }    
+                }else {
+                    curNode = curNode->left == NULL ? curNode->right:curNode->left;
+                }
+                res += tmp ^ (curNode->val << j);
+                //cout << curNode->val;
+            }
+            curNode = root;
+            //cout << endl;
+            max = max > res?max:res;
+        }
+
+        return max;
+    }
+};
+```
+
 423	Reconstruct Original Digits from English    		45.6%	Medium	
+```cpp
+    string originalDigits(string s) {
+        string digit[]={"zero","one","two","three","four","five","six","seven","eight","nine"};
+        //letter's occurance if it only occurs once, then that number is definitely in
+        //0 2 4 6 8 has distinct char inside. we can safely pick them out
+        vector<int> cnt(26,0);
+        for(int i=0;i<s.size();i++) cnt[s[i]-'a']++;
+        vector<int> a(10,0); //to store the number of words
+        a[0]=cnt['z'-'a'];
+        a[2]=cnt['w'-'a'];
+        a[4]=cnt['u'-'a'];
+        a[6]=cnt['x'-'a'];
+        a[8]=cnt['g'-'a'];
+        a[3]=cnt['h'-'a']-a[8];
+        a[5] = cnt['f'-'a'] - a[4];
+        a[7] = cnt['v'-'a'] - a[5];
+        a[1] = cnt['o'-'a'] - a[0] - a[2] - a[4];
+        a[9] = cnt['i'-'a'] - a[5] - a[6] - a[8];   
+        string res;
+        for(int i=0;i<10;i++)
+            res.append(a[i],i+'0');
+        return res;
+    }
+```
+	
 424	Longest Repeating Character Replacement    		44.1%	Medium	
+you can replace any char to other char to get longest repeating char
+this is the find the longest window which contain at most k+1 type of characters
+wrong: only can have len-mostcommon<=k
+```cpp
+	int characterReplacement(string s, int k) {
+		vector<int> cnt(26);
+		int i=0,j=0; //use two pointer sliding
+		int maxlen=0;
+		while(j<s.size()){
+			char c=s[j];
+			int ind=c-'A';
+			cnt[ind]++;
+			while( j-i+1-(*max_element(cnt.begin(),cnt.end())) > k) 
+				cnt[s[i++]-'A']--;
+			maxlen=max(maxlen,j-i+1);
+            j++;
+		}
+		return maxlen;
+	}
+```
+similar problem: longest substr with at most k distinct characters
+
 426	Convert Binary Search Tree to Sorted Doubly Linked List    		52.0%	Medium	
 430	Flatten a Multilevel Doubly Linked List    		42.2%	Medium	
-433	Minimum Genetic Mutation    		38.1%	Medium	
+recursive
+```cpp
+    Node* flatten(Node* head)
+    {
+        Node* last=0;
+        return helper(head,last);
+    }
+    Node* helper(Node* head,Node*& last) {
+        if(!head) return 0;
+        Node* node=head;
+        while(node)
+        {
+            //cout<<node->val<<endl;
+            if(node->child)
+            {
+                Node* next=node->next;//save the next
+                node->next=helper(node->child,last);
+                node->next->prev=node;
+                node->child=0;
+                last->next=next;
+                if(next) next->prev=last;
+                node=last;
+            }
+            if(!node->next) last=node;
+            node=node->next;
+            
+        }
+        return head;
+    }
+```
+	
 435	Non-overlapping Intervals    		41.6%	Medium	
+remove min number of intervals so that left are non-overlapping
+equivalent to find the longest non-overlapping intervals
+simple dp similar to longest increasing subsequence
+sort using the ending (greedy: the smallest ending first):
+```cpp
+bool cmp(Interval& a,Interval& b) {return a.end<b.end;}
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<Interval>& intervals) {
+        //if we sort the intervals according to start, the end is also sorted for non-overlapped cases
+        //or the other problem: the largest number of steps 
+        //greedy: always choose the interval with the ending smaller??
+        if(intervals.size()==0) return 0;
+        sort(intervals.begin(),intervals.end(),cmp);
+        int ans=0;
+        int cur_end=intervals[0].end;ans++;
+        for(int i=0;i<intervals.size();i++)
+        {
+            //find the next interval using current ending, start>=current ending
+            if(intervals[i].start>=cur_end) {cur_end=intervals[i].end;ans++;}
+        }
+        return intervals.size()-ans;
+    }
+};
+```
+
 436	Find Right Interval    		42.8%	Medium	
+find the index of the interval on its closet right. if none, put it -1
+sort with index and apply binary search to find
+```cpp
+bool cmp(const pair<Interval,int>& a,const pair<Interval,int>& b) {return a.first.start<b.first.start;}
+class Solution {
+public:
+    vector<int> findRightInterval(vector<Interval>& intervals) {
+        int n=intervals.size();
+		vector<pair<Interval,int>> v(n);
+		for(int i=0;i<n;i++) v[i]=make_pair(intervals[i],i);
+		sort(v.begin(),v.end(),cmp);
+		vector<int> ans(n,-1);
+		for(int i=0;i<n;i++)
+		{
+			int ind=int(lower_bound(v.begin(),v.end(),make_pair(Interval(intervals[i].end,0),0),cmp)-v.begin());
+			if(ind!=n) ans[i]=v[ind].second;
+		}
+		return ans;
+    }
+};
+```
+
+
 439	Ternary Expression Parser    		53.6%	Medium	
 442	Find All Duplicates in an Array    		60.9%	Medium	
+some appear once, some appear twice
+find all appeared twice, elements are in 1 to n (n=size of the array)
+use the trick to mark the seen
+```cpp
+    vector<int> findDuplicates(vector<int>& nums) {
+        vector<int> res;
+        
+        for (int n: nums) 
+        {
+            int pos = abs(n);
+            if(nums[pos - 1] > 0) nums[pos - 1] *= -1;
+            else res.push_back(pos);
+        }
+        
+        return res;
+    }
+```
+	
 444	Sequence Reconstruction    		20.3%	Medium	
-445	Add Two Numbers II    		50.1%	Medium	
+
 449	Serialize and Deserialize BST    		47.1%	Medium	
+
 450	Delete Node in a BST    		40.0%	Medium	
 451	Sort Characters By Frequency    		56.0%	Medium	
 452	Minimum Number of Arrows to Burst Balloons    		46.4%	Medium	
@@ -3501,3 +3937,35 @@ use similar code:
 ```
 we can use bool array for visited to speed
 
+395	Longest Substring with At Least K Repeating Characters    		38.6%	Medium	
+using two pointer to define a range, and count number of unique letters and each letter's count.
+all chars appear less than k times shall be discarded.
+two pointer is not that easy
+aaabb
+bbaaa
+ababa
+need another counter to record the frequency
+
+use divide and conquer: found those char with freq<K and divide it into left and right.
+
+```cpp
+    int longestSubstring(string s, int k) {
+        //divide and conquer using recursion
+        if(s.size()<k) return 0;
+        int mp[26]={0};
+        for(int i=0;i<s.size();i++) mp[s[i]-'a']++;
+        //find the first one with count<k it is not included
+        int indx=-1;
+        for(int i=0;i<s.size();i++)
+        {
+            if(mp[s[i]-'a']<k) {indx=i;break;}
+        }
+        if(indx<0) return s.size();
+        
+        int left=longestSubstring(s.substr(0,indx),k);
+        int right=longestSubstring(s.substr(indx+1),k);
+        return max(left,right);
+    }
+```	
+experience: if you cannot solve it easily with one method, try different algorithm
+recursive and divide and conquer will divide problem into smaller and easier problems
