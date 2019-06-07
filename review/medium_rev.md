@@ -170,6 +170,55 @@ k closest points to origin
 linked list MSB to LSB.
 reverse first
 
+451	Sort Characters By Frequency    		56.0%	Medium	
+simple, hashmap and then put in a heap or sort
+
+452	Minimum Number of Arrows to Burst Balloons    		46.4%	Medium	
+balloon have start and end. find the min number of arrows needed to burst all balloons
+interval,using the end. 
+use the leftmost ending, burst all ballons with start<=this end;
+```cpp
+	bool comp(vector<int>& a,vector<int>& b) {return a[1]<b[1];}
+    int findMinArrowShots(vector<vector<int>>& points) {
+        if(points.empty()) return 0;
+		sort(points.begin(),points.end(),comp);
+		int i=0,j=0,ans=0,n=points.size();
+		int cur_end=points[0][1];
+		while(j<n){
+			while(j<n && points[j][0]<=cur_end) j++;
+			ans++;
+			if(j<n) cur_end=points[j][1];
+		}
+		return ans;
+    }
+```	
+454	4Sum II    		50.6%	Medium	
+reduce 4 list into two list
+a+b+c+d=0
+straightforward
+
+478	Generate Random Point in a Circle    		36.5%	Medium	
+x=rcos(angle),y=rsin(angle)
+if we choose r between 0,1 randomly, angle from 0 to 2*pi, then we got more points in the center
+x^2+y^2=r^2, if x and y to be uniform distributed, then r^2 shall be uniform distributed
+```cpp
+	double r,cx,cy;
+    Solution(double radius, double x_center, double y_center) {
+        r=radius,cx=x_center,cy=y_center;
+    }
+    
+    vector<double> randPoint() {
+        double r2=sqrt(rand()*1.0/RAND_MAX)*r;
+		double angle=rand()*2.0*3.1415926/RAND_MAX;
+		return {r2*cos(angle)+cx,r2*sin(angle)+cy};
+		
+    }
+```
+- don't forget the center.
+- normalize using rand_max
+
+
+
 easy to medium **
 17	Letter Combinations of a Phone Number    		41.6%	Medium	
 typical backtracking problem
@@ -573,6 +622,7 @@ bfs to get the min distance:
 	}
 ```	
 note need restore the string at two branches.
+
 
 medium ***
 11	Container With Most Water    		44.6%	Medium	
@@ -2911,30 +2961,460 @@ use the trick to mark the seen
 444	Sequence Reconstruction    		20.3%	Medium	
 
 449	Serialize and Deserialize BST    		47.1%	Medium	
+preorder traversal
+```cpp
+    string serialize(TreeNode* root) {
+        ostringstream os;
+        serialize(root,os);
+        return os.str();
+    }
 
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        istringstream is(data);
+        return deserialize(is);
+    }
+    
+private:
+    void serialize(TreeNode* root, ostringstream& os)
+    {
+        if(root)
+        {
+            os<<root->val<<" ";
+            serialize(root->left,os);
+            serialize(root->right,os);
+        }
+        else os<<"# ";
+    }
+    TreeNode* deserialize(istringstream& is)
+    {
+        string s;
+        is>>s;
+        if(s=="#") return 0;
+        TreeNode* p=new TreeNode(stoi(s));
+        p->left=deserialize(is);
+        p->right=deserialize(is);
+        return p;
+    }
+```	
 450	Delete Node in a BST    		40.0%	Medium	
-451	Sort Characters By Frequency    		56.0%	Medium	
-452	Minimum Number of Arrows to Burst Balloons    		46.4%	Medium	
-454	4Sum II    		50.6%	Medium	
+find the node, swap with its right leftmost (if right exist) and then delete the leaf node
+if not, promote the left.
+if leaf node, 
+```cpp
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if(!root) return 0;
+        
+        if(root->val==key){ //swap the rightmost node in the left branch with root
+            if(!root->left) return root->right;
+            if(!root->right) return root->left;
+            TreeNode* node=findmin(root->right);
+            root->val=node->val;
+            root->right=deleteNode(root->right,root->val);
+            return root;
+        }
+        if(key<root->val) root->left=deleteNode(root->left,key);
+        else root->right=deleteNode(root->right,key);
+        return root;
+    }
+    TreeNode* findmin(TreeNode* root)
+    {
+        if(!root) return 0;
+        while(root->left) root=root->left;
+        return root;
+    }
+```	
+
+
+
 456	132 Pattern    		27.4%	Medium	
+sequence pattern, we generally has
+- binary search: the peak 
+- stack: for peaks, for patterns,
+- increasing, decreasing: min min2/max max2
+Ai<Ak<Aj i<j<k, find a peak pattern
+```cpp
+    bool find132pattern(vector<int>& nums) {
+        //from right side to left and keep in stack
+        stack<int> st;
+        int s3=INT_MIN;
+        for(int i=nums.size()-1;i>=0;i--)
+        {
+            if(nums[i]<s3) return 1;
+            while(st.size() && nums[i]>st.top())
+            {
+                s3=st.top();st.pop();
+            }
+            st.push(nums[i]);
+        }
+        return 0;
+    }
+```	
+for example [3,1,4,2]: note we are doing reverse way.
+2: push 2
+4: pop 2, s3=2, push 4
+1: 1<2 and we found 1,4,2
+using a stack and a variable and current element, we build a 3 way relation
+
+
 457	Circular Array Loop    		27.6%	Medium	
+circular array with positive and negative, positive go forward k steps, negative go backward k steps
+cycle must be one direction
+Just think it as finding a loop in Linkedlist, except that loops with only 1 element do not count. 
+Use a slow and fast pointer, slow pointer moves 1 step a time while fast pointer moves 2 steps a time. 
+If there is a loop (fast == slow), we return true, 
+else if we meet element with different directions, then the search fail, we set all elements along the way to 0. 
+Because 0 is fail for sure so when later search meet 0 we know the search will fail.
+
+```cpp
+    bool circularArrayLoop(vector<int>& nums) {
+		int n=nums.size();
+		for(int i=0;i<n;i++){
+			if(iscycle(nums,i)) return 1;
+		}
+		return 0;
+    }
+	int sign(int x) {return x>=0?1:-1;}
+    bool iscycle(vector<int>& num,int ind){
+		if(!num[ind]) return 0;
+		int n=num.size();
+		int i=ind,j=ind;
+		int dir=sign(num[ind]);
+		unordered_set<int> visited;
+        visited.insert(i);
+		bool cycle=1;
+		do{ //at least jump one step
+			int ti=((i+num[i])%n+n)%n;
+            //cout<<ti<<" ";
+			if(i==ti || !num[ti] || sign(num[ti])!=dir) {cycle=0;break;}
+			int tj=((j+num[j])%n+n)%n;
+            if(j==tj || !num[tj] || sign(num[tj])!=dir) {cycle=0;break;}
+			int tj1=((tj+num[tj])%n+n)%n;
+			if(tj==j || tj==tj1 || !num[tj1] || sign(num[tj1])!=dir) {cycle=0;break;}
+			visited.insert(ti);
+			//visited.insert(j);
+            i=ti,j=tj1;
+		}while(i!=j);
+        //cout<<endl;
+		if(!cycle) 
+			for(auto t: visited) num[t]=0;
+		return cycle;
+	}
+	
+```	
+- every step (slow or fast) we need check: if one step return to itself, if it is 0, if sign different
+
 462	Minimum Moves to Equal Array Elements II    		52.4%	Medium	
+a move is +1 or -1 to an element, purpose: to make all element equal
+return the min number of moves.
+intuition: goes to the median? maths
+if the last target is t: then we have min(sum(|Ai-t|))
+- sort the array
+- for two numbers, choose target in the middle range, which value does not matter t-a+b-t=b-a
+- for 3 numbers, choose the median will minimize: t-a+|b-t|+c-t=c-a+|b-t| to minimize it b=t;
+
+```cpp
+    public int minMoves2(int[] nums) {
+        Arrays.sort(nums);
+        int i = 0, j = nums.length-1;
+        int count = 0;
+        while(i < j){
+            count += nums[j]-nums[i];
+            i++;
+            j--;
+        }
+        return count;
+    }
+```	
+similar 453: a move is increment n-1 element by 1
+
+
 464	Can I Win    		27.2%	Medium	
+numbers 1 to n, cannot reuse, add together and who first cause the sum>=target wins
+dfs try all possibilities. max choosable num<=20
+we can use bit to indicate usage
+```cpp
+    unordered_set<int> win,lose;
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        //recursive approach, repeat all choice and reduce problem into smaller one
+        //record all solved solution
+        if(desiredTotal<=maxChoosableInteger) return 1;
+        if(desiredTotal>maxChoosableInteger*(maxChoosableInteger+1)/2) return 0;
+        int status=0;
+        return canIWin(maxChoosableInteger,desiredTotal,status);
+    }
+    bool canIWin(int m,int sum,int status)
+    {
+        if(sum<=0) return 0; //already to the dead end, but still did not win
+        if(win.count(status)) return 1;
+        if(lose.count(status)) return 0;
+        for(int i=1;i<=m;i++)
+        {
+            int bit=1<<i;
+            if(status & bit) continue; //already solved, need the solved results recorded
+            bool res=canIWin(m,sum-i,status|bit);
+            if(!res) //surely win, why use ! since it is the even times.
+            {
+                win.insert(status);
+                return 1;
+            }
+        }
+        lose.insert(status);//after all trials, cannot win
+        return 0;
+    }
+```
+486	Predict the Winner    		46.8%	Medium	
+choosing from either end, predict who is the winner
+dp
+```cpp
+    bool PredictTheWinner(vector<int>& nums) {
+        int n=nums.size();
+        vector<vector<int>> dp(n,vector<int>(n,INT_MIN)); 
+        //dp[i][j]: the score difference using the subarray from i to j i<=j
+        for(int i=0;i<n;i++) dp[i][i]=nums[i];
+        for(int l=n-2;l>=0;l--)
+        {
+            for(int r=l+1;r<n;r++) //r>=l
+                dp[l][r]=max(dp[l][r],max(nums[l]-dp[l+1][r],nums[r]-dp[l][r-1]));
+        }
+        //print(dp);
+        return dp[0][n-1]>=0;
+    }
+```
+similar 464. adding to total	
+
 467	Unique Substrings in Wraparound String    		33.9%	Medium	
+s is repeat of a to z. given a string p, find number of its substr are present in s
+for example zab, we have z,a,za,b,ab,zab
+ending at differnt char.
+```cpp
+    int findSubstringInWraproundString(string p) {
+        //according to the observation, we only need reserve the longest substr ending with a specific letter
+        //for example, d, it can be d,cd,bcd,abcd,zabcd.... all other substr are all counted
+        vector<int> max_substrlen(26); //substr ending with letter a-z
+        int maxlen=0;
+        for(int i=0;i<p.length();i++)
+        {
+            if(i && (p[i]-p[i-1]==1 || p[i]-p[i-1]==-25)) maxlen++;
+            else maxlen=1;
+            max_substrlen[p[i]-'a']=max_substrlen[p[i]-'a']>maxlen?max_substrlen[p[i]-'a']:maxlen;
+        }
+        //copy(max_substrlen.begin(),max_substrlen.end(),ostream_iterator<int>(cout," "));
+        int sum=accumulate(max_substrlen.begin(),max_substrlen.end(),0);
+        return sum;
+    }
+```	
+
 468	Validate IP Address    		21.3%	Medium	
+check ipv4 or ipv6
+ipv4: 4 numbers separated by . from 0 to 255, leading zeros are invalid
+ipv6: 8 hex numbers with 16 bits separated by :, leading zeros are legal
+
+
 469	Convex Polygon    		35.4%	Medium	
 470	Implement Rand10() Using Rand7()    		44.8%	Medium	
+What if you could generate a random integer in the range 1 to 49? How would you generate a random integer in the range of 1 to 10? What would you do if the generated number is in the desired range? What if it is not?
+
+Algorithm
+
+This solution is based upon Rejection Sampling. The main idea is when you generate a number in the desired range, output that number immediately. If the number is out of the desired range, reject it and re-sample again. As each number in the desired range has the same probability of being chosen, a uniform distribution is produced.
+
+Obviously, we have to run rand7() function at least twice, as there are not enough numbers in the range of 1 to 10. By running rand7() twice, we can get integers from 1 to 49 uniformly. Why?
+    int rand10() {
+        int row, col, idx;
+        do {
+            row = rand7();
+            col = rand7();
+            idx = col + (row - 1) * 7;
+        } while (idx > 40);
+        return 1 + (idx - 1) % 10;
+    }
 473	Matchsticks to Square    		35.9%	Medium	
+different length, each stick is used just one time exactly.
+this is divide the sticks into 4 equal part. using knapsack
+dfs:
+```cpp
+    bool makesquare(vector<int>& nums) {
+        //each side adds up to total/4
+        if(nums.size()==0) return 0;
+        int total=accumulate(nums.begin(),nums.end(),0);
+        int side=total/4;
+        if(total%4) return 0;
+        unordered_set<int> visited;
+        sort(nums.begin(),nums.end(),greater<int>());
+        for(int i=0;i<4;i++)
+        {
+            if(!dfs(nums,side,0,visited)) return 0;
+        }
+        return visited.size()==nums.size();
+    }
+    bool dfs(vector<int>& sticks,int target,int start_ind,unordered_set<int>& visited)
+    {
+        if(target==0) return 1;
+        if(target<0) return 0;
+        for(int i=start_ind;i<sticks.size();i++)
+        {
+            if(visited.count(i)) continue;
+            visited.insert(i);
+            if(dfs(sticks,target-sticks[i],i+1,visited)) return 1;
+            visited.erase(i); //put them back if failed
+        }
+        return 0;
+    }
+```
+	
+
+
 474	Ones and Zeroes    		39.7%	Medium	
+max number of strings that you can form using m 0s and n 1s
+dp knapsack
+```cpp
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        vector<vector<int>> cnt(strs.size(),vector<int>(2));
+        for(int i=0;i<strs.size();i++)
+        {
+            //calculate 0s and 1s
+            int m=0;//number of ones
+            for(int j=0;j<strs[i].size();j++) m+=strs[i][j]-'0';
+            cnt[i][0]=strs[i].size()-m;
+            cnt[i][1]=m;
+            //cout<<cnt[i][0]<<" "<<cnt[i][1]<<endl;
+        }
+        //iterate all the words
+        for(int k=0;k<strs.size();k++)
+        {
+            for(int i=m;i>=cnt[k][0];i--)
+            {
+                for(int j=n;j>=cnt[k][1];j--)
+                {
+                    dp[i][j]=max(dp[i][j],dp[i-cnt[k][0]][j-cnt[k][1]]+1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+```	
+
 477	Total Hamming Distance    		48.9%	Medium	
-478	Generate Random Point in a Circle    		36.5%	Medium	
+hamming distance is the number of different bits of two numbers
+find total hamming distance between all pairs of numbers
+```cpp
+    int totalHammingDistance(vector<int>& nums) {
+        //brutal force approach will have O(n^2)
+        //generally if we cannot efficiently solve we can switch to bit by bit approach
+        //we do bit by bit for all nums
+        //if p numbers have 0 and q numbers have 1 on the same bit, the number of combination is choose one from p and choose one from q
+        int res=0;
+        for(int i=0;i<32;i++)
+        {
+            int nbits=0;
+            for(int j=0;j<nums.size();j++)
+            {
+                if(nums[j]) {nbits+=nums[j]&1;nums[j]/=2;}
+            }
+            res+=nbits*(nums.size()-nbits);
+        }
+        return res;
+    }
+```	
+
+	
+
 481	Magical String    		46.1%	Medium	
+the string is only 1 and 2. Contigurous occurence is the same as the string
+given N as input, return the number of 1s in the first N number in the magical string.
+122: also the counting
+122: 2 1s followed
+12211:  followed by 1 2
+122112122122:
+1 22 11 2 1 22 1 22
+1  2   2   1 1 2   1  2 
+```cpp
+    int magicalString(int n) {
+        string S = "122";
+        int i = 2;
+        while (S.size() < n)
+            S += string(S[i++] - '0', S.back() ^ 3);
+        return count(S.begin(), S.begin() + n, '1');
+    }
+```
+so hard to understand, sigh	
+
 484	Find Permutation    		57.5%	Medium	
-486	Predict the Winner    		46.8%	Medium	
+
 487	Max Consecutive Ones II    		46.6%	Medium	
+
 490	The Maze    		47.4%	Medium	
 491	Increasing Subsequences    		42.0%	Medium	
+find all increasing subsequence with length>=2
+backtracking
+```cpp
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+		vector<vector<int>> ans;
+		dfs(nums,0,{},ans);
+		return ans;
+    }
+	void dfs(vector<int>& nums,int start,vector<int> t,vector<vector<int>>& ans)
+	{
+		if(t.size()>=2) ans.push_back(t);
+		if(start==nums.size()) return;
+		
+		for(int i=start;i<nums.size();i++){
+			if(t.empty() || nums[i]>=t.back()){
+				t.push_back(nums[i]);
+				dfs(nums,i+1,t,ans);
+				t.pop_back();
+			}
+		}
+	}
+			
+```	
+above solution will incur many duplicate solution for example:
+[4,6,7,7]
+4,6
+	4,6,7
+		4,6,7,7
+		pop 7
+	pop 7
+	4,6,7 duplicate
+pop 6
+	4,7
+		4,7,7
+		pop 7
+	pop 7
+	4,7 duplicate
+start from 6
+	6,7
+		6,7,7
+		pop 7
+	pop 7
+	6,7 duplicate
+start 7:
+	7,7
+	pop 7
+- using a hashset we can eliminate duplicates
+- add a visited data structure to avoid duplicates: the idea: if we meet a duplicate number we skip
+A short explanation to the hash table: this is to record used numbers so that if we ever encounters a duplicate later, it will be skipped.
+For example, if we have {4, 6(1), 7, 6(2), 6(3), ...}. At some point the hash table is {4, 6(1)}. When we visit 6(2) or 6(3), since we find 6(1) is already in the table, we skip to the next number.
+
 494	Target Sum    		45.2%	Medium	
+assign the array number + or -, to see how many ways to add to target
+psum-nsum=target
+psum+nsum=total
+2*psum=target+total
+so this is to check number of ways to get psum=(target+total)/2;
+knapsack: 
+```cpp
+	int findTargetSumWays(vector<int>& nums, int S) {
+		int tsum=accumulate(nums.begin(),nums.end(),0);
+		if(abs(S)>tsum) return 0; //
+		if((tsum+S)%2) return 0; //odd is impossible
+		
+		
+	}
+```	
+
 495	Teemo Attacking    		52.2%	Medium	
 497	Random Point in Non-overlapping Rectangles    		35.8%	Medium	
 498	Diagonal Traverse    		45.3%	Medium	
