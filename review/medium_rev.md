@@ -623,7 +623,76 @@ bfs to get the min distance:
 ```	
 note need restore the string at two branches.
 
-
+508	Most Frequent Subtree Sum    		54.5%	Medium	
+```cpp
+    vector<int> findFrequentTreeSum(TreeNode* root) {
+       //dfs search and form the hashmap during visit
+        map<int,int,greater<int>> mp; 
+		//it is better to use map (sorted) instead of unordered maxheap would be better
+        dfs(root,mp);
+        //reverse iterate to get the max
+        auto it=mp.begin();
+        vector<int> res;
+        res.push_back(it->second);
+        int sum0=it->second;
+        while(++it!=mp.end())
+        {
+            if(it->second<sum0) break;
+            res.push_back(it->second);
+        }
+        return res;
+    }
+    
+    int dfs(TreeNode* root,map<int,int,greater<int>>& mp)
+    {
+        if(!root) return 0;
+        int sum=root->val;
+        int lsum=0,rsum=0;
+        if(root->left) lsum=dfs(root->left,mp);
+        if(root->right) rsum=dfs(root->right,mp);
+        sum+=lsum+rsum;
+        mp[sum]++;
+        return sum;    
+    }
+```	
+510	Inorder Successor in BST II    		52.7%	Medium	
+513	Find Bottom Left Tree Value    		58.4%	Medium	
+last row, leftmost node
+```cpp
+    int findBottomLeftValue(TreeNode* root) {
+        //can use breath first search
+        int h=height(root);
+        if(h==1) return root->val;
+        if(height(root->left)<height(root->right)) 
+            return findBottomLeftValue(root->right);
+        return findBottomLeftValue(root->left);
+    }
+    
+    int height(TreeNode* root)
+    {
+        if(!root) return 0;
+        return 1+max(height(root->left),height(root->right));
+    }
+```
+	
+515	Find Largest Value in Each Tree Row    		57.8%	Medium	
+```cpp
+    vector<int> largestValues(TreeNode* root) {
+        map<int,int> mp;
+        inorder(root,0,mp);
+        vector<int> ans;
+        for(auto it=mp.begin();it!=mp.end();it++) ans.push_back(it->second);
+        return ans;
+    }
+    void inorder(TreeNode* root,int level,map<int,int>& mp)
+    {
+        if(!root) return;
+        inorder(root->left,level+1,mp);
+        if(mp.count(level)) mp[level]=max(mp[level],root->val);
+        else mp[level]=root->val;
+        inorder(root->right,level+1,mp);
+    }
+```	
 medium ***
 11	Container With Most Water    		44.6%	Medium	
 two pointer, move the smaller side pointer
@@ -3410,36 +3479,462 @@ knapsack:
 		int tsum=accumulate(nums.begin(),nums.end(),0);
 		if(abs(S)>tsum) return 0; //
 		if((tsum+S)%2) return 0; //odd is impossible
-		
-		
+		int target=(tsum+S)/2;
+		vector<int> dp(target+1);
+		dp[0]=1;
+		for(int w=1;w<=target;w++){
+			for(int i: nums){
+				if(w>=i) dp[w]+=dp[w-i];
+			}
+		}
+		return dp[target];
+	}
+```
+sveral mistakes in above solution:
+-. dp[w] need check all previous solution dp[i] i<w.
+-. the same number cannot be used multiple times, so the iteration on nums shall be outside
+-. iteration on w shall be reversed. we are using previous results!!!!
+correct version:
+```cpp
+	int findTargetSumWays(vector<int>& nums, int S) {
+		int tsum=accumulate(nums.begin(),nums.end(),0);
+		if(abs(S)>tsum) return 0; //
+		if((tsum+S)%2) return 0; //odd is impossible
+		int target=(tsum+S)/2;
+		vector<int> dp(target+1);
+		dp[0]=1;
+		for(int i: nums){
+			for(int w=target;w>=i;w--){
+				dp[w]+=dp[w-i];
+			}
+		}
+		return dp[target];
 	}
 ```	
 
-495	Teemo Attacking    		52.2%	Medium	
-497	Random Point in Non-overlapping Rectangles    		35.8%	Medium	
-498	Diagonal Traverse    		45.3%	Medium	
-503	Next Greater Element II    		51.1%	Medium	
-505	The Maze II    		43.8%	Medium	
-508	Most Frequent Subtree Sum    		54.5%	Medium	
-510	Inorder Successor in BST II    		52.7%	Medium	
-513	Find Bottom Left Tree Value    		58.4%	Medium	
-515	Find Largest Value in Each Tree Row    		57.8%	Medium	
-516	Longest Palindromic Subsequence    		46.7%	Medium	
 518	Coin Change 2    		42.7%	Medium	
+number of method to get the change of amount
+knapsack which allows multiple usage
+```cpp
+    int change(int amount, vector<int>& coins) {
+        if(amount == 0) return 1;
+        if(coins.size() == 0) return 0;
+        vector<int> dp(amount + 1, 0);//1d dp problem
+        //dp[i]: number of changes for amount i using the coins
+        dp[0] = 1;
+        for(int i = 0; i < coins.size(); ++ i)
+        {
+            for(int j = coins[i]; j <= amount; ++ j)
+            {
+                dp[j] += dp[j - coins[i]];
+            }
+        }
+        return dp[amount];
+    }
+```
+similar see: 494. target sum
+
+
+495	Teemo Attacking    		52.2%	Medium	
+attacking and poison for a duration, return the total poison time.
+this is the interval overlapping problem
+note: understand the proble precisely, if it is in poison state, attack will not make the poison time longer.
+```cpp
+    int findPoisonedDuration(vector<int>& timeSeries, int duration) {
+        //timeseries point is the left side point, duration is the length of the line segment
+        //the problem needs to accumulate the line. timeseries is sorted
+        //brutal force solution
+        int tp=0;
+        int tend=0;
+        for(int i=0;i<timeSeries.size();i++)
+        {
+            tp+=duration-(timeSeries[i]<tend)*(tend-timeSeries[i]);
+            tend=timeSeries[i]+duration;
+        }
+        return tp;
+        
+    }
+```	
+
+497	Random Point in Non-overlapping Rectangles    		35.8%	Medium	
+a list of rectangles, random points bound in the rectangles.
+rectangles are not overlapped so we can choose randomly a rect, and then randomly generate points.
+
+```cpp
+    vector<vector<int>> rect;
+    vector<int> r_area;
+    int total_area;
+    Solution(vector<vector<int>> rects) {
+        rect = rects;
+        int total = 0;
+        for (int i = 0; i < rects.size(); i++) {
+            total += (rects[i][2] - rects[i][0]+1)*(rects[i][3] - rects[i][1]+1);
+            r_area.push_back(total);
+        }
+        total_area = total;
+    }
+    
+    vector<int> pick() {
+        int random_area = rand()%total_area+1;
+        int i = 0;
+        for (; i < r_area.size(); i++) {
+            if (random_area <= r_area[i]) break;
+        }
+        int dis_x = rand()%(rect[i][2] - rect[i][0]+1);
+        int dis_y = rand()%(rect[i][3] - rect[i][1]+1);
+        return {rect[i][0] + dis_x, rect[i][1] + dis_y};
+    }
+```	
+random pick a rect using the area. points probability proportional to area.
+
+498	Diagonal Traverse    		45.3%	Medium	
+up diagnonal: i-j=const
+down diagonal: i+j=const
+```cpp
+vector<int> findDiagonalOrder(vector<vector<int>>& matrix) {
+        if(matrix.empty()) return {};
+        
+        const int N = matrix.size();
+        const int M = matrix[0].size();
+        
+        vector<int> res;
+        for(int s = 0; s <= N + M - 2; ++s)
+        {
+            // for all i + j = s
+            for(int x = 0; x <= s; ++x) 
+            {
+                int i = x;
+                int j = s - i;
+                if(s % 2 == 0) swap(i, j);
+
+                if(i >= N || j >= M) continue;
+                
+                res.push_back(matrix[i][j]);
+            }
+        }
+        
+        return res;
+    }
+```
+
+503	Next Greater Element II    		51.1%	Medium	
+circular array
+using stack we first create the circular queue by doubling the size
+```cpp
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        //it is very important to understand what it needs: it needs the first one who is bigger on the circular path
+        //approach: sort and keep its index and then build a map with index to next bigger one
+        //brutal force O(n^2). if sorted with index, then find the min element index difference is also O(n^2)
+        int n=nums.size();
+        stack<int> st;
+        vector<int> res(n,-1);
+        for(int i=n-1;i>=0;i--) st.push(nums[i]);
+        for(int i=n-1;i>=0;i--)
+        {
+            //cout<<st.size()<<":"<<st.top()<<endl;
+            while(!st.empty() && st.top()<=nums[i]) st.pop();
+            if(!st.empty()) res[i]=st.top();
+            st.push(nums[i]);
+        }
+        for(int i=0;i<n;i++) cout<<res[i]<<" ";
+        return res;
+        
+    }
+```
+
+505	The Maze II    		43.8%	Medium	
+
+516	Longest Palindromic Subsequence    		46.7%	Medium	
+dp:
+```cpp
+    int longestPalindromeSubseq(string s) {
+        // dp[i][j] longest palindrome subsequence within s[i...j]
+        //
+        // dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
+        // dp[i][j] = max(dp[i+1][j], dp[i][j-1]) if s[i] != s[j]
+        // 
+        // dp[i][i] = 1. dp[i][i-1] = 0.
+        //
+        // To save space, use 1d array.
+        // i: n-1 -> 0. j : i->n-1
+        
+        int n = s.size();
+        vector<int> dp(n, 0);
+        
+        for(int i = n-1; i >= 0 ; --i) 
+        {
+            int p1, p2 = dp[i];
+            dp[i] = 1;
+            for(int j = i+1; j < n; ++j) 
+            {
+                p1 = dp[j];
+                dp[j] = (s[i] == s[j]) ?  p2+2 : max(p1, dp[j-1]);
+                p2 = p1;
+            }
+        }
+        return dp[n-1];
+    }
+```
+	
+
+	
 519	Random Flip Matrix    		33.1%	Medium
+random flip, index 0 to m-1 and 0 to n-1
+reservior sampling
+
 522	Longest Uncommon Subsequence II    		32.9%	Medium	
+see LUS I first. just check if the two string equal, otherwise, the longer one is the LUS
+a series of string to get the LUS:
+```cpp
+    int findLUSlength(vector<string>& strs) {
+        if (strs.empty()) return -1;
+        int rst = -1;
+        for(auto i = 0; i < strs.size(); i++) {
+            int j = 0;
+            for(j=0; j < strs.size(); j++) {
+                if(i==j) continue;
+                if(LCS(strs[i], strs[j])) break;  // strs[j] is a subsequence of strs[i]
+            }
+            // strs[i] is not any subsequence of the other strings.
+            if(j==strs.size()) rst = max(rst, static_cast<int>(strs[i].size()));
+        }
+        return rst;
+    }
+    // iff a is a subsequence of b
+    bool LCS(const string& a, const string& b) {
+        if (b.size() < a.size()) return false;
+        int i = 0;
+        for(auto ch: b) {
+            if(i < a.size() && a[i] == ch) i++;
+        }
+        return i == a.size();
+    }
+```
+	
+
 523	Continuous Subarray Sum    		24.2%	Medium	
+sum=mK m>=2
+k=0 or k!=0
+
+```cpp
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        //accumulate first and then check (a-b)%k==0
+        vector<int> accum(nums.size()+1,0);
+        unordered_map<int,vector<int>> cntmap;
+        for(int i=0;i<nums.size();i++) accum[i+1]=accum[i]+nums[i];
+        if(k)
+			for(int i=1;i<accum.size();i++)
+			{
+				int t=accum[i]%k;
+				cntmap[t].push_back(i); //same remainder, 3 the same must be true, 2 possibly be true
+				if(cntmap[t].size()>2) return 1;
+				if(cntmap[t].size()==2)
+				{
+					if(abs(cntmap[t][0]-cntmap[t][1])>1) return 1;
+				}
+			}
+        else
+			for(int i=0;i<accum.size();i++)
+			{
+				for(int j=i+2;j<accum.size();j++)
+					if(accum[j]==accum[i]) return 1;
+			}
+            
+        return 0;
+        
+    }
+```	
 524	Longest Word in Dictionary through Deleting    		45.7%	Medium	
+Given a string and a string dictionary, find the longest string in the dictionary that can be formed by deleting some characters of the given string. If there are more than one possible results, return the longest word with the smallest lexicographical order. If there is no possible result, return the empty string.
+straightforward:
+```cpp
+    string findLongestWord(string s, vector<string>& d) {
+        //edit distance or two pointers, batch matching also
+        string ans;
+        for(int i=0;i<d.size();i++)
+        {
+            if(isSub(d[i],s))
+            {
+                //cout<<d[i]<<endl;
+                if(ans.empty()) ans=d[i];
+                else
+                {
+                    if(d[i].size()>ans.size()) ans=d[i];
+                    else if(d[i].size()==ans.size() && ans>d[i])ans=d[i];    
+                }
+            }
+        }
+        return ans;
+    }
+    bool isSub(string t, string s)
+    {
+        int i=0,j=0;
+        for(int i=0;i<t.size();i++)
+        {
+            while(j<s.size() && t[i]!=s[j]) j++;
+            if(j==s.size()) return 0;
+        }
+        return 1;
+    }
+```
+	
 525	Contiguous Array    		42.7%	Medium	
+Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+```cpp
+	int findMaxLength(vector<int>& nums) {
+		//approach: convert to -1 1 series, if the sum is the same as before, it is the length, cumsum!
+		map<int, int> myMap;
+		map<int, int>::iterator it;
+		int sum = 0;
+		int maxLen = 0;
+		myMap[0] = -1;
+		for (int i = 0; i < nums.size(); i++)
+		{
+			sum += (nums[i] == 0) ? -1 : 1;
+			it = myMap.find(sum); 
+			if (it != myMap.end())
+				maxLen = max(maxLen, i - it->second);
+			else
+				myMap[sum] = i;
+		}
+		return maxLen;
+	}
+```
 526	Beautiful Arrangement    		54.6%	Medium	
+number 1 to N, 
+-1. number at ith position is divisible by i. (position is also from 1 to N)
+-2. i is divisible by the number at ith position
+return the number of constructions
+
+backtracking swap any two valid permutations
+```cpp
+    int countArrangement(int N) {
+        vector<int> vs(N);
+        for(int i=0;i<N;i++) vs[i]=i+1;
+        return count(vs,N);
+    }
+    int count(vector<int>& vs,int n)
+    {
+        if(n<=0) return 1;
+        int ans=0;
+        for(int i=0;i<n;i++)
+        {
+            if(vs[i]%n==0 || n%vs[i]==0)
+            {
+                swap(vs[i],vs[n-1]);
+                ans+=count(vs,n-1);
+                swap(vs[i],vs[n-1]);//restore it
+            }
+        }
+        return ans;
+    }
+```
+	
+
 528	Random Pick with Weight    		42.8%	Medium	
+each index has a weight, randomly pick index with weight.
+accumulate the weight and binary search the region
+```cpp
+    vector<int> prefix;
+    Solution(vector<int>& w) {
+        prefix.push_back(0);
+        for(int i: w) prefix.push_back(i+prefix.back());
+    }
+    
+    int pickIndex() {
+        int total=prefix.back();
+        int num=rand()%total;
+        //cout<<total<<" "<<num<<endl;
+        auto it=upper_bound(prefix.begin(),prefix.end(),num)-prefix.begin();
+        return it-1;
+    }
+```	
+
 529	Minesweeper    		52.8%	Medium	
+dfs:
+```cpp
+    vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
+        if(board[click[0]][click[1]] == 'M')
+        {
+            board[click[0]][click[1]] = 'X';
+            return board;
+        }
+        reveal(board,click[0],click[1]);
+        return board;
+    }
+   
+    void reveal(vector<vector<char>>& board, int x, int y){
+         int dir[][2]={{0,1},{0,-1},{1,0},{-1,0},{1,1},{1,-1},{-1,1},{-1,-1}};
+        int m=board.size(),n=board[0].size();
+        if(board[x][y] == 'E')
+        {
+            //search 8 adjacent squares
+            int count = 0;
+            for(int i=0;i<8;i++)
+            {
+                int tx=x+dir[i][0],ty=y+dir[i][1];
+                if(tx>=0 && tx<m && ty>=0 && ty<n && board[tx][ty]=='M') count++;
+            }
+            if(count>0) board[x][y] = '0'+count;
+            else
+            {
+                board[x][y] = 'B';
+                for(int i=0;i<8;i++)
+                {
+                    int tx=x+dir[i][0],ty=y+dir[i][1];
+                    if(tx>=0 && tx<m && ty>=0 && ty<n) reveal(board,tx,ty);
+                }
+            }
+        }
+    }
+```	
+
 531	Lonely Pixel I    		57.5%	Medium	
 533	Lonely Pixel II    		46.1%	Medium	
 535	Encode and Decode TinyURL    		76.7%	Medium	
+```cpp
+    string dict = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int id = 0;
+    unordered_map<string,string> m;  //key is longURL, value is shortURL
+    unordered_map<int, string> idm;  //key is id in DB, value is longURL
+    // Encodes a URL to a shortened URL.
+    string encode(string longUrl) {
+        if(m.find(longUrl) != m.end())return m[longUrl];
+        string res = "";
+        id++;
+        int count = id;
+        while(count > 0)
+        {
+            res = dict[count%62] + res;
+            count /= 62;
+        }
+        while(res.size() < 6)
+        {
+            res = "0" + res;
+        }
+        m[longUrl] = res;
+        idm[id] = longUrl;
+        return res;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    string decode(string shortUrl) {
+        int id = 0;
+        for(int i = 0; i < shortUrl.size(); i++)
+        {
+            id = 62*id + (int)(dict.find(shortUrl[i]));
+        }
+        if(idm.find(id) != idm.end())return idm[id];
+        return "";
+    }
+```	
 536	Construct Binary Tree from String    		44.9%	Medium	
 537	Complex Number Multiplication    		65.5%	Medium	
+trivial
 539	Minimum Time Difference    		47.9%	Medium	
+time difference (need to wrap to 24 hours)
+a day=1440 mins, and diff=min(diff,1440-diff)
+
 540	Single Element in a Sorted Array    		57.5%	Medium	
 542	01 Matrix    		35.6%	Medium	
 544	Output Contest Matches    		73.5%	Medium	
