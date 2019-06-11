@@ -3829,8 +3829,29 @@ backtracking swap any two valid permutations
         return ans;
     }
 ```
+667	Beautiful Arrangement II    		51.9%	Medium	
+given n and k, numbers are from 1 to n, the list shall be:
+neigboring diff has exactly k distinct number, pick any valid 
+```cpp
+    vector<int> constructArray(int n, int k) {
+        vector<int> vs(n);
+        //for(int i=0;i<n;i++) vs[i]=i+1;
+        //1,k+1,2,k,3,k-1,4,k-2.....but do not use duplicates
+        //the distance is k,k-1......1
+        //until they meet 
+        int l=1,r=k+1;
+        int cnt=0;
+        while(l<=r) //when l+1==r r cannot be added
+        {
+            vs[cnt++]=l++;
+            if(r>=l) vs[cnt++]=r--;//when r==l+1, the difference is 1
+        }
+        //we already used 1...k+1, the remaining difference is 1!
+        for(int i=cnt;i<n;i++) vs[i]=i+1;
+        return vs;
+    }
+```	
 	
-
 528	Random Pick with Weight    		42.8%	Medium	
 each index has a weight, randomly pick index with weight.
 accumulate the weight and binary search the region
@@ -3936,77 +3957,1306 @@ time difference (need to wrap to 24 hours)
 a day=1440 mins, and diff=min(diff,1440-diff)
 
 540	Single Element in a Sorted Array    		57.5%	Medium	
+every element appears twice except one
+O(logn) and O(1)
+need use binary search
+observation:
+length =2n+1 must be odd
+the target has A[i-1]<A[i]<A[i+1] (case 1), otherwise we have A[i-1]==A[i]!=A[i+1] (case 2) or A[i-1]!=A[i]==A[i+1] (case 3)
+if we meet case 1: done
+if we meet case 2: and we have even number elements, the target is on the right, else on the left
+if we meet case 3: similarly
+```cpp
+    int singleNonDuplicate(vector<int>& nums) {
+        //use xor for single non duplicate, but for sorted array we need more intelligient
+        //the array size shall be 2n+1. need binary search
+        int n=nums.size();
+        if(nums[0]!=nums[1]) return nums[0];
+        if(nums[n-1]!=nums[n-2]) return nums[n-1];
+        int l=0,r=n,mid=(r+l)/2;
+        while(l<r)
+        {
+            mid=(r+l)/2;
+            //cout<<l<<" "<<r<<" "<<mid<<"["<<nums[l]<<","<<nums[r]<<":"<<nums[mid-1]<<","<<nums[mid]<<","<<nums[mid+1]<<"]"<<endl;
+            if(nums[mid]!=nums[mid-1] && nums[mid]!=nums[mid+1]) return nums[mid];
+            if(nums[mid]==nums[mid-1]) //mid==left
+            {
+                //cout<<"left"<<endl;//note the odd even from left is not right when l starts from the 2nd number
+                if((mid+1)%2==0) {l=mid+1;} //include the mid, left side is even
+                else {r=mid-1;}
+            }
+            if(nums[mid]==nums[mid+1]) //mid=right
+            {
+                //cout<<"right"<<endl;
+                if((n-mid)%2==0) {r=mid;} //include the mid, right side is even
+                else{l=mid+1;}
+            }
+        }
+    }
+```
+
+
 542	01 Matrix    		35.6%	Medium	
+find the nearst distance to 0 for all cells
+this is a very interesting bfs:
+first level: all 1s has neighboring 0s. other pushed to queue (and marked as -1)
+2nd level: all queued elements, if the neighboring has positives and distance=level (2), then we know it is nearest, otherwise add into queue again
+
+
+first update neighboring cells using 0 cells (they are defined). If the non zero cell has neighboring cells, no change, otherwise mark it as -1. and add into queue (not processed)
+other cells can be reached using bfs (choose the min):
+pop one from queue, if its neighboring has a distance >0 then we use min_val+1 to update the cell
+
+```cpp
+    vector<vector<int>> updateMatrix(vector<vector<int>>& matrix) {
+      //first scan to update all distance=1
+        //use a queue to keep all not solved elements
+        int m=matrix.size(),n=matrix[0].size();
+        vector<vector<int>> ans(m,vector<int>(n));
+        
+        queue<int> q;
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++) 
+                if(matrix[i][j]) ans[i][j]=update_closest(matrix,i,j,q);
+        //print(matrix);
+        int dir[][2]={{0,1},{0,-1},{1,0},{-1,0}};
+        //note process 1 first, 2 second,3,4,5....., otherwise there would have a problem depending on the update sequence
+        int level=1;
+        while(!q.empty()) //process the element in q: if there is an element is >0 around it, use the min()+1
+        {
+            int sz=q.size();
+            for(int tt=0;tt<sz;tt++)
+            {
+                int t=q.front();q.pop();
+                int i=t/n,j=t%n;
+                int min_val=INT_MAX;
+                for(int t=0;t<4;t++)
+                {
+                    int x=i+dir[t][0],y=j+dir[t][1];
+                    if(x>=0 && x<m && y>=0 && y<n && ans[x][y]>0) 
+                        min_val=min(min_val,ans[x][y]);
+                }
+                if(min_val==level) ans[i][j]=min_val+1;
+                else {q.push(i*n+j);}
+            }
+            level++;
+            //cout<<i<<" "<<j<<":"<<ans[i][j]<<endl;
+            //cout<<"updated matrix:"<<endl;print(ans);
+        }
+
+        return ans;
+    }
+    
+    int update_closest(vector<vector<int>>& matrix,int i,int j,queue<int>& q)
+    {
+        int m=matrix.size(),n=matrix[0].size();
+        int dir[][2]={{0,1},{0,-1},{1,0},{-1,0}};
+        for(int t=0;t<4;t++)
+        {
+            int x=i+dir[t][0],y=j+dir[t][1];
+            if(x>=0 && x<m && y>=0 && y<n && !matrix[x][y]) return 1;
+        }
+        q.push(i*n+j);
+        return -1;
+    }
+```
+	
+
 544	Output Contest Matches    		73.5%	Medium	
 545	Boundary of Binary Tree    		35.0%	Medium	
 547	Friend Circles    		53.6%	Medium	
+dfs or disjoint set
+
 548	Split Array with Equal Sum    		43.2%	Medium	
 549	Binary Tree Longest Consecutive Sequence II    		44.3%	Medium	
 553	Optimal Division    		55.4%	Medium	
+simple math
+
 554	Brick Wall    		47.6%	Medium	
+n list of interval arrays in sorted order, in each interval array, there is no overlap
+find the least number of overlaps 
+accumulate to get each end point and put into a hashmap, the max frequency one is the answer
+
+
 555	Split Concatenated Strings    		39.8%	Medium	
 556	Next Greater Element III    		30.0%	Medium	
+a number, return the smallest number > it which has the same digits
+from right to left, find the first sorted position d[i]<d[i+1], swap with the smallest digit >d[i] and swap it, and then sort the right part.
+(or reverse)
+actually it is the next_permutation
+
 560	Subarray Sum Equals K    		42.2%	Medium	
+return the total number of subarrays
+
+using hashmap, and keeps looking for sum-k in previous. if we found one we add one.
+add a prefix sum=0 is necessary to include a[0] into it.
+
+```cpp
+    int subarraySum(vector<int>& nums, int k) {
+        int cum=0; // cumulated sum
+        unordered_map<int,int> rec; // prefix sum recorder
+        int cnt = 0; // number of found subarray
+        rec[0]++; // to take into account those subarrays that begin with 0
+        for(int i=0;i<nums.size();i++)
+        {
+            cum += nums[i];
+            cnt += rec[cum-k];
+            rec[cum]++;
+        }
+        return cnt;
+    }
+```
+	
+
 562	Longest Line of Consecutive One in Matrix    		43.7%	Medium	
 565	Array Nesting    		52.5%	Medium	
+0 to n-1 elements, A[i], A[A[i]].... 
+treat it as linked list and this is to find the largest cycle
+note: every node is accessible. if one node is in a cycle, all nodes on the cycle 
+straightforward:
+```cpp
+    int arrayNesting(vector<int>& nums) {
+        //strategy: visited, it will form multiple circles and we keep the circle length
+        int maxlen=0;
+        int cycle_len=0;
+        vector<bool> visited(nums.size());
+        for(int i=0;i<nums.size();i++)
+        {
+            if(!visited[i]) //start a new cycle
+            {
+                cycle_len=1;
+                int ind=nums[i];
+                visited[i]=1;
+                
+                while(!visited[ind]) {visited[ind]=1;ind=nums[ind];cycle_len++;}
+            }
+            if(cycle_len>maxlen) maxlen=cycle_len;
+        }
+        return maxlen;
+    }
+```
+	
+
 567	Permutation in String    		38.4%	Medium	
+check if a permutation of s1 is a substr in s2
+sliding window with a hashmap, the two hashmap must equal
+```cpp
+	bool checkInclusion(string s1, string s2) {
+		if(s2.size()<s1.size()) return 0;
+		vector<int> cnt1(26),cnt2(26);
+		for(char c: s1) cnt1[c-'a']++;
+		//sliding window
+		int w=s1.size();
+		for(int i=0;i<s2.size();i++)
+		{
+			char c=s2[i];
+			if(i>=w) cnt2[s2[i-w]-'a']--;
+			cnt2[c-'a']++;
+			if(i>=w-1 && cnt1==cnt2) return 1;
+		}
+		return 0;
+	}
+```	
 573	Squirrel Simulation    		53.6%	Medium	
 576	Out of Boundary Paths    		32.0%	Medium	
+mxn grid, and start at i,j. move at most N times, find the number of path to move out of boundary
+dfs or dp.
+dfs with memoization
+```cpp
+	int findPaths(int m, int n, int N, int i0, int j0) {
+		vector<vector<vector<long>>> dp(N+1,vector<vector<long>>(m,vector<long>(n,-1)));
+		return dfs(m,n,N,i0,j0,dp);
+	}
+	long dfs(int m, int n, int N, int i, int j,vector<vector<vector<long>>>& dp)
+	{
+		if(i<0 || j<0 || i>=m || j>=n) return 1;
+        if(N<=0) return 0;
+        int mod=1e9+7;
+        //cout<<N<<" "<<i<<" "<<j<<endl;
+		if(dp[N][i][j]>=0) return dp[N][i][j];
+		dp[N][i][j]=dfs(m,n,N-1,i+1,j,dp)%mod+
+            dfs(m,n,N-1,i-1,j,dp)%mod+
+            dfs(m,n,N-1,i,j+1,dp)%mod+
+            dfs(m,n,N-1,i,j-1,dp)%mod;
+        dp[N][i][j]%=mod;
+		return dp[N][i][j];
+	}```
+note: 
+- shall initialize as -1 since 0 could be an answer. 
+- need use long to avoid overflow
+
+	
+		
 582	Kill Process    		56.2%	Medium	
 583	Delete Operation for Two Strings    		44.8%	Medium	
+edit disance. delete in either string
+
 592	Fraction Addition and Subtraction    		47.0%	Medium	
+just use some math
+
 593	Valid Square    		40.5%	Medium	
+a square shall have 4 sides the same two diagonal the same
+
 609	Find Duplicate File in System    		55.1%	Medium	
+map the contents with its path
+
 611	Valid Triangle Number    		45.1%	Medium	
+return the number of valid triangles.
+a+b>c is the triangle
+straightforward.
+```cpp
+    int triangleNumber(vector<int>& nums) {
+       //triangle any a+b>c any a-b<c so use the two min for add, use the max and min for subract
+        //combination: C(n,3)
+        //a natural solution: sort the sides and for a pair of sides, the final side selection is limited
+        //also only need a+b>c sufficient
+        //need consider duplicates: note the problem includes all duplicates
+        sort(nums.begin(),nums.end());
+        int n=nums.size();
+        int num_tri=0;
+        for(int i=0;i<n-2;i++)
+        {
+            for(int j=i+1;j<n-1;j++)
+            {
+                int t=nums[i]+nums[j];
+                auto it=lower_bound(nums.begin()+j+1,nums.end(),t);
+                int k=distance(nums.begin()+j+1,it);
+                num_tri+=k;
+            }
+        }
+        return num_tri;
+    }
+```	
 616	Add Bold Tag in String    		39.1%	Medium	
 621	Task Scheduler    		45.5%	Medium	
+task A to Z, same task needs has a interval >=n
+greedy: hashmap to record task frequency
+```cpp
+    int leastInterval(vector<char>& tasks, int n) {
+        unordered_map<char,int>mp;
+        int count = 0;
+        for(auto e : tasks)
+        {
+            mp[e]++;
+            count = max(count, mp[e]);
+        }
+        
+        int ans = (count-1)*(n+1);
+        for(auto e : mp) if(e.second == count) ans++;
+        return max((int)tasks.size(), ans);
+    }
+```
+	
 622	Design Circular Queue    		39.1%	Medium	
+ring buffer
+```cpp
+    vector<int> q;
+    int head,tail;
+    int sz;
+public:
+    /** Initialize your data structure here. Set the size of the queue to be k. */
+    MyCircularQueue(int k) {
+        q.resize(k);
+        sz=head=tail=0;
+    }
+    
+    /** Insert an element into the circular queue. Return true if the operation is successful. */
+    bool enQueue(int value) {
+        if(isFull()) return 0;
+        q[tail++]=value;
+        tail%=q.size();
+        sz++;
+        return 1;
+    }
+    
+    /** Delete an element from the circular queue. Return true if the operation is successful. */
+    bool deQueue() {
+        if(isEmpty()) return 0;
+        head++;head%=q.size();
+        sz--;
+        return 1;
+    }
+    
+    /** Get the front item from the queue. */
+    int Front() {
+        if(isEmpty()) return -1;
+        return q[head];
+    }
+    
+    /** Get the last item from the queue. */
+    int Rear() {
+        if(isEmpty()) return -1;
+        return q[(tail-1+q.size())%q.size()];
+    }
+    
+    /** Checks whether the circular queue is empty or not. */
+    bool isEmpty() {
+        return sz==0;
+    }
+    
+    /** Checks whether the circular queue is full or not. */
+    bool isFull() {
+        return sz==q.size();
+    }
+```	
+641	Design Circular Deque    		49.2%	Medium
+```cpp
+    vector<int> dq;
+    int sz,head,tail;
+public:
+    /** Initialize your data structure here. Set the size of the deque to be k. */
+    MyCircularDeque(int k) {
+        dq.resize(k);
+        sz=head=tail=0;
+    }
+    
+    /** Adds an item at the front of Deque. Return true if the operation is successful. */
+    bool insertFront(int value) {
+        if(isFull()) return 0;
+        dq[head++]=value;
+        sz++;
+        head%=dq.size();
+        return 1;
+    }
+    
+    /** Adds an item at the rear of Deque. Return true if the operation is successful. */
+    bool insertLast(int value) {
+        if(isFull()) return 0;
+        tail--;
+        tail=(tail+dq.size())%dq.size();
+        dq[tail]=value;
+        sz++;
+        
+        return 1;
+    }
+    
+    /** Deletes an item from the front of Deque. Return true if the operation is successful. */
+    bool deleteFront() {
+        if(isEmpty()) return 0;
+        head--;
+        head=(head+dq.size())%dq.size();
+        sz--;
+        return 1;
+    }
+    
+    /** Deletes an item from the rear of Deque. Return true if the operation is successful. */
+    bool deleteLast() {
+        if(isEmpty()) return 0;
+        tail++;
+        tail=(tail+dq.size())%dq.size();
+        sz--;
+        return 1;
+    }
+    
+    /** Get the front item from the deque. */
+    int getFront() {
+        if(isEmpty()) return -1;
+        return dq[(head-1+dq.size())%dq.size()];
+    }
+    
+    /** Get the last item from the deque. */
+    int getRear() {
+        if(isEmpty()) return -1;
+        return dq[tail];
+    }
+    
+    /** Checks whether the circular deque is empty or not. */
+    bool isEmpty() {
+        return sz==0;
+    }
+    
+    /** Checks whether the circular deque is full or not. */
+    bool isFull() {
+        return sz==dq.size();
+    }
+```
+
+
 623	Add One Row to Tree    		47.3%	Medium	
+given a layer add a layer of nodes
+bfs:
+first find the layer d-1, using bfs
+then: create the nodes and link to child. the depth can be maxdepth+1
+
+```cpp
+    TreeNode* addOneRow(TreeNode* root, int v, int d) {
+        //using bfs
+        if(d==1) //as the root
+        {
+            TreeNode *p=new TreeNode(v);
+            p->left=root;
+            return p;
+        }
+        int h=height(root);
+        queue<TreeNode*> q;
+        //queue<bool> lr;
+        q.push(root);
+        //lr.push(0);
+        for(int i=1;i<min(d-1,h);i++) 
+        {
+            int sz=q.size();
+            for(int j=0;j<sz;j++)
+            {
+                TreeNode* p=q.front();q.pop();;
+                if(p->left) {q.push(p->left);}
+                if(p->right) {q.push(p->right);}
+            }
+        }
+        int sz=q.size();
+        for(int i=0;i<sz;i++)
+        {
+            //create a node and swap the content with node in q
+            TreeNode* pnew=new TreeNode(v);
+            TreeNode* pold=q.front();q.pop();
+            //cout<<pold->val<<" ";
+            TreeNode *tmp=pold->left;
+            pold->left=new TreeNode(v);
+            pold->left->left=tmp;
+            tmp=pold->right;
+            pold->right=new TreeNode(v);
+            pold->right->right=tmp;
+        }
+        return root;
+    }
+    int height(TreeNode* root)
+    {
+        if(!root) return 0;
+        return 1+max(height(root->left),height(root->right));
+    }
+```	
+
 625	Minimum Factorization    		31.9%	Medium	
 634	Find the Derangement of An Array    		37.6%	Medium	
 635	Design Log Storage System    		54.0%	Medium	
 636	Exclusive Time of Functions    		48.7%	Medium	
+single thread, function id: start: starttime, function id:end:endtime
+a typical stack problem
+need to pay attention: when one function is running, all other functions are suspended so the time needs to be subtracted.
+```cpp
+    vector<int> exclusiveTime(int n, vector<string>& logs) {
+        //when it starts pushed in the stack, when it ends, pop it up and store in array
+        vector<int> ans(n);
+        stack<pair<int,int>> st; //id, time
+        for(int i=0;i<logs.size();i++)
+        {
+            int ind=logs[i].find_first_of(':');
+            int id=stoi(logs[i].substr(0,ind));
+            int ind1=logs[i].find_first_of(':',ind+1);
+            if(ind1-ind==6) //start
+            {
+                int stime=stoi(logs[i].substr(ind1+1));
+                st.push(make_pair(id,stime));
+            }
+            else //endtime
+            {
+                int etime=stoi(logs[i].substr(ind1+1));
+                int dtime=etime-st.top().second+1;
+                ans[id]+=dtime;
+                st.pop();
+                if(!st.empty()) ans[st.top().first]-=dtime;//equivalent to add the time to the start
+            }
+        }
+        return ans;
+    }
+```	
+
+
 638	Shopping Offers    		48.6%	Medium	
+dp, knapsack or recursive
+```cpp
+void operator+=(vector<int> &a, const vector<int> &b) {
+    for (int i = 0; i < a.size(); i++)
+        a[i] += b[i];
+}
+
+void operator-=(vector<int> &a, const vector<int> &b) {
+    for (int i = 0; i < a.size(); i++)
+        a[i] -= b[i];
+}
+
+bool operator<(const vector<int> &a, const int &n) {
+    for (int i : a)
+        if (i < n)
+            return true;
+    return false;
+}
+
+int operator*(const vector<int> &a, const vector<int> &b) {
+    int res = 0;
+    for (int i = 0; i < a.size(); i++)
+        res += a[i] * b[i];
+    return res;
+}    
+class Solution {
+public:
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs, int cost = 0) {
+        if (needs < 0) return INT_MAX;
+
+        int m = cost + needs * price;//buy everything separately
+
+        for (auto &offer : special) 
+        {
+            if (cost + offer.back() >= m) // pruning
+                continue;
+            needs -= offer; //add this offer
+            m = min(m, shoppingOffers(price, special, needs, cost + offer.back()));
+            needs += offer; //put it back (pop)
+        }
+
+        return m;
+    }
+```
+	
 640	Solve the Equation    		40.3%	Medium	
-641	Design Circular Deque    		49.2%	Medium	
+use simple math
+
+	
 646	Maximum Length of Pair Chain    		48.7%	Medium	
+dp, similar to longest increasing subsequence
+```cpp
+    int findLongestChain(vector<vector<int>>& pairs) {
+        sort(pairs.begin(),pairs.end()); //sort with start
+        vector<int> dp(pairs.size(),1);
+        for(int i=1;i<pairs.size();i++)
+        {
+            //dp[i] is the number of longest chain for ith pair, it shall be the previous chain+1
+            for(int j=i-1;j>=0;j--)
+            {
+                if(pairs[j][1]<pairs[i][0]) {dp[i]=dp[j]+1;break;}
+            }
+        }
+        return dp[pairs.size()-1];
+    }
+```	
+
 647	Palindromic Substrings    		56.9%	Medium	
+count the number of palindromic substrings in a string
+dp:
+```cpp
+    int countSubstrings(string s) {
+        //dp solution: using 2d approach
+        //dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
+        //dp[i,j] is the number of p-string for S(i...j)
+        //i: reverse, j: normal
+        int n=s.size();
+        vector<vector<int>> dp(n,vector<int>(n));
+        for(int i=0;i<n;i++) dp[i][i]=1; //itself is a p-string
+        
+        for(int i=n-2;i>=0;i--)
+        {
+            for(int j=i+1;j<n;j++) //j>i must be met
+            {
+                int self=isPalindrome(s,i,j);
+                dp[i][j]=self+dp[i][j-1]+dp[i+1][j]-dp[i+1][j-1];
+            }
+        }
+        return dp[0][n-1];
+    }
+    int isPalindrome(string& s,int i,int j)
+    {
+        //two pointer early exit
+        while(i<j) 
+        {
+            if(s[i]==s[j]) {i++,j--;} else return 0;
+        }
+        return 1;
+    }
+```	
+
 648	Replace Words    		51.8%	Medium	
+replace the words with its prefix root. If there are multiple, choose the shortest one.
+using trie and startWith
+
+
+
 649	Dota2 Senate    		37.6%	Medium	
+greedy, ban its next 
+```cpp
+string predictPartyVictory(string senate) {
+        queue<int> q1, q2;
+        int n = senate.length();
+        for(int i = 0; i<n; i++)
+            (senate[i] == 'R')?q1.push(i):q2.push(i);
+        while(!q1.empty() && !q2.empty()){
+            int r_index = q1.front(), d_index = q2.front();
+            q1.pop(), q2.pop();
+            (r_index < d_index)?q1.push(r_index + n):q2.push(d_index + n);
+        }
+        return (q1.size() > q2.size())? "Radiant" : "Dire";
+    }
+```
+	
 650	2 Keys Keyboard    		46.6%	Medium	
+copy all and paste, begin with a A, you need to use min number of steps to reach n A
+from 1 to n by doubling or reverse from n to 1 by cutting by half.
+```cpp
+    int minSteps(int n) {
+        vector<int> dp(n+1);
+        dp[1]=0;dp[2]=2;dp[3]=3;
+        for(int i=4;i<=n;i++)
+        {
+            if(i%2) //odd number always need one copy,even number of paste 2,4,6,8...can only from its max divisor
+            {
+                int m=max_divisor(i);
+                dp[i]=dp[m]+i/m;
+            }
+            else //even number always need one copy, odd number of paste
+            {
+                if(i%2==0) dp[i]=dp[i/2]+2;
+                if(i%4==0) dp[i]=min(dp[i],dp[i/4]+4);
+            }
+        }
+        return dp[n];
+    }
+    
+    int max_divisor(int n) //find the max divisor except itself
+    {
+        int res=1;
+        for(int i=2;i<n/2;i++) if(n%i==0) res=i;
+        return res;
+    }
+```
+	
+
 651	4 Keys Keyboard    		50.5%	Medium	
 652	Find Duplicate Subtrees    		45.5%	Medium	
+serialize the tree into string and store in hashmap
+```cpp
+    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+        unordered_map<string,int> mp;
+        vector<TreeNode*> res;
+        postorder(root,mp,res);
+        return res;
+    }
+    string postorder(TreeNode* root,unordered_map<string,int>& mp,vector<TreeNode*>& v)
+    {
+        if(!root) return "# ";
+        string serial=to_string(root->val)+" "+postorder(root->left,mp,v)+" "+postorder(root->right,mp,v)+" ";
+        if(mp.count(serial) && mp[serial]==1) {v.push_back(root);}
+        mp[serial]++;
+        return serial;
+    }
+```	
 654	Maximum Binary Tree    		76.0%	Medium	
+from array, root is the max in the array and left is the left part array and right is the right part array
+construct the tree
+divide and build
+```cpp
+    TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
+        return divide_build(nums,0,nums.size());
+    }
+    TreeNode* divide_build(vector<int>& nums,int l,int r) //use [l,r) range
+    {
+        if(l>=r) return 0;
+        int ind=(int)(max_element(nums.begin()+l,nums.begin()+r)-nums.begin());
+        TreeNode* root=new TreeNode(nums[ind]);
+        root->left=divide_build(nums,l,ind);
+        root->right=divide_build(nums,ind+1,r);
+        return root;
+    }
+```
+	
 655	Print Binary Tree    		51.9%	Medium	
+root is always on the mid of the two child
+```cpp
+    vector<vector<string>> printTree(TreeNode* root) {
+        //the column is dependent on the height ncol=ncol_prev+2^h
+        //on each level, the element's position is also fixed: they shall be in the middle of each subsection
+        //m=h, n=2^h-1
+        
+        if(!root) return vector<vector<string>>();
+        int m=treeheight(root),n=pow(2,m)-1;
+        vector<vector<string>> res(m,vector<string>(n));
+        //recursively determine each element's position
+        print_helper(root,0,0,n-1,res);
+        return res;
+    }
+    int treeheight(TreeNode* root)
+    {
+        if(!root) return 0;
+        return max(treeheight(root->left),treeheight(root->right))+1;
+    }
+    void print_helper(TreeNode* root,int level,int l,int r,vector<vector<string>>& res)
+    {
+        if(!root) return;
+        int mid=l+(r-l)/2;
+        res[level][mid]=to_string(root->val);
+        print_helper(root->left,level+1,l,mid-1,res);
+        print_helper(root->right,level+1,mid+1,r,res);
+    }
+```
+	
 658	Find K Closest Elements    		38.0%	Medium	
+in sorted array, given x and find the k closest elements in the array.
+if there is a tie, the smaller number is preferred.
+sort using abs(n-x)
+```cpp
+    struct cmp
+    {
+        int x;
+        cmp(int a):x(a){};
+        bool operator()(int a,int b) {return abs(a-x)<abs(b-x);}
+    };
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        //sort using abs(a-x)
+        sort(arr.begin(),arr.end(),cmp(x));
+        vector<int> ans(arr.begin(),arr.begin()+k);
+        sort(ans.begin(),ans.end());
+        return ans;
+    }
+```
+	
+
 659	Split Array into Consecutive Subsequences    		40.7%	Medium	
+split array into consecuative intergers with at least 3 numbers, check if we can do it
+```cpp
+    bool isPossible(vector<int>& nums) {
+        unordered_map<int, int> freq, need;
+        for (int num : nums) ++freq[num];
+        for (int num : nums) {
+            if (freq[num] == 0) continue;
+            else if (need[num] > 0) {
+                --need[num];
+                ++need[num + 1];
+            } else if (freq[num + 1] > 0 && freq[num + 2] > 0) {
+                --freq[num + 1];
+                --freq[num + 2];
+                ++need[num + 3];
+            } else return false;
+            --freq[num];
+        }
+        return true;
+    }
+```
+	
 662	Maximum Width of Binary Tree    		39.7%	Medium	
+the child node for a full binary tree: parent i, and child 2*i, 2*i+1
+this will soon overflow for a long linked list like tree
+using bfs to set the left as 0 for each layer to avoid overflow
+
+
 663	Equal Tree Partition    		38.0%	Medium	
 666	Path Sum IV    		52.2%	Medium	
-667	Beautiful Arrangement II    		51.9%	Medium	
+
 670	Maximum Swap    		39.6%	Medium	
+a non-negative number, swap at most one time to get the max valued number
+for example: 2736->7236, leftmost sorted swap with is right max
+```cpp
+    int maximumSwap(int num) {
+        //this is a selection sort
+        string s=to_string(num);
+        int len=s.size();
+        //char maxc=*max_element(s.begin(),s.end());
+        int pos;
+        int firstpos=INT_MAX;
+        for(int i=0;i<s.size();i++)
+        {
+            int ind=(int)(max_element(s.rbegin(),s.rbegin()+len-1-i)-s.rbegin());//this gives the first max
+            ind=len-1-ind;
+            if(s[i]<s[ind])
+            {
+                swap(s[i],s[ind]);
+                break;
+            }
+        }
+        //swap the last max with the first non-max
+        return stoll(s);
+    }
+```
+	
 672	Bulb Switcher II    		50.0%	Medium	
+```cpp
+    int flipLights(int n, int m) {
+        if (m == 0 || n == 0) return 1;
+        if (n == 1) return 2;
+        if (n == 2) return m == 1? 3:4;
+        if (m == 1) return 4;
+        return m == 2? 7:8;
+    }
+```	
 673	Number of Longest Increasing Subsequence    		33.6%	Medium	
+unsorted array, find the number of longest increasing subsequence
+dp: need find the longest subsequence and also need to record the number
+```cpp
+    int findNumberOfLIS(vector<int>& nums) {
+        //dp solution
+        //vlen[k+1]: the length of the longest subsequence for nums[k]
+        //cnt[k+1]: the number of longest subsequence for nums[k]
+        //vlen[k+1]=max(vlen[i])
+        //cnt[k+1]=sum(cnt(i)) for all cnt[i] with vlen[i]+1=vlen[k+1]
+        int n=nums.size(),ans=0;
+        vector<int> vlen(n,1),cnt(n,1);
+        int maxlen=1;
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(nums[i]>nums[j])
+                {
+                    if(vlen[i]<vlen[j]+1) {vlen[i]=vlen[j]+1;cnt[i]=cnt[j];}
+                    else if(vlen[i]==vlen[j]+1) cnt[i]+=cnt[j];
+                }
+            }
+            maxlen=max(maxlen,vlen[i]);
+        }
+        for(int i=0;i<n;i++) 
+        {if(vlen[i]==maxlen) ans+=cnt[i];}
+        return ans;
+    }
+```
+	
 676	Implement Magic Dictionary    		51.7%	Medium	
+given a list of words, and check if a word modified exactly one char, and it is in the dictionary
+either build the map with all possible combinations and then check if one combination matches
+
+```cpp
+    unordered_map<string,set<string>> mydict;
+    MagicDictionary() {
+        
+    }
+    
+    /** Build a dictionary through a list of words */
+    void buildDict(vector<string> dict) {
+        for(int i=0;i<dict.size();i++) 
+        {
+            for(int j=0;j<dict[i].size();j++)
+            {
+                string s=dict[i];
+                s[j]='$';
+                mydict[s].insert(dict[i]);
+            }
+        }
+    }
+    
+    /** Returns if there is any word in the trie that equals to the given word after modifying exactly one character */
+    bool search(string word) {
+        //try replace the word 
+        for(int i=0;i<word.size();i++)
+        {
+            string s=word;
+            s[i]='$';
+            //if match one
+            if(mydict.count(s) && (!mydict[s].count(word) || (mydict[s].size()>1))) return 1;//need check other matches
+        }
+        return 0;
+    }
+```
+	
 677	Map Sum Pairs    		51.5%	Medium	
+insert string integer, sum return the sum of all key words with it as prefix.
+using trie: record the val, find the prefix and use dfs for all path containing the prefix
+```cpp
+struct Node
+{
+    Node* next[26]; //use pointer is much convenient than using array!
+    bool is_leaf;
+    int val;
+    Node(bool b=0) {fill(next,next+26,(Node*)0);is_leaf=b;val=0;}
+};
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Node* root;
+    Trie() {
+        root=new Node();
+    }
+    
+    /** Inserts a word into the trie. */
+    Node* insert(string word) {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)        
+        {
+            int ind=word[i]-'a';
+            if(!p->next[ind]) p->next[ind]=new Node();
+            p=p->next[ind];
+        }
+        p->is_leaf=1;
+        return p;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        Node* p=find(word);
+        return p && p->is_leaf; //has to end with a leaf node
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        Node* p=find(prefix);
+        return p; //does not have to end with a leaf node
+    }
+    
+    Node* find(string word)
+    {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)
+        {
+            int ind=word[i]-'a';
+            if(p->next[ind]==0) return 0;
+            p=p->next[ind];
+        }
+        return p;
+    }
+};
+
+class MapSum {
+public:
+    /** Initialize your data structure here. */
+    Trie t;
+    MapSum():t(Trie()) {
+        
+    }
+    
+    void insert(string key, int val) {
+        Node*p=t.insert(key);
+        p->val=val;
+    }
+    
+    int sum(string prefix) {
+        Node* p=t.find(prefix);
+        int ans=0;
+        //dfs search all paths to sum the values
+        dfs(p,ans);
+        return ans;
+    }
+    void dfs(Node* root,int& tsum)
+    {
+        //if(root->is_leaf) {tsum+=root->val;return;}
+        if(!root) return;
+        tsum+=root->val;
+        for(int i=0;i<26;i++)
+        {
+            if(root->next[i]) dfs(root->next[i],tsum);
+        }
+    }
+```	
+
 678	Valid Parenthesis String    		32.7%	Medium	
+contain (*) * can be treated as ( or ) or a char
+```cpp
+    bool checkValidString(string s) {
+        //using stack, 
+        return is_validstring(s,0,0,0);
+    }
+    bool is_validstring(const string& s,int i,int nleft,int nright)
+    {
+        if(nleft<nright) return 0;
+        if(i==s.length())
+        {
+            return nleft==nright;
+        }
+        if(s[i]=='(') return is_validstring(s,i+1,nleft+1,nright);
+        if(s[i]==')') return is_validstring(s,i+1,nleft,nright+1);
+        else //use it as left, right or nothing
+        {
+            return is_validstring(s,i+1,nleft,nright) || is_validstring(s,i+1,nleft+1,nright) || is_validstring(s,i+1,nleft,nright+1);
+        }
+    }
+```
+	
+
 681	Next Closest Time    		42.6%	Medium	
 684	Redundant Connection    		51.8%	Medium	
+undirected graph, return an edge that can be removed to make it as a tree. if there are multiple answer,return the last edge in the list.
+cycle detection
+```cpp
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n=edges.size();
+        vector<int> parents(2*n);
+        for(int i=0;i<2*n;i++) parents[i]=i;
+        for(int i=0;i<n;i++)
+        {
+            int f=edges[i][0],t=edges[i][1];
+            if(find(parents,f)==find(parents,t)) return edges[i];
+            else parents[find(parents,f)]=find(parents,t);
+        }
+        return vector<int>(2);
+    }
+    int find(vector<int>& parent,int f)
+    {
+        while(f!=parent[f]) f=parent[f];
+        return f;
+    }
+```	
+
 688	Knight Probability in Chessboard    		44.3%	Medium	
+move exactly k steps
+```cpp
+    double memo[100][25][25]={0};
+    //vector<vector<vector<bool>>> visited(100,vector<vector<int>>(25,vector<int>(25)));
+    double knightProbability(int N, int K, int r, int c) {
+        //there are 8 directions
+        //check how many are outside and how many inside. if the possibility is 0 stop
+        //if steps are exhausted, stop! The probability is the product of all its 
+        //double res=0;
+    
+        //cnt+=inside(r+1,c+2,N)+inside(r+1,c-2,N)+inside(r+2,c+1,N)+inside(r+2,c-1,N);
+        //cnt+=inside(r-1,c+2,N)+inside(r-1,c-2,N)+inside(r-2,c+1,N)+inside(r-2,c-1,N);
+        if(outside(r,c,N)) return 0;
+        if(K==0) return 1;
+        if(N<3) return 0;
+        
+        if(memo[K-1][r][c]>0) return memo[K-1][r][c];
+        double res1=0;
+        res1+=knightProbability(N,K-1,r+1,c+2)/8;
+        res1+=knightProbability(N,K-1,r+1,c-2)/8;
+        res1+=knightProbability(N,K-1,r+2,c+1)/8;
+        res1+=knightProbability(N,K-1,r+2,c-1)/8;
+        res1+=knightProbability(N,K-1,r-1,c+2)/8;
+        res1+=knightProbability(N,K-1,r-1,c-2)/8;
+        res1+=knightProbability(N,K-1,r-2,c+1)/8;
+        res1+=knightProbability(N,K-1,r-2,c-1)/8;
+        memo[K-1][r][c]=res1;
+        return res1;
+    }
+    bool outside(int r,int c,int N)
+    {
+        return (r<0 || r>=N || c<0 || c>=N);
+    }
+```
+	
 692	Top K Frequent Words    		45.7%	Medium	
+a list of words, return the top k frequency words
+if two have the same frequency, the smaller comes first
+priority-queue
+```cpp
+struct cmp
+{
+   bool operator()(const pair<string,int>&a, const pair<string,int>& b)  
+   {
+       return a.second<b.second ||(a.second==b.second && a.first>b.first);
+   }
+};
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        //calculate histogram of each words and sort these words
+        unordered_map<string,int> wmap;
+        for(int i=0;i<words.size();i++) wmap[words[i]]++;
+        priority_queue<pair<string,int>,vector<pair<string,int>>,cmp> pq(wmap.begin(),wmap.end());
+        vector<string> vs(k);
+        for(int i=0;i<k;i++) {vs[i]=pq.top().first;pq.pop();}
+        return vs;
+    }
+```
+	
 694	Number of Distinct Islands    		51.2%	Medium	
+bfs
+
 695	Max Area of Island    		57.2%	Medium	
+coloring and dfs
+```cpp
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int m=grid.size(),n=grid[0].size();
+        int maxarea=0;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]==1) maxarea=max(maxarea,dfs(grid,i,j));
+            }
+        }
+        return maxarea;
+    }
+    int dfs(vector<vector<int>>& grid,int i,int j)
+    {
+        int m=grid.size(),n=grid[0].size();
+        if(i<0 || j<0 || i>=m || j>=n) return 0;
+        if(grid[i][j]!=1) return 0;
+        grid[i][j]=2;
+       return dfs(grid,i-1,j)+dfs(grid,i+1,j)+dfs(grid,i,j-1)+dfs(grid,i,j+1)+1;
+    }
+```
+	
 698	Partition to K Equal Sum Subsets    		42.3%	Medium	
+find if it is possible to parition into k subsets
+first, tsum shall be divisible by k, 2nd, max can not be greater than target
+backtracking
+```cpp
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int sum = 0;
+        for(int num:nums)sum+=num;
+        if(k <= 0 || sum%k != 0)return false;
+        vector<int> visited(nums.size(), 0);
+        return canPartition(nums, visited, 0, k, 0, 0, sum/k);
+    }
+    
+    bool canPartition(vector<int>& nums, vector<int>& visited, int start_index, int k, int cur_sum, int cur_num, int target){
+        if(k==1)return true;
+        if(cur_sum == target && cur_num >0 )return canPartition(nums, visited, 0, k-1, 0, 0, target);
+        for(int i = start_index; i<nums.size(); i++){
+            if(!visited[i]){
+                visited[i] = 1;
+                if(canPartition(nums, visited, i+1, k, cur_sum + nums[i], cur_num++, target))return true;
+                visited[i] = 0;
+            }
+        }
+        return false;
+    }
+```
+	
 701	Insert into a Binary Search Tree    		75.7%	Medium	
+```cpp
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        if(!root) return new TreeNode(val);
+        if(val>root->val) root->right=insertIntoBST(root->right,val);
+        else root->left=insertIntoBST(root->left,val);
+        return root;
+    }
+```
+	
 702	Search in a Sorted Array of Unknown Size    		58.7%	Medium	
+
 708	Insert into a Cyclic Sorted List    		28.9%	Medium	
 712	Minimum ASCII Delete Sum for Two Strings    		54.5%	Medium	
+dp with edit distance
+
 713	Subarray Product Less Than K    		36.7%	Medium	
+sliding window with two pointer
+```cpp
+    int numSubarrayProductLessThanK(vector<int>& nums, int k) {
+        int n=nums.size();
+        //cout<<n;
+        if(k<=*min_element(nums.begin(),nums.end())) return 0;
+        //if(*max_element(nums.begin(),nums.end())<2)
+            //return n*(n+1)/2;
+        //use two pointers to find the region
+        int pi=0,pj=0;
+        int ans=0;
+        int prod=1;
+        while(pi<n)
+        {
+            for(;pj<n;pj++)
+            {
+                
+                if(prod*nums[pj]>=k) break;
+                prod*=nums[pj];
+            }
+            int m=pj-pi;
+            ans+=m;
+            //cout<<nums[pi]<<" "<<m<<":"<<ans<<endl;
+            prod/=nums[pi];
+            if(pi==pj) {pj++;prod=1;}
+            pi++;
+        }
+        return ans;
+    }
+```	
 714	Best Time to Buy and Sell Stock with Transaction Fee    		50.4%	Medium	
+dp
 718	Maximum Length of Repeated Subarray    		46.0%	Medium	
+max length of subarray appeared in both
+longest common subarray, dp
+```cpp
+    int findLength(vector<int>& A, vector<int>& B) {
+        //longest common substring
+        int m=A.size(),n=B.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1)); 
+        //dp[i, j] represents the longest common subarray between A[0..i-1] and B[0...j-1] 
+        //boundary: dp[0][0]=0, 0th row and 0th column all zero
+        int max0=0;
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(A[i-1]==B[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+                //else dp[i][j]=0;
+                max0=max(max0,dp[i][j]);
+            }
+        }
+        return max0;
+    }
+```
+	
 721	Accounts Merge    		40.4%	Medium	
+user, a list of emails
+if several user has a common email, then it is the same user account
+using union-find
+```cpp
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        int n=accounts.size();
+        //make the disjoint set using the index
+        unordered_map<string,int> email_parent;
+        vector<int> parent(n);
+        for(int i=0;i<n;i++)
+        {
+            parent[i]=i; //initially it points itself
+            for(int j=1;j<accounts[i].size();j++) 
+            {
+                if(email_parent.count(accounts[i][j])) //this email has appeared
+                {
+                    merge(parent,i,email_parent[accounts[i][j]]);
+                }
+                else email_parent[accounts[i][j]]=i;
+            }
+        }
+        //now each set logical relation is formed using disjoint set
+        //using set to remove duplicates and sort them
+        unordered_map<int,set<string>> parent_email;
+        for(auto it=email_parent.begin();it!=email_parent.end();it++)
+        {
+            int id=find(parent,it->second);
+            parent_email[id].insert(it->first);
+        }
+        //form the final answer
+        vector<vector<string>> ans;
+        for(auto it=parent_email.begin();it!=parent_email.end();it++)
+        {
+            ans.push_back(vector<string>());
+            ans.back().push_back(accounts[it->first][0]); //owner name
+            ans.back().insert(ans.back().begin()+1,it->second.begin(),it->second.end());
+        }
+        return ans;
+    }
+    int find(vector<int>& parent,int i) //find its parent id
+    {
+        while(parent[i]!=i) i=parent[i];
+        return i;
+    }
+    
+    void merge(vector<int>& parent,int i,int j)
+    {
+        int i_id=find(parent,i);
+        int j_id=find(parent,j);
+        if(i_id==j_id) return;
+        if(i_id<j_id) parent[j_id]=i_id;
+        else parent[i_id]=j_id;
+    }
+```	
+
 722	Remove Comments    		31.2%	Medium	
-723	Candy Crush    		63.2%	Medium	
+using regex is too hard
+```cpp
+    vector<string> removeComments(vector<string>& s) {
+        vector<string> ans;
+        bool inBlock = false;
+        string sf;
+        for (auto &t:s) {
+            for (int i = 0; i < t.size();) {
+                if (!inBlock) {
+                    if (i + 1 == t.size()) sf += t[i++];
+                    else {
+                        string m = t.substr(i,2);
+                        if (m == "/*") inBlock = 1, i+=2;
+                        else if (m == "//") break;
+                        else sf += t[i++];
+                    }
+                }
+                else {
+                    if (i + 1 == t.size()) i++;
+                    else {
+                        string m = t.substr(i,2);
+                        if (m == "*/") inBlock = 0, i+=2;
+                        else i++;
+                    }
+                }
+            }
+            if (sf.size() && !inBlock) ans.push_back(sf), sf = "";
+        }
+        return ans;
+    }
+```
+	
 725	Split Linked List in Parts    		48.9%	Medium	
 given k, divide it into k parts
 first get the whole length
@@ -5026,37 +6276,794 @@ O(NlogN + MlogM), as we sort list.
         return total;
     }
 ```	
+
 831	Masking Personal Information    		42.1%	Medium	
+email: masked as firstletter+5*+lastletter@....
+phone number: include digits +/- ()
+10 digits for local number formated as ***-***-4digits
+country code: +digits marked as +***
+straightforward:
+```cpp
+    string maskPII(string S) {
+        //email contains a @, otherwise it is phone number
+        transform(S.begin(),S.end(),S.begin(),::tolower);
+        size_t pos=S.find('@');
+        string ss;
+        if(pos==string::npos) //it is phone number
+        {
+            for(int i=0;i<S.size();i++) 
+            {
+                //cout<<S[i]<<endl;
+                if(isdigit(S[i])) {ss+=S[i];}
+            }
+            //cout<<ss;
+            string t=ss;
+            if(t.size()<=10) ss="***-***-"+t.substr(t.size()-4);
+            else {ss="+";ss.append(t.size()-10,'*');ss+="-***-***-"+t.substr(t.size()-4);}
+            
+        }
+        else
+        {
+            ss+=S[0];
+            ss+="*****";
+            ss+=S[pos-1]+S.substr(pos);
+            //cout<<s<<endl;
+        }
+        return ss;
+    }
+```	
+
 833	Find And Replace in String    		46.1%	Medium	
+given a list of replace operations
+
+do it from right to left so that no index change for string in the front
+```cpp
+    string findReplaceString(string S, vector<int>& indexes, vector<string>& sources, vector<string>& targets) {
+       int start=0;
+        string ans;
+        vector<vector<int>> mp;
+        for(int i=0;i<indexes.size();i++) mp.push_back({indexes[i],i});
+        sort(mp.begin(),mp.end());
+        
+        for(auto t: mp)
+        {
+            //int ind=indexes[i],len=sources[i].size();
+            int ind=t[0],len=sources[t[1]].size();
+            if(S.substr(ind,len)==sources[t[1]])
+            {
+                ans+=S.substr(start,ind-start)+targets[t[1]];
+                start=ind+len;
+            }
+        }
+        if(start<S.size()) ans+=S.substr(start);
+        return ans;
+    }
+```
+	
 835	Image Overlap    		52.3%	Medium	
+two images are square matrix. return the largest overlap;
+direct approach
+```cpp
+    int largestOverlap(vector<vector<int>>& A, vector<vector<int>>& B) {
+        int n=A.size();
+        int max_overlap=0;
+        for(int i=-n+1;i<n;i++) //sliding is 2n
+        {
+            for(int j=-n+1;j<n;j++)
+            {
+                max_overlap=max(max_overlap,overlap(A,B,i,j));
+            }
+        }
+        return max_overlap;
+    }
+    int overlap(vector<vector<int>>& A, vector<vector<int>>& B,int x,int y)
+    {
+        //the other top left coordinate is (x,y)
+        //need find the overlap of the two image, 
+        int xl,xr,yt,yb;
+        int n=A.size();
+        xl=max(x,0);
+        xr=min(x+n-1,n-1);
+        yt=max(y,0);
+        yb=min(y+n-1,n-1);
+        //cout<<x<<","<<y<<": "<<xl<<","<<xr<<","<<yt<<","<<yb<<endl;
+        int res=0;
+        for(int i=xl;i<=xr;i++)
+        {
+            for(int j=yt;j<=yb;j++) res+=A[i][j]*B[i-x][j-y];
+        }
+        return res;
+    }
+```
+	
 837	New 21 Game    		31.3%	Medium	
+sliding window and climing stairs
+```cpp
+     double new21Game(int N, int K, int W) {
+        //this is like climbing stairs. ith position can be obtained
+        //dp[i]=sum(dp[j])/W j=i-1 to i-W
+        if(N>=K+W || K==0) return 1.0;
+        vector<double> dp(K+1); //dp[i] is the probability to reach i points
+        dp[0]=1.0;
+        //dp[i]=sum(dp[j])/W for j=i-1 to i-w
+        double wsum=0;
+
+        for(int i=1;i<=K;i++)
+        {
+            if(i<=W) dp[i]=wsum+=dp[i-1]/W;
+            else {dp[i]=wsum+=(dp[i-1]-dp[i-W-1])/W;}
+        }
+        //copy(dp.begin(),dp.end(),ostream_iterator<double>(cout," "));
+        double ans=0;
+        for(int i=K-1;i>=max(K-W,0);i--)
+        {
+            int d=K-1-i;
+            int len=min(W-d,N-K+1);
+            ans+=len*dp[i]/W;
+        }
+        return ans;
+    }
+```
+	
 838	Push Dominoes    		43.7%	Medium	
+Intuition:
+Whether be pushed or not, depend on the shortest distance to 'L' and 'R'.
+Also the direction matters.
+Base on this idea, you can do the same thing inspired by this problem.
+https://leetcode.com/problems/shortest-distance-to-a-character/discuss/125788/
+
+Here is another idea that focus on 'L' and 'R'.
+'R......R' => 'RRRRRRRR'
+'R......L' => 'RRRRLLLL' or 'RRRR.LLLL'
+'L......R' => 'L......R'
+'L......L' => 'LLLLLLLL'
+
+Time Complexity:
+O(N)
+
+C++:
+
+    string pushDominoes(string d) {
+        d = 'L' + d + 'R';
+        string res = "";
+        for (int i = 0, j = 1; j < d.length(); ++j) {
+            if (d[j] == '.') continue;
+            int middle = j - i - 1;
+            if (i > 0) res += d[i];
+            if (d[i] == d[j]) res += string(middle, d[i]);
+            else if (d[i] == 'L' && d[j] == 'R') res += string(middle, '.');
+            else res += string(middle / 2, 'R') + string(middle % 2,'.') + string(middle / 2, 'L');
+            i = j;
+        }
+        return res;
+    }
+	
+	
 841	Keys and Rooms    		60.2%	Medium	
+given a list of room with keys
+bfs
+```cpp
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        unordered_set<int> visited;
+        queue<int> to_visit;
+        to_visit.push(0);
+        while(!to_visit.empty()) {
+            int curr = to_visit.front();
+            to_visit.pop();
+            visited.insert(curr);
+            for (int k : rooms[curr]) if (visited.find(k) == visited.end()) to_visit.push(k);
+        }
+        return visited.size() == rooms.size();
+    }
+```
+	
+
 845	Longest Mountain in Array    		34.2%	Medium	
+two pass to get the up length
+```cpp
+    int longestMountain(vector<int>& A) {
+        vector<int> up1(A.size()),up2(A.size());
+        for(int i=1;i<A.size();i++) if(A[i]>A[i-1]) up1[i]=up1[i-1]+1;
+        for(int i=A.size()-2;i>=0;i--) if(A[i]>A[i+1]) up2[i]=up2[i+1]+1;
+        int max0=INT_MIN;
+        for(int i=0;i<A.size();i++) if(up1[i] && up2[i]) max0=max(max0,up1[i]+up2[i]);
+        return max0==0||max0==INT_MIN?0:max0+1;
+    }
+```	
 846	Hand of Straights    		49.1%	Medium	
+divide the cards into W sized and they are consecatuve
+saved into a sorted map
+```cpp
+    bool isNStraightHand(vector<int> hand, int W) {
+        map<int, int> c;
+        for (int i : hand) c[i]++;
+        for (auto it : c)
+            if (c[it.first] > 0)
+                for (int i = W - 1; i >= 0; --i)
+                    if ((c[it.first + i] -= c[it.first]) < 0)
+                        return false;
+        return true;
+    }
+```	
+
 848	Shifting Letters    		40.6%	Medium	
+shift the first i+1 letters x times
+suffix sum to get each char's shift times
+```cpp
+    string shiftingLetters(string S, vector<int>& shifts) {
+        int n=shifts.size();
+        for(int i=n-2;i>=0;i--) shifts[i]+=shifts[i+1]%26;
+        for(int i=0;i<S.size();i++) 
+        {
+            int t=(S[i]-'a'+shifts[i])%26+'a';
+            S[i]=t;
+        }
+        return S;
+    }
+```
+	
 851	Loud and Rich    		47.6%	Medium	
+dfs
+```cpp
+    unordered_map<int, vector<int>> richer2;
+    vector<int> res;
+    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
+        for (auto v : richer) richer2[v[1]].push_back(v[0]);
+        res = vector<int> (quiet.size(), -1);
+        for (int i = 0; i < quiet.size(); i++) dfs(i, quiet);
+        return res;
+    }
+
+    int dfs(int i, vector<int>& quiet) {
+        if (res[i] >= 0) return res[i];
+        res[i] = i;
+        for (int j : richer2[i]) 
+            if (quiet[res[i]] > quiet[dfs(j, quiet)]) res[i] = res[j];
+        return res[i];
+    }
+```
+	
 853	Car Fleet    		39.6%	Medium	
+if a car catch up, it becomes the same speed as previous
+```cpp
+    int carFleet(int target, vector<int>& position, vector<int>& speed) {
+        if(speed.size()==0) return 0;
+        vector<double> time(speed.size());
+        //need sort these cars according to its position
+        vector<vector<int>> cars(speed.size(),vector<int>(2));
+        for(int i=0;i<speed.size();i++) {cars[i][0]=position[i];cars[i][1]=speed[i];}
+        sort(cars.begin(),cars.end());
+        for(int i=0;i<speed.size();i++) time[i]=double(target-cars[i][0])/cars[i][1];
+        //copy(time.begin(),time.end(),ostream_iterator<double>(cout," "));
+        //merge with previous if its time is less than previous
+        for(int i=speed.size()-2;i>=0;i--)
+        {
+            if(time[i]<time[i+1]) time[i]=time[i+1];
+        }
+        int num_grp=1;
+        //vector<int> fleet(speed.size());
+        for(int i=speed.size()-2;i>=0;i--) 
+        {
+            if(time[i]>time[i+1]) num_grp++;
+        }
+        return num_grp;
+    }
+```
+	
 855	Exam Room    		38.2%	Medium	
+this is an interval problem
+Very straight forward idea.
+Use a list L to record the index of seats where people sit.
+
+seat():
+1. find the biggest distance at the start, at the end and in the middle.
+2. insert index of seat
+3. return index
+
+leave(p): pop out p
+
+Time Complexity:
+O(N) for seat() and leave()
+
+C++:
+
+    int N;
+    vector<int> L;
+    ExamRoom(int n) {
+        N = n;
+    }
+
+    int seat() {
+        if (L.size() == 0) {
+            L.push_back(0);
+            return 0;
+        }
+        int d = max(L[0], N - 1 - L[L.size() - 1]);
+        for (int i = 0; i < L.size() - 1; ++i) d = max(d, (L[i + 1] - L[i]) / 2);
+        if (L[0] == d) {
+            L.insert(L.begin(), 0);
+            return 0;
+        }
+        for (int i = 0; i < L.size() - 1; ++i)
+            if ((L[i + 1] - L[i]) / 2 == d) {
+                L.insert(L.begin() + i + 1, (L[i + 1] + L[i]) / 2);
+                return L[i + 1];
+            }
+        L.push_back(N - 1);
+        return N - 1;
+    }
+
+    void leave(int p) {
+        for (int i = 0; i < L.size(); ++i) if (L[i] == p) L.erase(L.begin() + i);
+    }
+	
 856	Score of Parentheses    		56.1%	Medium	
+Given a balanced parentheses string S, compute the score of the string based on the following rule:
+
+() has score 1
+AB has score A + B, where A and B are balanced parentheses strings.
+(A) has score 2 * A, where A is a balanced parentheses string.
+ ```cpp
+     int scoreOfParentheses(string S) {
+        stack<int> st;
+        st.push(0);
+        for(int i=0;i<S.size();i++)
+        {
+            if(S[i]=='(') st.push(0);
+            else
+            {
+                int score=st.top();
+                st.pop();
+                if(score==0) score=1;
+                else score*=2;
+                st.top()+=score;
+            }
+        }
+        return st.top();
+    }
+```
+	
 858	Mirror Reflection    		51.9%	Medium	
+expand to 1d case
+```cpp
+    int mirrorReflection(int p, int q) {
+        int t=p*q/gcd(p,q);
+        //cout<<t;
+        int m=t/p,n=t/q;
+        //n: the number of extension along x, m: the number of extension along y
+        //m,n four combinations: 00,01,10,11
+        if(n%2 && m%2==0)  return 0;
+        if(n%2 && m%2) return 1;
+        if(n%2==0 && m%2) return 2;
+    }
+    int gcd(int a, int b)
+    {
+        if(b==0) return a;
+        else return gcd(b,a%b);
+    }
+```
+	
 861	Score After Flipping Matrix    		69.5%	Medium	
+flip row or columns and each row is a binary number, return the max sum
+greedy, the MSB > sum of all LSB
+```cpp
+    int matrixScore(vector<vector<int>>& A) {
+       //toggle the 0th col to 1 and then make 1 to be the majority
+        int m=A.size(),n=A[0].size();
+        for(int i=0;i<m;i++)
+        {
+            if(A[i][0]==0) //toggle this row
+            {
+                for(int j=0;j<n;j++) A[i][j]^=1;
+            }
+        }
+        for(int j=1;j<n;j++)
+        {
+            int cnt1=0;
+            for(int i=0;i<m;i++) cnt1+=A[i][j];
+            if(cnt1<(m+1)/2)
+            {
+                for(int i=0;i<m;i++) A[i][j]^=1;
+            }
+        }
+        int score=0;
+        for(int i=0;i<m;i++)
+        {
+            int t=0;
+            for(int j=0;j<n;j++) t+=(A[i][j]<<(n-1-j));
+            score+=t;
+        }
+        return score;
+    }
+```
+	
 863	All Nodes Distance K in Binary Tree    		47.2%	Medium	
+approach 1: convert the tree into graph and then use bfs or dfs
+
 865	Smallest Subtree with all the Deepest Nodes    		55.6%	Medium	
+check depth of left and right
+if depth is the same, return root
+if left>right, subproblem for left else for right
+O(N^2) 
+```cpp
+int depth(TreeNode *root) {
+    return !root ? 0 : max(depth(root->left), depth(root->right)) + 1;
+}
+
+TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+    int d = depth(root->left) - depth(root->right);
+    return !d ? root : subtreeWithAllDeepest(d > 0 ? root->left : root->right);
+}
+```
+we always want O(N) for tree problems
+similar to the lowest common ancestor.
+bfs: to find the last layer's left most node and right most node and find their lowest common ancestor
+```cpp
+    TreeNode* lca( TreeNode* root, TreeNode* p, TreeNode* q ) {
+        if ( !root || root == p || root == q ) return root;
+        TreeNode *left = lca( root->left, p, q );
+        TreeNode *right = lca (root->right, p, q );
+
+        return !left? right: !right? left: root;
+    }
+    
+    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+        if ( !root || !root->left && !root->right ) return root;
+        TreeNode *leftMost = NULL;
+        TreeNode *rightMost = NULL;
+        
+        queue<TreeNode*> q;
+        q.push(root);
+        while( !q.empty() ) {
+            int levelSize = q.size();
+            for(int level = 0; level < levelSize; level++ ) {
+                TreeNode* node = q.front(); q.pop();
+                if ( level == 0 ) leftMost = node;
+                if ( level == levelSize - 1 ) rightMost = node;
+                
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
+                
+            }
+        }
+        return lca( root, leftMost, rightMost );
+    }
+```
+	
 866	Prime Palindrome    		20.1%	Medium	
+Find the smallest prime palindrome greater than or equal to N.
+N<1e8
+brutal force
+All palindrome with even digits is multiple of 11. so only check odd digits
+```cpp
+    int primePalindrome(int N) {
+        if (8 <= N && N <= 11) return 11;
+        for (int x = 1; x < 100000; ++x) {
+            string s = to_string(x), r(s.rbegin(), s.rend());
+            int y = stoi(s + r.substr(1));
+            if (y >= N && isPrime(y)) return y;
+        }
+        return -1;
+    }
+    bool isPrime(int num) {
+        if (num < 2 || num % 2 == 0) return num == 2;
+        for (int i = 3; i * i <= num; i += 2)
+            if (num % i == 0) return false;
+        return true;
+    }
+```
+	
 869	Reordered Power of 2    		50.9%	Medium	
+brutal force: check 2^0 to 2^31 the digits is same as original
+
 870	Advantage Shuffle    		42.4%	Medium	
+greedy: if we cannot beat, choose the smallest one vs its largest
+```cpp
+	vector<int> advantageCount(vector<int>& A, vector<int>& B) {
+	  multiset<int> s(begin(A), end(A));
+	  for (auto i = 0; i < B.size(); ++i) {
+		auto p = *s.rbegin() <= B[i] ? s.begin() : s.upper_bound(B[i]);
+		A[i] = *p;
+		s.erase(p);
+	  }
+	  return A;
+	}
+```
+
 873	Length of Longest Fibonacci Subsequence    		46.1%	Medium	
+record the previous two elements.
+```cpp
+    int lenLongestFibSubseq(vector<int>& A) {
+        unordered_map<int, int> m;
+        int n = A.size(), res = 0;
+        int dp[n][n];//1d: up to ith element, 2d: n-1 element 
+        for (int i = 0; i < n; ++i) 
+        {
+            m[A[i]] = i;
+            for (int j = 0; j < i; ++j) 
+            {
+                int k=-1;
+                int d=A[i]-A[j];
+                if(m.count(d)) k=m[d];//search for n-2 element
+                dp[i][j] = (k>=0 && A[k]<A[j]) ? dp[j][k] + 1 : 2;
+                res = max(res, dp[i][j]);
+            }
+        }
+        return res > 2 ? res : 0;
+    }
+```	
+
 875	Koko Eating Bananas    		46.1%	Medium	
+N piles of banana, each hour koko eat K bananas. if the pile has less than K bananas, it eats it and does not eat in the hour.
+H hours, find the min K such that it can finish all in H hours
+binary search.
+```cpp
+    int minEatingSpeed(vector<int>& piles, int H) {
+        //binary search to satisfy the sum(A/K)=H
+        //min= average
+        //max= max
+        int total=0;
+        total=accumulate(piles.begin(),piles.end(),0);
+        int min=max(total/H,1);
+        int max=*max_element(piles.begin(),piles.end());
+        int mid=(min+max)/2;
+        while(min<max)
+        {
+            mid=(min+max)/2;
+            int time=eat_time(piles,mid);
+            if(time>H) min=mid+1;
+            else max=mid;//need goes to smaller 
+        }
+        return (min+max)/2;
+    }
+    int eat_time(vector<int>& piles,int k)
+    {
+        int time=0;
+        for(int i=0;i<piles.size();i++) time+=(piles[i]+k-1)/k;
+        return time;
+    }
+```	
+
 877	Stone Game    		61.3%	Medium	
+even number of piles, total stones are odd number
+greedy: choose odd or even index stones
+
 880	Decoded String at Index    		23.0%	Medium	
+leet2code3: repeat leet 2 times, repeat leetcode 3 times
+return the kth character
+K<10^9, the decoded string <2^63
+note each number is a single digit. can be multiple
+ha22 not repeat 22 times, but repeat ha 2 times haha and then repeat haha 2 times.
+
+just keep the length updating. if length==K we got it
+if length>K, 
+```cpp
+
+string decodeAtIndex(string &S, int K, long long len = 0) {
+  for (auto i = 0; i < S.size(); ++i) {
+    if (isalpha(S[i])) {
+      if (++len == K) return string(1, S[i]);
+    }
+    else {
+      if (len * (S[i] - '0') >= K) return decodeAtIndex(S, K % len == 0 ? len : K % len);
+      len *= S[i] - '0';
+    }
+  }
+}
+```
+optimized
+```cpp
+    string decodeAtIndex(string S, int K) {
+        long N = 0, i;
+        for (i = 0; N < K; ++i)
+            N = isdigit(S[i]) ? N * (S[i] - '0') : N + 1;
+        while (i--)
+            if (isdigit(S[i]))
+                N /= S[i] - '0', K %= N;
+            else if (K % N-- == 0)
+                return string(1, S[i]);
+        return "lee215";
+    }
+```
+	
 881	Boats to Save People    		43.7%	Medium	
+two people a time, weight limit. return the min number of boats
+greedy+two pointer
+```cpp
+    int numRescueBoats(vector<int>& people, int limit) {
+        sort(people.begin(),people.end());
+        int i=0,j=people.size()-1;
+        int total=0;
+        while(i<=j)
+        {
+            if(people[i]+people[j]<=limit) {i++;}
+            j--;
+            total++;
+        }
+        return total;
+    }
+```	
+
 885	Spiral Matrix III    		64.0%	Medium	
+while changing direction, length along direction also needs change.
+
+```cpp
+    vector<vector<int>> spiralMatrixIII(int R, int C, int r, int c) {
+        vector<vector<int>> res = {{r, c}};
+        int x = 0, y = 1, tmp;
+        for (int n = 0; res.size() < R * C; n++) {
+            for (int i = 0; i < n / 2 + 1; i++) {
+                r += x, c += y;
+                if (0 <= r && r < R && 0 <= c && c < C)
+                    res.push_back({r, c});
+            }
+            tmp = x, x = y, y = -tmp;
+        }
+        return res;
+    }
+```	
 886	Possible Bipartition    		40.6%	Medium	
+disliked pair cannot be on the same party
+convert edges into adjacency matrix and do dfs coloring
+```cpp
+    bool possibleBipartition(int N, vector<vector<int>>& dislikes) {
+        vector<int> color(N);
+        vector<vector<int>> adj(N);
+        for(int i=0;i<dislikes.size();i++)
+        {
+            adj[dislikes[i][0]-1].push_back(dislikes[i][1]-1);
+            adj[dislikes[i][1]-1].push_back(dislikes[i][0]-1);
+        }
+        for(int i=0;i<N;i++)
+        {
+            if(!color[i] && !dfs(adj,i,color,1)) return 0;
+        }
+        return 1;
+    }
+    bool dfs(vector<vector<int>>& adj,int i,vector<int>& color,int nc)
+    {
+        if(color[i]) return nc==color[i];
+        color[i]=nc;
+        for(int j=0;j<adj[i].size();j++) //adj[i] could be empty
+        {
+            int node=adj[i][j];
+            if(color[node] && color[node]!=-nc) return 0;
+            if(!color[node] && !dfs(adj,node,color,-nc)) return 0;
+        }
+        return 1;
+    }
+```
+	
 889	Construct Binary Tree from Preorder and Postorder Traversal    		59.8%	Medium	
+For two subarrays pre[a,b] and post[c,d], if we want to reconstruct a tree from them, we know that pre[a]==post[d] is the root node.
+
+[root][......left......][...right..]  ---pre
+[......left......][...right..][root]  ---post
+pre[a+1] is the root node of the left subtree.
+Find the index of pre[a+1] in post, then we know the left subtree should be constructed from pre[a+1, a+idx-c+1] and post[c, idx].
+
+for example pre=[1,2,4,5,3,6,7], post = [4,5,2,6,7,3,1]
+pre[0] and post.back() is the root. the first in the left (preorder) will be the last left node in post.
+so 2,4,5 is the left tree and 6,7,3 is the right tree.
+
+Here is my code:
+
+class Solution {
+public:
+    unordered_map<int, int> m; // value->index
+    TreeNode* constructFromPrePost(vector<int>& pre, vector<int>& post) {
+        int len = post.size();
+        for (int i = 0; i < len; i++) m[post[i]] = i;
+        return construct(pre, post, 0, len - 1, 0, len - 1);
+    }
+    
+    TreeNode* construct(vector<int>& pre, vector<int>& post, int a, int b, int c, int d) {
+        TreeNode* n = new TreeNode(pre[a]);
+        if (a == b) return n;
+        int t = pre[a + 1];
+        int idx = m[t];
+        int len = idx - c + 1;
+        n->left = construct(pre, post, a + 1, a + len, c, c + len - 1);
+        if (idx + 1 == d) return n;
+        n->right = construct(pre, post, a + len + 1, b, idx + 1, d - 1);
+        return n;
+    }
+};
+```
 890	Find and Replace Pattern    		71.1%	Medium	
+words pattern, all converted to same pattern
+```cpp
+    vector<string> findAndReplacePattern(vector<string>& words, string pattern) {
+        pattern=strmap(pattern);
+        vector<string> ans;
+        for(int i=0;i<words.size();i++)
+        {
+            //cout<<words[i]<<"->"<<strmap(words[i])<<endl;
+            if(strmap(words[i])==pattern) ans.push_back(words[i]);
+        }
+        return ans;
+    }
+    string strmap(string str)
+    {
+        int j=0;
+        unordered_map<char,char> ms;
+        for(int i=0;i<str.size();i++)
+        {
+            if(ms.count(str[i])) str[i]=ms[str[i]];
+            else {ms[str[i]]=j+'a';str[i]=j+'a';j++;}
+        }
+        return str;
+    }
+```
+	
 894	All Possible Full Binary Trees    		70.6%	Medium	
+N nodes: the combination is:
+left+right+1=N
+1,3,5,7,....
+```cpp
+    vector<TreeNode*> allPossibleFBT(int N) {
+        vector<TreeNode*> vt;
+        if(N<1 || N%2==0) return vt;
+        if(N==1) {vt.push_back(new TreeNode(0));return vt;}
+        N=N-1; //has a root subtracted
+        for(int i=1;i<N;i+=2) //i start from 1 since it shall be balanced
+        {
+            vector<TreeNode*> vl=allPossibleFBT(i);
+            vector<TreeNode*> vr=allPossibleFBT(N-i);
+            for(int j=0;j<vl.size();j++)
+                for(int k=0;k<vr.size();k++)
+                {
+                    TreeNode* r=new TreeNode(0);
+                    r->left=vl[j];
+                    r->right=vr[k];
+                    vt.push_back(r);
+                }
+        }
+        return vt;
+    }
+```	
+
 898	Bitwise ORs of Subarrays    		33.9%	Medium	
+return number of possible bitor results for all subarray
+brutal force:
+```cpp
+    int subarrayBitwiseORs(vector<int>& A) {
+        unordered_set<int> s;
+        for(int i=0;i<A.size();i++)
+        {
+            int t=0;
+            for(int j=i;j<A.size();j++) 
+                t|=A[j],s.insert(t);
+            //s.insert(A[i]);
+        }
+        return s.size();
+    }
+```
+TLE
+
+```cpp
+    int subarrayBitwiseORs(vector<int>& A) {
+        //sort(A.begin(),A.end());
+        //auto it=unique(A.begin(),A.end());
+        //A.resize(it-A.begin());
+        unordered_set<int> s,cur;
+        for(int i=0;i<A.size();i++)
+        {
+            unordered_set<int> t;
+            for(auto it=cur.begin();it!=cur.end();it++) 
+                t.insert(*it|A[i]);
+            t.insert(A[i]);//itself
+            for(auto it=t.begin();it!=t.end();it++)
+                s.insert(*it);
+            cur=t;
+        }
+        //copy(s.begin(),s.end(),ostream_iterator<int>(cout, " "));
+        
+        
+        return s.size();
+    }
+```
+
 900	RLE Iterator    		50.1%	Medium	
 901	Online Stock Span    		48.8%	Medium	
 904	Fruit Into Baskets    		41.4%	Medium	
