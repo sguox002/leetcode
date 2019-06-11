@@ -4008,59 +4008,1030 @@ a day=1440 mins, and diff=min(diff,1440-diff)
 722	Remove Comments    		31.2%	Medium	
 723	Candy Crush    		63.2%	Medium	
 725	Split Linked List in Parts    		48.9%	Medium	
+given k, divide it into k parts
+first get the whole length
+```cpp
+    vector<ListNode*> splitListToParts(ListNode* root, int k) {
+        vector<ListNode*> parts(k, nullptr);
+        int len = 0;
+        for (ListNode* node = root; node; node = node->next)
+            len++;
+        int n = len / k, r = len % k; // n : minimum guaranteed part size; r : extra nodes spread to the first r parts;
+        ListNode* node = root, *prev = nullptr;
+        for (int i = 0; node && i < k; i++, r--) {
+            parts[i] = node;
+            for (int j = 0; j < n + (r > 0); j++) {
+                prev = node;
+                node = node->next;
+            }
+            prev->next = nullptr;
+        }
+        return parts;
+    }
+```
+	
 729	My Calendar I    		47.3%	Medium	
+if exist double booking
+store the event in set (sorted)
+
 731	My Calendar II    		44.3%	Medium	
+triple booking. 
+approach 1: use double booking and check against the double booking
+approach 2: when a new event +1, meet the end, -1
+
 735	Asteroid Collision    		38.4%	Medium	
+two directions. right positive, left negative, absolute value is the mass.
+using stack 
+```cpp
+    vector<int> asteroidCollision(vector<int>& a) {
+        vector<int> s; // use vector to simulate stack.
+        for (int i = 0; i < a.size(); i++) {
+            if (a[i] > 0 || s.empty() || s.back() < 0) // a[i] is positive star or a[i] is negative star and there is no positive on stack
+                s.push_back(a[i]);
+            else if (s.back() <= -a[i]) { // a[i] is negative star and stack top is positive star
+                if(s.back() < -a[i]) i--; // only positive star on stack top get destroyed, stay on i to check more on stack.
+                s.pop_back(); // destroy positive star on the frontier;
+            } // else : positive on stack bigger, negative star destroyed.
+        }
+        return s;
+    }
+```
+
 737	Sentence Similarity II    		43.3%	Medium	
 738	Monotone Increasing Digits    		41.8%	Medium	
+given N find the largest number with monotone increasing digits <=N
+from right to left when we see current digit < previous, we decrease previous
+the followed can be all 9
+```cpp
+    int monotoneIncreasingDigits(int N) {
+        string n_str = to_string(N);
+        
+        int marker = n_str.size();
+        for(int i = n_str.size()-1; i > 0; i --) {
+            if(n_str[i] < n_str[i-1]) {
+                marker = i;
+                n_str[i-1]--;// = n_str[i-1]-1;
+            }
+        }
+        
+        for(int i = marker; i < n_str.size(); i ++) n_str[i] = '9';
+        
+        return stoi(n_str);
+    }
+```
+
+
 739	Daily Temperatures    		60.0%	Medium	
+how many days to wait for a warmer days. if not possible, put is as 0
+stack or array to simulate the stack
+```cpp
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        stack<int> st;
+        int n=temperatures.size(),j;
+        vector<int> ans(n);
+        for(int i=0;i<n;i++)
+        {
+            while(!st.empty() && temperatures[i]>temperatures[j=st.top()])
+            {
+                ans[j]=i-j;
+                st.pop();
+            }
+            st.push(i);
+        }
+        return ans;
+    }
+```	
+
 740	Delete and Earn    		45.9%	Medium	
+delete and earn nums[i], delete nums[i]-1 and nums[i]+1
+bucket sort to max range, and apply house robbing
+```cpp
+    int deleteAndEarn(vector<int>& nums) {
+        int n = 10001;
+        vector<int> values(n, 0);
+        for (int num : nums)
+            values[num] += num;
+
+        int take = 0, skip = 0;
+        for (int i = 0; i < n; i++) {
+            int takei = skip + values[i];
+            int skipi = max(skip, take);
+            take = takei;
+            skip = skipi;
+        }
+        return max(take, skip);
+    }
+```	
+
 742	Closest Leaf in a Binary Tree    		38.8%	Medium	
+
 743	Network Delay Time    		42.0%	Medium	
+directed graph, given a list of edges with the travel time.
+starting from a node, how long does it take for all nodes to receive the signal.
+if impossible return -1;
+
+using bellman or dijkstra by relaxing the distance using all edges repeating all nodes
+```cpp
+    int networkDelayTime(vector<vector<int>>& times, int N, int K) {
+        vector<int> dist(N + 1, INT_MAX);
+        dist[K] = 0;
+        for (int i = 0; i < N; i++) 
+        {
+            //for (vector<int> e : times) 
+            for(int j=0;j<times.size();j++)
+            {
+                vector<int>&  e=times[j];
+                int u = e[0], v = e[1], w = e[2];
+                if (dist[u] != INT_MAX && dist[v] > dist[u] + w) 
+                {
+                    dist[v] = dist[u] + w;
+                }
+            }
+        }
+
+        int maxwait = 0;
+        for (int i = 1; i <= N; i++)
+            maxwait = max(maxwait, dist[i]);
+        return maxwait == INT_MAX ? -1 : maxwait;
+    }
+```	
+
+
+
+
 750	Number Of Corner Rectangles    		64.5%	Medium	
 752	Open the Lock    		45.9%	Medium	
+digits 0-9. initial at 0000, a list of deadends if you turn to one of them, locker stopps turning
+minimum turns to the target.
+bfs:
+```cpp
+    int openLock(vector<string>& deadends, string target) {
+        unordered_set<string> dead(deadends.begin(),deadends.end());
+        //scr='0000'to target
+        //using dfs or bfs searching
+        //each char has two option: +1 or -1
+        if(dead.count(target) ||dead.count("0000")) return -1;
+        if(target=="0000") return 0;
+        return bfs(target,dead);
+        //dfs(src,target,0,min_steps,dead);
+        //return min_steps;
+    }
+    int bfs(string target,unordered_set<string>& dead)
+    {
+        queue<string> q;
+        q.push("0000");
+        unordered_set<string> visited;
+        visited.insert("0000");
+        int level=0;
+        while(!q.empty())
+        {
+            int sz=q.size();
+            for(int i=0;i<sz;i++)
+            {
+                string s=q.front();q.pop();
+                //cout<<s<<" ";
+                //add its 8 neighbors to the queue
+                for(int j=0;j<4;j++)
+                {
+                    string t=s;
+                    int c;
+                    c=s[j]-'0';
+                    t[j]=(c+1)%10+'0';
+                    if(dead.count(t) || visited.count(t)) {}
+                    else
+                    {
+                        //cout<<t<<" ";
+                        if(t==target) return level+1;
+                        q.push(t);visited.insert(t);
+                    }
+                    t[j]=(c-1+10)%10+'0';
+                    if(dead.count(t) || visited.count(t)) continue;
+                    //cout<<t<<" ";
+                    if(t==target) return level+1;
+                    q.push(t);visited.insert(t);//}
+                }
+            }
+            //cout<<endl;
+            level++;
+        }
+        return -1;
+    }
+```	
+
 755	Pour Water    		40.4%	Medium	
 756	Pyramid Transition Matrix    		51.5%	Medium	
+dfs
+
 763	Partition Labels    		70.3%	Medium	
+using char's last index.
+keep updating the max dist
+when index==maxdist, then we get a group.
+
 764	Largest Plus Sign    		43.3%	Medium	
+straightforward or naiva approach
+```cpp
+    int orderOfLargestPlusSign(int N, vector<vector<int>>& mines) {
+        vector<vector<int>> mat(N,vector<int>(N,1));
+        for(int i=0;i<mines.size();i++) mat[mines[i][0]][mines[i][1]]=0;
+        int max_ord=0;
+        for(int i=0;i<N;i++)
+        {
+            for(int j=0;j<N;j++)
+            {
+                if(mat[i][j]) max_ord=max(max_ord,order(mat,i,j));
+            }
+        }
+        return max_ord;
+    }
+    
+    int order(vector<vector<int>>& M,int i,int j)
+    {
+        int k=1,N=M.size();
+        while(1)
+        {
+            //if(i-k<0||i+k>N-1||j-k<0||j+k>N-1) return k;
+            if(i-k<0 || i+k>N-1 || j-k<0 || j+k>N-1) return k;
+            if(M[i-k][j] && M[i+k][j] && M[i][j-k] && M[i][j+k]) k++;
+            else return k;
+        }
+    }
+```
+	
 767	Reorganize String    		42.2%	Medium	
+adjacent char are different.
+using priority_queue
+
 769	Max Chunks To Make Sorted    		51.6%	Medium	
+compare with sorted
+
 775	Global and Local Inversions    		38.8%	Medium	
+local inversion is also global inversion.
+that means it shall only include local inversion
+```cpp
+    bool isIdealPermutation(vector<int>& A) {
+	for (int i = 0; i < A.size(); ++i) {
+            if (abs(A[i] - i) > 1) return false;
+        }
+	return true;
+    }
+```
+	
 776	Split BST    		52.5%	Medium	
 777	Swap Adjacent in LR String    		33.3%	Medium	
+string contains LRX
+a move: XL->LX or RX->XR
+given start and end, check if it is possible to transform from start to end
+L can keep moving left until meet R
+R can keep moving right until meet L
+can we just ignore the X? no the L and R position information get lost.
+add position information.
+
+```cpp
+    bool canTransform(string start, string end) {
+        //L can move left until meet R only
+        //R can move right until meet L only
+        //the end string shall keep exactly the same LR ordering,
+        //with all L index<=its original index, and all its R index>=original R index
+        vector<int> lpos,rpos;
+        string s;
+        for(int i=0;i<start.size();i++)
+        {
+            if(start[i]=='L') {lpos.push_back(i);s+="L";}
+            if(start[i]=='R') {rpos.push_back(i);s+='R';}
+        }
+        vector<int> lpos1,rpos1;
+        string s1;
+        for(int i=0;i<end.size();i++)
+        {
+            if(end[i]=='L') {lpos1.push_back(i);s1+="L";}
+            if(end[i]=='R') {rpos1.push_back(i);s1+='R';}
+        }
+        if(s!=s1) return 0;
+        for(int i=0;i<lpos.size();i++) if(lpos[i]<lpos1[i]) return 0;
+        for(int i=0;i<rpos.size();i++) if(rpos[i]>rpos1[i]) return 0;
+        return 1;
+    }
+```	
+
+
+
 779	K-th Symbol in Grammar    		37.5%	Medium	
+0->01 1->10. this forms a complete binary tree
+kth digit in Nth row.
+
+the idea is: using k to determine the kth node located on left or right side on each layer.
+```cpp
+    int kthGrammar(int N, int K) {
+        vector<int> bnum(N);
+        for(int i=N;i>=1;i--) {bnum[i-1]=K;K=(K+1)/2;}
+        int last_symbol=0;
+        for(int i=0;i<N-1;i++)
+        {
+            //cout<<"parent="<<last_symbol<<" K="<<bnum[i+1]<<endl;
+            if(bnum[i+1]%2==0) //right branch
+            {
+                if(last_symbol) last_symbol=0;else last_symbol=1;
+            }
+            else //left branch
+            {
+                if(last_symbol) last_symbol=1;else last_symbol=0;
+            }
+        }
+        return last_symbol;
+    }
+```
+	
 781	Rabbits in Forest    		51.7%	Medium	
+rabbit will see how many other rabbits in the same color.
+
+```cpp
+    int numRabbits(vector<int>& answers) {
+        unordered_map<int,int> mp; //num-color vs number of rabits
+        for(int i=0;i<answers.size();i++) mp[answers[i]+1]++;
+        int num_rab=0;
+        for(auto it=mp.begin();it!=mp.end();it++)
+        {
+                if(it->second%it->first) num_rab+=(it->second/it->first+1)*it->first;
+                else num_rab+=it->second/it->first*it->first;
+        }
+        return num_rab;
+    }
+```	
 785	Is Graph Bipartite?    		43.3%	Medium	
+dfs using coloring
+```cpp
+    bool isBipartite(vector<vector<int>>& graph) {
+        //use coloring 0: not color, 1, -1
+        int n=graph.size(); //num of nodes
+        vector<int> color(n); 
+        for(int i=0;i<n;i++)
+        {
+            if(!color[i] && !dfs(graph,i,color,1)) return 0;
+        }
+        return 1;
+    }
+    bool dfs(vector<vector<int>>& graph,int i,vector<int>& color,int nc)
+    {
+        if(color[i]) return color[i]==nc;
+        color[i]=nc;
+        for(int j=0;j<graph[i].size();j++)
+        {
+            if(!dfs(graph,graph[i][j],color,-nc)) return 0; //adjacent reverse color
+        }
+        return 1;
+    }
+```	
+
 787	Cheapest Flights Within K Stops    		34.8%	Medium	
+bellman
+```cpp
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K)
+    {
+        K++;
+        vector<vector<int>> dp(n, vector<int>(K+1,INT_MAX));
+        dp[src][0] = 0;
+        for(int i = 1; i <= K; i++)
+        {
+            for(int j = 0; j < n; j++)   //To update ans[j][i](using i steps), we copy ans[j][i-1] first
+                dp[j][i] = dp[j][i-1];
+            for(const vector<int>& f: flights) //iterate all flights: f[0]: from, f[1]: to, f[2], price
+            {
+                if(dp[f[0]][i-1]<INT_MAX)
+                dp[f[1]][i] = min(dp[f[1]][i], dp[f[0]][i-1] + f[2]);
+            }
+        }
+        if(dp[dst][K] == INT_MAX) return -1;
+        return dp[dst][K];
+    }
+```
+	
 789	Escape The Ghosts    		55.2%	Medium	
+just to see who arrives the destination first
+```cpp
+    bool escapeGhosts(vector<vector<int>>& ghosts, vector<int>& target) {
+        //to see who is closer to the target
+        int min_dist=INT_MAX;
+        int dx,dy;
+        int dist=abs(target[0])+abs(target[1]);
+        for(int i=0;i<ghosts.size();i++)
+        {
+            dx=abs(ghosts[i][0]-target[0]);
+            dy=abs(ghosts[i][1]-target[1]);
+            if(dx+dy<dist) return 0;
+            min_dist=min(min_dist,dx+dy);
+            //cout<<min_dist<<":"<<dx+dy<<endl;
+        }
+        
+        return dist<min_dist;
+    }
+```
+	
 790	Domino and Tromino Tiling    		35.7%	Medium	
+having L and I shape
+build 2N tiles
+return the number of ways to build it.
+dp: 
+```cpp
+    int numTilings(int N) {
+        int md=1e9;
+        md+=7;
+        vector<long long> v(1001,0);
+        v[1]=1;
+        v[2]=2;
+        v[3]=5;
+        if(N<=3)
+            return v[N];
+        for(int i=4;i<=N;++i){
+            v[i]=2*v[i-1]+v[i-3]; 
+            v[i]%=md;
+        }
+        return v[N];
+	}
+```
+
+
 791	Custom Sort String    		61.9%	Medium	
+s is sorted using some customized method, no duplicate
+sort string T
+count sorting T.
+```cpp
+    string customSortString(string S, string T) {
+        unordered_map<char,int> mp1;//char, count
+        for(int i=0;i<T.size();i++) mp1[T[i]]++;
+        string s;
+        for(int i=0;i<S.size();i++)        
+        {
+            char c=S[i];
+            if(mp1.count(c)) 
+            {
+                s.append(mp1[c],c);
+                mp1.erase(c);
+            }
+        }
+        //remaining characters, what ever sequence
+        for(auto it=mp1.begin();it!=mp1.end();it++)
+            s.append(it->second,it->first);
+        return s;
+    }
+```	
+
 792	Number of Matching Subsequences    		42.9%	Medium	
+a list of word, find the number of words which is a subsequence of S
+word array is large, so try to avoid naive approach.
+to improve a bit, save all the index for each char (26), bianry search, then update the index
+```cpp
+    int numMatchingSubseq(string S, vector<string>& words) {
+        unordered_map<char,vector<int>> mp,tmp;
+        for(int i=0;i<S.size();i++) mp[S[i]].push_back(i);
+        int num=0;
+        for(int i=0;i<words.size();i++)
+        {
+            bool match=1;
+            int prev_ind=-1;
+            for(int j=0;j<words[i].size();j++)
+            {
+                char c=words[i][j];
+                if(mp.count(c))
+                {
+                    auto it=upper_bound(mp[c].begin(),mp[c].end(),prev_ind);
+                    if(it==mp[c].end()) {match=0;break;}
+                    else prev_ind=*it;//int(it-mp[c].begin());
+                    //cout<<words[i]<<":"<<prev_ind<<endl;
+                }
+                else {match=0;break;}
+            }
+            if(match) num++;
+        }
+        return num;
+    }
+```	
+
 794	Valid Tic-Tac-Toe State    		29.5%	Medium	
+array 3x3, start 'x' first.
+```cpp
+bool validTicTacToe(vector<string>& board) {
+    bool wony = false, wonx = false;
+    int rows = board.size();
+    int cols = rows ? board[0].size() : 0;
+    int diax = 0, diay = 0, xdiax = 0, xdiay = 0, xx = 0, yy = 0;
+    for(int i = 0; i < rows; i++) 
+    {
+        int rowsx = 0, rowsy = 0;
+        int colsx = 0, colsy = 0;
+        for(int j = 0; j < cols; j++) 
+        {
+            // see current row
+            if(board[i][j] == 'X') {rowsx++,xx++;}//xx:total x
+            if(board[i][j] == 'O') {rowsy++, yy++;}//yy:total O
+            // see ith column
+            if(board[j][i] == 'X') colsx++;
+            if(board[j][i] == 'O') colsy++;
+        }
+        
+        // see both the diagonals
+        if(board[i][i] == 'X') diax++;
+        if(board[i][i] == 'O') diay++;
+        if(board[i][cols - 1 - i] == 'X') xdiax++;
+        if(board[i][cols - 1 - i] == 'O') xdiay++;
+        
+        if(rowsx == 3 || colsx == 3 || diax == 3 || xdiax == 3)
+            wonx = true;
+        
+         if(rowsy == 3 || colsy == 3 || diay == 3 || xdiay == 3)
+            wony = true;
+    }
+    
+    if(xx < yy || !(xx == yy || xx == yy + 1))
+        return false;
+    
+    if((wonx && wony) || (wonx && xx == yy) || (wony && xx != yy))
+        return false;
+    
+    return true;
+}
+```
 795	Number of Subarrays with Bounded Maximum    		43.2%	Medium	
+max in the subarray is in the range [L,R]
+A[i]<L
+A[i]>R
+L<=A[i]<=R
+```cpp
+    int numSubarrayBoundedMax(vector<int>& A, int L, int R) {
+        int preId=0;
+        int lowId=0;
+        int count=0;
+        int maxP=-1;
+        for(int i=0; i<A.size(); i++){
+            if(A[i]>=L && A[i]<=R){
+                count+=i-preId+1;
+                lowId=i;
+            }
+            else if(A[i]<L && maxP>=L){
+                count+=lowId-preId+1;
+            }
+            else if(A[i]>R){
+                maxP=-1;
+                preId=i+1;
+                lowId=i;
+            }
+            if(maxP<A[i] && A[i]<=R) maxP=A[i];
+        }
+        return count;
+    }
+```
+	
 797	All Paths From Source to Target    		70.5%	Medium	
+bfs or dfs with backtracking
+```cpp
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+       //dfs to search all the path
+        vector<vector<int>> ans;
+        dfs(graph,0,vector<int>(1,0),ans);
+        return ans;
+    }
+    void dfs(vector<vector<int>>& graph,int node,vector<int> v,vector<vector<int>>& ans)
+    {
+        if(node==graph.size()-1) {ans.push_back(v);return;}
+        for(int i=0;i<graph[node].size();i++)
+        {
+            v.push_back(graph[node][i]);
+            dfs(graph,graph[node][i],v,ans);
+            v.pop_back();
+        }
+    }
+```
+
 799	Champagne Tower    		34.0%	Medium	
+dp: given the surplus to j and j+1 on row i+1.
+```cpp
+    double champagneTower(int poured, int query_row, int query_glass) {
+        //dp: given the surplus to j and j+1 on next layer
+        vector<vector<double>> dp(query_row+2,vector<double>(query_row+2));
+        dp[0][0]=poured;
+        for(int i=0;i<=query_row;i++)
+        {
+            for(int j=0;j<=i;j++)
+            {
+                if(dp[i][j]>1)
+                {
+                    double surplus=dp[i][j]-1;
+                    dp[i+1][j]+=surplus/2;
+                    dp[i+1][j+1]+=surplus/2;
+                    dp[i][j]=1.0;
+                }
+            }
+        }
+        return dp[query_row][query_glass];
+    }
+```
+	
 801	Minimum Swaps To Make Sequences Increasing    		34.6%	Medium	
+swap A and B at the same position
+greedy or dp
+```cpp
+    int minSwap(vector<int>& A, vector<int>& B) {
+        const size_t n = A.size();
+        vector<int> swap(n, n), no_swap(n, n);
+        swap[0] = 1;
+        no_swap[0] = 0;
+        for (size_t i = 1; i < n; ++i) {
+            if (A[i] > A[i - 1] && B[i] > B[i - 1]) {
+                // If we swap position i, we need to swap position i - 1.
+                swap[i] = swap[i - 1] + 1;
+                
+                // If we don't swap position i , we should not swap position i - 1.
+                no_swap[i] = no_swap[i - 1];
+            }
+            
+            if (A[i] > B[i - 1] && B[i] > A[i - 1]) {
+                // If we swap position i, we should not swap position i - 1.
+                swap[i] = std::min(swap[i], no_swap[i - 1] + 1);
+                
+                // If we don't swap position i, we should swap position i - 1.
+                no_swap[i] = std::min(no_swap[i], swap[i - 1]);
+            }
+        }
+        
+        return std::min(swap.back(), no_swap.back());
+    }
+```
+	
 802	Find Eventual Safe States    		43.6%	Medium	
+directed graph, if goes to a cycle, all nodes on the cycle shall be removed.
+
+dfs
+```cpp
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        //dfs to see if it can walk to a terminal (all paths)
+        vector<int> ans;
+        vector<int> safenodes(graph.size(),-1);
+        for(int i=0;i<graph.size();i++)
+        {
+            unordered_set<int> visited;
+            if(isSafeNode(graph,i,visited,safenodes)) ans.push_back(i);
+        }
+        return ans;
+    }
+    
+    bool isSafeNode(vector<vector<int>>& graph,int start,unordered_set<int> visited,vector<int>& safenodes)
+    {
+        //all paths reaches to terminal. If one case fail, then fail
+        //failed case: we had a cycle
+        //we need add memoization 
+        if(safenodes[start]>-1) return safenodes[start];
+        if(graph[start].size()==0) {return 1;} //cannot mark it as safe if only one path is safe
+        if(visited.count(start)) {return 0;} //
+        for(int i=0;i<graph[start].size();i++)
+        {
+            visited.insert(start);
+            if(!isSafeNode(graph,graph[start][i],visited,safenodes)) 
+            {
+                //all visited nodes shall mark as not safe
+                safenodes[start]=0;
+                return 0;
+            }
+            visited.erase(start);
+        }
+        safenodes[start]=1;
+        return 1;
+    }
+```	
 807	Max Increase to Keep City Skyline    		81.4%	Medium	
+looking from up or bottom no change
+looking from left or right no change
+straighforward: just compare its row max and col max and increase the diff.
+
+```cpp
+    int maxIncreaseKeepingSkyline(vector<vector<int>>& grid) {
+        int m=grid.size(),n=grid[0].size();
+        vector<int> max_lr(m),max_ub(n);
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++) max_lr[i]=max(max_lr[i],grid[i][j]);
+        }
+        for(int j=0;j<n;j++)
+        {
+            for(int i=0;i<m;i++) max_ub[j]=max(max_ub[j],grid[i][j]);
+        }
+        int total=0;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++) total+=min(max_lr[i],max_ub[j])-grid[i][j];
+        }
+        return total;
+    }
+```	
 808	Soup Servings    		37.1%	Medium	
+recursive or dfs
+```cpp
+vector<vector<double>> prob(200,vector<double>(200,-1.0));//goes to N->5000/25
+class Solution {
+public:
+    //using dfs
+    double soupServings(int N) {
+        int m=ceil(N/25.0);//each serving is 25
+        if(m>=200) return 1.0;
+        return helper(m,m);
+    }
+    double helper(int ma,int mb)
+    {
+        if(ma<=0 && mb>0) return 1.0;
+        if(ma<=0 && mb<=0) return 0.5;
+        if(mb<=0) return 0.0;
+        if(prob[ma][mb]>0) return prob[ma][mb]; //has to put behind the above since ma mb cannot be used as index
+        return prob[ma][mb]=0.25*(helper(ma-4,mb)+helper(ma-3,mb-1)+helper(ma-2,mb-2)+helper(ma-1,mb-3));
+    }
+```
+	
 809	Expressive Words    		43.5%	Medium	
+two pointer compare
+
 813	Largest Sum of Averages    		45.1%	Medium	
+dp:
+```cpp
+    double largestSumOfAverages(vector<int>& A, int K) {
+        if(A.empty() || K == 0)  return 0;
+        vector<vector<double>> dp(K+1,vector<double>(A.size(),0));
+        for(int i=1;i<A.size();i++) A[i]+=A[i-1];
+        for(int i=0;i<A.size();i++) dp[1][i]=double(A[i])/(i+1);
+        for(int k = 2; k <= K; k++)
+        {
+            for(int i = k-1; i < A.size(); i++) //0 to i needs k groups
+            { 
+                for(int j = k-2 ; j < i; j++) //0 to j needs k-1 groups
+                {
+                    dp[k][i] = max(dp[k-1][j]+double(A[i]-A[j])/(i - j),dp[k][i]);
+                }
+            }
+        }
+        return dp[K][A.size()-1];
+    }
+```	
+
 814	Binary Tree Pruning    		70.9%	Medium	
+all subtree not containing 1 is removed. 
+similar to the problem: sufficientSubset
+```cpp
+    TreeNode* pruneTree(TreeNode* root) {
+        return prune(root);
+     
+    }
+    
+    TreeNode* prune(TreeNode*& root)
+    {
+        if(!root) return 0;
+        if(root->left)
+        {
+            if(!root->left->left && !root->left->right && !root->left->val) root->left=0;
+            else root->left=prune(root->left);
+        }
+        
+        if(root->right)
+        {
+            if(!root->right->left && !root->right->right && !root->right->val) root->right=0;
+            else root->right=prune(root->right);
+        }
+        if(!root->left && !root->right && !root->val) //need remove itself
+            root=0;
+        return root;        
+    }
+```
+
 816	Ambiguous Coordinates    		44.1%	Medium	
+return all the possible coordinate using the string (x,y)
+```cpp
+    vector<string> ambiguousCoordinates(string S) {
+        //add a , in the string, for the separated half, we can add a . to each of them
+        //first we separate it using ,
+        //only rule: it cannot be all zero, except it has one zero
+        vector<string> vs;
+        string s=S.substr(1,S.length()-2); //remove ()
+        //cout<<s<<endl;
+        for(int i=1;i<=s.length()-1;i++)
+        {
+            string a=s.substr(0,i);
+            string b=s.substr(i);
+            //cout<<"check "<<a<<" "<<b<<endl;
+            helper(a,b,vs);
+        }
+        return vs;
+    }
+    
+    void helper(string a,string b,vector<string>& vs)
+    {
+        if(!is_legal(a) || !is_legal(b) ) return;
+        //both are legal, then we can add decimal to each of the string
+        //zero or one decimal point to the string
+        vector<string> va=add_decimal(a);
+        vector<string> vb=add_decimal(b);
+        //cout<<"add decimal:"<<b<<":"<<vb.size()<<endl;
+        for(int i=0;i<va.size();i++)
+        {
+            for(int j=0;j<vb.size();j++) vs.push_back("("+va[i]+", "+vb[j]+")");
+        }
+    }
+    bool is_legal(string& a)
+    {
+        if(stoi(a)==0) return a.size()==1;
+        //if(a.size()>1 && a[0]=='0') return 0;
+        return 1;
+    }
+    
+    bool is_validInt(string& a) //the decimal 
+    {
+        if(a.size()>1 && a[0]=='0') return 0;
+        return 1;
+    }
+    bool is_validDecimal(string& s) //after the ., cannot be zero at the end
+    {
+        return s.back()!='0';
+    }
+    vector<string> add_decimal(string& s)
+    {
+        vector<string> ans;
+        if(s.size()==1 || s[0]!='0') ans.push_back(s); //if no decimal is legal?
+        //note the last digit after decimal cannot be 0
+        for(int i=1;i<=s.size()-1;i++)
+        {
+            string a=s.substr(0,i),b=s.substr(i);
+            if(b.back()=='0') continue;
+            if(is_validInt(a) && is_validDecimal(b)) 
+                ans.push_back(a+"."+b);
+        }
+        return ans;
+    }
+```
+	
 817	Linked List Components    		54.6%	Medium	
+```cpp
+    int numComponents(ListNode* head, vector<int>& G) {
+        unordered_set<int> myset(G.begin(),G.end());
+        int grp=0,cnt=0;
+        while(head)
+        {
+            if(myset.count(head->val)) cnt++;
+            else {if(cnt) {grp++;cnt=0;}}
+            head=head->next;
+        }
+        if(cnt) grp++;
+        return grp;
+    }
+```
+	
 820	Short Encoding of Words    		47.1%	Medium	
+if a word is a suffix of another word, then the word is hidden
+sort the words from longest to shortest
+build suffix tree by adding all its suffix
+```cpp
+bool cmp(const string& a,const string& b) {return a.size()>b.size();}
+class Solution {
+public:
+    int minimumLengthEncoding(vector<string>& words) {
+        //only can be encoded if one words in a suffix of another word
+        //sort the string using its length
+        
+        unordered_set<string> ms;
+        int total=0,total_len=0;
+        //sort the string by length
+        sort(words.begin(),words.end(),cmp);
+        for(int i=0;i<words.size();i++)
+        {
+            if(ms.count(words[i])) //found in the suffix, this word is hidden
+            {
+                total++;continue;
+            }
+            total_len+=words[i].size();
+            ms.insert(words[i]);
+            for(int j=1;j<words[i].size()-1;j++) ms.insert(words[i].substr(j));
+        }
+        return total_len+=(words.size()-total);
+    }
+};
+```
+
 822	Card Flipping Game    		40.3%	Medium	
+card has front number and back number.
+If the number X on the back of the chosen card is not on the front of any card, then this number X is good.
+what is the smallest number that is good.
+```cpp
+    int flipgame(vector<int>& fronts, vector<int>& backs) {
+       unordered_set<int> ms;
+        for(int i=0;i<fronts.size();i++)
+            if(fronts[i]==backs[i]) ms.insert(fronts[i]);
+        int min_num=INT_MAX;
+        for(int i=0;i<fronts.size();i++) if(!ms.count(fronts[i])) min_num=min(min_num,fronts[i]);
+        for(int i=0;i<fronts.size();i++) if(!ms.count(backs[i])) min_num=min(min_num,backs[i]);
+        return min_num==INT_MAX?0:min_num;
+    }
+```	
+
 823	Binary Trees With Factors    		32.4%	Medium	
+given an array, elements>1, build a tree: nodes value=its product of child
+return the number of trees can build.
+number can be used multiple times
+dp:
+```cpp
+    int numFactoredBinaryTrees(vector<int>& A) {
+        //a single node automatically satisify
+        //this is a coin-change similar problem
+        //for any number we shall try all possible combinations
+        vector<long long> dp(A.size(),1);//long long is key!
+        sort(A.begin(),A.end());
+        const int tt=1000000000+7;
+        //A[i]=A[j]*A[i/j]
+        unordered_map<int,int> ms;//value with index
+        for(int i=0;i<A.size();i++)
+        {
+            ms[A[i]]=i;
+            for(int j=i-1;j>=0;j--) 
+            {
+                if(A[i]%A[j]==0)//find one factor
+                {
+                    int t=A[i]/A[j];
+                    if(ms.count(t)) dp[i]+=(dp[j]*dp[ms[t]])%tt;
+                }
+            }
+        }
+        //copy(dp.begin(),dp.end(),ostream_iterator<int>(cout," "));
+        long long ans=0;
+        ans=accumulate(dp.begin(),dp.end(),0LL);
+        //for(int i=0;i<dp.size();i++) ans=(ans+dp[i])%tt;
+        return ans%tt;//%tt+7;
+    }
+```
+	
 825	Friends Of Appropriate Ages    		36.2%	Medium	
+cannot make friend request if any condition is true:
+age[B] <= 0.5 * age[A] + 7
+age[B] > age[A]
+age[B] > 100 && age[A] < 100
+
+```cpp
+    int numFriendRequests(vector<int>& ages) {
+        int va[121]={0};
+        for(int i=0;i<ages.size();i++) va[ages[i]]++;
+        //larger age friend request smaller age
+        //age difference
+        //can use binary search
+        int total=0;
+        for(int i=1;i<=120;i++)
+        {
+            if(i>14 && va[i]>1) total+=va[i]*(va[i]-1); //C1 condition
+            if(i>1 && va[i]) //2nd condition, only friend request with smaller age
+            {
+                int smallest_age=i/2+7+1;//>age C1 condition
+                //cout<<smallest_age<<endl;
+                for(int j=smallest_age;j<i;j++) total+=va[j]*va[i];
+            }
+        }
+        return total;
+    }
+```	
 826	Most Profit Assigning Work    		35.6%	Medium	
+difficulty, profit
+worker[i] is the ability to work on job with difficulty
+each worker can be assigned at most one work
+return the largest profit
+approach:
+build a sorted map: difficulty vs max profit
+search for the person who can do the job with the max profit
+zip difficulty and profit as jobs.
+sort jobs and sort 'worker'.
+2 pointers idea, for each worker, find his maximum profit he can make under his ability.
+Because we have sorted jobs and worker, we will go through two lists only once.
+It will be only O(M+N).
+Time Complexity
+O(NlogN + MlogM), as we sort list.
+
+```cpp
+    int maxProfitAssignment(vector<int>& difficulty, vector<int>& profit, vector<int>& worker) {
+        map<int,int> vp;
+        for(int i=0;i<profit.size();i++) 
+			vp[difficulty[i]]=max(vp[difficulty[i]],profit[i]);
+        vp[INT_MAX]=0;//add one as the end so worker>max can work
+        sort(worker.begin(),worker.end());
+        int i=0,max_profit=0,total=0; //max shall be 0
+        for(auto it=vp.begin();it!=vp.end();it++)
+        {
+            while(it->first>worker[i])
+            {
+                total+=max_profit;
+                //cout<<worker[i]<<":"<<max_profit<<endl;
+                i++;
+                if(i>=worker.size()) break;
+            }
+            if(i>=worker.size()) break;
+            max_profit=max(max_profit,it->second);
+        }
+        return total;
+    }
+```	
 831	Masking Personal Information    		42.1%	Medium	
 833	Find And Replace in String    		46.1%	Medium	
 835	Image Overlap    		52.3%	Medium	
 837	New 21 Game    		31.3%	Medium	
 838	Push Dominoes    		43.7%	Medium	
 841	Keys and Rooms    		60.2%	Medium	
-
 845	Longest Mountain in Array    		34.2%	Medium	
 846	Hand of Straights    		49.1%	Medium	
 848	Shifting Letters    		40.6%	Medium	
