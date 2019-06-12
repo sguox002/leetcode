@@ -7477,33 +7477,785 @@ remove all balanced using stack
 998	Maximum Binary Tree II    		61.8%	Medium	
 1003	Check If Word Is Valid After Substitutions    		51.9%	Medium	
 1004	Max Consecutive Ones III    		53.2%	Medium	
+sliding window with at most K zeros inside
+```cpp
+    int longestOnes(vector<int>& A, int K) {
+       //a sliding window which contains zeros<=K
+        int i=0,j=0;
+        int cnt0=0,ans=0;
+        while(j<A.size())
+        {
+            if(A[j]==0) cnt0++;
+            while(cnt0>K) cnt0-=(A[i++]==0); 
+            ans=max(ans,j-i+1);
+            j++;
+        }
+        return ans;
+    }
+```	
 1006	Clumsy Factorial    		54.1%	Medium	
+clumsy(10) = 10 * 9 / 8 + 7 - 6 * 5 / 4 + 3 - 2 * 1.
+
+```cpp
+    int clumsy(int N) {
+       int ans=N;
+        char op[]={'*','/','+','-'};
+        stack<int> st;
+        int j=0;
+        for(int i=N-1;i>=1;i--)
+        {
+            switch(op[j%4])
+            {
+                case '*': ans*=i;break;
+                case '/': ans/=i;break;
+                case '+': if(st.size()) {ans=st.top()-ans;st.pop();}ans+=i;break;
+                case '-': st.push(ans);ans=i;break;
+            }
+            //cout<<ans<<endl;
+            j++;
+        }
+        if(st.size()) {ans=st.top()-ans;st.pop();}
+        return ans;
+    }
+```	
 1007	Minimum Domino Rotations For Equal Row    		47.6%	Medium	
+must swap to the first column.
+```cpp
+    int minDominoRotations(vector<int>& A, vector<int>& B) {
+        int n = A.size();
+        for (int i = 0, a = 0, b = 0; i < n && (A[i] == A[0] || B[i] == A[0]); ++i) {
+            if (A[i] != A[0]) a++;
+            if (B[i] != A[0]) b++;
+            if (i == n - 1) return min(a, b);
+        }
+        for (int i = 0, a = 0, b = 0; i < n && (A[i] == B[0] || B[i] == B[0]); ++i) {
+            if (A[i] != B[0]) a++;
+            if (B[i] != B[0]) b++;
+            if (i == n - 1) return min(a, b);
+        }
+        return -1;
+    }
+```	
+
 1008	Construct Binary Search Tree from Preorder Traversal    		72.8%	Medium	
+root is the max > left but < right
+```cpp
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        //root, left, right
+        return helper(preorder,0,preorder.size());
+    }   
+    TreeNode* helper(vector<int>& preorder,int l,int r)        
+    {
+        //divide by two parts, the left and right, the first is the root
+        if(l>=r) return NULL;
+        TreeNode *root=new TreeNode(preorder[l]);
+        int left=l+1;
+        int right=r;
+        right=upper_bound(preorder.begin()+left,preorder.begin()+right,preorder[l])-preorder.begin();
+        /*for(int i=left;i<right;i++) 
+        {
+            if(preorder[i]>preorder[l]) {right=i;break;}
+        }*/
+        root->left=helper(preorder,left,right);
+        root->right=helper(preorder,right,r);
+        return root;
+    }
+```	
 1011	Capacity To Ship Packages Within D Days    		52.8%	Medium	
+binary search: find the first true condition
+```cpp
+    int shipWithinDays(vector<int>& weights, int D) {
+        //the ans>=the max of single element
+        //< the sum of the array
+        int tsum=accumulate(weights.begin(),weights.end(),0);
+        int avg=tsum/D;
+        int max0=*max_element(weights.begin(),weights.end());
+        if(D<2) return tsum;
+        //target value >max(max0,avg)
+        int left=max(max0,avg),right=tsum;
+        while(left<right)
+        {
+            int mid=(left+right)/2;
+            int parts=num_parts(weights,mid);
+
+            if(parts>D) left=mid+1; //the target is too small
+            else right=mid; //target is too big
+        }
+        return left;
+    }
+    int num_parts(vector<int>& weights,int target)
+    {
+        int ans=0;
+        int psum=0;
+        for(int i=0;i<weights.size();i++)
+        {
+            int t=psum+weights[i];
+            if(t>target) //cannot exceed the target
+            {
+                ans++;
+                psum=0;
+            }
+            psum+=weights[i];
+        }
+        return ans+(psum<=target);//the last part if combined with previous then it is counted
+    }
+```
+	
+
 1014	Best Sightseeing Pair    		48.3%	Medium	
+max the score A[i]+A[j]+i-j i<j, using two direction max
+```cpp
+    int maxScoreSightseeingPair(vector<int>& A) {
+        vector<int> lmax(A.size(),INT_MIN);
+        lmax[0]=A[0];
+        int n=A.size();
+       for(int i=1;i<A.size();i++) 
+           lmax[i]=max(A[i]+i,lmax[i-1]);
+        int ans=lmax[n-2]+A[n-1]-n+1;
+        A[n-1]-=n-1;
+        for(int i=A.size()-2;i>0;i--)
+        {
+            A[i]=max(A[i]-i,A[i+1]);
+            ans=max(lmax[i-1]+A[i],ans);
+        }
+        return ans;
+    }
+```
+	
 1015	Smallest Integer Divisible by K    		27.9%	Medium	
+N divisible by K and N only contains digit 1
+For a given K, we evaluate 1 % K, 11 % K, 111 % K, ..., 11...1 (K '1's) % K.
+
+If any remainder is 0, then the current number is the smallest integer divisible by K.
+If none of the remainders is 0, then at some point, there must be some duplicate remainders (due to Pigeonhole principle), as the K remainders can only take at most K-1 different values excluding 0. In this case, no number with the pattern 1...1 is divisible by K. This is because once a remainder has a duplicate, the next remainder will be in a loop, as the previous remainder determines the next_mod, i.e., next_mod = (10 * prev_mod + 1) % K. Therefore, we will never see remainder==0.
+A simple example is when K is 6. Once we see 1111 % 6 = 1, we immediately know 11111 % 6 will be 5, since 1 % 6 = 1 and 11 % 6 = 5. Therefore, there will be no such number that is divisible by 6.
+
+1 % 6 = 1
+11 % 6 = 5
+111 % 6 = 3
+1111 % 6 = 1
+11111 % 6 = 5
+111111 % 6 = 3
+Also, it is easy to see that for any number whose last digit is not in {1, 3, 7, 9}, we should return -1.
+
+Theorem: there must be one number from the K-long candidates list [1, 11, 111, ..., 111..111(with K ones)], which is the multiple of K.
+
+Why? Let's think in the opposite way. Is it possible that none of the K candidates is the multiple of K?
+
+If true, then the module of these K candidate numbers (mod K) must be in [1, .., K-1] (K-1 possible module values). Thus, there must be 2 candidate numbers with the same module. Let's denote these two numbers as N_i with i ones, and N_j with j ones and i<j.
+
+Thus N_j-N_i = 1111...1000...0 with (j-i) ones and i zeros. N_j-N_i = 111..11 (j-i ones) * 100000..000 (i zeros). We know that N_i and N_j have the same module of K. Then N_j-N_i is the multiple of K. However, 100000..000 (i zeros) does not contain any factors of K (K is neither multiple of 2 nor multiple of 5). Thus, 111..11 (j-i ones) is the multiple of K. This is contradictory to our assumption that all K candidates including 111..11 (j-i ones) are not multiple of K.
+
+Finally, we know that there is at least one number, from the first K candidates, which is the multiple of K.
+
+
+```cpp
+    int smallestRepunitDivByK(int K) {
+        for (int r = 0, N = 1; N <= K; ++N)
+            if ((r = (r * 10 + 1) % K) == 0)
+                return N;
+        return -1;
+    }
+```	
+
 1016	Binary String With Substrings Representing 1 To N    		62.0%	Medium	
+direct approach: get the binary representation and find if pattern match
+```cpp
+    bool queryString(string S, int N) {
+      while (N > 0) {
+        auto s = bitset<32>(N--).to_string();
+        if (S.find(s.substr(s.find("1"))) == string::npos) return false;
+      }
+      return true;
+    }
+```
+	
 1017	Convert to Base -2    		56.0%	Medium	
+
+same as base 2
+```cpp
+    string base2(int N) {
+        string res = "";
+        while (N) {
+            res = to_string(N & 1) + res;
+            N = N >> 1;
+        }
+        return res == ""  ? "0" : res;
+    }
+
+    string baseNeg2(int N) {
+        string res = "";
+        while (N) {
+            res = to_string(N & 1) + res;
+            N = -(N >> 1);
+        }
+        return res == "" ? "0" : res;
+    }
+```	
 1019	Next Greater Node In Linked List    		56.3%	Medium	
+using stack with linked list
+```cpp
+    vector<int> nextLargerNodes(ListNode* head) {
+        stack<int> st;
+        vector<int> ans;
+        while(head)
+        {
+            int t=head->val;
+            ans.push_back(t);
+            while(st.size() && t>ans[st.top()])
+            {
+                ans[st.top()]=t;
+                st.pop();
+            }
+            st.push(ans.size()-1);
+            head=head->next;
+        }
+        while(st.size()) ans[st.top()]=0,st.pop();
+        ans.back()=0;
+        return ans;
+    }
+```
+	
 1020	Number of Enclaves    		54.9%	Medium	
+cell 0 is sea, cell 1 is land. return number of islands which cannot walk off the boundary
+straightforward using dfs coloring.
+
+```cpp
+    int numEnclaves(vector<vector<int>>& A) {
+        int m=A.size(),n=A[0].size();
+        for(int i=0;i<m;i++)
+        {
+            if(A[i][0]) dfs(A,i,0);
+            if(A[i][n-1]) dfs(A,i,n-1);
+        }
+        for(int i=1;i<n-1;i++)
+        {
+            if(A[0][i]) dfs(A,0,i);
+            if(A[m-1][i]) dfs(A,m-1,i);
+        }
+        int ans=0;
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++) ans+=A[i][j];
+        return ans;
+    }
+    void dfs(vector<vector<int>>& A,int i,int j)
+    {
+        int m=A.size(),n=A[0].size();
+        if(i<0 || j<0 || i>=m || j>=n) return;
+        if(!A[i][j]) return;
+        A[i][j]=0;
+        dfs(A,i-1,j);
+        dfs(A,i+1,j);
+        dfs(A,i,j-1);
+        dfs(A,i,j+1);
+    }
+```
+	
 1023	Camelcase Matching    		56.9%	Medium	
+uppercase matching
+```cpp
+    vector<bool> camelMatch(vector<string>& queries, string pattern) {
+        //one by one search: greedy, all left shall be lowercase
+        vector<bool> ans(queries.size());
+        for(int i=0;i<queries.size();i++)
+        {
+            ans[i]=match(queries[i],pattern);
+        }
+        return ans;
+    }
+    bool match(string& w,string& p)
+    {
+        int i=0,j=0;
+        while(j<p.size() && i<w.size())
+        {
+            if(w[i]==p[j]) j++;
+            else if(isupper(w[i])) return 0;
+            i++;
+        }
+        while(i<w.size()) if(isupper(w[i++])) return 0;
+        return j==p.size();
+    }
+```
+	
 1024	Video Stitching    		47.0%	Medium	
+interval, min number of clips to cover time period [0,T]
+```cpp
+bool cmp(vector<int> a,vector<int> b) {return a[0]<b[0] || (a[0]==b[0] && a[1]<b[1]);}
+class Solution {
+public:
+    int videoStitching(vector<vector<int>>& clips, int T) {
+        //looking for the min number of intervals covering the whole duration
+        sort(clips.begin(),clips.end(),cmp);
+        if(clips[0][0]<0 || clips.back()[1]<T) return -1;
+        //for(int i=0;i<clips.size();i++) cout<<clips[i][0]<<","<<clips[i][1]<<endl;
+        int n=clips.size();
+        int ans=0;
+        //get the leftmost interval with the longest coverage
+        int t=0,i=0;
+        while(t<T)
+        {
+            int tend=t;
+            for(int i=0;i<n;i++)
+                if(clips[i][0]<=t) tend=max(tend,clips[i][1]);else break;
+            if(tend<=t) return -1;
+            t=tend;
+            ans++;
+        }
+        return ans;
+    }
+};
+```
+
 1026	Maximum Difference Between Node and Ancestor    		59.0%	Medium	
+abs(node-ancestor) ancestor is explored
+```cpp
+	int maxAncestorDiff(TreeNode* root) {
+		int maxdiff=0;
+		int mn=root->val,mx=root->val;
+		preorder(root,mn,mx,maxdiff);
+		return maxdiff;
+	}
+	void preorder(TreeNode* root,int mn,int mx,int& maxdiff)
+	{
+		if(!root) return;
+		maxdiff=max(maxdiff,max(root->val-mn,mx-root->val));
+		mn=min(mn,root->val);
+		mx=max(mx,root->val);
+		preorder(root->left,mn,mx,maxdiff);
+		preorder(root->right,mn,mx,maxdiff);
+	}
+```
+	
 1027	Longest Arithmetic Sequence    		46.4%	Medium	
+dp combined with hashmap since the difference is not bounded.
+```cpp
+    int longestArithSeqLength(vector<int>& A) {
+        //ending with a diff and length
+        //dp shall contain i, diff
+        int n=A.size();
+        vector<unordered_map<int,int>> dp(n); //dp[i] the max length at i with difference d
+        //at least 3 elements
+        int maxlen=2;
+        for(int i=1;i<n;i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                int d=A[i]-A[j];
+                if(dp[j].count(d)) {dp[i][d]=max(dp[i][d],dp[j][d]+1);}
+                else dp[i][d]=max(dp[i][d],2);
+                maxlen=max(maxlen,dp[i][d]);
+            }
+        }
+        return maxlen;
+    }
+```	
 1031	Maximum Sum of Two Non-Overlapping Subarrays    		55.4%	Medium	
+both direction max sum
+
 1034	Coloring A Border    		42.4%	Medium	
+to avoid new color is same to other color, change it to negative
+```cpp
+    vector<vector<int>> colorBorder(vector<vector<int>>& grid, int r0, int c0, int color) {
+        int oc=grid[r0][c0];
+        dfs(grid,r0,c0,oc,color);
+        for(int i=0;i<grid.size();i++)
+            for(int j=0;j<grid[0].size();j++)
+                if(grid[i][j]<0) grid[i][j]=color;
+        return grid;
+    }
+    void dfs(vector<vector<int>>& grid,int r,int c,int oc,int nc)
+    {
+        if(r<0 ||c<0 ||r>=grid.size() || c>=grid[0].size() || grid[r][c]!=oc) return;
+        grid[r][c]=-oc;
+        dfs(grid,r+1,c,oc,nc);
+        dfs(grid,r-1,c,oc,nc);
+        dfs(grid,r,c+1,oc,nc);
+        dfs(grid,r,c-1,oc,nc);
+        if(r && c && r<grid.size()-1 && c<grid[0].size()-1)
+        {
+            if((abs(grid[r-1][c])==oc) && 
+               (abs(grid[r+1][c])==oc) && 
+               (abs(grid[r][c+1])==oc) && 
+               (abs(grid[r][c-1])==oc))
+                grid[r][c]=oc;
+        }
+    }
+```
+	
 1035	Uncrossed Lines    		51.2%	Medium	
+longest common subsequence
+using dp
+```cpp
+    int maxUncrossedLines(vector<int>& A, vector<int>& B) {
+        //preproc(A,B); //to save some space and computation, remove those not appear in both
+        //copy(A.begin(),A.end(),ostream_iterator<int>(cout," "));cout<<endl;
+        //copy(B.begin(),B.end(),ostream_iterator<int>(cout," "));cout<<endl;
+        int m=A.size(),n=B.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(A[i-1]==B[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+                else dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+            }
+        }
+        return dp[m][n];
+    }
+```	
 1038	Binary Search Tree to Greater Sum Tree    		80.2%	Medium	
+reversed inorder traversal
+```cpp
+    TreeNode* bstToGst(TreeNode* root) {
+        int prev=0;
+        postorder(root,prev);
+        return root;
+    }
+    void postorder(TreeNode* root,int &prev)
+    {
+        if(!root) return;
+        postorder(root->right,prev);
+        root->val+=prev;
+        prev=root->val;
+        postorder(root->left,prev);
+    }
+```
+	
 1039	Minimum Score Triangulation of Polygon    		40.2%	Medium	
+similar to bellman or dijkstra
+```cpp
+    int minScoreTriangulation(vector<int>& A) {
+    /*
+    dp[i][j] means the minimum score to triangulate A[i] ~ A[j],
+while there is edge connect A[i] and A[j].
+
+We enumerate all points A[k] with i < k < j to form a triangle.
+
+The score of this triangulation is dp[i][j], dp[i][k] + dp[k][j] + A[i] * A[j] * A[k]
+*/
+        int n = A.size();
+        vector<vector<int>> dp(n, vector<int>(n));
+        for (int j = 2; j < n; ++j) {
+            for (int i = j - 2; i >= 0; --i) { //i<k<j that is why we need reverse iteration
+                dp[i][j] = INT_MAX;
+                for (int k = i + 1; k < j; ++k)
+                    dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j] + A[i] * A[j] * A[k]);
+            }
+        }
+        return dp[0][n - 1];
+    }
+```
+	
 1040	Moving Stones Until Consecutive II    		45.8%	Medium	
+sliding window with min space.
+
 1043	Partition Array for Maximum Sum    		61.3%	Medium	
+subarry length <=K. return the max sum(maxj*lenj) j is the subarray number.
+sliding window with max, combined with dp.
+```cpp
+    int maxSumAfterPartitioning(vector<int>& A, int K) {
+        //dp
+        if(K==1) return accumulate(A.begin(),A.end(),0);
+        int n=A.size();
+        vector<int> dp(A.size());
+        int cur_max=0;
+        priority_queue<int> pq;
+        for(int i=0;i<A.size();i++)
+        {
+            pq.push(A[i]);
+            if(i<K) 
+            {
+                cur_max=pq.top();
+                dp[i]=(i+1)*cur_max;
+            }
+            else //over K window
+            {
+                if(pq.top()==A[i-K]) pq.pop();//until the max is the one to remove out of the window
+                cur_max=pq.top();
+                int tmax=0;//A[i];
+                for(int j=0;j<K;j++) //the length including ith element
+                {
+                    tmax=max(tmax,A[i-j]);
+                    dp[i]=max(dp[i],tmax*(j+1)+dp[i-j-1]);
+                }
+            }
+         }
+        return dp[n-1];
+    }
+```
+not using pq:
+```cpp
+    int maxSumAfterPartitioning(vector<int>& A, int K) {
+        int N = A.size();
+        vector<int> dp(N);
+        for (int i = 0; i < N; ++i) {
+            int curMax = 0;
+            for (int k = 1; k <= K && i - k + 1 >= 0; ++k) {
+                curMax = max(curMax, A[i - k + 1]);
+                dp[i] = max(dp[i], (i >= k ? dp[i - k] : 0) + curMax * k);
+            }
+        }
+        return dp[N - 1];
+    }	
+```
+
 1048	Longest String Chain    		46.3%	Medium	
+dp:
+```cpp
+bool cmp(string& a,string &b) {return a.size()<b.size();}
+class Solution {
+public:
+    int longestStrChain(vector<string>& words) {
+        sort(words.begin(),words.end(),cmp);
+        //copy(words.begin(),words.end(),ostream_iterator<string>(cout," "));cout<<endl;
+        int n=words.size();
+        vector<int> dp(n,1); //dp[i] is the longest chain ending with word[i]
+        for(int i=1;i<n;i++)
+        {
+            for(int j=i-1;j>=0;j--)
+            {
+                if(words[j].size()+1==words[i].size())
+                {
+                    if(ispred(words[j],words[i])) 
+                        dp[i]=max(dp[i],dp[j]+1);
+                }
+            }
+        }
+        //copy(dp.begin(),dp.end(),ostream_iterator<int>(cout," "));
+        return *max_element(dp.begin(),dp.end());
+    }
+    bool ispred(string a,string b) //a is shorter
+    {
+        
+        int i=0,j=0;
+        while(i<a.size() && j<b.size())
+        {
+            if(a[i]!=b[j]) j++;
+            else i++,j++;
+        }
+        bool res=(i==a.size() && j<=b.size());
+        //cout<<a<<" "<<b<<" "<<res<<endl;
+        return res;
+    }
+};
+```
+
 1049	Last Stone Weight II    		38.0%	Medium	
+knapsack with + - and to minimize the results.
+psum-nsum=min
+psum+num=total
+min+total=2*psum
+min=2*psum-total>=0 we shall make psum as much close to total/2 as possible.
+```cpp
+    int lastStoneWeightII(vector<int>& stones) {
+        int n=stones.size();
+        int tsum=accumulate(stones.begin(),stones.end(),0);
+        vector<vector<bool>> dp(tsum/2+1,vector<bool>(n+1));
+        //boundary
+        for(int i=0;i<=n;i++) dp[0][i]=1;//any sized choose 0.
+        int maxsum=0;
+        for(int i=1;i<=tsum/2;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(dp[i][j-1] ||(i>=stones[j-1] && dp[i-stones[j-1]][j-1]))
+                {
+                    dp[i][j]=1;
+                    maxsum=max(maxsum,i);
+                }
+            }
+        }
+        return tsum-2*maxsum;
+    }
+```	
+
 1052	Grumpy Bookstore Owner    51.3%	Medium	
-
+x sliding window and choose the max customer in the window
+```cpp
+    int maxSatisfied(vector<int>& customers, vector<int>& grumpy, int X) {
+        int ans=0;
+        int sum=0;
+        int n=customers.size();
+        for(int i=0;i<n;i++) if(!grumpy[i]) sum+=customers[i];
+        //cout<<sum;
+        for(int i=0;i<=n-X;i++)
+        {
+            int add=0;
+            for(int j=0;j<X;j++)
+            {
+                int ind=i+j;
+                if(grumpy[ind]) add+=customers[ind];
+            }
+            ans=max(ans,sum+add);
+        }
+        return ans;
+    }
+```
+1053. Previous permutation with one swap
+from right find the first peak and swap with the leftmost on it right 
+```cpp
+    vector<int> prevPermOpt1(vector<int>& A) {
+        if(is_sorted(A.begin(),A.end())) return A;
+        //swap the first peak (from right) with its later max < the peak value
+        int pkind=0;
+        for(int i=A.size()-2;i>=0;i--)
+        {
+            if(A[i]>A[i+1]) {pkind=i;break;}
+        }
+        
+        for(int i=A.size()-1;i>pkind;i--) 
+            if(A[pkind]>A[i]) {
+                while(i>pkind && A[i]==A[i-1]) i--;
+                swap(A[i],A[pkind]);break;}
+        return A;
+    }
+```
+	
 1054	Distant Barcodes   37.5%	Medium	
+this is same as the 358 621.
 
+1072. Flip Columns For Maximum Number of Equal Rows
+we need check how many rows are identical. 
+just follow flip column will not be able to solve it.
+up to 300x300.
+hashmap is the way to go, but how to use the key?
+up to 300 digits cannot fit in any integer. string? not good for checking against the map
+
+Finding maximum number of rows that have identical relative ordering with respect to the top elements.
+this is very smart since we change to one case: all start with 1.
+
+```cpp
+    int maxEqualRowsAfterFlips(vector<vector<int>>& matrix) {
+		//row must be same or flip each bit the same.
+		//so problem is converted to find the max number of such rows.
+		int m=matrix.size(),n=matrix[0].size();
+		unordered_map<string,int> mp;
+		for(auto& v: matrix){
+			int t=v[0];
+			string s;
+			for(int i: v) {if(i==t) s+='1';else s+='0';}
+			mp[s]++;
+		}
+		//find the max
+		int ans=0;
+		for(auto t: mp) ans=max(ans,t.second);
+		return ans;
+	}
+```	
+
+1073. Adding Two Negabinary Numbers
+similar to -2 base 
+
+1079. Letter Tile Possibilities
+this asks for permutation, we can use combination and then get combination
+- using a set to reduce duplicate
+- sort the results to reduce duplicate permutation
+- a combination to get the permutation
+```cpp
+    int numTilePossibilities(string tiles) {
+        unordered_set<string> ms;
+        int ans=0;
+        vector<bool> visited(26);
+        dfs(tiles,0,"",ms);
+        //for each string in the ms, we can calculate number of its permutation
+        for(auto t: ms)
+            ans+=numperm(t);
+        return ans;
+    }
+    void dfs(string& s,int start,string t,unordered_set<string>& ms)
+    {
+        if(t.size()) {string tt=t;sort(tt.begin(),tt.end());ms.insert(tt);}
+        
+        for(int i=start;i<s.size();i++)
+        {
+            t+=s[i];
+            dfs(s,i+1,t,ms);
+            t.pop_back();
+        }
+    }
+    int numperm(string& t)
+    {
+        //cout<<t<<endl;
+        vector<int> cmap(26);
+        for(char c: t) cmap[c-'A']++;
+        int n=t.length();
+        int ans=1;
+        for(int i=0;i<26;i++) //C(n,m) for each
+            if(cmap[i]>0) {
+                ans*=comb(n,cmap[i]);
+                n-=cmap[i];
+            }
+        return ans;
+    }
+    //see 377
+    int comb(int m,int n)
+	{//m!/(n!*(m-n)!)
+		int ans=1;
+    	for(int i=n+1,j=1;i<=m || j<=m-n;i++,j++) {if(i<=m)ans*=i;if(j<=m-n) ans/=j;}
+		return ans;
+	}
+```
+
+1080. Insufficient Nodes in Root to Leaf Paths
+first we can come up the O(N^2) approach:
+two recursive problem: 
+- if the sum from root to leaf > limit, return 1, else return 0
+- left and right subproblem limt-root->val
+
+```cpp
+    TreeNode* sufficientSubset(TreeNode* root, int limit) {
+		//dfs to get sum from root to leaf
+		if(!root) return NULL;
+		if(dfs_sum(root,0,limit)==0) //need delete this node
+			return NULL;
+		root->left=sufficientSubset(root->left,limit-root->val);
+		root->right=sufficientSubset(root->right,limit-root->val);
+		return root;
+    }
+	//count number of branches with sum>limit
+	int dfs_sum(TreeNode* root,int sum,int limit)
+	{
+		if(!root) return 0;
+		sum+=root->val;
+		if(!root->left && !root->right) //if the branch sum>limit
+			return sum>=limit;
+		return dfs_sum(root->left,sum,limit)+
+		dfs_sum(root->right,sum,limit);
+	}
+```
+O(N)
+think it along a path, limit-root for left and right.
+```cpp
+    TreeNode* sufficientSubset(TreeNode* root, int limit) {
+        if (root->left == root->right) //leaf node
+            return root->val < limit ? NULL : root;
+        if (root->left)
+            root->left = sufficientSubset(root->left, limit - root->val);
+        if (root->right)
+            root->right = sufficientSubset(root->right, limit - root->val);
+        return root->left == root->right ? NULL : root;
+    }
+```	
+
+1081. Smallest Subsequence of Distinct Characters
+identical to 316
+using stack. if current char < current res.back, we need pop it back.
+```cpp
+    string smallestSubsequence(string s, string res = "") {
+      int cnt[26] = {}, used[26] = {};
+      for (auto ch : s) ++cnt[ch - 'a']; //hashmap
+      for (auto ch : s) {
+        --cnt[ch - 'a'];
+        if (used[ch - 'a']++ > 0) continue; //already used.
+        while (!res.empty() && res.back() > ch && cnt[res.back() - 'a'] > 0) {
+          used[res.back() - 'a'] = 0;
+          res.pop_back();
+        }
+        res.push_back(ch);
+      }
+      return res;
+    }   
+```	
 medium to hard ****
 89	Gray Code    		45.8%	Medium	
 n bits, successive values differs in only one bit.
