@@ -7065,18 +7065,378 @@ TLE
 ```
 
 900	RLE Iterator    		50.1%	Medium	
+run length encoding, [3,8,0,9,2,5] it is three 8 zero 9 and two 5s
+save two arrays: one array for the numbers one array for the repeat (accum sum to make it growing)
+```cpp
+    vector<long long> v1;
+    vector<int> vnum;
+    long long cur;
+    RLEIterator(vector<int> A) {
+        cur=0;
+        for(int i=0;i<A.size();i++)
+        {
+            if(i%2) vnum.push_back(A[i]);
+            else v1.push_back(A[i]+(i==0?0:v1.back()));
+        }
+    }
+    
+    int next(int n) {
+        cur+=n;
+        //binary search to find the position
+        auto it=lower_bound(v1.begin(),v1.end(),cur); //<=
+        if(it==v1.end()) return -1;
+        int ind=it-v1.begin();
+        return vnum[ind];
+    }
+```	
+
 901	Online Stock Span    		48.8%	Medium	
+previous days: max number of consective days <= today's price
+stack
+```cpp
+    vector<int> prices;
+    stack<int> st; //stack stores the index with decreasing order
+    int days;
+    StockSpanner() {
+        days=0;
+        st.push(0);
+        prices.push_back(INT_MAX);
+    }
+    
+    int next(int price) {
+        prices.push_back(price);
+        //if(st.empty()) {st.push(0);return 1;}
+        //int last_day;
+        while(st.size() && price>=prices[st.top()]) st.pop();
+        days++;
+        int ans;
+        ans=days-st.top();
+        st.push(days);
+        return ans;
+    }
 904	Fruit Into Baskets    		41.4%	Medium	
+tree[i] is the fruit type. 
+two baskets: each basket can only have one fruit of any type.
+return the total amount of fruits, you can start at any tree and only can go to right
+understanding the problem is critical: each basket can only have one type of fruit
+so this is to find the longest subarray which contains only two types of elements
+sliding window using two pointer
+```cpp
+    int totalFruit(vector<int>& tree) {
+        //this is to get the longest subsequence with only two elements inside
+        //need to be the longest one
+        //use two pointer
+        int i=0,j=0;
+        int maxlen=0;
+        unordered_map<int,int> mp;
+        for(int i=0;i<tree.size();i++)
+        {
+            //j=i;
+            while(mp.size()<=2 && j<tree.size()) {mp[tree[j]]++;j++;}
+            maxlen=max(maxlen,j-i-1);
+            if(mp.size()<=2) maxlen=max(maxlen,j-i);
+            if(j==tree.size()) break;
+            mp[tree[i]]--;
+            if(mp[tree[i]]<=0) mp.erase(tree[i]);
+            //cout<<i<<" "<<j<<" "<<maxlen<<endl;
+            //for(auto it=mp.begin();it!=mp.end();it++) cout<<it->first<<":"<<it->second<<" ";
+            //cout<<endl;
+        }
+        return maxlen;
+    }
+```
+
 907	Sum of Subarray Minimums    		27.2%	Medium	
+sum of all subarray mins.
+each number can be a min and can appear multiple times.
+if nums[i] is the min in the window [L,R] then the sum is (R-j)*(j-L)
+```cpp
+    int sumSubarrayMins(vector<int>& A) {
+        int mod=1e9+7;
+        //each element can appear many times
+        //for element i, we have a window size which A[i] is the minimum
+        vector<int> win(A.size());
+        int ans=0;
+        for(int i=0;i<A.size();i++)
+        {
+            int l=i,r=i;
+            while(A[r+1]>A[i] && r<A.size()-1) r++;
+            while(l>0 && A[l-1]>=A[i]) l--;
+            //int seg=win[i]=r-l+1;
+            //cout<<l<<" "<<i<<" "<<r<<endl;
+            //cout<<(r-i+1)*(i-l+1)*A[i]<<endl;
+            ans+=((((r-i+1)*(i-l+1))%mod)*A[i])%mod;
+            ans%=mod;
+        }
+        return ans;
+    }
+```	
 909	Snakes and Ladders    		33.2%	Medium	
+board arranged 1 to n*n from bottom left left->right->left...
+you can go 1 to 6 steps (die roll)
+if you reach a snake: you go to the destination
+if you reach a ladder, you go to the destination
+return the min steps to reach n*n
+The tricky part: 
+the index vs the grid value. first reversed, second, we have a row reverse
+the n*n can be on [0,0] or [0,n-1].
+note: the value keeps growing, so using value is easier instead of using index.
+this is more like a 1d problem. converting the board to a 1d array shall make it easier.
+
+bfs: 
+```cpp
+	int snakesAndLadders(vector<vector<int>>& board) {
+		vector<int> b1d;
+		int n=board.size();
+		for(int i=n-1;i>=0;i--)
+		{
+			int trow=n-1-i;
+			if(trow%2==0) for(int t: board[i]) b1d.push_back(t);
+			else for(int j=n-1;j>=0;j--) b1d.push_back(board[i][j]);
+		}
+        //copy(b1d.begin(),b1d.end(),ostream_iterator<int>(cout," "));cout<<endl;
+        vector<bool> visited(b1d.size());
+		queue<int> q;
+		q.push(0);
+        visited[0]=1;
+		int step=0;
+		while(q.size())
+		{
+			int sz=q.size();
+			for(int i=0;i<sz;i++)
+			{
+				int ind=q.front();
+				q.pop();
+				for(int j=1;j<=6;j++)
+				{
+                    if(ind+j>n*n) break;
+                    if(ind+j==n*n) return step+1;
+                    if(visited[ind+j]) continue;
+					if(b1d[ind+j]<0) {q.push(ind+j);visited[ind+j]=1;}
+					else {
+                        if(b1d[ind+j]==n*n) return step+1;
+                        if(!visited[b1d[ind+j]-1]){
+                            q.push(b1d[ind+j]-1); //index
+                            visited[b1d[ind+j]-1]=1;
+                        }
+                    }
+				}
+			}
+			step++;
+		}
+		return -1;
+	}
+```	
+- sometimes, ladder and snake might not be the shortest, need keep all the queued nodes
+- sometimes, the ladder and snake will introduce a loop.
+- early determine the report is not a good habit, but we can leave it for judge at the pop time.
+- first start can be -1 or >0
+- still has some cases failure: when we have continuous ladder. These nodes shall be placed in the same layer.
+so change the if to a while loop.
+-1 1 2 -1
+2 13 15 -1
+-1 10 -1 -1
+-1 6 2 8
+the shortest path is -1->(10->13)->16, ie. the snake and ladder shall not count one step
+
 910	Smallest Range II    		23.6%	Medium	
+add +k or -k to each element
+smallest difference of max and min
+two number: a<b
+if the diff >2*k we shall a+k and b-k, new diff is b-a-2*k
+if the diff <2*k, we have choice:
+a, b both +k or -k
+Sort the vector.
+Assuming there is a point, on the left of the point, all elements add K, on the right of the point, all elements substract K, check each possible point. (a point is between two numbers).
+```cpp
+class Solution {
+public:
+    int smallestRangeII(vector<int>& A, int K) {
+        sort(A.begin(), A.end());
+        int res = A[A.size() - 1] - A[0];
+        int left = A[0] + K, right = A[A.size() - 1] - K;
+        for (int i = 0; i < A.size() - 1; i++) {
+            int maxi = max(A[i] + K, right), mini = min(left, A[i + 1] - K);
+            res = min(res, maxi - mini);
+        }
+        return res;
+    }
+};
+```
+this one is simpler to understand. It is equivalent to add 0 or 2*K to each number
+so we add to smaller number hoping to reduce the difference.
+```cpp
+    int smallestRangeII(vector<int> A, int K) {
+        sort(A.begin(), A.end());
+        int n = A.size(), mx = A[n - 1], mn = A[0], res = mx - mn;
+        for (int i = 0; i < n - 1; ++i) {
+            mx = max(mx, A[i] + 2 * K);
+            mn = min(A[i + 1], A[0] + 2 * K);
+            res = min(res, mx - mn);
+        }
+        return res;
+    }
+```	
+
 911	Online Election    		46.7%	Medium	
+compare with counter and time (if tie)
+using set or priority_queue to make a heap.
+lee has a simpler using map:
+In the order of time, we count the number of votes for each person.
+Also, we update the current lead of votes for each time point.
+if (count[person] >= count[lead]) lead = person
+Time Complexity: O(N)
+
+Query part:
+Binary search t in times, find out the latest time point no later than t.
+Return the lead of votes at that time point.
+Time Complexity: O(logN)
+using a map to record time and person (binded)
+using a hashmap to record the number of votings
+```cpp
+    map<int, int> m;
+    TopVotedCandidate(vector<int> persons, vector<int> times) {
+        int n = persons.size(), lead = -1;
+        unordered_map<int, int> count;
+        for (int i = 0; i < n; ++i) m[times[i]] = persons[i];
+        for (auto it : m) {
+            if (++count[it.second] >= count[lead])lead = it.second;
+            m[it.first] = lead;
+        }
+    }
+
+    int q(int t) {
+        return (--m.upper_bound(t))-> second;
+    }
+```	
+
 912	Sort an Array    		63.8%	Medium	
+length of the array up to 1e4
+range from -5e4 to 5e4
+quick sort: choose a random pivot, all smaller than it put left, other right
+
+```cpp
+    void quickSort(vector<int>& V, int from, int to) {
+       if (from + 1 >= to) return;
+       // choose random pivot:
+       int piv = V[from + rand() % (to - from)];
+       
+       int i = from - 1, j = to;
+       while (true) {
+          do i++; while (V[i] < piv);
+          do j--; while (V[j] > piv);
+          if (i >= j) break;
+          swap(V[i], V[j]);
+       }
+       quickSort(V, from, j + 1);
+       quickSort(V, j + 1, to);
+    }
+
+    vector<int> sortArray(vector<int>& nums) {
+      quickSort(nums, 0, nums.size());
+      return nums;
+    }
+```	
+merge sort
+bubble sort
+count sort
+
 915	Partition Array into Disjoint Intervals    		43.2%	Medium	
+all left <= all right
+both left and right cannot be empty
+make left smallest
+two direction get max
+```cpp
+    int partitionDisjoint(vector<int>& A) {
+        int n = A.size(), pmax = 0;
+        vector<int> B(n);
+        B[n - 1] = A[n - 1];
+        for (int i = n - 2; i > 0; --i)
+            B[i] = min(A[i], B[i + 1]);
+        for (int i = 1; i < n; ++i) {
+            pmax = max(pmax, A[i - 1]);
+            if (pmax <= B[i]) return i;
+        }
+    }
+```
+	
 916	Word Subsets    		45.2%	Medium	
+straightforward using hashmap compare
+
 918	Maximum Sum Circular Subarray    		31.7%	Medium	
+max subarray sum
+approach 1: double the array and avoid circular
+approach 2: find the max and min at the same time. if one cross the end, the other must be inside.
+
+```cpp
+    int maxSubarraySumCircular(vector<int>& A) {
+        int total = 0, maxSum = -30000, curMax = 0, minSum = 30000, curMin = 0;
+        for (int a : A) {
+            curMax = max(curMax + a, a);
+            maxSum = max(maxSum, curMax);
+            curMin = min(curMin + a, a);
+            minSum = min(minSum, curMin);
+            total += a;
+        }
+        return maxSum > 0 ? max(maxSum, total - minSum) : maxSum;
+    }
+```
+compare with the single element to start a new group
+	
+
 919	Complete Binary Tree Inserter    		55.0%	Medium	
+recursive: depth is the same, goes to right. one case, if right is also full, we need add a layer.
+array format: parent i, child 2*i and 2*i+1, full tree using array is always the first choice
+```cpp
+    vector<TreeNode*> tree;
+    CBTInserter(TreeNode* root) {
+        tree.push_back(root);
+        for(int i = 0; i < tree.size();++i) 
+        {
+            if (tree[i]->left) tree.push_back(tree[i]->left);
+            if (tree[i]->right) tree.push_back(tree[i]->right);        
+        }
+    }
+    
+    int insert(int v) {
+        int N = tree.size();
+        TreeNode* node = new TreeNode(v);
+        tree.push_back(node);
+        if (N % 2)
+            tree[(N - 1) / 2]->left = node;
+        else
+            tree[(N - 1) / 2]->right = node;
+        return tree[(N - 1) / 2]->val;        
+    }
+    
+    TreeNode* get_root() {
+        return tree[0];
+    }
+```	
+
+
 921	Minimum Add to Make Parentheses Valid    		70.0%	Medium	
+remove all balanced using stack
+```cpp
+    int minAddToMakeValid(string S) {
+        //to make it balanced, the () shall be the same amount
+        //one we have a ) we need have a balanced in its front
+        //once we have a ( we need have a balanced in the behind
+        stack<char> st;
+        int ans=0;
+        for(int i=0;i<S.size();i++)
+        {
+            if(S[i]=='(') st.push(S[i]);
+            else 
+            {
+                if(st.size()) st.pop();
+                else ans++; 
+            }
+        }
+        return ans+st.size();
+    }
+```
+	
 923	3Sum With Multiplicity    		33.4%	Medium	
 926	Flip String to Monotone Increasing    		49.4%	Medium	
 930	Binary Subarrays With Sum    		37.9%	Medium	
