@@ -987,22 +987,482 @@ check if s3 is interleaving of s1 and s2
 ```	
 
 99	Recover Binary Search Tree    		34.8%	Hard	
+two elements of a binary search tree are swapped. recover it
+inorder traversal and keep prev and compare with current. if prev>curr it is one of it
+```cpp
+    TreeNode* prev;
+    void recoverTree(TreeNode* root) {
+        vector<TreeNode*> res;
+        prev=0;
+        inorder(root,res);
+        //for(int i=0;i<res.size();i++) cout<<res[i]->val<<" ";
+        if(res.size()==2) {swap(res[0]->val,res[1]->val);}
+        else {swap(res[0]->val,res[3]->val);}
+    
+    }
+    void inorder(TreeNode* root,vector<TreeNode*>& res) //inorder traverse to find the swapped ind
+    {
+        if(!root) return;
+        //compare to previous 
+        inorder(root->left,res);
+        if(!prev) {prev=root;}
+        else
+        {
+            if(root->val<prev->val) {res.push_back(prev);res.push_back(root);}
+            prev=root;
+        }
+        //cout<<prev->val<<" "<<root->val<<",";
+        inorder(root->right,res);
+    }
+```
+	
 115	Distinct Subsequences    		35.1%	Hard	
+number of distinct subsequence in S equals T
+that is number of ways from S to T. (similar to climbing stairs)
+```cpp
+    int numDistinct(string s, string t) {
+        //dp edit distance
+        int m=s.size(),n=t.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        //dp[i,j] represent number of subsequence for s(0...i) vs t[0..j]
+        //allowing only deletion from s
+        //boundary: dp[0,0]=1
+        for(int i=0;i<=m;i++) dp[i][0]=1; //when t is empty, need delete all s
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(s[i-1]!=t[j-1]) dp[i][j]=dp[i-1][j]; //need delete this char, i proceed one
+                else dp[i][j]=dp[i-1][j-1]+dp[i-1][j]; //delete: i proceed one, keep: dp[i-1][j-1]
+            }
+        }
+        return dp[m][n];
+    }
+```
+
 123	Best Time to Buy and Sell Stock III    		33.8%	Hard	
+two transaction, it is a special edition of K transaction
+188	Best Time to Buy and Sell Stock IV    		26.4%	Hard	
+the idea is based on previous k-1 transaction, add a more transaction
+dp[k][i]=max(dp[k][i-1],dp[k-1][j]+price[i]-price[j]), no operation or operation
+```cpp
+    int maxProfit(int k, vector<int>& prices) {
+       int n=prices.size();
+        if(k>=n/2)
+        {
+            int sum=0;
+            for(int i=1;i<n;i++) if(prices[i]>prices[i-1]) sum+=prices[i]-prices[i-1];
+            return sum;
+        }
+        vector<vector<int>> dp(k+1,vector<int>(n));
+        int maxprof=0;
+        
+        for(int t=1;t<=k;t++)
+        {
+            int tmin=INT_MAX;
+            for(int i=1;i<n;i++)
+            {
+                tmin=min(tmin,prices[i-1]-dp[t-1][i-1]);
+                dp[t][i]=max(dp[t][i-1],prices[i]-tmin);
+                maxprof=max(maxprof,dp[t][i]);
+            }
+        }
+        return maxprof;
+    }
+```	
 124	Binary Tree Maximum Path Sum    		30.1%	Hard	
+path sum: can cross the root or not cross.
+cross the root: root+left+right 
+not cross the root: left or right (subproblem)
+combined with the dp problem: the max sum of subarray if previous sum<0 then we start a new segement.
+```cpp
+    int maxPathSum(TreeNode* root) {
+        //any negative nodes shall not be included
+        //each node shall be the largest path sum
+        //nodemaxsum=node+max_left_pathsum+max_right_pathsum which needs postorder traversal
+        int maxsum=INT_MIN;
+        node_maxsum(root,maxsum);
+        return maxsum;
+    }
+    int node_maxsum(TreeNode* root,int& maxpathsum)
+    {
+        if(!root) return 0;
+        int l=node_maxsum(root->left,maxpathsum);
+        int r=node_maxsum(root->right,maxpathsum);
+        l=l>0?l:0; //shall we include left?
+        r=r>0?r:0;//shall we include right?
+        if(maxpathsum<l+r+root->val) maxpathsum=l+r+root->val;
+        root->val+=max(l,r); //postorder is bottom up, update the node value to the max path sum (including the paths under its subtree
+        return root->val;
+    }
+```	
+update the val of each node of the tree bottom-up, the new val of TreeNode *x stands for the max sum started from any node in subtree x and ended in x, mataining the re for result in traversal at the same time.
+
 126	Word Ladder II    		17.8%	Hard	
+find all shortest path from A to B.
+similar problem 127 Word Ladder using bfs. (shortest distance from A to B)
+- convert to hashset first for better retrieving.
+- 
+```cpp
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> dict(wordList.begin(),wordList.end()),visited;
+		queue<string> q;
+		q.push(beginWord);
+		visited.insert(beginWord);
+		int step=1;
+		while(q.size()){
+			int sz=q.size();
+			while(sz--){
+				string s=q.front();
+				if(s==endWord) return step;
+				q.pop();
+				addWords(s,q,dict,visited);
+			}
+			step++;
+		}
+		return 0;
+    }
+	void addWords(string& s,queue<string>& q,unordered_set<string>& dict,unordered_set<string>& visited){
+		for(int i=0;i<s.size();i++){
+			char c=s[i];
+			for(char t='a';t<='z';t++){
+				s[i]=t;
+				if(dict.count(s) && !visited.count(s)) {
+					q.push(s);
+					visited.insert(s);
+				}
+			}
+			s[i]=c;
+		}
+	}
+```	
+now we need all the shortest path.
+approach 1: get the shortest path length using bfs and then find path using dfs. wasted information
+approach 2: bfs while keeping the route information.
+when we found the path we need keep finishing the layer. also we need keep the path information. (parent)
+need add a pointer to its parent. it forms a tree.
+```cpp
+	struct node{
+		node* parent;
+		string s;
+		node(string ss): s(ss),parent(0){}
+		node(string ss,node* p): s(ss),parent(p){}
+	};
+	vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList){
+		vector<vector<string>> ans;
+        unordered_set<string> dict(wordList.begin(),wordList.end()),visited;
+		vector<node*> tree;
+		queue<node*> q; //parent-child pair, do not use pointer since vector is dynamic
+		tree.push_back(new node(beginWord));
+		q.push(tree.back());
+		visited.insert(beginWord);
+		int step=1;
+        bool stop=0;
+		vector<string> layer;
+		while(q.size() && !stop){
+			layer.clear();
+			int sz=q.size();
+			while(sz--){
+				auto nd=q.front(); //use pointer be very careful
+				q.pop();
+                //cout<<nd->s<<endl;
+                auto parent=nd;
+				if(nd->s==endWord) {
+                    stop=1;
+					vector<string> vt;
+					while(nd){
+						vt.push_back(nd->s);
+                        nd=nd->parent;
+					}
+					ans.push_back({vt.rbegin(),vt.rend()});
+				}
+				addWords(parent->s,q,dict,visited,tree,parent,layer);
+			}
+			for(auto t: layer) visited.insert(t);
+			step++;
+		}
+		return ans;
+    }
+	void addWords(string s,queue<node*>& q,unordered_set<string>& dict,
+	unordered_set<string>& visited,vector<node*>& tree,node* parent,vector<string>& layer){
+		for(int i=0;i<s.size();i++){
+			char c=s[i];
+			for(char t='a';t<='z';t++){
+				s[i]=t;
+				if(dict.count(s) && !visited.count(s)) {
+					tree.push_back(new node(s,parent));
+					q.push(tree.back());
+					//if(s!=endw) visited.insert(s);
+					layer.push_back(s);
+				}
+			}
+			s[i]=c;
+		}
+		//for(auto t: vt) visited.insert(t);
+	}
+```
+There is a problem: 
+- the endword is not allowed to be included multiple times so only one answer would be given.
+- different path may contain a common word so the visited is not proper. actually this is the key part.
+bfs: the layer used canot never be visited again.
+but the same layer can be used multiple times. so we can only update the visited after the layer is done!!!!!
+this is another form of BFS and very good question. The node may have multiple parents to avoid dfs, it is necessary to keep multiple same nodes	in queue to maintain one to one relation
+
 128	Longest Consecutive Sequence    		41.8%	Hard	
+need O(n)
+for example [100,4,200,1,3,2]
+when we see 4, we know we need 5 and 3
+when we see 1, we know we need 2 and 0
+when we see 3, it is in need list, and also it needs 4 and 2
+when we see 2, it is in need list, and also it needs 3 and 1
+connect them using union-find
+```cpp
+    int longestConsecutive(vector<int>& nums) {
+        //they don't need to keep order, disjoint set
+        int n=nums.size();
+        if(n<2) return n;
+        vector<int> parent(n),size(n,1);
+        unordered_map<int,int> mp;
+        for(int i=0;i<n;i++) parent[i]=i;
+        for(int i=0;i<n;i++)
+        {
+            if(mp.count(nums[i])) continue;//ignore duplicates
+            mp[nums[i]]=i;
+            if(mp.count(nums[i]-1)) merge(i,mp[nums[i]-1],parent,size);
+            if(mp.count(nums[i]+1)) merge(i,mp[nums[i]+1],parent,size);
+        }
+        return *max_element(size.begin(),size.end());
+    }
+    
+    int getparent(int i,vector<int>& parent)
+    {
+        while(i!=parent[i]) i=parent[i];
+        return i;
+    }
+    void merge(int i,int j,vector<int>& parent,vector<int>& size)
+    {
+        int pi=getparent(i,parent),pj=getparent(j,parent);
+        if(pi==pj) return;
+        if(pi<pj) {parent[pj]=pi;size[pi]+=size[pj];size[pj]=0;}
+        else {parent[pi]=pj;size[pj]+=size[pi];size[pi]=0;}
+    }
+```	
+
+
 132	Palindrome Partitioning II    		27.5%	Hard	
+return min number of cuts so that each substr is a palindrome.
+this is a dp. odd length and even length
+cut[i] min number of cuts at i.
+
+```cpp
+    int minCut(string s) {
+        int n = s.size();
+        vector<int> cut(n+1, 0);  // number of cuts for the first k characters
+        for (int i = 0; i <= n; i++) cut[i] = i-1; //boundary: cut it into single char.
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; i-j >= 0 && i+j < n && s[i-j]==s[i+j] ; j++) // odd length palindrome
+                cut[i+j+1] = min(cut[i+j+1],1+cut[i-j]);
+
+            for (int j = 1; i-j+1 >= 0 && i+j < n && s[i-j+1] == s[i+j]; j++) // even length palindrome
+                cut[i+j+1] = min(cut[i+j+1],1+cut[i-j+1]);
+        }
+        return cut[n];
+    }
+```	
 135	Candy    		28.5%	Hard	
+each child need have >=1 candies
+children with higher rating get more candies than their neighbors
+for example [1,0,2]: 
+assume we give 1 one candie, but it shall be more than its neighbors, so need get at least 2 and we get 2,1,2
+since it has two neighbors, we can do it two pass, one from left to right, and one from right to left.
+one direction: we need take care of the left only (or right).
+```cpp
+    int candy(vector<int>& ratings) {
+        int ans=0;
+        //at least give one candy
+        //simple example gives the following approach
+        //find the smallest one, and assign 1
+        int n=ratings.size();
+        vector<int> can(n,1);
+        //from left to right
+        for(int i=1;i<n;i++) if(ratings[i]>ratings[i-1]) can[i]=can[i-1]+1;
+        for(int i=n-2;i>=0;i--) if(ratings[i]>ratings[i+1]) can[i]=max(can[i],can[i+1]+1);
+        
+        //copy(can.begin(),can.end(),ostream_iterator<int>(cout," "));cout<<endl;
+        return accumulate(can.begin(),can.end(),0);
+    }
+```
+this is a good problem. two direction problem can be solved using two separate one direction problem.
+	
+
 140	Word Break II    		27.4%	Hard	
+a list of words and a string, cut it into dictionary words.
+return all possible combination.
+Similar question 139 Word break (check if it is breakable). 
+first, using dp to find all cut positions and its previous cut. and then use dfs with backtracking
+dp it is convenient to add previous index and then we have to do reverse dfs.
+```cpp
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_map<int,vector<string>> mp; //end position and its possible cut string
+        unordered_set<string> dict(wordDict.begin(),wordDict.end());
+        vector<bool> dp(s.length()+1);
+        dp[0]=1;
+        if(s.size()<2)
+        {
+            if(dict.count(s)) return vector<string>({s});
+        }
+        //if(dict.count(s.substr(0,1))) mp[0].push_back(s.substr(0,1));
+        for(int i=1;i<=s.size();i++)
+        {
+            for(int j=i-1;j>=0;j--) //check all previous cut
+            {
+                if(dp[j])
+                {
+                string t;
+                t=s.substr(j,i-j);//not including j, j+1 to i both inclusive
+                if(dict.count(t)) {mp[i].push_back(t);dp[i]=1;}//does not include i=0 case
+                }
+            }
+        }
+        //print(mp);
+        if(mp.count(s.size())==0) return vector<string>();
+        //now we can use dfs to search all possible combinations
+        unordered_map<int,vector<string>> mps;
+        for(auto it=mp.begin();it!=mp.end();it++)
+        {
+            for(int i=0;i<it->second.size();i++) 
+                mps[it->first-it->second[i].size()].push_back(it->second[i]);
+        }
+        //print(mps);
+        vector<string> ans;
+        string sentence;
+        dfs(mps,0,s.size(),ans,sentence);
+        return ans;
+    }
+    void dfs(unordered_map<int,vector<string>>& mp,int start,int end,vector<string>& res,string sentence)
+    {
+        if(start>=end) {sentence.pop_back();res.push_back(sentence);sentence+=" ";return;}
+        for(int i=0;i<mp[start].size();i++) //try all cuts
+        {
+            sentence+=mp[start][i]+" ";
+            int sz=mp[start][i].size();
+            dfs(mp,start+sz,end,res,sentence);
+            //cout<<sentence<<" "<<sentence.size()<<","<<sz<<endl;
+            sentence.erase(sentence.size()-sz-1);//remove the last word + space
+        }
+    }
+    void print(unordered_map<int,vector<string>>& mp)
+    {
+        for(auto it=mp.begin();it!=mp.end();it++) 
+        {
+            for(int i=0;i<it->second.size();i++) cout<<it->first<<": "<<it->second[i]<<" ";
+            cout<<endl;
+        }
+    }
+```
+this is too complicated, and prone to bugs. using divide and conquer is a better choice
+```cpp
+    unordered_map<string, vector<string>> m;
+
+    vector<string> combine(string word, vector<string> prev){
+        for(int i=0;i<prev.size();++i){
+            prev[i]+=" "+word;
+        }
+        return prev;
+    }
+
+public:
+    vector<string> wordBreak(string s, unordered_set<string>& dict) {
+        if(m.count(s)) return m[s]; //take from memory
+        vector<string> result;
+        if(dict.count(s)){ //a whole string is a word
+            result.push_back(s);
+        }
+        for(int i=1;i<s.size();++i){
+            string word=s.substr(i);
+            if(dict.count(word)){
+                string rem=s.substr(0,i);
+                vector<string> prev=combine(word,wordBreak(rem,dict));
+                result.insert(result.end(),prev.begin(), prev.end());
+            }
+        }
+        m[s]=result; //memorize
+        return result;
+    }
+```
+
+We shall always choose the most concise approach due to very limited time!!!!
+
+472. Concatenated words
+first we need sort the words in dictionary from shorter length to longer length
+since longer word can be combined using shorter words only
+so we build the dictionary one by one.
+each one is a problem of 139. 
+```cpp
+bool cmp1(const string& s1,const string& s2) {return s1.length()<s2.length();}
+class Solution {
+public:
+    
+    struct cmp
+    {//note the 3 const are required!!!!
+        bool operator()(const string& s1,const string& s2) const {return s1.length()<s2.length();}
+    };
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        //sort the words using length
+        vector<string> res;
+        sort(words.begin(),words.end(),cmp1);
+        //copy(words.begin(),words.end(),ostream_iterator<string>(cout," "));cout<<endl;
+        unordered_set<string> dict;
+        
+        //multiset<string,cmp> dict(words.begin(),words.end()); //note if the length are the same it is not inserted!!!
+        
+        for(int i=0;i<words.size();i++)
+        {
+            if(canCombine(words[i],dict))
+            {
+                res.push_back(words[i]);
+            }
+            dict.insert(words[i]);
+            //copy(dict.begin(),dict.end(),ostream_iterator<string>(cout," "));cout<<endl;
+        }
+        return res;
+    }
+    bool canCombine(string& word,unordered_set<string>& dict)
+    {
+        //set<string,cmp>::iterator it=dict.find(word);
+        //auto it=dict.find(word);
+        //int nelem=distance(dict.begin(),it);
+        //if(nelem==0) return 0;
+        if(dict.empty()) return 0;
+        vector<bool> dp(word.length()+1);//dp[i]: [0...i-1] substr can be combined
+        dp[0]=1;//always can form by an empty string
+        for(int i=1;i<=word.length();i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(!dp[j]) continue;//previous one is not a word
+                string t=word.substr(j,i-j);//note substr 2nd is the length
+                //cout<<j<<","<<i<<":"<<t<<" "<<dict.count(t)<<endl;
+                if(dict.count(t)) {dp[i]=1;break;} //cannot search the whole set!
+            }
+        }
+        return dp[word.length()];
+        
+    }
+};
+```
+
 145	Binary Tree Postorder Traversal    		48.7%	Hard	
+iterative. postorder: left right root sequence
+using stack, we first push the root, and the right and the do the left
+
 149	Max Points on a Line    		15.8%	Hard	
 154	Find Minimum in Rotated Sorted Array II    		39.4%	Hard	
 158	Read N Characters Given Read4 II - Call multiple times    		26.5%	Hard	
 159	Longest Substring with At Most Two Distinct Characters    		47.1%	Hard	
 164	Maximum Gap    		32.6%	Hard	
 174	Dungeon Game    		27.2%	Hard	
-188	Best Time to Buy and Sell Stock IV    		26.4%	Hard	
+
 212	Word Search II    		28.8%	Hard	
 214	Shortest Palindrome    		27.6%	Hard	
 218	The Skyline Problem    		31.7%	Hard	
