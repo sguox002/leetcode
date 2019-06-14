@@ -1351,14 +1351,6 @@ dp it is convenient to add previous index and then we have to do reverse dfs.
             sentence.erase(sentence.size()-sz-1);//remove the last word + space
         }
     }
-    void print(unordered_map<int,vector<string>>& mp)
-    {
-        for(auto it=mp.begin();it!=mp.end();it++) 
-        {
-            for(int i=0;i<it->second.size();i++) cout<<it->first<<": "<<it->second[i]<<" ";
-            cout<<endl;
-        }
-    }
 ```
 this is too complicated, and prone to bugs. using divide and conquer is a better choice
 ```cpp
@@ -1392,6 +1384,7 @@ public:
 ```
 
 We shall always choose the most concise approach due to very limited time!!!!
+since there could be a lot of repetions, so memoization is needed.
 
 472. Concatenated words
 first we need sort the words in dictionary from shorter length to longer length
@@ -1455,30 +1448,565 @@ public:
 145	Binary Tree Postorder Traversal    		48.7%	Hard	
 iterative. postorder: left right root sequence
 using stack, we first push the root, and the right and the do the left
-
+another approach: do it in reverse way, reverse(root, right, left)
+always push left, and then right, output root
+```cpp
+    vector<int> postorderTraversal(TreeNode* root) {
+        //left, right, node. use a stack to store 
+        //stack： first node, then right, then left, pop in reverse
+        stack<TreeNode*> sl;
+        vector<int> s;
+        if(!root) return s;
+        //starting from root, push all right nodes into stack, until dead end, and then pop a left node
+        //save all left nodes in another stack
+        TreeNode* p=root;
+        while(1)
+        {
+            while(p) 
+            {
+                s.push_back(p->val);
+                if(p->left) sl.push(p->left);
+                p=p->right;
+            }
+            if(sl.size()) //try the left, note when the node is the leaf
+            {
+                p=sl.top();sl.pop();
+                //s.push_back(p->val);//this will push twice
+            }
+            else break;
+        }
+        reverse(s.begin(),s.end());
+        return s;
+        
+    }
+```
+this is the most smartest way in this problem.
+	
 149	Max Points on a Line    		15.8%	Hard	
+point on a line: defined by k and d. k can be defined as dy/dx
+dy,dx,d dy dx shall remove the gcd
+and also need keep the sign to dx
+
 154	Find Minimum in Rotated Sorted Array II    		39.4%	Hard	
+contain duplicates using binary search
+```cpp
+	int findMin(vector<int>& nums) {
+		int l=0,r=nums.size()-1;
+		while(l<r)
+		{
+			int m=l+(r-l)/2;
+			if(nums[m]<nums[r]) r=m;
+			else if(nums[m]>nums[r]) l=m+1;
+			else r--;//nums[m]==nums[r], this same thing cannot be the solution
+		}
+		return nums[l];
+	}
+```
 158	Read N Characters Given Read4 II - Call multiple times    		26.5%	Hard	
 159	Longest Substring with At Most Two Distinct Characters    		47.1%	Hard	
 164	Maximum Gap    		32.6%	Hard	
-174	Dungeon Game    		27.2%	Hard	
+unsorted array, given the max gap in its sorted form (neighboring)
+O(N) complexity
+arrange the elements into n-1 bins
+each bin only save the min and max
+and then loop over the bins (bucket sort)
+this is often seen in matlab.
+```cpp
+    int maximumGap(vector<int>& nums) {
+        //using bucket sort to put all these numbers into slots
+        //the longest 0 
+        int n=nums.size();
+        if(n<2) return 0;
+        int min0=*min_element(nums.begin(),nums.end());
+        int max0=*max_element(nums.begin(),nums.end());
+        double dx=double(max0-min0)/(n-1); //to cover all use ceil, have to use double!
+        if(dx<1e-7) return 0;
+        //cout<<dx<<endl;
+        //in each bucket we only need to know the min/max
+        pair<int,int> init=make_pair(INT_MAX,INT_MIN);
+        vector<pair<int,int>> vs(n,init);
+        for(int i=0;i<nums.size();i++)
+        {
+            int ind=(nums[i]-min0)/dx;
+            vs[ind].first=min(vs[ind].first,nums[i]);
+            vs[ind].second=max(vs[ind].second,nums[i]);
+        }
+        //for(int i=0;i<n;i++) cout<<vs[i].first<<" "<<vs[i].second<<endl;
+        int maxgap=0;
+        int prev=-1;
+        for(int i=0;i<n;i++)
+        {
+            if(vs[i].first==INT_MAX) continue;
+            if(prev<0) prev=i;
+            else
+            {
+                maxgap=max(max(maxgap,vs[i].first-vs[prev].second),max(vs[prev].second-vs[prev].first,vs[i].second-vs[i].first));
+                prev=i;
+            }
+        }
+        //another case: only one group
+        return maxgap;
+    }
+```	
 
+174	Dungeon Game    		27.2%	Hard	
+dp reverse direction
+```cpp
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        //this shall be done in reverse order from bottom-right to top-left
+        int m=dungeon.size(),n=dungeon[0].size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1,INT_MAX));
+        //add a right, bottom cell as 1 so that we can apply +1 to the min
+        dp[m][n-1]=dp[m-1][n]=1;
+        for(int i=m-1;i>=0;i--)
+        {
+            for(int j=n-1;j>=0;j--)
+            {
+                int t=min(dp[i+1][j],dp[i][j+1])-dungeon[i][j];
+                dp[i][j]=t<=0?1:t; //we need at least add 1 to it
+            }
+        }
+        return dp[0][0];
+        
+    }
+```	
 212	Word Search II    		28.8%	Hard	
+multiple pattern matching using trie
+```cpp
+struct Node
+{
+    Node* next[26]; //use pointer is much convenient than using array!
+    bool is_leaf;
+    Node(bool b=0) {fill(next,next+26,(Node*)0);is_leaf=b;}
+};
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Node* root;
+    Trie() {
+        root=new Node();
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)        
+        {
+            int ind=word[i]-'a';
+            if(!p->next[ind]) p->next[ind]=new Node();
+            p=p->next[ind];
+        }
+        p->is_leaf=1;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        Node* p=find(word);
+        return p && p->is_leaf; //has to end with a leaf node
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        Node* p=find(prefix);
+        return p; //does not have to end with a leaf node
+    }
+    
+    Node* find(string word)
+    {
+        Node* p=root;
+        for(int i=0;i<word.size();i++)
+        {
+            int ind=word[i]-'a';
+            if(p->next[ind]==0) return 0;
+            p=p->next[ind];
+        }
+        return p;
+    }
+    Node* get_root() {return root;}
+};
+
+class Solution {
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        Trie t;
+        for(int i=0;i<words.size();i++) t.insert(words[i]);
+        Node* root=t.get_root();
+        //use a set to store all the possible words found from the board.
+        set<string> all_words;
+        for(int i=0;i<board.size();i++)
+        {
+            for(int j=0;j<board[0].size();j++)
+                findWords(board,i,j,"",all_words,root);//to save time, some paths shall be skipped if they first do not match
+        }
+        vector<string> ans(all_words.size());
+        copy(all_words.begin(),all_words.end(),ans.begin());
+        return ans;
+    }
+    void findWords(vector<vector<char>>& board,int x,int y,string word,set<string>& result,Node* root)
+    {
+        //using backtracking
+        if(x<0||x>=board.size()||y<0||y>=board[0].size() || board[x][y]==' ') return;
+        char c=board[x][y];
+        int ind=c-'a';
+        if(root->next[ind])
+        {
+            word+=c;
+            root=root->next[ind]; 
+            if(root->is_leaf) result.insert(word);
+            board[x][y]=' ';
+            findWords(board, x+1, y, word, result, root);
+            findWords(board, x-1, y,  word, result, root);
+            findWords(board, x, y+1,  word, result, root);
+            findWords(board, x, y-1,  word, result, root);
+            board[x][y]=c;        
+        }        
+    }
+};
+```
+
 214	Shortest Palindrome    		27.6%	Hard	
+only add chars in the front.
+brutal force: from right to left, we judge if it is a palindrome
+```cpp
+	string shortestPalindrome(string s) {
+		int n=s.size();
+		for(int i=n-1;i>=0;i--)
+			if(ispal(s,i)) {
+				string pre=s.substr(i+1);
+				reverse(pre.begin(),pre.end());
+				return pre+s;
+			}
+		return s;
+	}
+	bool ispal(string& s,int end)
+	{
+		int i=0,j=end;
+		while(i<j) if(s[i++]!=s[j--]) return 0;
+		return 1;
+	}
+```
+This got TLE for a long string of a (len=40002). The time for substr and construct takes more time than expected
+
+KMP is too sophisticated.
+
 218	The Skyline Problem    		31.7%	Hard	
+building are given as [x0,x1,h] and want to form the skyline
+this is similar to intervals and output connected intervals with height
+the output only needs the start point and height
+approach:
+- sort the intervals according to start. 
+- overlap point is the max(h)
+- we can use priority_queue to push pop the height
+- min heap!!!
+```cpp
+	struct comp{
+		bool operator()(vector<int>& a,vector<int>& b){
+			return a[0]>b[0] || (a[0]==b[0] && a[2]>b[2]);
+		}
+	};
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        vector<vector<int>> ans;
+		//sort(buildings.begin(),buildings.end());
+		priority_queue<vector<int>,vector<vector<int>>,comp> pq(buildings.begin(),buildings.end());
+		while(pq.size()){
+			auto t=pq.top();
+			ans.push_back({t[0],t[2]});
+			while(pq.size() && pq.top()[0]==t[0]) pq.pop();
+		}
+		return ans;
+	}
+			
+
 224	Basic Calculator    		32.8%	Hard	
+only involve +-()
+```cpp
+    int calculate(string s) {
+        //+/- has lhs and rhs, can use binary tree and post-order traversal evaluation
+        //also can use stack to do this. if we meet a ( we need to get the matching ) and evaluate it first
+        //recursive approach: search for () first and evaluate using stack
+        stack<int> brpos;
+        int ind=0,start=0;//s.find_first_of('(');
+        while(ind!=string::npos) //exists ()
+        {
+            ind=s.find_first_of("()",start);
+            if(ind!=string::npos)
+            {
+                char c=s[ind];
+                if(c=='(') brpos.push(ind);
+                if(c==')')
+                {
+                    int ind1=brpos.top();
+                    brpos.pop();
+                    string res=myeval(s.substr(ind1+1,ind-ind1-1)); //evaluate it and update the string
+                    s.replace(ind1,ind-ind1+1,res); //replace the string and size will be changed
+					start=ind1;
+                }
+				else start=ind+1;
+            }
+			
+        }
+        //eval the string directly
+        string res=myeval(s); 
+        return stoi(res);
+    }
+    
+    string myeval(string s) //there is no () inside, only numbers and +/- and space
+    {
+        int res=0,i;
+        char c;
+        stringstream ss(s);
+        ss>>res;
+        while(!ss.eof())
+        {
+            c=0; //to skip space
+            ss>>c;
+            if(c=='+') {ss>>i;res+=i;}
+            if(c=='-') {ss>>i;res-=i;}
+        }
+        return to_string((long long)res);
+    }
+```	
+
 233	Number of Digit One    		30.2%	Hard	
+math problem
+number counting.
+for the ith digit, makes it 1, and divide to left and right<br/>
+if the ith digit >1, then (left+1)*10^i (since the right can be any digit 0 to 9)<br/>
+==1: then right can be from 0 to right (right+1) and left can be 1 to left (left)*10^i.<br/>
+<1, then we need borrow 1 from left, left*10^i<br/>
+
+```cpp
+    int countDigitOne(int n) {
+        int ans=0;
+        int left=0,right=0;
+        int i=0;
+        while(n)
+        {
+            int d=n%10;
+            left=n/10;
+            if(d>1) ans+=(left+1)*pow(10,i);
+            else if(d==1) ans+=left*pow(10,i)+right+1;
+            else ans+=left*pow(10,i);
+            right+=d*pow(10,i);
+            n/=10;
+            i++;
+        }
+        return ans;
+    }
+```	
+
 239	Sliding Window Maximum    		38.3%	Hard	
+classical problem using deque keeping monotonic order
+also works for sliding window minimum
+[1,3,-1,-3,5,3,6,7]
+linear time
+deque: deque=1
+incoming 3: remove 1, deque=3
+incoming -1: 
+approach:
+- save index in the deque (so we have both index and value information)
+- front is always the max
+- max is out of window, remove the front
+- incoming > back, then remove all smaller ones 
+- add incoming into back.
+
+```cpp
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        //monotonic array using deque
+        vector<int> res;
+        deque<int> dq;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(!dq.empty() && dq.front()==i-k) dq.pop_front();
+            while(!dq.empty() && nums[dq.back()]<nums[i]) dq.pop_back(); //remove all elements less than it
+            dq.push_back(i);
+            if(i>=k-1) res.push_back(nums[dq.front()]);
+        }
+        return res;
+    }
+```	
+
+
 248	Strobogrammatic Number III    		36.6%	Hard	
 265	Paint House II    		41.6%	Hard	
 269	Alien Dictionary    		31.1%	Hard	
 272	Closest Binary Search Tree Value II    		45.2%	Hard	
 273	Integer to English Words    		24.4%	Hard	
+english: every thousand changes
+```cpp
+    string s1[]={"One", "Two", "Three", "Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"};
+    string s2[]={"Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+class Solution {
+public:
+    string numberToWords(int num) {
+        //1,10,100,1000,10^6,10^9
+        if(!num) return string("Zero");
+        int billion,million,thousand,hundred,twenty;
+        billion=num/1000000000;
+        num-=billion*1000000000;
+        million=num/1000000;
+        num-=million*1000000;
+        thousand=num/1000;
+        num-=thousand*1000;
+        //now we need convert all numbers into <100
+        string res;
+        if(billion) res+=int2words(billion)+"Billion ";
+        if(million) res+=int2words(million)+"Million ";
+        if(thousand) res+=int2words(thousand)+"Thousand ";
+        if(num) res+=int2words(num);
+        //remove the last space
+        res.pop_back();
+        return res;
+        
+    }
+    
+    string int2words(int num) //number is <999
+    {
+        int hundred=num/100;
+        num-=hundred*100;
+        int ten=num/10;
+        num-=ten*10;
+        int one=num;
+        string s;
+        if(hundred) s+=s1[hundred-1]+" Hundred ";
+        if(ten>1) 
+        {
+            s+=s2[ten-2]+" ";
+            if(one) s+=s1[one-1]+" ";
+            
+        }
+        else
+        {
+            if(ten*10+one>0) s+=s1[ten*10+one-1]+" ";
+        }
+        return s;
+    }
+};
+```
+
 282	Expression Add Operators    		32.8%	Hard	
+given a string of digits, apply +-* to get the target
+divide and conquer, combined with backtracking
+- loop all positions and divide left and right part. left as a number, and right as a subproblem
+- apply +-* between left and right
+- righ subproblem
+- perform evaluation current value, previous op value, previous operator
+
+```cpp
+    vector<string> addOperators(string num, int target) {
+        vector<string> res;
+        if (num.empty()) return res;
+        for (int i=1; i<=num.size(); i++) 
+        {
+            string s = num.substr(0, i);
+            long cur = stol(s);
+            if (to_string(cur).size() != s.size()) continue;//leading zeros
+            dfs(res, num, target, s, i, cur, cur, '#');         // no operator defined.
+        }
+
+        return res;
+    }
+
+    // cur: {string} expression generated so far.
+    // pos: {int}    current visiting position of num.
+    // cv:  {long}   cumulative value so far.
+    // pv:  {long}   previous operand value.
+    // op:  {char}   previous operator used.
+    void dfs(std::vector<string>& res, const string& num, int target, 
+	string cur, int pos, long cv, long pv, char op) {
+        if (pos == num.size() && cv == target) {res.push_back(cur);} 
+        else 
+        {
+            for (int i=pos+1; i<=num.size(); i++) 
+            {
+                string t = num.substr(pos, i-pos);
+                long now = stol(t);
+                if (to_string(now).size() != t.size()) continue;
+                dfs(res, num, target, cur+'+'+t, i, cv+now, now, '+');
+                dfs(res, num, target, cur+'-'+t, i, cv-now, now, '-');
+                dfs(res, num, target, cur+'*'+t, i, (op=='-')?cv+pv-pv*now:((op=='+')?cv-pv+pv*now : pv*now), pv*now, op);
+            }
+        }
+    }    
+```	
+
+
 291	Word Pattern II    		41.0%	Hard	
-295	Find Median from Data Stream    		36.8%	Hard	
+295	Find Median from Data Stream    		36.8%	Hard
+left: a max heap
+right: a min heap
+median: odd:, even: the two heap's average
+when a a new data coming, check even /odd
+either put left side, or right side.
+
+```cpp
+    priority_queue<int,vector<int>,less<int>> left;
+    priority_queue<int,vector<int>,greater<int>> right;
+    double med;
+    int total;
+    MedianFinder() {
+        total=0;
+    }
+    
+    void addNum(int num) {
+        total++;
+        if(total==1) {med=num;return;}
+        
+        if(total%2)//total is odd, one element is in and one element is out
+        {
+            if(num<left.top()) {left.push(num);med=left.top();left.pop();}
+            else if(num>right.top()) {right.push(num);med=right.top();right.pop();}
+            else med=num;//lmax<=num<=lmin
+        }
+        else //total is even, the new num and med shall be inside left or right
+        {
+            if(num<med) {left.push(num);right.push(med);}
+            else {left.push(med);right.push(num);}
+            med=(left.top()+right.top())/2.0;
+        }
+    }
+    
+    double findMedian() {
+        return med;
+    }
+	```
 296	Best Meeting Point    		54.9%	Hard	
 297	Serialize and Deserialize Binary Tree    		41.1%	Hard	
+using stringstream
+```cpp
+    string serialize(TreeNode* root) {
+        ostringstream os;
+        serialize(root,os);
+        return os.str();
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        istringstream is(data);
+        return deserialize(is);
+    }
+    
+    void serialize(TreeNode* root, ostringstream& os)
+    {
+        if(root)
+        {
+            os<<root->val<<" ";
+            serialize(root->left,os);
+            serialize(root->right,os);
+        }
+        else os<<"# ";
+    }
+    TreeNode* deserialize(istringstream& is)
+    {
+        string s;
+        is>>s;
+        if(s=="#") return 0;
+        TreeNode* p=new TreeNode(stoi(s));
+        p->left=deserialize(is);
+        p->right=deserialize(is);
+        return p;
+    }
+```	
 301	Remove Invalid Parentheses    		39.4%	Hard	
 302	Smallest Rectangle Enclosing Black Pixels    		49.3%	Hard	
 305	Number of Islands II    		41.8%	Hard	
