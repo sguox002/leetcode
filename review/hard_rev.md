@@ -2023,42 +2023,1197 @@ using stringstream
 336	Palindrome Pairs    		31.0%	Hard	
 340	Longest Substring with At Most K Distinct Characters    		39.8%	Hard	
 352	Data Stream as Disjoint Intervals    		43.6%	Hard	
+merge the data into intervals
+- sort the intervals according to start in a set
+- when add a val, check if it overlaps with an interval, if yes, merge it.
+for a single value it covers [val, val+1)
+```cpp
+    struct Cmp{
+        bool operator()(Interval a, Interval b){ return a.start < b.start; }
+    };
+    set<Interval, Cmp> st;
+
+    void addNum(int val) {
+        auto it = st.lower_bound(Interval(val, val));
+        int start = val, end = val;
+        if(it != st.begin() && (--it)->end+1 < val) it++;
+        while(it != st.end() && val+1 >= it->start && val-1 <= it->end)
+        {
+            start = min(start, it->start);
+            end = max(end, it->end);
+            it = st.erase(it);
+        }
+        st.insert(it,Interval(start, end));
+    }
+    
+    vector<Interval> getIntervals() {
+        vector<Interval> result;
+        for(auto val: st) result.push_back(val);
+        return result;
+    }
+```	
+
+
 354	Russian Doll Envelopes    		34.0%	Hard	
+(w,h), return the max number of envelopes you can russina doll.
+only fit in if w and h > the other to be fitted.
+a binary search or dp problem.
+binary search: get the last true position
+dp: if i can fit in j then dp[i]=dp[j]+1
+same as the longest increasing subsequence problem.
+```cpp
+bool cmp(pair<int,int>& a,pair<int,int>& b) {return a.first<b.first || (a.first==b.first && a.second<b.second);}
+class Solution {
+public:
+    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+        //unordered_map<int,vector<int>> mp;
+        sort(envelopes.begin(),envelopes.end(),cmp);
+        //using dp
+        vector<int> dp(envelopes.size(),1); //dp is the maximum length to i
+        int gmax=0;
+        for(int i=0;i<envelopes.size();i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(canfit(envelopes[j],envelopes[i])) dp[i]=max(dp[j]+1,dp[i]);
+            }
+            gmax=max(gmax,dp[i]); //the global max
+        }
+        return gmax;
+        //merge them! choose the one with max depth! longest increasing path this needs dp!
+    }
+    bool canfit(pair<int,int>& a,pair<int,int>& b) {return a.first<b.first && a.second<b.second;}
+};
+```
+
 358	Rearrange String k Distance Apart    		32.9%	Hard	
 363	Max Sum of Rectangle No Larger Than K    		35.2%	Hard	
+the rectangle top left (x0,y0), bottom right (x1,y1)
+S(x0,y0,x1,y1)=S4
+S(x0,y0)=S1
+S(x1,y0)=S1+S2
+S(x0,y1)=S1+S3
+S(x1,y1)=S1+S2+S3+S4
+S4=S(x1,y1)-(S1+S2+S3)=S(x1,y1)-(S1+S2+S1+S3-S1)=S(x1,y1)+S(x0,y0)-S(x1,y0)-S(x0,y1)
+for x1,y1 (n^2 choices) x0,y0 can be chosen from 0-x1, 0-y1, that is x1y1
+if we brutal force, it will be O(N^4)
+
+find the largest sum of subarray in a 1D array <=K
+prefix sum. and we iterate from left to right, put the prefix sum in a set.
+for each prefix, we can use upper_bound to find the target cum[j]-k.
+O(nlogn)
+
+/* first  consider the situation matrix is 1D
+    we can save every sum of 0~i(0<=i<len) and binary search previous sum to find 
+    possible result for every index, time complexity is O(NlogN).
+    so in 2D matrix, we can sum up all values from row i to row j and create a 1D array 
+    to use 1D array solution.
+    If col number is less than row number, we can sum up all values from col i to col j 
+    then use 1D array solution.
+*/
+public int maxSumSubmatrix(int[][] matrix, int target) {
+    int row = matrix.length;
+    if(row==0)return 0;
+    int col = matrix[0].length;
+    int m = Math.min(row,col);
+    int n = Math.max(row,col);
+    //indicating sum up in every row or every column
+    boolean colIsBig = col>row;
+    int res = Integer.MIN_VALUE;
+    for(int i = 0;i<m;i++){
+        int[] array = new int[n];
+        // sum from row j to row i
+        for(int j = i;j>=0;j--){
+            int val = 0;
+            TreeSet<Integer> set = new TreeSet<Integer>();
+            set.add(0);
+            //traverse every column/row and sum up
+            for(int k = 0;k<n;k++){
+                array[k]=array[k]+(colIsBig?matrix[j][k]:matrix[k][j]);
+                val = val + array[k];
+                //use  TreeMap to binary search previous sum to get possible result 
+                Integer subres = set.ceiling(val-target);
+                if(null!=subres){
+                    res=Math.max(res,val-subres);
+                }
+                set.add(val);
+            }
+        }
+    }
+    return res;
+}
+
 381	Insert Delete GetRandom O(1) - Duplicates allowed    		32.0%	Hard	
+insert, remove, getrandom, duplicate allowed.
+insert/remove for list with iterator is O(1)
+- need some storage to store the data
+- need some index or iterator mechanism to access the element in O(1)
+
+Like in the previous problem, Insert Delete GetRandom O(1), the solution is to maintain a vector with all elements to get the random number in O(1).
+With duplicates allowed, instead of just one index, we now need to store indexes of all elements of the same value in our vector. The remove method becomes a bit more complicated therefore, as we need to:
+
+Remove any index of the element being removed
+Swap the last element in the vector with the element being removed (same as in the previous problem)
+Remove old and add new index for the swapped (last) element
+```cpp
+  vector<int> v;
+  unordered_map<int, unordered_set<int>> m;
+  bool insert(int val) {
+    v.push_back(val);
+    m[val].insert(v.size() - 1);
+    return m[val].size() == 1;
+  }
+  bool remove(int val) {
+    auto it = m.find(val);
+    if (it != end(m)) {
+      auto free_pos = *it->second.begin();
+      it->second.erase(it->second.begin());
+      v[free_pos] = v.back();
+      m[v.back()].insert(free_pos);
+      m[v.back()].erase(v.size() - 1);
+      v.pop_back();
+      if (it->second.size() == 0) m.erase(it);
+      return true;
+    }
+    return false;
+  }
+  int getRandom() { return v[rand() % v.size()]; }
+```  
+  
 391	Perfect Rectangle    		28.2%	Hard	
+N rectangle, if forms an exact cover of a rectangle region
+could have overlaps.
+- sum of all rect area = final rect area (xmin,ymin), (xmax,ymax)
+- area the same is not sufficient we can easily move a rect to other place and have an overlap.
+inner side points shall be even
+four side corner shall be once (no overlap)
+```cpp
+    bool isRectangleCover(vector<vector<int>>& rectangles) {
+        //first find the 4 points of the outer rect
+        //second the area shall equal to the sum of all small rectangle
+        //third the outer rect shall be the points of those sub rect (only appears once)
+        //4th all inner side points must appear even times
+        unordered_map<string,int> mp;
+        int x0,y0,x1,y1;
+        x0=y0=INT_MAX,x1=y1=INT_MIN;
+        string s;
+        int total_area=0;
+        for(int i=0;i<rectangles.size();i++)
+        {
+            x0=min(x0,rectangles[i][0]);
+            y0=min(y0,rectangles[i][1]);
+            x1=max(x1,rectangles[i][2]);
+            y1=max(y1,rectangles[i][3]);
+            total_area+=(rectangles[i][0]-rectangles[i][2])*(rectangles[i][1]-rectangles[i][3]);
+            s=to_string(rectangles[i][0])+":"+to_string(rectangles[i][1]);mp[s]++;
+            s=to_string(rectangles[i][2])+":"+to_string(rectangles[i][3]);mp[s]++;
+            s=to_string(rectangles[i][2])+":"+to_string(rectangles[i][1]);mp[s]++;
+            s=to_string(rectangles[i][0])+":"+to_string(rectangles[i][3]);mp[s]++;
+        }
+        int area=(x0-x1)*(y0-y1);
+        s=to_string(x0)+":"+to_string(y0);if(mp[s]!=1) return 0;else mp.erase(s);
+        s=to_string(x1)+":"+to_string(y1);if(mp[s]!=1) return 0;else mp.erase(s);
+        s=to_string(x1)+":"+to_string(y0);if(mp[s]!=1) return 0;else mp.erase(s);
+        s=to_string(x0)+":"+to_string(y1);if(mp[s]!=1) return 0;else mp.erase(s);
+        for(auto it=mp.begin();it!=mp.end();it++) if(it->second%2) return 0;
+        return area==total_area;
+    }
+```
+	
+
+
 403	Frog Jump    		36.2%	Hard	
-407	Trapping Rain Water II    		39.3%	Hard	
+stones are located at different positions. frog is on the first stone, first step is 1
+if last jump step is k, current step is k, K+1 or K-1. only forward jump
+return if frog can jump to the last stone
+approach: recursive, or dfs
+- stones into a hashset
+- which step can go to next stone, try it
+
+```cpp
+    bool canCross(vector<int>& stones) {
+        if(stones.size()<2) return 1;
+        if(stones[1]!=1) return 0;
+        if(stones.size()==2) return 1;
+        for(int i=1;i<stones.size();i++)
+            if(stones[i] - stones[i-1] > i) return 0; //key point !!
+        unordered_set<int> hs(stones.begin(),stones.end());
+        return canReach(hs,1,1,stones.back());
+    }
+    
+    bool canReach(unordered_set<int>& hs,int pos,int jmp,int last)
+    {
+        if(pos+jmp==last || pos+jmp-1==last || pos+jmp+1==last) return 1;
+        if(hs.count(pos+jmp+1))
+            if(canReach(hs,pos+jmp+1,jmp+1,last)) return 1;
+        
+        if(hs.count(pos+jmp))
+            if(canReach(hs,pos+jmp,jmp,last)) return 1;
+        
+        if(jmp-1>0 && hs.count(pos+jmp-1))
+            if(canReach(hs,pos+jmp-1,jmp-1,last)) return 1;
+        
+        return 0;
+    }
+```	
+
+407	Trapping Rain Water II    		39.3%	Hard
+now 2d cell. 
+Imagine the pool is surrounded by many bars. The water can only go out from the lowest bar. So we always start from the lowest boundary and keep pushing the bar from boundary towards inside. It works as if we are replacing the old bars with a bar higher than it.
+See the following simple example:
+4 4 4 4
+4 0 1 2
+4 4 4 4
+it looks like we push the bar of 2 towards left and record the difference. Then you can use the same procedure with the following figure
+4 4 4 4
+4 0 2 2
+4 4 4 4
+compute the volume of water held.
+```cpp
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        typedef pair<int,int> cell; //height + 1d index
+        priority_queue<cell, vector<cell>, greater<cell>> q; //minheap
+        int m = heightMap.size();
+        if (m == 0) return 0;
+        int n = heightMap[0].size();
+        vector<int> visited(m*n, 0);
+        
+        //the 4 boundaries
+        for (int i = 0; i < m; ++i)
+        for (int j = 0; j < n; ++j) 
+        {
+            if (i == 0 || i == m-1 || j == 0  || j == n-1) 
+            {
+                if (!visited[i*n+j]) q.push(cell(heightMap[i][j], i*n+j));
+                visited[i*n+j] = 1;
+            }
+        }
+        
+        int dir[4][2] = {{0,1}, {0, -1}, {1, 0}, {-1, 0}};
+        int ans = 0;
+        while(!q.empty()) 
+        {
+            cell c = q.top();q.pop();
+            int i = c.second/n, j = c.second%n;
+            
+            for (int r = 0; r < 4; ++r) 
+            {
+                int ii = i+dir[r][0], jj = j+dir[r][1];
+                if (ii < 0 || ii >= m || jj < 0 || jj >= n || visited[ii*n+jj]) continue;
+                ans += max(0, c.first - heightMap[ii][jj]);
+                q.push(cell(max(c.first, heightMap[ii][jj]), ii*n+jj));
+                visited[ii*n+jj] = true;
+            }
+        }
+        return ans;
+    }
+```
 410	Split Array Largest Sum    		42.4%	Hard	
+Given an array which consists of non-negative integers and an integer m, you can split the array into m non-empty continuous subarrays. Write an algorithm to minimize the largest sum among these m subarrays.
+typical binary search problem
+```cpp
+    int splitArray(vector<int>& nums, int m) {
+        //the sum is between the max and the sum of all elements
+        //use the mid value to split and use the greedy algorithm to form split arrays
+        //if more than m can be obtained, the mid value is smaller, 
+        //if less than m can be obtained, the mid value is larger
+        
+        int lbound=*max_element(nums.begin(),nums.end());
+        int ubound=accumulate(nums.begin(),nums.end(),0);
+        if(m<=1) return ubound;
+        if(m>=nums.size()) return lbound;
+        for(int i=1;i<nums.size();i++) nums[i]+=nums[i-1];//accumulate sum, and they are sorted
+        //copy(nums.begin(),nums.end(),ostream_iterator<int>(cout," "));cout<<endl;
+        int mid,maxsum;
+        int numseg=0;
+        while(lbound<=ubound)
+        {
+            //cout<<mid<<endl;
+            mid=(lbound+ubound)/2;
+            numseg=calcNumSeg(nums,mid,maxsum);
+            //cout<<mid<<" "<<numseg<<endl;
+            if(numseg>m) {lbound=mid+1;}
+            else {ubound=mid-1;}
+        }
+        return lbound;//maxsum;
+    }
+    int calcNumSeg(vector<int>& nums,int midval,int& maxsum)
+    {
+        int cnt=0,i=0,prevsum=0;
+        maxsum=0;
+        while(i<nums.size())
+        {
+            int ind=int(upper_bound(nums.begin()+i,nums.end(),midval+prevsum)-nums.begin());
+            if(ind!=nums.size()) 
+            {
+                /*if(nums[ind]==midval+prevsum) {maxsum=max(maxsum,nums[ind]-prevsum);i=ind+1;prevsum=nums[ind];}
+                else */{maxsum=max(maxsum,nums[ind-1]-prevsum);i=ind;prevsum=nums[ind-1];}
+            }
+            else {maxsum=max(maxsum,nums[ind-1]-prevsum);i=ind;}
+            cnt++;
+        }
+        return cnt;
+    }
+```
+	
 411	Minimum Unique Word Abbreviation    		35.0%	Hard	
 420	Strong Password Checker    		17.3%	Hard	
+A password is considered strong if below conditions are all met:
+
+It has at least 6 characters and at most 20 characters.
+It must contain at least one lowercase letter, at least one uppercase letter, and at least one digit.
+It must NOT contain three repeating characters in a row ("...aaa..." is weak, but "...aa...a..." is strong, assuming other conditions are met).
+Write a function strongPasswordChecker(s), that takes a string s as input, and return the MINIMUM change required to make s a strong password. If s is already strong, return 0.
+
+Insertion, deletion or replace of any one character are all considered as one change.
+
+approach:
+length check: delete or add some chars
+upper/lower/digit check: need to replace
+repeating: need to add/remove/replace
+greedy: each move shall fix most problems
+
+The basic principle is straightforward: if we want to make MINIMUM changes to turn s into a strong password, each change made should fix as many problems as possible.
+
+So to start, let's first identify all the problems in the input string s and list what changes are suitable for righting each of them. To clarify, each change should be characterized by at least two parts: the type of operation it takes and the position in the string where the operation is applied (Note: Ideally we should also include the characters involved in the operation and the "power" of each operation for eliminating problems but they turn out to be partially relevant so I will mention them only when appropriate).
+
+Length problem: if the total length is less than 6, the change that should be made is (insert, any position), which reads as "the operation is insertion and it can be applied to anywhere in the string". If the total length is greater than 20, then the change should be (delete, any position).
+
+Missing letter or digit: if any of the lowercase/uppercase letters or digits is missing, we can do either (insert, any position) or (replace, any position) to correct it. (Note here the characters for insertion or replacement can only be those missing.)
+
+Repeating characters: for repeating characters, all three operations are allowed but the positions where they can be applied are limited within the repeating characters. For example, to fix "aaaaa", we can do one replacement (replace the middle 'a') or two insertions (one after the second 'a' and one after the fourth 'a') or three deletions (delete any of the three 'a's). So the possible changes are (replace, repeating characters), (insert, repeating characters), (delete, repeating characters). (Note however the "power" of each operation for fixing the problem are different -- replacement is the strongest while deletion is the weakest.)
+
+All right, what's next? If we want a change to eliminate as many problems as it can, it must be shared among the possible solutions to each problem it can fix. So our task is to find out possible overlapping among the changes for fixing each problem.
+
+Since there are most (three) changes allowed for the third problem, we may start from combinations first problem & third problem and second problem & third problem. It's not too hard to conclude that any change that can fix the first or second problems is also able to fix the third one (since the type of operation here is irrelevant, we are free to choose the position of the operation to match those of the repeating characters). For combination first problem & second problem, depending on the length of the string, there will be overlapping if length is less than 6 or no overlapping if length is greater than 20.
+
+From the analyses above, it seems worthwhile to distinguish between the two cases: when the input string is too short or too long.
+
+For the former case, it can be shown that the total changes needed to fix the first and second problems always outnumber those for the third one. Since whatever change used fixing the first two problems can also correct the third one, we may concern ourselves with only the first two. Also as there is overlapping between the changes for fixing the first two problems, we will prefer those overlapping ones, i.e. (insert, any position). Another point is that the characters involved in the operation matters now. To fix the first problem, only those missing characters can be inserted while for the second condition, it can be any character. Therefore correcting the first problem takes precedence over the second one.
+
+For the latter case, there is overlapping between the first & third and second & third problems, so those overlapping changes will be taken, i.e., first problem => (delete, any position), second problem => (replace, any position). The reason not to use (insert, any position) for the second problem is that it contradicts the changes made to the first problem (therefore has the tendency to cancel its effects). After fixing the first two problems, what operation(s) should we choose for the third one?
+
+Now the "power" of each operation for eliminating problems comes into play. For the third problem, the "power" of each operation will be measured by the maximum number of repeating characters it is able to get rid of. For example, one replacement can eliminate at most 5 repeating characters while insertion and deletion can do at most 4 and 3, respectively. In this case, we say replacement has more "power" than insertion or deletion. Intuitively the more "powerful" the operation is, the less number of changes is needed for correcting the problem. Therefore (replace, repeating characters) triumphs in terms of fixing the third problem.
+
+Furthermore, another very interesting point shows up when the "power" of operation is taken into consideration (And thank yicui for pointing it out). As I mentioned that there is overlapping between changes made for fixing the first two problems and for the third one, which means the operations chosen above for the first two problems will also be applied to the third one. For the second problem with change chosen as (replace, any position), we have no problem adapting it so that it coincides with the optimal change (replace, repeating characters) made for the third problem. However, there is no way to do the same for the first problem with change (delete, any position). We have a conflict now!
+
+How do we reconcile it? The trick is that for a sequence of repeating characters of length k (k >= 3), instead of turning it all the way into a sequence of length 2 (so as to fix the repeating character problem) by the change (delete, any position), we will first reduce its length to (3m + 2), where (3m + 2) is the largest integer of the form yet no more than k. That is to say, if k is a multiple of 3, we apply once such change so its length will become (k - 1); else if k is a multiple of 3 plus 1, we apply twice such change to cut its length down to (k - 2), provided we have more such changes to spare (be careful here as we need at least two changes but the remaining available changes may be less than that, so we should stick to the smaller one: 2 or the remaining available changes). The reason is that the optimal change (replace, repeating characters) for the third problem will be most "powerful" when the total length of the repeating characters is of this form. Of course, if we still have more changes (delete, any position) to do after that, then we are free to turn the repeating sequence all the way into a sequence of length 2.
+
+Here is the java program based on the above analyses. Both time and space complexity is O(n). Not sure if we can reduce the space down to O(1) by computing the arr array on the fly. A quick explanation is given at the end.
+
+public int strongPasswordChecker(String s) {
+    int res = 0, a = 1, A = 1, d = 1;
+    char[] carr = s.toCharArray();
+    int[] arr = new int[carr.length];
+        
+    for (int i = 0; i < arr.length;) {
+        if (Character.isLowerCase(carr[i])) a = 0;
+        if (Character.isUpperCase(carr[i])) A = 0;
+        if (Character.isDigit(carr[i])) d = 0;
+            
+        int j = i;
+        while (i < carr.length && carr[i] == carr[j]) i++;
+        arr[j] = i - j;
+    }
+        
+    int total_missing = (a + A + d);
+
+    if (arr.length < 6) {
+        res += total_missing + Math.max(0, 6 - (arr.length + total_missing));
+            
+    } else {
+        int over_len = Math.max(arr.length - 20, 0), left_over = 0;
+        res += over_len;
+            
+        for (int k = 1; k < 3; k++) {
+            for (int i = 0; i < arr.length && over_len > 0; i++) {
+                if (arr[i] < 3 || arr[i] % 3 != (k - 1)) continue;
+                arr[i] -= Math.min(over_len, k);
+                over_len -= k;
+            }
+        }
+            
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] >= 3 && over_len > 0) {
+                int need = arr[i] - 2;
+                arr[i] -= over_len;
+                over_len -= need;
+            }
+                
+            if (arr[i] >= 3) left_over += arr[i] / 3;
+        }
+            
+        res += Math.max(total_missing, left_over);
+    }
+        
+    return res;
+}
+A quick explanation of the program:
+
+res denotes the minimum changes; a, A and d are the number of missing lowercase letters, uppercase letters and digits, respectively; arr is an integer array whose element will be the number of repeating characters starting at the corresponding position in the string.
+
+In the following loop we fill in the values for a, A, d and arr to identify the problems for each condition. The total number of missing characters total_missing will be the summation of a, A, d and fixing this problem takes at least total_missing changes.
+
+We then distinguish the two cases when the string is too short or too long. If it is too short, we pad its length to at least 6 (note in this case we've already inserted total_missing characters so the new length is the summation of the original length and total_missing).
+
+Otherwise, to fix the first condition, we need to delete over_len (number of surplus characters) characters. Since fixing the first problem also corrects the third one, we need to get rid of those parts from the arr array. And as I mentioned, we need to first turn all numbers in the arr array greater than 2 into the form of (3m + 2) and then reduce them all the way to 2 if over_len is still greater than 0. After that, we need to replace total_missing characters to fix the second problem, which also fixes part (or all) of the third problem. Therefore we only need to take the larger number of changes needed for fixing the second problem (which is total_missing) and for the third one (which is left_over, since it is the number of changes still needed after fixing the first problem).
+
 425	Word Squares    		44.4%	Hard	
+
 428	Serialize and Deserialize N-ary Tree    		53.9%	Hard	
 431	Encode N-ary Tree to Binary Tree    		63.6%	Hard	
 432	All O`one Data Structure    		29.6%	Hard	
+inc(key) inc the key
+dec(key) dec the key
+getmaxkey()
+getminkey()
+
+approach:
+store the relation as a matrix:
+each row: the same value with a list of key strings.
+first row: the max value
+last row: the min value
+
+getmin/max: just return the first key of the first/last row
+iterator: to ensure O(1) access to any nodes in the matrix
+inc: move to higher layer or create a new layer
+dec: move to lower layer or create a new layer
+
+```cpp
+    struct Row 
+    {
+        list<string> strs;
+        int val;
+        Row(const string &s, int x) : strs({s}), val(x) {}
+    };
+
+    unordered_map<string, pair<list<Row>::iterator, list<string>::iterator>> strmap;//key to its index or iterators
+    list<Row> matrix;
+
+    /** Initialize your data structure here. */
+    AllOne() {
+        
+    }
+    
+    /** Inserts a new key <Key> with value 1. Or increments an existing key by 1. */
+    void inc(string key) {
+        if (strmap.count(key) == 0) 
+        {
+            if (matrix.empty() || matrix.back().val != 1) //does not have the row with value 1
+            {
+                auto newrow = matrix.emplace(matrix.end(), key, 1); //construct a new row
+                strmap[key] = make_pair(newrow, newrow->strs.begin());
+            }
+            else //has the row with value 1
+            {
+                auto newrow = --matrix.end();
+                newrow->strs.push_front(key);
+                strmap[key] = make_pair(newrow, newrow->strs.begin());
+            }
+        }
+        else  //key exists
+        {
+            auto row = strmap[key].first;
+            auto col = strmap[key].second;
+            auto lastrow = row;
+            --lastrow;//need bring this node up a layer
+            if (lastrow == matrix.end() || lastrow->val != row->val + 1) 
+            {
+                auto newrow = matrix.emplace(row, key, row->val + 1);//add a new row
+                strmap[key] = make_pair(newrow, newrow->strs.begin());
+            }
+            else //exist the new row
+            {
+                auto newrow = lastrow;
+                newrow->strs.push_front(key);
+                strmap[key] = make_pair(newrow, newrow->strs.begin());
+            }
+            row->strs.erase(col);//remove the node
+            if (row->strs.empty()) matrix.erase(row); //remove the row
+        }
+    }
+    
+    /** Decrements an existing key by 1. If Key's value is 1, remove it from the data structure. */
+    void dec(string key) {
+        if (strmap.count(key) ==0) return;
+        auto row = strmap[key].first;
+        auto col = strmap[key].second;
+        if (row->val == 1) 
+        {
+            row->strs.erase(col);
+            if (row->strs.empty()) matrix.erase(row);
+            strmap.erase(key);
+            return;
+        }
+        auto nextrow = row;
+        ++nextrow;
+        if (nextrow == matrix.end() || nextrow->val != row->val - 1) 
+        {
+            auto newrow = matrix.emplace(nextrow, key, row->val - 1);
+            strmap[key] = make_pair(newrow, newrow->strs.begin());
+        }
+        else 
+        {
+            auto newrow = nextrow;
+            newrow->strs.push_front(key);
+            strmap[key] = make_pair(newrow, newrow->strs.begin());
+        }
+        row->strs.erase(col);
+        if (row->strs.empty()) matrix.erase(row);
+    }
+    
+    /** Returns one of the keys with maximal value. */
+    string getMaxKey() {
+        return matrix.empty() ?  "" : matrix.front().strs.front();
+    }
+    
+    /** Returns one of the keys with Minimal value. */
+    string getMinKey() {
+        return matrix.empty() ?  "" : matrix.back().strs.front();
+    }
+```
+
+
 440	K-th Smallest in Lexicographical Order    		26.6%	Hard	
+compare using string
+since k and n could be very large, using sort would be overwhelming.
+can just fill until k.
+Actually this is a denary tree (each node has 10 children). Find the kth element is to do a k steps preorder traverse of the tree.
+Initially, image you are at node 1 (variable: curr),
+the goal is move (k - 1) steps to the target node x. (substract steps from k after moving)
+when k is down to 0, curr will be finally at node x, there you get the result.
+
+we don't really need to do a exact k steps preorder traverse of the denary tree, the idea is to calculate the steps between curr and curr + 1 (neighbor nodes in same level), in order to skip some unnecessary moves.
+
+```java
+public int findKthNumber(int n, int k) {
+    int curr = 1;
+    k = k - 1;
+    while (k > 0) {
+        int steps = calSteps(n, curr, curr + 1);
+        if (steps <= k) {
+            curr += 1;
+            k -= steps;
+        } else {
+            curr *= 10;
+            k -= 1;
+        }
+    }
+    return curr;
+}
+//use long in case of overflow
+public int calSteps(int n, long n1, long n2) {
+    int steps = 0;
+    while (n1 <= n) {
+        steps += Math.min(n + 1, n2) - n1;
+        n1 *= 10;
+        n2 *= 10;
+    }
+    return steps;
+}
+```
+
 446	Arithmetic Slices II - Subsequence    		30.2%	Hard	
+return the number of arithmetic subsequence slices in the array
+dp: when diff=A[i]-A[j] dp[i][diff]++
+
+```cpp
+    int numberOfArithmeticSlices(vector<int>& A) {
+        //difference as the key
+        vector<unordered_map<int,int>> dp(A.size());//difference vs length
+        int res=0;
+        for(int i=1;i<A.size();i++) 
+        {
+            for(int j=i-1;j>=0;j--) //try all previous one and build current map
+            {
+                if((long)A[i] - (long)A[j] > INT_MAX || (long)A[i] - (long)A[j] < INT_MIN) continue;
+                int diff=A[i]-A[j];//diff is key for a(i,j)
+                dp[i][diff]++;
+                if(dp[j].count(diff)) {dp[i][diff]+=dp[j][diff];res+=dp[j][diff];}
+            }
+        }
+        //print(mp);
+        return res;
+    }
+```	
 458	Poor Pigs    		45.4%	Hard	
+there are 1000 buckets, only one of them is poisonous. 
+if drink the poison, it dies within 15 mins
+to figure out which one is poisonous, what is the min number of pigs to be used in our hour.
+a pig can drink as many simultaneously.
+
+greedy solution:
+
+With 2 pigs, poison killing in 15 minutes, and having 60 minutes, we can find the poison in up to 25 buckets in the following way. Arrange the buckets in a 5×5 square:
+
+ 1  2  3  4  5
+ 6  7  8  9 10
+11 12 13 14 15
+16 17 18 19 20
+21 22 23 24 25
+Now use one pig to find the row (make it drink from buckets 1, 2, 3, 4, 5, wait 15 minutes, make it drink from buckets 6, 7, 8, 9, 10, wait 15 minutes, etc). Use the second pig to find the column (make it drink 1, 6, 11, 16, 21, then 2, 7, 12, 17, 22, etc).
+
+Having 60 minutes and tests taking 15 minutes means we can run four tests. If the row pig dies in the third test, the poison is in the third row. If the column pig doesn't die at all, the poison is in the fifth column (this is why we can cover five rows/columns even though we can only run four tests).
+
+With 3 pigs, we can similarly use a 5×5×5 cube instead of a 5×5 square and again use one pig to determine the coordinate of one dimension (one pig drinks layers from top to bottom, one drinks layers from left to right, one drinks layers from front to back). So 3 pigs can solve up to 125 buckets.
+
+In general, we can solve up to (⌊minutesToTest / minutesToDie⌋ + 1)pigs buckets this way, so just find the smallest sufficient number of pigs for example like this:
+
+def poorPigs(self, buckets, minutesToDie, minutesToTest):
+    pigs = 0
+    while (minutesToTest / minutesToDie + 1) ** pigs < buckets:
+        pigs += 1
+    return pigs
+
+
 460	LFU Cache    		28.9%	Hard	
+least frequently used cache.
+list- to easy move, insert, remove.
+iterator- to easy locate nodes
+hashmap- key to iterator
+one hashmap key to find the value and frequency
+one hashmap key to find the list iterator
+one hashmap freq vs the list of nodes
+
+we are basically building a matrix:
+each row is a list with same frequency
+
+
+```cpp
+class LFUCache {
+    int cap;
+    int size;
+    int minFreq;
+    unordered_map<int, pair<int, int>> m; //key to {value,freq};
+    unordered_map<int, list<int>::iterator> mIter; //key to list iterator;
+    unordered_map<int, list<int>>  fm;  //freq to key list;
+public:
+    LFUCache(int capacity) {
+        cap=capacity;
+        size=0;
+    }
+    
+    int get(int key) {
+        if(m.count(key)==0) return -1;
+        
+        fm[m[key].second].erase(mIter[key]);
+        m[key].second++;
+        fm[m[key].second].push_back(key);
+        mIter[key]=--fm[m[key].second].end();
+        
+        if(fm[minFreq].size()==0 ) 
+              minFreq++;
+        
+        return m[key].first;
+    }
+    
+   void put(int key, int value) {
+        if(cap<=0) return;
+        
+        int storedValue=get(key);
+        if(storedValue!=-1)
+        {
+            m[key].first=value;
+            return;
+        }
+        
+        if(size>=cap )
+        {
+            m.erase( fm[minFreq].front() );
+            mIter.erase( fm[minFreq].front() );
+            fm[minFreq].pop_front();
+            size--;
+        }
+        
+        m[key]={value, 1};
+        fm[1].push_back(key);
+        mIter[key]=--fm[1].end();
+        minFreq=1;
+        size++;
+    }
+};
+```
+
 465	Optimal Account Balancing    		42.9%	Hard	
 466	Count The Repetitions    		27.4%	Hard	
+S=[s,n] repeat s with n times
+S1=[s1,n1]
+S2=[s2,n2]
+find the max M so that [S2,M] is a subsequence of S1
+
+It's easy to come up with a brute force solution and to find that there will be a repetitive pattern when matching S2 through S1. The only problem is how to use the repetitive pattern to save computation.
+
+Fact:
+If s2 repeats in S1 R times, then S2 must repeats in S1 R / n2 times.
+Conclusion:
+We can simply count the repetition of s2 and then divide the count by n2.
+
+How to denote repetition:
+We need to scan s1 n1 times. Denote each scanning of s1 as an s1 segment.
+After each scanning of i-th s1 segment, we will have
+
+The accumulative count of s2 repeated in this s1 segment.
+A nextIndex that s2[nextIndex] is the first letter you'll be looking for in the next s1 segment.
+Suppose s1="abc", s2="bac", nextIndex will be 1; s1="abca", s2="bac", nextIndex will be 2
+
+It is the nextIndex that is the denotation of the repetitive pattern.
+
+```cpp
+    int getMaxRepetitions(string s1, int n1, string s2, int n2) {
+        unordered_map<int, pair<int, int>> r;
+        int k = 0;
+        for(int i = 0; i < s1.length()*n1;) 
+        {
+            int rr = i % s1.length();
+            if(r.find(rr) == r.end()) //record the position in the string
+            {
+                r[rr] = make_pair(i, k);
+            }
+            else //already recorded
+            {
+                // cout << rr << ',' << i << ',' << k << endl;
+                auto i0 = r[rr].first;
+                auto k0 = r[rr].second; // now, i - i0 == (k - k0) * s2.length()
+                
+                int n = (s1.length()*n1 - i0) / (i - i0); // we have n*(k - k0) complete s2 left
+                
+                // skip repeated patterns
+                i = i0 + n*(i - i0);
+                k = k0 + n*(k - k0);
+            }
+            
+            //two pointer to find the matched string
+            int j;
+            for(j = 0; i < s1.length()*n1 && j < s2.length(); ++ i, ++ j) 
+            {
+                while(i < s1.length()*n1 && s1[i%s1.length()] != s2[j]) ++ i;
+            }
+            
+            if(i >= s1.length()*n1) //in case it just matches
+            {
+                if(j>=s2.length()) k++;
+                break;
+            }
+            ++ k;
+        }
+        
+        // cout << k << endl;
+        return k / n2;
+    }
+    
+    inline string repeat(string &s, int n) {
+        string S;
+        S.reserve(s.size()*n);
+        while(n -- > 0) {
+            S += s;
+        }
+        return S;
+    }
+```
+	
 471	Encode String with Shortest Length    		45.2%	Hard	
-472	Concatenated Words    		34.8%	Hard	
+
 479	Largest Palindrome Product    		27.4%	Hard	
+```cpp
+    int largestPalindrome(int n) {
+        if (n == 1) return 9;
+        int upper = pow(10, n) - 1;
+        int lower = pow(10, n-1);
+        for (int i = upper; i >= lower; i--) {
+            long cand = buildPalindrome(i);
+            for (long j = upper; j*j >= cand; j--) {
+                if (cand % j == 0 && cand / j <= upper) {
+                    return cand % 1337;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    long buildPalindrome(int n) {
+        string s = to_string(n);
+        reverse(s.begin(), s.end());
+        return stol(to_string(n) + s);
+    }
+```
+	
 480	Sliding Window Median    		32.6%	Hard	
+we have done sliding window max/min using deque
+now is the median
+we can use two pq, one for the max, one for the min?
+this is similar to the median in a data stream.
+
+```cpp
+    vector<double> medianSlidingWindow(vector<int>& nums, int k) {
+        vector<double> medians;
+        unordered_map<int, int> hash;                          // count numbers to be deleted
+        priority_queue<int, vector<int>> left;                // heap on the bottom
+        priority_queue<int, vector<int>, greater<int>> right;  // heap on the top
+        
+        int i = 0;
+        
+        // Initialize the heaps
+        while (i < k)  { left.push(nums[i++]); }
+        for (int count = k/2; count > 0; --count) {
+            right.push(left.top()); left.pop();
+        }
+        
+        while (true) {
+            // Get median
+            if (k % 2) medians.push_back(left.top());
+            else medians.push_back( ((double)left.top() + right.top()) / 2 );
+            
+            if (i == nums.size()) break;
+            int m = nums[i-k], n = nums[i++], balance = 0;
+            
+            // What happens to the number m that is moving out of the window
+            if (m <= left.top())  { --balance;  if (m == left.top()) left.pop(); else ++hash[m]; }
+            else                   { ++balance;  if (m == right.top()) right.pop(); else ++hash[m]; }
+            
+            // Insert the new number n that enters the window
+            if (!left.empty() && n <= left.top())  { ++balance; left.push(n); }
+            else                                     { --balance; right.push(n); }
+            
+            // Rebalance the bottom and top heaps
+            if      (balance < 0)  { left.push(right.top()); right.pop(); }
+            else if (balance > 0)  { right.push(left.top()); left.pop(); }
+            
+            // Remove numbers that should be discarded at the top of the two heaps
+            while (!left.empty() && hash[left.top()])  { --hash[left.top()]; left.pop(); }
+            while (!right.empty() && hash[right.top()])  { --hash[right.top()]; right.pop(); }
+        }
+        
+        return medians;
+    }
+```	
 483	Smallest Good Base    		34.2%	Hard	
+binary search
+or brutal force search
+
+```cpp
+    string smallestGoodBase(string n) {
+       //approach n=sum(k^i) =(k^(m+1)-1)/(k-1), k<n^(1/m)<k+1
+       //so only need to consider n^(1/m) m from 2 to log2(n)
+        long long nn=stoll(n);
+        int max_m=log2(nn);
+        //cout<<nn<<":"<<max_m;
+        for(int m=max_m;m>1;m--)
+        {
+            int k=pow(nn,1.0/m);
+            //long long t=(mypow(k,m+1)-1)/(k-1); //will overflow!
+            if((nn-1)%k) continue;
+            else
+            {
+                long long t=(mypow(k,m)-1)/(k-1); //will overflow!
+                //cout<<m<<" "<<k<<" "<<t<<endl;
+                if((nn-1)/k==t) return to_string(k);//note power cannot be used since it does not have the precision
+            }
+        }
+        return to_string(nn-1);
+    }
+    
+    long long mypow(int k,int m)
+    {
+        long long res=1;
+        for(int i=0;i<m;i++) res*=k;
+        return res;
+    }
+```	
 488	Zuma Game    		39.0%	Hard	
+this is very similar to the posted google phone interview to remove 3 or more identical numbers
+balls have 5 different colors, there are some balls on the table and some tables in hand.
+find the min number balls to insert to remove all balls on the table.
+
+dfs/bfs/dp
+dfs approach:
+- convert balls in hand as hashmap
+- dfs: find all possible ways to empty the table and get the min
+- dfs backtracking: 
+```cpp
+    int minStep;
+    int findMinStep(string board, string hand) {
+        unordered_map<char,int> mp;
+        for (auto c:hand) mp[c]++;
+    
+        minStep=INT_MAX;
+        dfs(board, mp, 0);
+        return minStep==INT_MAX?-1:minStep;
+    }
+    void dfs(string& board, unordered_map<char,int>& mp, int used) {
+        if (board.empty()) {
+            minStep=min(minStep, used);
+            return;
+        }
+        
+        for (int i=0; i<board.size();) {
+            int j=i;
+            char c=board[i];
+            while (j<board.size() && board[j]==c) j++;
+            if (j-i<3) {
+                int miss=3-(j-i);
+                if (mp[c]>=miss) {
+                    removeBoard(board, i, j);
+                    mp[c]-=miss;
+                    dfs(board, mp, used+miss);
+                    mp[c]+=miss;
+                    restoreBoard(board, i, j-i, c);    
+                }
+            } else {
+                removeBoard(board, i, j);
+                dfs(board, mp, used);
+                restoreBoard(board, i, j-i, c);
+            }
+            i=j;
+        }
+    }
+    
+    void removeBoard(string& board, int start, int end) {
+        board.erase(board.begin()+start, board.begin()+end);
+    }
+    
+    void restoreBoard(string& board, int pos, int n, char c) {
+        board.insert(pos, n, c);
+    }
+```
+
 489	Robot Room Cleaner    		64.4%	Hard	
 493	Reverse Pairs    		23.2%	Hard	
+important reverse: i<j and num[i]>2*num[j]
+return the number of important reverse pairs.
+brutal force: from right to left we insert in a multiset (allows duplicates)
+
+```cpp
+    int reversePairs(vector<int>& nums) {
+		int n=nums.size();
+		multiset<int> ms;
+		int ans=0;
+        vector<int> t;
+		for(int i=n-1;i>=0;i--){
+			while(ms.size() && (long)nums[i]>(long)2*(*ms.begin())) {
+                ans++;
+                t.push_back(*ms.begin());
+                ms.erase(ms.begin());
+            }
+			ms.insert(nums[i]);
+            for(auto tt: t) ms.insert(tt);
+            t.clear();
+		}
+		return ans;
+    }
+```
+It TLEs.
+again it is merge sort, bst, divide and conquer problem.
+
 499	The Maze III    		37.2%	Hard	
 502	IPO    		37.7%	Hard	
+<=k distinct project
+each project has profit Pi, capital Ci
+you have capital W.
+maximize the capital (or profit)
+approach:
+-. remove those non-profit projects
+-. make a map capital vs profit sorted from smallest capital to largest
+-. upper_bound find those projects using current capital
+-. among those projects, find the most profitable project
+-. pick the project and remove it, add the profit
+-. iterate until we have k projects.
+-. to save time, (capital is getting larger), those less profit can be discarded.
+
+
+```cpp
+    int findMaximizedCapital(int k, int W, vector<int>& Profits, vector<int>& Capital) {
+        //use priority queue to store the pairs so that searching for max is easier
+        //priority_queue only ensure the max so it saves time
+        //first binary search to remove all those bad 
+        multimap<int,int> mp; //needs multimap since more project more profit
+        //priority_queue<int> mq;
+        for(int i=0;i<Profits.size();i++) //vs[i]=make_pair(Capital[i],Profits[i]);
+        {
+            if(Profits[i]) mp.insert(make_pair(Capital[i],Profits[i])); //no profit discard
+        }
+        int nproj=0,w=W;
+        auto it=mp.begin(),prev_it=mp.begin();
+        
+        while(nproj<k)
+        {
+            it=mp.upper_bound(w); //binary search
+            if(it==mp.begin()) break;
+            auto itmax=mp.begin();
+            int maxprof=itmax->second;
+            for(auto it1=prev_it;it1!=it;it1++) 
+            {
+                if(it1->second>maxprof)
+                {
+                    maxprof=it1->second;
+                    itmax=it1;
+                }
+            }
+            w+=maxprof;
+            //need erase the one from the map
+            mp.erase(itmax);
+            prev_it=it; //in front are those projects with less capital and less profits.
+            nproj++;
+        }
+        return w;
+    }
+```	
+
 514	Freedom Trail    		40.6%	Hard	
+the dial has a word,using the dial to spell a given word
+return the min number of steps to rotate.
+
+dp similar to dijkstra.
+```cpp
+    int findRotateSteps(string ring, string key) {
+        //dfs
+        int n=ring.size();
+        int m=key.size();
+        unordered_map<char,vector<int>> mp;
+        for(int i=0;i<ring.size();i++) mp[ring[i]].push_back(i);
+        //we are looking for a minimum path sum, ring initial is always 0
+        //based on the memoization dfs approach, the dp approach is then simple
+        vector<vector<int>> dp(n,vector<int>(m+1,INT_MAX));
+        for(int i=0;i<n;i++) dp[i][m]=0;
+        for(int j=m-1;j>=0;j--)
+        {
+            vector<int>& v=mp[key[j]];
+            //for(int i=0;i<ring.size();i++)
+            for(int i=n-1;i>=0;i--)
+            {
+                for(int k=0;k<v.size();k++) //all possible index of the current char
+                {
+                    int d=abs(v[k]-i); //
+                    d=min(d,n-d);
+                    dp[i][j]=min(dp[i][j],d+dp[v[k]][j+1]);
+                }
+            }
+        }
+        int minSteps=dp[0][0];
+        return minSteps+m;
+    }
+```	
+
+
 517	Super Washing Machines    		37.0%	Hard	
+if we subtract the final target, (average), then our target is to reach all 0
+```cpp
+    int findMinMoves(vector<int>& machines) {
+        //approach: total number is not changed, final number is the mean, through distribution
+        //less than target: can have incoming or outcoming, +1 or -1
+        //larger than target: can only have outcoming, -1
+        int sum=0;
+        sum=accumulate(machines.begin(),machines.end(),0);
+        if(sum%machines.size()) return -1;
+        int target=sum/machines.size();
+        //transform(machines.begin(),machines.end(),machines.begin(),)
+        for(int i=0;i<machines.size();i++) machines[i]-=target;
+        //all needs to be zero! the minimal total number of moves is max accumlated gain loss and individual gain/loss
+        int cnt=0,min0=0;
+        for(int i=0;i<machines.size();i++)
+        {
+            cnt+=machines[i];
+            min0=max(min0,max(abs(cnt),machines[i]));//note loss does not account
+        }
+        return min0;
+    }
+```
+	
 527	Word Abbreviation    		50.0%	Hard	
 546	Remove Boxes    		38.3%	Hard	
+again this is similar to the google phone interview problem removing 3 or more same
+using dp: (divide and conquer)
+```cpp
+    int removeBoxes(vector<int> boxes) {
+        int n = boxes.size();
+        vector<vector<vector<int>>> dp(n,vector<vector<int>>(n,vector<int>(n)));
+        return removeBoxesSub(boxes, 0, n - 1, 0, dp);
+    }
+
+    int removeBoxesSub(vector<int>& boxes, int i, int j, int k, vector<vector<vector<int>>>& dp) 
+    {
+        if (i > j) return 0;
+        if (dp[i][j][k] > 0) return dp[i][j][k];
+        for (; i + 1 <= j && boxes[i + 1] == boxes[i]; i++, k++); 
+        // optimization: all boxes of the same color counted continuously from the first box should be grouped together
+        int res = (k + 1) * (k + 1) + removeBoxesSub(boxes, i + 1, j, 0, dp);
+        for (int m = i + 1; m <= j; m++) {
+            if (boxes[i] == boxes[m]) {
+                res = max(res, removeBoxesSub(boxes, i + 1, m - 1, 0, dp) + removeBoxesSub(boxes, m, j, k + 1, dp));
+            }
+        }
+        dp[i][j][k] = res;
+        return res;
+    }
+```
+
 552	Student Attendance Record II    		33.2%	Hard	
+given n as the length, return the number of valid attendance record
+dp:
+```cpp
+    int checkRecord(int n) {
+        //first we have two cases, have 1 A and 0 A
+        //have 1 A divide it into two no A cases, the front and behind dp[i]*dp[n-1-i]
+        //for no A case: we can add P, PL, PLL
+        //dp[i]=dp[i-1]+dp[i-2]+dp[i-3]
+        //boundary for no A: dp[0]=0, dp[1]=2 (P/L), dp[2]=4 (PP,PL,LL,LP)
+        vector<long long> dp(n+1);
+        dp[0]=1;dp[1]=2;dp[2]=4;
+        int mod=1e9+7;
+        for(int i=3;i<=n;i++)
+        {
+            dp[i]=(dp[i-1]+dp[i-2]+dp[i-3])%mod;
+        }
+        int res=dp[n];
+
+        for(int i=0;i<n;i++) //A's position from 0 to n-1
+        {
+            res+=(dp[i]*dp[n-1-i])%mod;
+            res%=mod;
+        }
+        return res%mod;
+    }
+```
+
+
 564	Find the Closest Palindrome    		18.8%	Hard	
+given a n, find the closest palindrome number
+```cpp
+    string nearestPalindromic(string n) {
+        //approach: the candidates are: same length: each digits +1 0 -1
+        //with different length +1 or -1: it would be 9xxxx99 or 10....01
+        //same length compare can use string compare which is the same.
+        //total number of digits 60, can fit into a long long
+        int len=n.size();
+        long long num=stoll(n);
+        vector<long long> vs;
+        if(len>1)
+        {
+            string s(len-1,'9');
+
+            long long c1=stoll(s)-num;
+            long long c2=stoll(s)+2-num;
+            if(c1) vs.push_back(c1);
+            if(c2) vs.push_back(c2);
+        }
+        string s=n;//only need add 1 or keep the same or -1
+        long long num1=stoll(n.substr(0,(len+1)/2));
+        for(int i=-1;i<=1;i++)
+        {
+            long long num2=num1+i;
+            n=s=to_string(num2);
+            //reverse(n.begin(),n.end());//this will add an extra digit!!!wrong!
+            //s+=n;
+            for(int j=(len+1)/2;j<len;j++) s+=s[len-j-1];
+            long long t=stoll(s)-num;
+            if(t) vs.push_back(t);
+        }
+        sort(vs.begin(),vs.end());
+        vector<long long> vs1=vs;
+        transform(vs1.begin(),vs1.end(),vs1.begin(),static_cast<long long (*)(long long)>(abs));
+        int ind=(int)(min_element(vs1.begin(),vs1.end())-vs1.begin());
+        return to_string(num+vs[ind]);
+    }
+```	
 568	Maximum Vacation Days    		38.1%	Hard	
 587	Erect the Fence    		34.3%	Hard	
 588	Design In-Memory File System    		39.7%	Hard	
