@@ -217,6 +217,8 @@ hard review
 1067 Digit Count in Range    		32.2%	Hard	
 1074 Number of Submatrices That Sum to Target    		59.4%	Hard
 
+*******always purse short and concise implementation**********
+
 ## divide and conquer/binary search
 
 4	Median of Two Sorted Arrays    		26.5%	Hard	
@@ -300,6 +302,10 @@ recursive:
 
 154	Find Minimum in Rotated Sorted Array II    		39.4%	Hard	
 contain duplicates using binary search
+the min is the first true in the array.
+so when A[mid]==A[r] r--
+A[mid]<A[r] r=m (mid could be the answer)
+A[mid]>A[r] l=m+1 (m could not be the answer)
 ```cpp
 	int findMin(vector<int>& nums) {
 		int l=0,r=nums.size()-1;
@@ -315,7 +321,7 @@ contain duplicates using binary search
 ```
 301	Remove Invalid Parentheses    		39.4%	Hard	
 string contains () and other letters
-return all possible results
+return all possible results.
 ()())()
 first choice: ()()() remove 5th )  this can count from left to right when cnt<0 remove that )
 second choice: (())() remove 2nd ). this can count from right to left
@@ -372,6 +378,9 @@ However a cleverer idea is: reverse the string and reuse the code!
 410	Split Array Largest Sum    		42.4%	Hard	
 Given an array which consists of non-negative integers and an integer m, you can split the array into m non-empty continuous subarrays. Write an algorithm to minimize the largest sum among these m subarrays.
 typical binary search problem
+search in the range, [max_element, total_sum]
+could have multiple choices, we need find the first true.
+
 ```cpp
     int splitArray(vector<int>& nums, int m) {
         //the sum is between the max and the sum of all elements
@@ -418,8 +427,9 @@ typical binary search problem
 ```
 
 483	Smallest Good Base    		34.2%	Hard	
-binary search
-or brutal force search
+in the base all 1s.
+binary search: 
+or brutal force search: n=sum(k^i) =(k^(m+1)-1)/(k-1), k<n^(1/m)<k+1
 
 ```cpp
     string smallestGoodBase(string n) {
@@ -492,9 +502,92 @@ so when cnt>=k it may be an answer r=m
 
 ```	
 
+786	K-th Smallest Prime Fraction    		39.8%	Hard	
+a division table using pq or binary search
+```cpp
+    struct quad
+    {
+        int a,b,i,j;
+        quad() {}
+        quad(int x,int y,int m,int n):a(x),b(y),i(m),j(n){}
+    };
+    struct compare
+    {
+        bool operator()(const quad& a,const quad& b) {return a.a*1.0/a.b>b.a*1.0/b.b;}
+    };
+public:
+    vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
+        if(A.size()==0) return vector<int>();
+        int n=A.size();
+        if(K>n*(n-1)/2) K=n*(n-1)/2;
+        priority_queue<quad,vector<quad>,compare> p;
+        //A[0]/A[n] is always the smallest
+        for(int i=1;i<A.size();i++) p.push(quad(A[0],A[i],0,i));
+        vector<int> ans(2);
+        quad q;
+        while(K--)
+        {
+            q=p.top();p.pop();
+            int i=q.i,j=q.j;
+            //cout<<i<<" "<<j<<":"<<A[i]<<"/"<<A[j]<<endl;
+            if(i<A.size()-1) p.push(quad(A[i+1],A[j],i+1,j));//next bigger one
+        }
+        ans[0]=q.a;ans[1]=q.b;
+        return ans;
+    }
+```	
+binary search
+a list of prime numbers
+for every p<q in the list forms the fraction. return the kth fraction.
+
+similar to multiplication table, but now forms a upper matrix of division table.
+
+every row is sorted from right to left.
+every col is sorted from top to down.
+
+define the search range: min is 1/max, max is 2nd_max/max we can use 1.
+do we use double? bad idea, we need calculate all the combinations. and store in a matrix
+we can use double m and m*denominator to find the divisor
+
+```cpp
+    vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
+		double l=0, r=1;
+		int n=A.size();
+		int p,q;
+		while(l<r)
+		{
+			double m=l+(r-l)/2;
+			int cnt=cntle(A,m,p,q);
+            //cout<<m<<":"<<cnt<<endl;
+			if(cnt>K) r=m;
+			else if(cnt<K) l=m;
+			else return {p,q};
+		}
+        return {p,q};
+    }
+	int cntle(vector<int>& A,double v,int&p,int& q)
+	{
+		int ans=0;
+		int n=A.size();
+		p=0,q=1;
+		for(int i=0;i<n-1;i++) //upper triangle
+		{
+			for(int j=i+1;j<n;j++)
+				if(A[i]<=A[j]*v) //A[i]/A[j]<=v
+				{
+					ans+=n-j;//ith line starts from i+1
+					if(p*A[j]<q*A[i]) {p=A[i],q=A[j];} //p/q<A[i]/A[j]
+					break;
+				}
+		}
+		return ans;
+	}
+```
+O(N^2logn) 
+
 719	Find K-th Smallest Pair Distance    		29.2%	Hard	
-approach1: sort it using the abs(diff) and then use heap
-approach2: sort the array and using binary search
+approach1: sort it using the abs(diff) and then use heap. it has n^2 elements so it is O(N^2)
+approach2: sort the array and using binary search and count number < the mid.
 ```cpp
     int smallestDistancePair(vector<int>& a, int k) {
         sort(a.begin(), a.end());
@@ -517,7 +610,9 @@ approach2: sort the array and using binary search
 ```
 
 878	Nth Magical Number    		25.5%	Hard	
-binary search
+magic number: it is divisible by A and B.
+binary search: the number is in the range [min(A,B),N*min(A,B)] choose a mid and count the numbers <N.
+
 ```cpp
     int nthMagicalNumber(int N, int A, int B) {
         int ans=0;
@@ -542,67 +637,88 @@ binary search
 
 ## dp
 10	Regular Expression Matching    		25.3%	Hard	
-dp, two string matching problem
-'.' matches any single char
+dp, two string matching problem s and t.
+'.' matches any single char if t[j]=='.' dp[i][j]=dp[i-1][j-1]
 '*' matches zero or more of the preceding char
-```cpp
+Problem summary
+'.' matches any single char and '*' matches 0 or more of preceding char
+
+idea
+two string direct dp problem, dp[i, j] represents if s[0...i-1] matches p[0...j-1]
+p[j-1] is letter or ., dp[i, j]=dp[i-1, j-1]&&(s[i-1]==p[j-1]||p[j-1]=='.')
+p[j-1]=='', assuming previous char is a, then a
+matches 0 char, previous char is skipped, a* matches empty, dp[i,j]=dp[i,j-2] (s(0...i-1) matches p(0...j-3). Note: we are using previous solution for current solution!)
+matches 1 char, then dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i,j-1] (a* counts as one a, s(0..i-1) matches p[0..j-2])
+matches more than 1 char, a* represents multiple a, dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i-1,j] (depends s(0...i-2) matches p(0...j-1)). Actually this case is included in match 1 char.
+boundary condition
+dp[0,0]=1, empty vs empty
+p empty, s non-empty, all false, col 0 shall not be included in loop.
+s empty, p non-empty, must have .* letter* to match 0 char dp[0,i]=dp[0, i-2] && p[j-1]=='*'
+extra complexity: it involves p[j-2] and dp[j-2], which indicates that row 1 needs to be included in boundary. A common approach is: we do not involve the boundary except col 0, but using the recurrence relation to process the boundary. This is much simpler in some cases when the boundary is not so straightforward.
+code
     bool isMatch(string s, string p) {
-        /**
-         * f[i][j]: if s[0..i-1] matches p[0..j-1]
-         * if p[j - 1] != '*'
-         *      f[i][j] = f[i - 1][j - 1] && s[i - 1] == p[j - 1]
-         * if p[j - 1] == '*', denote p[j - 2] with x
-         *      f[i][j] is true iff any of the following is true
-         *      1) "x*" repeats 0 time and matches empty: f[i][j - 2]
-         *      2) "x*" repeats >= 1 times and matches "x*x": s[i - 1] == x && f[i - 1][j]
-         * '.' matches any single character
-         */
-        int m = s.size(), n = p.size();
-        vector<vector<bool>> f(m + 1, vector<bool>(n + 1, false));
-        
-        f[0][0] = true;
-        for (int i = 1; i <= m; i++)
-            f[i][0] = false;
-        // p[0.., j - 3, j - 2, j - 1] matches empty iff p[j - 1] is '*' and p[0..j - 3] matches empty
-        for (int j = 1; j <= n; j++)
-            f[0][j] = j > 1 && '*' == p[j - 1] && f[0][j - 2];
-        
-        for (int i = 1; i <= m; i++)
-            for (int j = 1; j <= n; j++)
-                if (p[j - 1] != '*')
-                    f[i][j] = f[i - 1][j - 1] && (s[i - 1] == p[j - 1] || '.' == p[j - 1]);
-                else
-                    // p[0] cannot be '*' so no need to check "j > 1" here
-                    f[i][j] = f[i][j - 2] || (s[i - 1] == p[j - 2] || '.' == p[j - 2]) && f[i - 1][j];
-        
-        return f[m][n];
+        int m=s.size(),n=p.size();
+        vector<vector<bool>> dp(m+1,vector<bool>(n+1));
+        dp[0][0]=1;
+        //p is empty, s non-empty all false is straightforward dp[i][0]=0
+        //put other boundary in loops
+        for(int i=0;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(p[j-1]!='*') dp[i][j]=i && dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='.');
+                else dp[i][j]=(j>1 &&dp[i][j-2]) 
+                    || (i && j>1 && dp[i][j-1] && (s[i-1]==p[j-2] || p[j-2]=='.'))
+                    || (i && j>1 && dp[i-1][j] && (s[i-1]==p[j-2] || p[j-2]=='.'));
+            }
+        }
+        return dp[m][n];
     }
-```
+comments
+when boundary is hard to write, include it in the loop
+a* matches empty, then it means previous solution shall be s(0..i-1) matches p(0..j-3), which is dp[i, j-2]
+a* matches 1, then it means previous solution is s(0..i-2) matches p(0..j-1) which is dp[i-1,j]
+the last condition can be skipped.
 
 44	Wildcard Matching    		22.9%	Hard	
 typical two string compare dp problem
 ? matches any single char
 * matches any sequence of char (including empty)
-```cpp
+Problem summary
+given input string s and match pattern p, ? matches any single char, * matches 0 or more chars. Check if p matches s.
+
+idea
+two string problem is a 2d dp problem. assuming dp[i, j] represents if s(0..i-1) matches p(0...j-1)
+when add p[j], it could be a letter, a ? or a *
+a letter: dp[i, j]=dp[i-1, j-1]&& s[i]==p[j]
+a ?, always match dp[i, j]=dp[i-1, j-1]
+a *,
+matches 0 char, dp[i, j]=dp[i-1, j]
+matches 1 or more chars, dp[i, j]=dp[i,j-1] (s can advance one, but p cannot)
+so when p[j-1]=='*' dp[i,j]=dp[i-1,j]||dp[i, j-1]
+boundary condition -. dp[0, 0]: empty vs empty always true -. p empty, s non-empty, no match -. s empty, p non-empty, then p can only contains *
+code
     bool isMatch(string s, string p) {
-        int m=s.length(),n=p.length();
+        int m=s.size(),n=p.size();
         vector<vector<bool>> dp(m+1,vector<bool>(n+1));
         dp[0][0]=1;
-        for(int i=1;i<=n;i++) //pattern string is not empty, but s1 is empty
-        {
-            if(p[i-1]!='*') break;else dp[0][i]=1;
-        }
+        for(int i=1;i<=n;i++) dp[0][i]=dp[0][i-1] && p[i-1]=='*';
         for(int i=1;i<=m;i++)
         {
             for(int j=1;j<=n;j++)
             {
-                if(p[j-1]!='*') dp[i][j]=dp[i-1][j-1] &&(s[i-1]==p[j-1] || p[j-1]=='?');
+                if(p[j-1]!='*') dp[i][j]=dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='?');
                 else dp[i][j]=dp[i-1][j]||dp[i][j-1];
             }
         }
         return dp[m][n];
     }
-```
+comments
+complexity O(m*n)
+one subtle point: when * matches 0, we need advance p, when * matches 1 or more char, s need advance, p cannot (leaving it for latter match).
+direct dp for two string problem.
+similar problem regular expression matching
+
 72	Edit Distance    		37.9%	Hard	
 insert/delete/replace
 typical dp problem
@@ -634,11 +750,12 @@ typical dp problem
 		return d[n][m];   
     }
 ```	
+we will see edit distance can have multiple variation.
 
 1092. Shortest common supersequence
 approach 1: find the longest common subsequence and add only once of the gcd
 approach 2: using edit distance to find the shortest common supersequence (the common used only once)
-using lcs:
+using lcs and backtracing to get the answer.
 ```cpp
     string shortestCommonSupersequence(string str1, string str2) {
         //edit distance problem, remove one of the common char
@@ -677,8 +794,6 @@ using lcs:
             { 
                 // Put current character in result 
                 ans.push_back(s1[i - 1]); 
-
-                // reduce values of i, j and index 
                 i--, j--, maxlen--; 
             } 
 
@@ -687,16 +802,12 @@ using lcs:
             { 
                 // Put current character of Y in result 
                 ans.push_back(s2[j - 1]); 
-
-                // reduce values of j and index 
                 j--, maxlen--; 
             } 
             else
             { 
                 // Put current character of X in result 
                 ans.push_back(s1[i - 1]); 
-
-                // reduce values of i and index 
                 i--, maxlen--; 
             } 
         } 
@@ -756,10 +867,33 @@ lee's solution to find the lcs string without backtracing.
 ```
 this is interesting, we just put the dp as the direct answer.
 and then use a greedy to build the answer without the tricky backtracing.
+
+we can also try to get the superstring directly using edit distance
+if A[i]==B[j] then we just add 1 char
+if A[i]!=B[j] we choose previous smaller one:
+dp[i][j-1] for s[0...i-1] and t[0...j-2]. if it is shorter, we need append 
+dp[i-1][j] for s[0..i-2] and t[0...j-1]
+
+```cpp
+    string shortestCommonSupersequence(string& A, string& B) {
+        int n = A.size(), m = B.size();
+        vector<vector<string>> dp(n + 1, vector<string>(m + 1));
+        for(int i=1;i<=n;i++) dp[i][0]=dp[i-1][0]+A[i-1];
+        for(int i=1;i<=m;i++) dp[0][i]=dp[0][i-1]+B[i-1];
+        for (int i = 1; i <= n; ++i)
+            for (int j = 1; j <= m; ++j)
+                if (A[i-1] == B[j-1])
+                    dp[i][j] = dp[i-1][j-1] + A[i-1];
+                else //choose min length
+                    dp[i][j] = dp[i][j-1].size()<dp[i-1][j].size() ?  dp[i][j-1]+B[j-1] : dp[i-1][j]+A[i-1];
+        return dp[n][m];
+    }
+```
+the problem is the memory requirement is too large. and will get MLE for a long example.	but it is a good practice for the edit distance variation.
 	
 97	Interleaving String    		28.1%	Hard	
 check if s3 is interleaving of s1 and s2
-2d path using dp
+2d path using dp. 
 ```cpp
     bool isInterleave(string s1, string s2, string s3) {
         int n1=s1.size(),n2=s2.size();
@@ -784,6 +918,9 @@ check if s3 is interleaving of s1 and s2
 115	Distinct Subsequences    		35.1%	Hard	
 number of distinct subsequence in S equals T
 that is number of ways from S to T. (similar to climbing stairs)
+combined with edit distance.
+when s[i]!=t[j], we can only come from dp[i-1][j] (since we cannot delete t[j])
+when s[i]==t[j], we can reach (i,j) from (i-1,j-1) or (i-1,j)
 ```cpp
     int numDistinct(string s, string t) {
         //dp edit distance
@@ -839,7 +976,7 @@ dp[k][i]=max(dp[k][i-1],dp[k-1][j]+price[i]-price[j]), no operation or operation
 return min number of cuts so that each substr is a palindrome.
 this is a dp. odd length and even length
 cut[i] min number of cuts at i.
-
+two subproblems: odd length and even length pal-string.
 ```cpp
     int minCut(string s) {
         int n = s.size();
@@ -878,9 +1015,9 @@ dp it is convenient to add previous index and then we have to do reverse dfs.
             {
                 if(dp[j])
                 {
-                string t;
-                t=s.substr(j,i-j);//not including j, j+1 to i both inclusive
-                if(dict.count(t)) {mp[i].push_back(t);dp[i]=1;}//does not include i=0 case
+					string t;
+					t=s.substr(j,i-j);//not including j, j+1 to i both inclusive
+					if(dict.count(t)) {mp[i].push_back(t);dp[i]=1;}//does not include i=0 case
                 }
             }
         }
@@ -913,6 +1050,10 @@ dp it is convenient to add previous index and then we have to do reverse dfs.
     }
 ```
 this is too complicated, and prone to bugs. using divide and conquer is a better choice
+consider this also a dp problem using top down+memoization.
+dp+dfs can choose the top down method to finish two at the same time.
+
+always prefer shorter and concise code!!!!
 ```cpp
     unordered_map<string, vector<string>> m;
 
@@ -942,7 +1083,6 @@ public:
         return result;
     }
 ```
-
 We shall always choose the most concise approach due to very limited time!!!!
 since there could be a lot of repetions, so memoization is needed.
 
@@ -982,10 +1122,6 @@ public:
     }
     bool canCombine(string& word,unordered_set<string>& dict)
     {
-        //set<string,cmp>::iterator it=dict.find(word);
-        //auto it=dict.find(word);
-        //int nelem=distance(dict.begin(),it);
-        //if(nelem==0) return 0;
         if(dict.empty()) return 0;
         vector<bool> dp(word.length()+1);//dp[i]: [0...i-1] substr can be combined
         dp[0]=1;//always can form by an empty string
@@ -1000,7 +1136,6 @@ public:
             }
         }
         return dp[word.length()];
-        
     }
 };
 ```
@@ -1029,11 +1164,14 @@ dp reverse direction
 
 312	Burst Balloons    		47.4%	Hard	
 burst balloon you get nums[left]*nums[i]*nums[right]
-add a left node 1, and a right node 1.
-to get the max points
+this is a very good dp problem. Since the balloon is burst then it is gone and we need connect and if it is not a good choice we have restore back.
+thus it created many choices.
+But if we think it reversely, it will be much more clear. We assume ith balloon is the last one to burst, then we know its boundary is -1 and n.
+and two subproblem [-1,i-1] and [i+1,n] is already solved
 
-add a guardian to avoid boundary. add 1 to left and 1 to right
-every time we burst a balloon, it depends on the left and right index (we do not want to alter the array and it will be a big mess). It is naturally to use left and right in the dp solutions
+this hints: 
+-  add a guardian to avoid boundary. add 1 to left and 1 to right
+- every time we burst a balloon, it depends on the left and right index (we do not want to alter the array and it will be a big mess). It is naturally to use left and right in the dp solutions
 Once we want to burst balloon i, its points will be nums[i]*nums[l]*nums[r]. And it leaves two parts l to i-1 and i+1 to r. (Between l and r there are multiple elements, we are just assuming after some bursting, l and r becomes adjacent). This is similar to a reverse process. When we solve l, i, r, the previous problem (l, i-1) and (i+1, r) have all be solved. In another word, those balloons are all bursted already.
 so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,l]), i from l to r
 
@@ -1058,7 +1196,7 @@ so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,l]), i 
 ```
 
 329	Longest Increasing Path in a Matrix    		40.1%	Hard	
-dfs with memoization
+dfs with memoization, dp top down
 ```cpp
     int longestIncreasingPath(vector<vector<int>>& matrix) {
         if(matrix.size()==0) return 0;
@@ -1180,11 +1318,15 @@ dp: when diff=A[i]-A[j] dp[i][diff]++
         return res;
     }
 ```	
+a small trick is used in the code: when have two number dp[j]=1, when have 3 numbers, dp[j]=2,....
+we add dp[j][diff] is actually the array length -2
+
 514	Freedom Trail    		40.6%	Hard	
 the dial has a word,using the dial to spell a given word
 return the min number of steps to rotate.
-
+shortest distance first think of bfs then think of dp or dijkstra/bellman.
 dp similar to dijkstra.
+
 ```cpp
     int findRotateSteps(string ring, string key) {
         //dfs
@@ -1214,10 +1356,13 @@ dp similar to dijkstra.
         return minSteps+m;
     }
 ```	
-
+note we are doing it reversely. they shall be equivalent.
 
 517	Super Washing Machines    		37.0%	Hard	
-if we subtract the final target, (average), then our target is to reach all 0
+if we subtract the final target, (average), then our target is to reach all 0.
+the machine with maxload shall give all out to left and right, and that is one max.
+the load come through the machine is also another max.
+
 ```cpp
     int findMinMoves(vector<int>& machines) {
         //approach: total number is not changed, final number is the mean, through distribution
@@ -1227,7 +1372,6 @@ if we subtract the final target, (average), then our target is to reach all 0
         sum=accumulate(machines.begin(),machines.end(),0);
         if(sum%machines.size()) return -1;
         int target=sum/machines.size();
-        //transform(machines.begin(),machines.end(),machines.begin(),)
         for(int i=0;i<machines.size();i++) machines[i]-=target;
         //all needs to be zero! the minimal total number of moves is max accumlated gain loss and individual gain/loss
         int cnt=0,min0=0;
@@ -1239,11 +1383,28 @@ if we subtract the final target, (average), then our target is to reach all 0
         return min0;
     }
 ```
-	
 
 546	Remove Boxes    		38.3%	Hard	
-again this is similar to the google phone interview problem removing 3 or more same
+again this is similar to the google phone interview problem removing 3 or more same.
+this problem k>=1, but we get k^2 points so it encourages longer.
+
+dynamic array: when we remove a group, we need to connect to previous, assuming it is k.
+dp[i][j][k] represents range [i,j] with previous added k boxes.
 using dp: (divide and conquer)
+for example [1, 3, 2, 2, 2, 3, 4, 3, 1] You can remove 2 first, and let the 3 connected together, 9 points 1,3,3,4,3,1, remove the 4, get 1 1,3,3,3,1 remove the 3, get 9 1,1 remove 1, get 4 total: 23
+
+assuming dp[i,j] is the max points you can get from i to j (inclusive). And the final answer would be dp[0, n-1].
+
+we get the group a[i] to a[i+k], assuming the k+1 elements are the same color, then we have two choices:
+
+group them and get the score and delete them
+leave them for a while and process other first and hope to have a longer sequence and higher scores.
+For the first case, the score is (k+1)^2+subproblem(i+k+1,j) for the second case, assuming we find mth element==nums[i] and want to combine with a[i, i+k], then we need solve two subproblem first [i+k, m-1] with no previous same char and [m, j] with previous k+1 same char.
+
+Thus the dp needs to add another dimension k, dp[i][j][k] defines the max score we get from the sequence i to j (inclusive) with number of same color box ahead.
+
+dp[i][j][k]=max((k+1)^2+sub(i+k+1,j,0), sub(i+k+1,m-1,0), sub(m, j, k+1))
+
 ```cpp
     int removeBoxes(vector<int> boxes) {
         int n = boxes.size();
@@ -1267,10 +1428,57 @@ using dp: (divide and conquer)
         return res;
     }
 ```
+this is a very classical dp problem, it teaches us how to find the relation and how to approach a very complicated problem.
+similar problem 664 strange printer
+
+664	Strange Printer    		36.7%	Hard	
+Problem summary
+Printer each move prints a list of same characters. Next print will be on the previous print, covering those under. Given a string, get the min number of moves
+
+idea
+the number of same char does not matter (different from previous problem on remove boxes which is depending on k)
+when same char is separated, either we connect them or print differently. That is why it is the same as removing boxes.
+We don't need the k dimension in this case, since number of char does not matter. 3. this is similar to a series of overlapped segments, greedy choice will not work.
+
+code
+    int strangePrinter(string s) {
+        if(s.length()<1) return 0;
+        string ss;
+        //reduce the string first to avoid time or space TLE
+        char c=s[0];
+        ss+=s[0];
+        for(int i=1;i<s.length();i++) if(s[i]!=c) {c=s[i];ss+=s[i];}
+        s=ss;
+        int n=s.length();
+        vector<vector<int>> dp(n,vector<int>(n));
+        return helper(s,dp,0,n-1);
+    }
+    int helper(string& s,vector<vector<int>>& dp,int i,int j)
+    {
+        if(i>j) return 0;
+        if(i==j) return 1;
+        if(dp[i][j]) return dp[i][j];
+        //k is the number of same char
+        int res=1+helper(s,dp,i+1,j);//no char attached
+        for(int m=i+1;m<=j;m++)
+        {
+            if(s[m]==s[i])
+                res=min(res,helper(s,dp,i+1,m-1)+helper(s,dp,m,j));
+        }
+        dp[i][j]=res;
+        return res;
+    }
+comments
+please refer to remove boxes, which is almost the same.
 
 552	Student Attendance Record II    		33.2%	Hard	
 given n as the length, return the number of valid attendance record
+
 dp:
+it involves two or more small dp problems:
+- with no A, we can add P, PL and PLL
+- adding A, we can put A at any position and separate a two above dp subproblem
+
 ```cpp
     int checkRecord(int n) {
         //first we have two cases, have 1 A and 0 A
@@ -1297,6 +1505,12 @@ dp:
 ```
 600	Non-negative Integers without Consecutive Ones    		32.8%	Hard	
 binary form does not contain consecutive ones <=n
+convert n to binary, it will have m bits
+can we solve problem when n=11111..1 with m bits case? Assuming dp[i] is the number of valid string with length i.
+if previous bit is 1, then we can only add 0 dp[i][0]=dp[i-1][1]
+if previous bit is 0, then we can add 1 or 0 dp[i][0]=dp[i-1][0], dp[i][1]=dp[i-1][1]
+above is awkward, if we think in another way, if we define a[i] as the number of valid strings ending with 0, b[i] is the string ending with 1 we can add 0 no matter previous: a[i]=a[i-1]+b[i-1], we can add 1 only when previous is 0: b[i]=a[i-1]
+subtract all over counted integers when number>n -. when binary of N appears 11, we just break, since all next smaller -. when binary of N appears 00, over count those ending with 1
 dp:
 ```cpp
     int findIntegers(int num) {
@@ -1329,6 +1543,16 @@ dp:
 629	K Inverse Pairs Array    		29.3%	Hard	
 from 1 to n, how many different arrays have exactly k inverse pairs
 this is similar counting the palindrome subsequence
+recurrence relation dp[i][j]=dp[i][j-1]+dp[i-1][j]-dp[i-1][j-i]
+assuming we solved problems for [1, i-1], adding i to exisiting condition: i can be anywhere, for example adding 5 to [1,4] 5xxxx: adding 4 inversion pairs (i-1) x5xxx: adding 3 (i-2) xx5xx: adding 2 (i-3) xxx5x: adding 1 (i-4) xxxx5: adding 0 (i-5) we have 5 ways to reach to a specific number of inverse.
+
+dp[i,k] represents the number of permutation with k inverse pairs according to above observations if we put n as the last number then all the k inverse pair should come from the first n-1 numbers if we put n as the second last number then there's 1 inverse pair involves n so the rest k-1 comes from the first n-1 numbers ... if we put n as the first number then there's n-1 inverse pairs involve n so the rest k-(n-1) comes from the first n-1 numbers
+
+dp[i,k]=dp[i-1,k]+dp[i-1,k-1]+dp[i-1,k-2]+dp[i-1,k-3].....+dp[i-1,k-(i-1)] using above equation: dp[i,k-1]=dp[i-1,k-1]+dp[i-1,k-2]+....dp[i-1,k-i] subtract the two: dp[i,k]=dp[i-1,k]+dp[i,k-1]-dp[i-1,k-i]
+
+boundary condition: i=0, there is no inverse pair dp[0][k]=0; k=0, only sorted array supports dp[i][0]=1 dp[i,0]=1
+
+
 ```cpp
     int kInversePairs(int n, int k) {
         if(k==0 || k==(n-1)*n/2) return 1; //sorted in ascending or descending order
@@ -1348,10 +1572,10 @@ this is similar counting the palindrome subsequence
             }
         }
         return dp[n][k];
-        
     }
 ```	
 
+	
 639	Decode Ways II    		25.2%	Hard	
 * represents digit 1 to 9
 dp
@@ -1404,43 +1628,7 @@ dp
         }
     }
 ```
-664	Strange Printer    		36.7%	Hard	
-print same char each time
-dp similar to removing boxes
-```cpp
-    int strangePrinter(string s) {
-        //this is similar to the Removing Boxes
-        //define T(i,j,k) as the minimum number for substr(i,j) with k same numbers as s[j+1]
-        if(s.length()<1) return 0;
-        string ss;
-        char c=s[0];
-        ss+=s[0];
-        for(int i=1;i<s.length();i++) if(s[i]!=c) {c=s[i];ss+=s[i];}
-        //cout<<s.length()<<"->"<<ss.length();
-        s=ss;
-        int n=s.length();
-        //vector<vector<vector<int>>> dp(n,vector<vector<int>>(n,vector<int>(2)));
-        vector<vector<int>> dp(n,vector<int>(n));
-        return helper(s,dp,0,n-1);
-    }
-    int helper(string& s,vector<vector<int>>& dp,int i,int j)
-    {
-        if(i>j) return 0;
-        if(i==j) return 1;
-        if(dp[i][j]) return dp[i][j];
-        //k is the number of same char
-        //for(;i<=j && s[i+1]==s[i];i++) k++; //same character shall be grouped
-        int res=1+helper(s,dp,i+1,j);//no char attached
-        //cout<<res;
-        for(int m=i+1;m<=j;m++)
-        {
-            if(s[m]==s[i])
-                res=min(res,helper(s,dp,i+1,m-1)+helper(s,dp,m,j));
-        }
-        dp[i][j]=res;
-        return res;
-    }
-```	
+
 
 691	Stickers to Spell Word    		38.3%	Hard	
 min number of stickers to be used to spell the word
@@ -1496,89 +1684,156 @@ dp or dfs with memoization
 ```
 
 730	Count Different Palindromic Subsequences    		39.0%	Hard	
-dp
-```cpp
-    int countPalindromicSubsequences(string s) {
-        int md = 1000000007;
-        int n = s.size();
-        int dp[3][n][4];
-        for (int len = 1; len <=n; ++len) 
+Problem Summary
+Given a string of length n, find the number of different Palindrome subsequences, string has only a,b,c,d Attention: it asks for subsequences, not substring
+
+ideas
+it is easy to extend to 26 chars
+
+a palindrome string can be from i to j. It is naturally use a start, end pair, or a start, length pair to indicate a palindrome string.
+
+dp natural thinking: we start from the (i,len) subproblem and extend to see if we can solve bigger problem assuming we add a char to s[i, i+len-1] (we use xxxx to indicat the string which is palindrome):
+
+if we define dp[i,len,x] as the number of different pal-subsequence starting at i, with length=len, with start/end char =x
+
+if s[i]!='x', we can ignore (remove) first char, dp[i,len,x]=dp[i+1,len-1,x] else if s[j]!='x', we can ignore (remove) last char, dp[i,len,x]=dp[i,len-1,x] (the head is x but tail is not)
+
+if both are x: dp[i,len,x]=dp[i+1,len-2,'a']+dp[i+1,len-2,'b']+dp[i+1,len-2,'c']+dp[i+1,len-2,'d']+2
+
+why?
+
+we are adding one x to the head and one x to the tail, which makes xa..ax, xb..bx, xc..cx, xd..dx all different pal-subsequence. Since we are making the length increased by 2, and they are all different.
+
++2: we can add x and xx into it since we add two x into previous solution, and we at least have length>=3
+
+for example: we have aabaa, the subsequence start and end with a:
+
+a,aa,aaa,aaaa,aba,aabaa
+
+when add a to head and tail, they become:
+
+aaa,aaaa,aaaaaa,aabaa,aaabaaa
+
+and we add a and aa into it.
+
+since it only involves len-2, len-1 and len, we only need 3 matrices.
+
+The final answer is the sum of start=0, len=n, and char=a, b, c, d
+
+Implementation
+    int countPalindromicSubsequences(string S) {
+       int n=S.length();
+        int mod=1e9+7;
+        //dp[i][len][c]: represents starting at i, with length=len start and ending with c
+        vector<vector<int>> dp0(n,vector<int>(4)),dp1(n,vector<int>(4)),dp2(n,vector<int>(4));
+        //dp0:len, dp1: len-1, dp2: len-2
+        for(int len=1;len<=n;len++)
         {
-            for (int i = 0; i + len <=n; ++i) 
-                for (int x = 0; x < 4; ++x)  
+            for(int i=0;i+len<=n;i++)
+            {
+                for(int j=0;j<4;j++)
                 {
-                int &ans = dp[2][i][x];
-                ans = 0;
-                int j = i + len - 1;
-                char c = 'a' + x;
-                if (len == 1) ans = s[i] == c;
-                else 
-                {
-                    if (s[i] != c) ans = dp[1][i+1][x];
-                    else if (s[j] != c) ans = dp[1][i][x];
-                    else 
+                    dp0[i][j]=0;
+                    if(len==1) {dp0[i][j]=(S[i]=='a'+j);continue;}
+                    if(S[i]!='a'+j) dp0[i][j]=dp1[i+1][j];//dp[i][len][c]=dp[i+1][len-1][c]
+                    else if(S[i+len-1]!='a'+j) dp0[i][j]=dp1[i][j];//dp[i,len,c]=dp[i,len-1,c]
+                    else //both ==x
                     {
-                        ans = 2;
-                        if (len > 2) 
-                            for (int y = 0; y < 4;++y) 
-                            {
-                                ans += dp[0][i+1][y];
-                                ans %=md;
-                            }
+                        dp0[i][j]=2;
+                        if(len>2) for(int k=0;k<4;k++) {dp0[i][j]+=dp2[i+1][k];dp0[i][j]%=mod;} //dp[i+1,len-2,k]
                     }
+                    dp0[i][j]%=mod;
                 }
             }
-            for (int i=0;i<2;++i) 
-                for (int j = 0; j < n; ++j) 
-                    for (int x=0; x < 4;++x)
-                        dp[i][j][x] = dp[i+1][j][x];
+            //len increase
+            dp2=dp1;
+            dp1=dp0;
         }
-        int ret = 0;
-        for (int x = 0; x < 4;++x) ret = (ret + dp[2][0][x]) %md;
-        return ret;
+        //final answer is sum(dp[0,n,c])
+        return accumulate(dp0[0].begin(),dp0[0].end(),0LL)%mod;
     }
-```
+comments
+it needs subsequence, not substring, this is very important to the understanding of the algorithm
+need special treat len=1 case
+need special treat len==2 case when add two char (empty)
+when an iteration on len is done, we need update len-1->len-2, len->len-1
+every time len shall be initialized since we reuse the matrix. that is why dp2[i][x]=0 is needed. Attention shall be paid to this.
 
 741	Cherry Pickup    		29.9%	Hard	
-```cpp
+Problem Summary
+This is a pretty hard DP problem.
+
+matrix: 0 empty, 1 cherry -1: thorn
+
+You need go roundtrip from top left to bottom right and back to top left and get the max cherry.
+
+Approach:
+intuitively way that maximizes the first pass and changes the optimal path and then finds the second pass optimal path will not work. Since this will only maximize the first pass and the global optimal is not guaranteed.
+
+From top left to bottom right is equivalent to from bottom right to top left
+
+The correct approach is to try the two passes simultaneously and make the two passes optimal. The only constraint is: the two passes cannot pick up the same cherry twice.
+
+for a matrix n x n, one trip takes 2N-1 steps. We can try all possible locations for two passes for each step and this is the key point. i.e., the first pass goes to (i,j) and second pass goes to (p,q) and i+j=p+q=steps. The only constraint is (i, j)=(p, q). The cherry picked up at these two locations are grid[i, j]+grid[p, q].
+
+From previous position to current (i,j) and (p,q), the previous combination could be the following: (i-1, j, p-1, q, k-1) (i-1, j, p, q-1, k-1) (i, j-1, p-1, q, k-1) (i, j-1, p, q-1, k-1). k is the number of steps.
+
+So the recurrence relation is dp(i, j, p, q, k)=max(dp(i-1, j, p-1, q, k-1), dp(i-1, j, p, q-1, k-1), dp(i, j-1, p-1, q, k-1), dp(i, j-1, p, q-1, k-1))+grid(i, j)+grid(p,q).
+
+Since i and j are associated, also p and q are associated, dp shall not use i and j, but we need use i and p, or j and q. (the x coordinate for two positions or y coordinates for the two passes).
+
+dp(i-1, j, p-1, q, k-1) reduced to dp(i-1, p-1, k-1)
+
+dp(i-1, j, p, q-1, k-1) reduced to dp(i-1, p, k-1)
+
+dp(i, j-1, p-1, q, k-1) reduced to dp(i, p-1, k-1)
+
+dp(i, j-1, p, q-1, k-1) reduced to dp(i, p, k-1)
+
+Since only k-1 iteration is involved, we may not need the 3rd dimension, but extra care is needed, generally reverse iteration is required to avoid using updated values.
+
+And finally we reached the solution:
+
+Attention:
+
+Since we reduce the 3d problem into 2d problem we need do reverse iteration to use n-1 values
+
+when grid[x][y]<0, we need set dp[x1][x2]=-1 it is necessary since it is dp[x1][x2][n]! and dp[x1][x2][n-1] may be >0 but dp[x1][x2][n] may be <0. Need to keep updating.
+
+two legs can cross the same position, but can only pick the cherry once.
+
+code
     int cherryPickup(vector<vector<int>>& grid) {
-        int N = grid.size();
-        int P_LEN = N + N - 1;//two leg processed at the same time
-        //dp[x1][x2]: the max cherry when path1 goes x1 step and path2 goes x2 step
-        vector<vector<int> > dp = vector<vector<int>>(N, vector<int>(N, -1));
-        dp[0][0] = grid[0][0];
-        
-        for (int p = 2; p <= P_LEN; p++) //p is the length of the path
+        int n=grid.size();
+        vector<vector<int>> dp(n,vector<int>(n,-1));
+        dp[0][0]=grid[0][0];
+        for(int nstep=1;nstep<2*n-1;nstep++)
         {
-            for (int x1 = N - 1; x1 >= 0; x1--) 
+            for(int x1=n-1;x1>=0;x1--)
             {
-                for (int x2 = x1; x2 >= 0; x2--) 
+                for(int x2=n-1;x2>=0;x2--) //can share the same position but cannot pick twice
                 {
-                    int y1 = p - 1 - x1;
-                    int y2 = p - 1 - x2;
-                    if (y1 < 0 || y2 < 0 || y1 >= N || y2 >= N) continue;
-                    if (grid[y1][x1] < 0 || grid[y2][x2] < 0) 
-                    {
-                        dp[x1][x2] = -1;
-                        continue;
-                    }   
-                    int best = -1, delta = grid[y1][x1];
-                    if (x1 != x2) delta += grid[y2][x2];
-                    if (x1 > 0 && x2 > 0 && dp[x1 - 1][x2 - 1] >= 0) //from left left
-                        best = max(best, dp[x1 - 1][x2 - 1] + delta);
-                    if (x1 > 0 && y2 > 0 && dp[x1 - 1][x2] >= 0) //from left up
-                        best = max(best, dp[x1 - 1][x2] + delta);
-                    if (y1 > 0 && x2 > 0 && dp[x1][x2 - 1] >= 0) //from up left
-                        best = max(best, dp[x1][x2 - 1] + delta);
-                    if (y1 > 0 && y2 > 0 && dp[x1][x2] >= 0) //from up up
-                        best = max(best, dp[x1][x2] + delta);
-                    dp[x1][x2] = best;
+                    int y1=nstep-x1,y2=nstep-x2;
+                    if(y1<0 || y2<0 ||y1>=n || y2>=n) continue;
+                    if(grid[x1][y1]<0 || grid[x2][y2]<0) {dp[x1][x2]=-1;continue;}
+                    int delta=grid[x1][y1];
+                    if(x1!=x2) delta+=grid[x2][y2];
+                    int best=-1;
+                    if(x1 && x2 && dp[x1-1][x2-1]>=0) best=max(best,dp[x1-1][x2-1]+delta);
+                    if(y1 && x2 && dp[x1][x2-1]>=0) best=max(best,dp[x1][x2-1]+delta);
+                    if(x1 && y2 && dp[x1-1][x2]>=0) best=max(best,dp[x1-1][x2]+delta);
+                    if(y1 && y2 && dp[x1][x2]>=0) best=max(best,dp[x1][x2]+delta); 
+                    dp[x1][x2]=best; 
                 }
             }
         }
-        return dp[N - 1][N - 1] < 0 ? 0 : dp[N - 1][N - 1];
+        return dp[n-1][n-1]==-1?0:dp[n-1][n-1];
     }
-```
+Attention:
+this is a 3d problem with space reduced to 2d, especial care needs attention. one is the reverse iteration, one is setting dp to be -1 when there is a thorn at either position
+cannot pick the same cherry
+initialize to -1 to mark. do not have to be int_min which makes things more complicated.
+complexity O(N^3)
 
 818	Race Car    		35.0%	Hard	
 Your car starts at position 0 and speed +1 on an infinite number line.  (Your car can go into negative positions.)
@@ -1630,9 +1885,12 @@ dp
 	
 943	Find the Shortest Superstring    		38.1%	Hard	
 this is a good question
-similar problem: shortest superstring of two string. it uses subsequences
-but this question needs substring.
+similar problem: shortest superstring of two string. it uses subsequences.
+but this question needs substring. suffix A and prefix B shall be maxmized, so the overlap can be maxmized
+convert the overlaps to distance to each other (directed graph) and then min the distance.
+dijkstra: need to trace back to get the path.
 
+```cpp
     string shortestSuperstring(vector<string>& A) {
         int n=A.size(); //number of nodes
         vector<vector<int>> graph(n,vector<int>(n));
@@ -1698,7 +1956,7 @@ but this question needs substring.
         return ans;
     }
     
-    int calc(string& a,string& b)
+    int calc(string& a,string& b) //the overlap of a+b
     {
         int m=a.size(),n=b.size();
         for(int i=1;i<a.size();i++) //no duplicates
@@ -1707,6 +1965,7 @@ but this question needs substring.
         }
         return n;
     }
+```
 	
 903	Valid Permutations for DI Sequence    		44.2%	Hard	
 dp
@@ -1864,6 +2123,74 @@ greedy in tree, pretty hard to understand
         return left == 1 || right == 1 ? 2 : 0;
     }
 ```	
+
+887	Super Egg Drop    		24.9%	Hard	
+Problem summary
+given k eggs, and floor 1 to N, there is a floor F 0<=F<<N, when you drop the egg on >F the egg will break. Get the min number of moves required to determine F
+
+idea
+Since F could be any number, this is a minmax problem, ie. get the min of all the max eggs to guarantee the finding of F.
+
+If we drop egg at floor j, there are two options:
+
+egg does not breaks, then F>j the problem is a smaller problem with k eggs, and N-j floors
+
+egg breaks, the F<j, we are solving problem with k-1 eggs and j-1 floors
+
+so dp(k, n)=min(dp[k,n],1+max(dp[k-1, j-1], dp[k, n-j]) where k is the number of eggs, n is the number of floor, and j is the floor from 1 to n.
+
+The final answer is dp[k,N] with k eggs and N floors
+
+bounary condition: 0 eggs we cannot determine anything, dp[0, i]=0; i eggs, 0 floor, min number of eggs is also 0. k=0, N=0 is actually not needed. 1 eggs, i floor, need i moves i eggs, 1 floor, need 1 moves
+
+And we get the code
+
+    int superEggDrop(int K, int N) {
+        //
+        vector<vector<int>> dp(K+1,vector<int>(N+1));
+        for(int i=1;i<=K;i++) dp[i][1]=1;
+        for(int i=1;i<=N;i++) dp[1][i]=i;
+        for(int k=2;k<=K;k++)
+        {
+            for(int n=2;n<=N;n++)
+            {
+                dp[k][n]=INT_MAX;
+                for(int j=1;j<=n;j++)
+                    dp[k][n]=min(dp[k][n],1+max(dp[k-1][j-1],dp[k][n-j]));
+            }
+        }
+        return dp[K][N];
+    }
+The complexity is O(KN^2), which needs further optimization. Possible optimization: dp[k-1][j-1] increase with j, and dp[k][N-j] decreases with j. The min of the max of the two can be found using binary search, which reduce the complexity to O(KNlogN)
+
+Inspired @lee215, we can solve an equivalent dp problem: assuming dp[k,m] as using k eggs, m moves, what is the max number of floors we can reach:
+
+if egg breaks: we can check max floor dp[k-1,m-1] <current floor
+
+if egg does not break: we can check max floor dp[k, m-1] > current floor (using current floor as the base 0)
+
+When N floors are checked, F is found. dp[k, m]=N and we find the min m.
+
+dp[k,m]=dp[k-1,m-1]+dp[k,m-1]+1 (the combined below and above number of floors)
+
+Why the above equation: dp[k-1, m-1] using m-1 moves and k-1 eggs, the max number of floors we can check (lower than current) dp[k, m-1] using m-1 moves and k eggs, the max number of floors we can check (higher than current) +1: the floor we currently checked.
+
+    int superEggDrop(int K, int N) {
+        //
+        vector<vector<int>> dp(K+1,vector<int>(N+1));
+        //dp[k,n] now is the max number of floors checked using k eggs and n moves
+        for(int m=1;m<=N;m++)
+        {
+            for(int k=1;k<=K;k++)
+                dp[k][m]=dp[k][m-1]+dp[k-1][m-1]+1;
+            if(dp[K][m]>=N) return m;
+        }
+    }
+Above solution can be reduced to 1D since it only involves with m-1. Please attention if using 1D, need to reverse iterate on k since we don't want to use the updated dp[k-1][m] to replace dp[k-1][m-1].
+
+egg drop is considered a puzzle in geeksforgeeks.
+
+
 ## heap	
 23	Merge k Sorted Lists    		34.7%	Hard	
 typically using heap.
@@ -2017,40 +2344,7 @@ similar to merge sort keeping the min and max and get the smallest range
 	}
 ```
 
-786	K-th Smallest Prime Fraction    		39.8%	Hard	
-a division table using pq or binary search
-```cpp
-    struct quad
-    {
-        int a,b,i,j;
-        quad() {}
-        quad(int x,int y,int m,int n):a(x),b(y),i(m),j(n){}
-    };
-    struct compare
-    {
-        bool operator()(const quad& a,const quad& b) {return a.a*1.0/a.b>b.a*1.0/b.b;}
-    };
-public:
-    vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
-        if(A.size()==0) return vector<int>();
-        int n=A.size();
-        if(K>n*(n-1)/2) K=n*(n-1)/2;
-        priority_queue<quad,vector<quad>,compare> p;
-        //A[0]/A[n] is always the smallest
-        for(int i=1;i<A.size();i++) p.push(quad(A[0],A[i],0,i));
-        vector<int> ans(2);
-        quad q;
-        while(K--)
-        {
-            q=p.top();p.pop();
-            int i=q.i,j=q.j;
-            //cout<<i<<" "<<j<<":"<<A[i]<<"/"<<A[j]<<endl;
-            if(i<A.size()-1) p.push(quad(A[i+1],A[j],i+1,j));//next bigger one
-        }
-        ans[0]=q.a;ans[1]=q.b;
-        return ans;
-    }
-```	
+
 
 857	Minimum Cost to Hire K Workers    		47.4%	Hard	
 There are N workers.  The i-th worker has a quality[i] and a minimum wage expectation wage[i].
@@ -6926,24 +7220,7 @@ dynmaic knapsack problem
 882	Reachable Nodes In Subdivided Graph    		38.1%	Hard	
 so hard to understand
 
-887	Super Egg Drop    		24.9%	Hard	
-dp
-```cpp
-    int superEggDrop(int K, int N) {
-        vector<int> dp(K + 1, 0);
-        int s = 0;
-        while (dp[K]<N)
-        {
-            for (int i = K; i > 0; i--)
-            {
-                dp[i] += dp[i - 1] + 1;
-            }
 
-            s++;
-        }
-        return s; 
-    }
-```
 	
 891	Sum of Subsequence Widths    		28.9%	Hard	
 Given an array of integers A, consider all non-empty subsequences of A.
