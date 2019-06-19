@@ -1458,6 +1458,9 @@ dp reverse direction
         
     }
 ```	
+- have to initialize as INT_MAX, otherwise it will be 0
+- since we are using min, the outside two elements must be 1
+
 
 312	Burst Balloons    		47.4%	Hard	
 burst balloon you get nums[left]*nums[i]*nums[right]
@@ -1484,6 +1487,7 @@ so the recurrence dp[l, r]=max(num[i] * num[l] * num[r]+dp[l,i-1]+dp[i+1,l]), i 
     {
         if(s>e) return 0;
         if(dp[s][e]>0) return dp[s][e];
+		//if(l==r) return nums[l]; //this is contradict with the below recursive relation.
         for(int i=s;i<=e;i++)
         {
             dp[s][e]=max(dp[s][e],nums[i]*nums[s-1]*nums[e+1]+helper(nums,s,i-1,dp)+helper(nums,i+1,e,dp));
@@ -1524,6 +1528,10 @@ dfs with memoization, dp top down
         return dp[i][j]=max({d0,d1,d2,d3});
     }
 ```
+- note it needs strict increasing path.
+- need to restore for next loop
+- need to chang to INT_MIN while in exploring.
+- add a prev value to reflect the increasing requirement.
 
 354	Russian Doll Envelopes    		34.0%	Hard	
 (w,h), return the max number of envelopes you can russina doll.
@@ -1542,7 +1550,7 @@ public:
         //using dp
         vector<int> dp(envelopes.size(),1); //dp is the maximum length to i
         int gmax=0;
-        for(int i=0;i<envelopes.size();i++)
+        for(int i=0;i<envelopes.size();i++) //start from 0 to cover 1 elemtns
         {
             for(int j=0;j<i;j++)
             {
@@ -1556,7 +1564,9 @@ public:
     bool canfit(pair<int,int>& a,pair<int,int>& b) {return a.first<b.first && a.second<b.second;}
 };
 ```
-
+-. do not forget the envelope itself so initialize it as 1
+-. do not forget check the 0/1/2 elements
+ 
 403	Frog Jump    		36.2%	Hard	
 stones are located at different positions. frog is on the first stone, first step is 1
 if last jump step is k, current step is k, K+1 or K-1. only forward jump
@@ -1579,6 +1589,7 @@ approach: recursive, or dfs
     bool canReach(unordered_set<int>& hs,int pos,int jmp,int last)
     {
         if(pos+jmp==last || pos+jmp-1==last || pos+jmp+1==last) return 1;
+		//the exit is equivalent to if(pos>=target) return 1;
         if(hs.count(pos+jmp+1))
             if(canReach(hs,pos+jmp+1,jmp+1,last)) return 1;
         
@@ -1591,6 +1602,9 @@ approach: recursive, or dfs
         return 0;
     }
 ```	
+- k must >0
+- most aggressive steps keeps adding 1, so we can get if difference >i we cannot jump
+- without the prune, we will get TLE
 
 446	Arithmetic Slices II - Subsequence    		30.2%	Hard	
 return the number of arithmetic subsequence slices in the array
@@ -1615,8 +1629,15 @@ dp: when diff=A[i]-A[j] dp[i][diff]++
         return res;
     }
 ```	
-a small trick is used in the code: when have two number dp[j]=1, when have 3 numbers, dp[j]=2,....
+- a small trick is used in the code: when have two number dp[j]=1, when have 3 numbers, dp[j]=2,....
 we add dp[j][diff] is actually the array length -2
+-. vector of hashmap
+-. when we add a number to a sequence, we add same amount new sequences.
+
+res is the final count of all valid arithmetic subsequence slices; map will store the intermediate results T(i, d), with i indexed into the array and d as the key of the corresponding HashMap.
+For each index i, we find the total number of "generalized" arithmetic subsequence slices ending at it with all possible differences. This is done by attaching A[i] to all slices of T(j, d) with j less than i.
+Within the inner loop, we first use a long variable diff to filter out invalid cases, then get the counts of all valid slices (with element >= 3) as c2 and add it to the final count. At last we update the count of all "generalized" slices for T(i, d) by adding the three parts together: the original value of T(i, d), which is c1 here, the counts from T(j, d), which is c2 and lastly the 1 count of the "two-element" slice (A[j], A[i]).
+
 
 514	Freedom Trail    		40.6%	Hard	
 the dial has a word,using the dial to spell a given word
@@ -1655,6 +1676,41 @@ dp similar to dijkstra.
 ```	
 note we are doing it reversely. they shall be equivalent.
 
+dfs approach: top down dp with memoization
+```cpp
+    int findRotateSteps(string ring, string key) {
+        //dfs
+        int n=ring.size(),m=key.size();
+        vector<vector<int>> mp(26);
+        for(int i=0;i<ring.size();i++) mp[ring[i]-'a'].push_back(i);
+        vector<vector<int>> dp(n,vector<int>(m));
+        int minSteps=minsteps(mp,key,0,{1,0},n,dp);
+        return minSteps+key.length();
+    }
+    
+    int minsteps(vector<vector<int>>& mp,string& key,int start,vector<int> prev,int n,vector<vector<int>>& dp)
+    {
+        if(start==key.length()) {return 0;}
+        if(dp[prev.back()][start]) return dp[prev.back()][start];
+        vector<int>& v=mp[key[start]-'a'];
+        int sum=INT_MAX;
+        for(int i=0;i<v.size();i++)
+        {
+            int d=abs(v[i]-prev.back());
+            d=min(d,n-d);
+            prev.push_back(v[i]);
+            sum=min(sum,d+minsteps(mp,key,start+1,prev,n,dp));
+            prev.pop_back();
+        }
+        dp[prev.back()][start]=sum;
+        return sum;
+    }
+```	
+- dp[i][j]: represents the min steps when ring is at position i and keys are [0...i-1]
+- backtracking using memoization
+- if bottom up is not easy, try top down could be easier.
+
+
 517	Super Washing Machines    		37.0%	Hard	
 if we subtract the final target, (average), then our target is to reach all 0.
 the machine with maxload shall give all out to left and right, and that is one max.
@@ -1680,6 +1736,8 @@ the load come through the machine is also another max.
         return min0;
     }
 ```
+- cnt+=machines[i] or cnt-=machines[i] both works
+
 
 546	Remove Boxes    		38.3%	Hard	
 again this is similar to the google phone interview problem removing 3 or more same.
@@ -1727,6 +1785,11 @@ dp[i][j][k]=max((k+1)^2+sub(i+k+1,j,0), sub(i+k+1,m-1,0), sub(m, j, k+1))
 ```
 this is a very classical dp problem, it teaches us how to find the relation and how to approach a very complicated problem.
 similar problem 664 strange printer
+- need use 3d dp array to store the status
+- need to have two choices.
+- two subproblem is l+1 to m-1, and other is m to r and with k balls in front. (need to include m)
+- note the k serves as the index and ball counter is k+1
+
 
 664	Strange Printer    		36.7%	Hard	
 Problem summary
@@ -1736,8 +1799,13 @@ idea
 the number of same char does not matter (different from previous problem on remove boxes which is depending on k)
 when same char is separated, either we connect them or print differently. That is why it is the same as removing boxes.
 We don't need the k dimension in this case, since number of char does not matter. 3. this is similar to a series of overlapped segments, greedy choice will not work.
+approach:
+- number of chars does not matter, so we can do some preprocess to remove duplicates
+- reduce 3d array to 2d since k does not matter
+- this is similar to the zuma game.
 
 code
+```cpp
     int strangePrinter(string s) {
         if(s.length()<1) return 0;
         string ss;
@@ -1753,7 +1821,7 @@ code
     int helper(string& s,vector<vector<int>>& dp,int i,int j)
     {
         if(i>j) return 0;
-        if(i==j) return 1;
+        if(i==j) return 1; //unnecessary since it is covered.
         if(dp[i][j]) return dp[i][j];
         //k is the number of same char
         int res=1+helper(s,dp,i+1,j);//no char attached
@@ -1765,8 +1833,60 @@ code
         dp[i][j]=res;
         return res;
     }
+```	
 comments
 please refer to remove boxes, which is almost the same.
+
+488	Zuma Game    		39.0%	Hard	
+this is very similar to the posted google phone interview to remove 3 or more identical numbers
+balls have 5 different colors, there are some balls on the table and some tables in hand.
+find the min number balls to insert to remove all balls on the table.
+
+dfs/bfs/dp
+dfs approach:
+- convert balls in hand as hashmap
+- dfs: find all possible ways to empty the table and get the min
+- dfs backtracking: 
+```cpp
+    int findMinStep(string board, string hand) {
+        unordered_map<char,int> mp;
+        for(char c: hand) mp[c]++;
+        int minstep=INT_MAX;
+        dfs(board,mp,0,minstep);
+        return minstep==INT_MAX?-1:minstep;
+    }
+    void dfs(string& board,unordered_map<char,int>& mp,int used,int& minstep){
+        if(board.empty()){
+            minstep=min(minstep,used);
+            return;
+        }
+        //cout<<board<<" "<<used<<endl;
+        int i=0;
+        while(i<board.size()){
+            char c=board[i];
+            int j=i;
+            while(j<board.size() && board[j]==c) j++; //find the correct index is critical, otherwise will cause mistakes
+            if(j-i>=3){
+                cout<<j;
+                board.erase(board.begin()+i, board.begin()+j);
+                dfs(board,mp,used,minstep);
+                board.insert(i,j-i,c);
+            }
+            else{
+                int miss=3-(j-i);
+                if(mp[c]>=miss){
+                    mp[c]-=miss;
+                    board.erase(board.begin()+i,board.begin()+j);
+                    dfs(board,mp,used+miss,minstep);
+                    mp[c]+=miss;
+                    board.insert(i,j-i,c);
+                }
+            }
+            i=j;
+        }
+    }
+```
+this is also very similar to the problem of removing boxes
 
 552	Student Attendance Record II    		33.2%	Hard	
 given n as the length, return the number of valid attendance record
@@ -3508,63 +3628,7 @@ similar to I.
     }
 ```	
 
-488	Zuma Game    		39.0%	Hard	
-this is very similar to the posted google phone interview to remove 3 or more identical numbers
-balls have 5 different colors, there are some balls on the table and some tables in hand.
-find the min number balls to insert to remove all balls on the table.
 
-dfs/bfs/dp
-dfs approach:
-- convert balls in hand as hashmap
-- dfs: find all possible ways to empty the table and get the min
-- dfs backtracking: 
-```cpp
-    int minStep;
-    int findMinStep(string board, string hand) {
-        unordered_map<char,int> mp;
-        for (auto c:hand) mp[c]++;
-    
-        minStep=INT_MAX;
-        dfs(board, mp, 0);
-        return minStep==INT_MAX?-1:minStep;
-    }
-    void dfs(string& board, unordered_map<char,int>& mp, int used) {
-        if (board.empty()) {
-            minStep=min(minStep, used);
-            return;
-        }
-        
-        for (int i=0; i<board.size();) {
-            int j=i;
-            char c=board[i];
-            while (j<board.size() && board[j]==c) j++;
-            if (j-i<3) {
-                int miss=3-(j-i);
-                if (mp[c]>=miss) {
-                    removeBoard(board, i, j);
-                    mp[c]-=miss;
-                    dfs(board, mp, used+miss);
-                    mp[c]+=miss;
-                    restoreBoard(board, i, j-i, c);    
-                }
-            } else {
-                removeBoard(board, i, j);
-                dfs(board, mp, used);
-                restoreBoard(board, i, j-i, c);
-            }
-            i=j;
-        }
-    }
-    
-    void removeBoard(string& board, int start, int end) {
-        board.erase(board.begin()+start, board.begin()+end);
-    }
-    
-    void restoreBoard(string& board, int pos, int n, char c) {
-        board.insert(pos, n, c);
-    }
-```
-this is also very similar to the problem of removing boxes
 
 753	Cracking the Safe    		46.4%	Hard	
 There is a box protected by a password. The password is n digits, where each letter can be one of the first k digits 0, 1, ..., k-1.
