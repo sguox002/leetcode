@@ -337,14 +337,20 @@ Explanation:
 We all know how to check a string of parentheses is valid using a stack. Or even simpler use a counter.
 The counter will increase when it is ‘(‘ and decrease when it is ‘)’. Whenever the counter is negative, we have more ‘)’ than ‘(‘ in the prefix.
 
-To make the prefix valid, we need to remove a ‘)’. The problem is: which one? The answer is any one in the prefix. However, if we remove any one, we will generate duplicate results, for example: s = ()), we can remove s[1] or s[2] but the result is the same (). Thus, we restrict ourself to remove the first ) in a series of concecutive )s.
+To make the prefix valid, we need to remove a ‘)’. 
+The problem is: which one? The answer is any one in the prefix. 
+However, if we remove any one, we will generate duplicate results, 
+for example: s = ()), we can remove s[1] or s[2] but the result is the same (). 
+Thus, we restrict ourself to remove the first ) in a series of concecutive )s.
 
-After the removal, the prefix is then valid. We then call the function recursively to solve the rest of the string. However, we need to keep another information: the last removal position. If we do not have this position, we will generate duplicate by removing two ‘)’ in two steps only with a different order.
+After the removal, the prefix is then valid. We then call the function recursively to solve the rest of the string. However, we need to keep another information: the last removal position. 
+If we do not have this position, we will generate duplicate by removing two ‘)’ in two steps only with a different order.
 For this, we keep tracking the last removal position and only remove ‘)’ after that.
 
 Now one may ask. What about ‘(‘? What if s = ‘(()(()’ in which we need remove ‘(‘?
 The answer is: do the same from right to left.
 However a cleverer idea is: reverse the string and reuse the code!
+
 ```cpp
     vector<string> removeInvalidParentheses(string s) {
         vector<string> ans;
@@ -635,11 +641,88 @@ binary search: the number is in the range [min(A,B),N*min(A,B)] choose a mid and
     }
 ```
 
+679	24 Game    		42.9%	Hard	
+4 numbers from 1 to 9, apply +-*/() to get the value of 24
+actually we do not have to put ()
+divide and conquer: compute any combination using +-*/ and reduce to one item
+
+```cpp
+    bool judgePoint24(vector<int>& nums) {
+        //recursive approach. 
+        //for all combination check if we can get 24
+        //pick any two numbers and do +-*/ and reduce to 3 numbers, then 2 and then 1
+        vector<double> v(nums.size());
+        for(int i=0;i<nums.size();i++) v[i]=nums[i];
+        return search24(v);
+    }
+    
+    bool search24(vector<double> v)
+    {
+        if(v.size()==1) return abs(v[0]-24)<1e-7;
+        vector<double> list;
+        char op[]={'+','*','-','/'};
+        for(int i=0;i<v.size();i++)
+        {
+            for(int j=0;j<v.size();j++)
+            {
+                if(i==j) continue; //same cards cannot be used
+                //pick v[i] op v[j]
+                //+ * a+b=b+a a*b=b*a so do not have to compute
+                for(int k=0;k<4;k++) //operations
+                {
+                    if((op[k]=='+' || op[k]=='*') && i>j) continue;
+                    if(op[k]=='/' && v[j]==0) continue; //cannot divide 0
+                    double res;
+                    switch(op[k])
+                    {
+                        case '+': res=v[i]+v[j];break;
+                        case '-': res=v[i]-v[j];break;
+                        case '*': res=v[i]*v[j];break;
+                        case '/': res=v[i]/v[j];break;
+                    }
+                    //remove i,j and add res int a new list
+                    list.clear();
+                    for(int l=0;l<v.size();l++) if(l!=i && l!=j) list.push_back(v[l]);
+                    list.push_back(res);
+                    //for(int l=0;l<list.size();l++) cout<<list[i]<<",";cout<<endl;
+                    if(search24(list)) return 1;
+                }
+            }
+        }
+        return 0;
+        
+    }
+```	
+
+805	Split Array With Same Average    		24.4%	Hard	
+split the array into two parts, so that the average is the same
+assuming group A has k elements, B has n-k elements
+Asum/k=Bsum/(n-k)-->B=A*(n-k)/k-->A+B=A*n/k=T-->A/k=T/n. so the target is the original average.
+also T*k/n must be a integer so T*k%n==0
+and it is changed to a combination sum problem then.
+
+```cpp
+    bool splitArraySameAverage(vector<int>& A) {
+        int n = A.size(), m = n/2, totalSum = accumulate(A.begin(), A.end(), 0);
+        sort(A.rbegin(), A.rend()); // Optimization
+        for (int i = 1; i <= m; ++i) 
+            if (totalSum*i%n == 0 && combinationSum(A, 0, i, totalSum*i/n)) return true;
+        return false;
+    }
+    bool combinationSum(vector<int>& nums, int idx, int k, int tar) {
+        if (tar > k * nums[idx]) return false; // Optimization, A is sorted from large to small
+        if (k == 0) return tar == 0;
+        for (int i = idx; i <= nums.size()-k; ++i) 
+            if (nums[i] <= tar && combinationSum(nums, i+1, k-1, tar-nums[i])) return true;
+        return false;
+    }
+```	
+
 ## dp
 10	Regular Expression Matching    		25.3%	Hard	
 dp, two string matching problem s and t.
 '.' matches any single char if t[j]=='.' dp[i][j]=dp[i-1][j-1]
-'*' matches zero or more of the preceding char
+'*' matches zero or more of the **preceding** char
 Problem summary
 '.' matches any single char and '*' matches 0 or more of preceding char
 
@@ -649,12 +732,23 @@ p[j-1] is letter or ., dp[i, j]=dp[i-1, j-1]&&(s[i-1]==p[j-1]||p[j-1]=='.')
 p[j-1]=='', assuming previous char is a, then a
 matches 0 char, previous char is skipped, a* matches empty, dp[i,j]=dp[i,j-2] (s(0...i-1) matches p(0...j-3). Note: we are using previous solution for current solution!)
 matches 1 char, then dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i,j-1] (a* counts as one a, s(0..i-1) matches p[0..j-2])
-matches more than 1 char, a* represents multiple a, dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i-1,j] (depends s(0...i-2) matches p(0...j-1)). Actually this case is included in match 1 char.
+matches more than 1 char, a* represents multiple a, dp[i,j]=(s[i-1]==p[j-2] || p[j-2]=='.') && dp[i-1,j] (depends s(0...i-2) matches p(0...j-1)). 
+Actually this case is included in match 1 char.
 boundary condition
 dp[0,0]=1, empty vs empty
 p empty, s non-empty, all false, col 0 shall not be included in loop.
 s empty, p non-empty, must have .* letter* to match 0 char dp[0,i]=dp[0, i-2] && p[j-1]=='*'
 extra complexity: it involves p[j-2] and dp[j-2], which indicates that row 1 needs to be included in boundary. A common approach is: we do not involve the boundary except col 0, but using the recurrence relation to process the boundary. This is much simpler in some cases when the boundary is not so straightforward.
+1, If p.charAt(j) == s.charAt(i) :  dp[i][j] = dp[i-1][j-1];
+2, If p.charAt(j) == '.' : dp[i][j] = dp[i-1][j-1];
+3, If p.charAt(j) == '*': 
+   here are two sub conditions:
+               1   if p.charAt(j-1) != s.charAt(i) : dp[i][j] = dp[i][j-2]  //in this case, a* only counts as empty
+               2   if p.charAt(i-1) == s.charAt(i) or p.charAt(i-1) == '.':
+                              dp[i][j] = dp[i-1][j]    //in this case, a* counts as multiple a 
+                           or dp[i][j] = dp[i][j-1]   // in this case, a* counts as single a
+                           or dp[i][j] = dp[i][j-2]   // in this case, a* counts as empty
+boundary condition: it must have a* pattern, so it is dp[0][i-2]						   
 code
     bool isMatch(string s, string p) {
         int m=s.size(),n=p.size();
@@ -679,7 +773,29 @@ when boundary is hard to write, include it in the loop
 a* matches empty, then it means previous solution shall be s(0..i-1) matches p(0..j-3), which is dp[i, j-2]
 a* matches 1, then it means previous solution is s(0..i-2) matches p(0..j-1) which is dp[i-1,j]
 the last condition can be skipped.
-
+or
+```cpp
+    bool isMatch(string s, string p) {
+        int m=s.size(),n=p.size();
+        vector<vector<bool>> dp(m+1,vector<bool>(n+1));
+        dp[0][0]=1; //empty vs empty
+        //pattern empty, string non-empty all 0
+        //string empty, pattern non-empty
+        for(int i=1;i<=n;i++) if(i>1) dp[0][i]=dp[0][i-2]&&p[i-1]=='*';
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(p[j-1]!='*')
+                    dp[i][j]=dp[i-1][j-1]&&(s[i-1]==p[j-1]||p[j-1]=='.');
+                else if(j>1)//*
+                    dp[i][j]=dp[i][j-2] || //matches 0 previous char a* matches empty
+                    (dp[i][j-1] && (s[i-1]==p[j-2] || p[j-2]=='.')) || //a* matches one char
+                    (dp[i-1][j] && (s[i-1]==p[j-2] || p[j-2]=='.')); //a* matches multiple chars
+            }
+        }
+        return dp[m][n];
+    }
+```
+	
 44	Wildcard Matching    		22.9%	Hard	
 typical two string compare dp problem
 ? matches any single char
@@ -698,21 +814,26 @@ matches 1 or more chars, dp[i, j]=dp[i,j-1] (s can advance one, but p cannot)
 so when p[j-1]=='*' dp[i,j]=dp[i-1,j]||dp[i, j-1]
 boundary condition -. dp[0, 0]: empty vs empty always true -. p empty, s non-empty, no match -. s empty, p non-empty, then p can only contains *
 code
+```cpp
     bool isMatch(string s, string p) {
         int m=s.size(),n=p.size();
         vector<vector<bool>> dp(m+1,vector<bool>(n+1));
-        dp[0][0]=1;
-        for(int i=1;i<=n;i++) dp[0][i]=dp[0][i-1] && p[i-1]=='*';
-        for(int i=1;i<=m;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                if(p[j-1]!='*') dp[i][j]=dp[i-1][j-1] && (s[i-1]==p[j-1] || p[j-1]=='?');
-                else dp[i][j]=dp[i-1][j]||dp[i][j-1];
+        dp[0][0]=1; //empty vs empty
+        //pattern empty, string non-empty all 0
+        //string empty, pattern non-empty
+        for(int i=1;i<=n;i++) dp[0][i]=dp[0][i-1]&&p[i-1]=='*';//must be *****
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(p[j-1]!='*')
+                    dp[i][j]=dp[i-1][j-1]&&(s[i-1]==p[j-1]||p[j-1]=='?');
+                else 
+                    dp[i][j]=dp[i][j-1] || //matches 1 char s[0..i-1] matches p[0...j-2]
+                        dp[i-1][j]; //matches 0 char or more s[0...i-2] matches p[0...j-1]
             }
         }
         return dp[m][n];
     }
+```	
 comments
 complexity O(m*n)
 one subtle point: when * matches 0, we need advance p, when * matches 1 or more char, s need advance, p cannot (leaving it for latter match).
@@ -722,35 +843,195 @@ similar problem regular expression matching
 72	Edit Distance    		37.9%	Hard	
 insert/delete/replace
 typical dp problem
+If word1[i - 1] != word2[j - 1], we need to consider three cases.
 
+Replace word1[i - 1] by word2[j - 1] (dp[i][j] = dp[i - 1][j - 1] + 1);
+If word1[0..i - 1) = word2[0..j) then delete word1[i - 1] (dp[i][j] = dp[i - 1][j] + 1);
+If word1[0..i) + word2[j - 1] = word2[0..j) then insert word2[j - 1] to word1[0..i) (dp[i][j] = dp[i][j - 1] + 1).
 ```cpp
-    int minDistance(string s1, string s2) {
-        //note it has three operations!
-		int n=s1.size();
-		int m=s2.size();
-		vector<vector<char>> d(n+1,vector<char>(m+1));
-		for(int i=0;i<=n;i++) d[i][0]=i;
-		for(int j=0;j<=m;j++) d[0][j]=j;
-		short ins,del,match,mismatch;
-		for(int j=1;j<=m;j++)
-		{
-			for(int i=1;i<=n;i++)
-			{
-				ins=d[i][j-1]+1;
-				del=d[i-1][j]+1;
-				match=d[i-1][j-1];
-				mismatch=d[i-1][j-1]+1;//replace
-				if(s1[i-1]==s2[j-1]) //note string start from 0
-					//d[i][j]=min(ins,min(del,match));
-					d[i][j]=match;
-				else
-					d[i][j]=min(ins,min(del,mismatch));
-			}
-		}
-		return d[n][m];   
+    int minDistance(string w1, string w2) {
+        int m=w1.size(),n=w2.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        dp[0][0]=0;
+        
+        for(int i=1;i<=m;i++) dp[i][0]=i;//s2 is empty, delete all
+        for(int i=1;i<=n;i++) dp[0][i]=i;//s1 is empty, delete all
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(w1[i-1]==w2[j-1]) dp[i][j]=dp[i-1][j-1];
+                else{
+                    int ins=dp[i][j-1]+1; //insert w2[j-1] so that s1[0...i-1] matches s2[0..j-1]
+                    int del=dp[i-1][j]+1; //del w1[j-1] so that s1[0...i-2] matches s2[0...j-1]
+                    int rep=dp[i-1][j-1]+1;//replace so that w1[0..i-1] matches s2[0..j-1]
+                    dp[i][j]=min({ins,del,rep});
+                }
+            }
+        }
+        return dp[m][n];
     }
 ```	
 we will see edit distance can have multiple variation.
+need to understand the subproblems! otherwise we cannot get it right.
+
+943	Find the Shortest Superstring    		38.1%	Hard	
+this is a good question: travelling salesman problem.
+
+similar problem: shortest superstring of two string. it uses subsequences.
+but this question needs substring. suffix A and prefix B shall be maxmized, so the overlap can be maxmized
+convert the overlaps to distance to each other (directed graph) and then min the distance.
+dijkstra: need to trace back to get the path.
+approach: 
+- first generate the graph data structure using nxn matrix
+- need visit all nodes and also need to reverse back the path
+- dp[i,j] represents the min distance from node i to node j.
+- use a bitset to indicate if a node visited or not
+- using any other nodes to relax the distance between i to j.
+```cpp
+    string shortestSuperstring(vector<string>& A) {
+        int n=A.size();
+        vector<vector<int>> graph(n,vector<int>(n));
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                graph[i][j]=overlap(A[i],A[j]);
+                graph[j][i]=overlap(A[j],A[i]);
+            }
+        }
+        //limit 12 words, we need visit all nodes
+        int m=1<<n;
+        int gmin=INT_MAX,last=-1;
+        vector<vector<int>> dp(m,vector<int>(n,INT_MAX)),path(m,vector<int>(n));
+        for(int i=1;i<m;i++) {//0x001 to 0xfff
+            for(int j=0;j<n;j++){
+                if(i & (1<<j)) {//node j is set, and we want to relax j
+                    int prev=i-(1<<j);
+                    if(prev==0) dp[i][j]=A[j].size(); //initial length
+                    else{
+                        for(int k=0;k<n;k++) { //use k node to relax distance
+                            if(dp[prev][k]<INT_MAX){
+                                if(dp[i][j]>dp[prev][k]+graph[k][j]){
+                                    dp[i][j]=dp[prev][k]+graph[k][j];
+                                    path[i][j]=k;
+                                }
+                            }
+                        }
+                    }
+                }//end if
+                if(i==m-1 && gmin>dp[i][j]) {gmin=dp[i][j];last=j;}
+            }//end j loop
+        }//end i loop
+        //traceback to get the route
+        int curr=m-1;
+        vector<int> seq;
+        while(curr){
+            seq.push_back(last);
+            int t=path[curr][last];
+            curr-=1<<last;
+            last=t;
+        }
+        //now connect the strings in reverse way.
+        string ans=A[seq.back()];
+        for(int i=seq.size()-2;i>=0;i--)
+        {
+            int num_app=graph[seq[i+1]][seq[i]];
+            int len=A[seq[i]].length();
+            ans+=A[seq[i]].substr(len-num_app);
+        }
+        return ans;        
+        
+    }
+    //number of chars to append: the sum of all shall be minimized.
+	int overlap(string& a,string& b){ //actually it is not overlap, this is number of chars to append to A
+        //A+B: A's suffix=B's prefix
+        int m=a.size(),n=b.size();
+        for(int i=1;i<a.size();i++) //no duplicates
+        {
+            if(b.substr(0,m-i)==a.substr(i)) return n-(m-i);
+        }
+        return n;
+    }
+```
+this is really hard. O(N^2*2^n)
+graph[i][j] means the length of string to append when A[i] followed by A[j]. eg. A[i] = abcd, A[j] = bcde, then graph[i][j] = 1
+dp[i][j]: means when the shortest distance when last visit j (some nodes have been visited before j)
+for example: 
+["catg","ctaagt","gcta","ttca","atgcatc"]
+the dp:
+.	.	.	.	.	
+4	.	.	.	.	
+.	6	.	.	.	
+10	10	.	.	.	
+.	.	4	.	.	
+8	.	7	.	.	
+.	7	10	.	.	
+11	10	13	.	.	
+.	.	.	4	.	
+6	.	.	8	.	
+.	10	.	9	.	
+11	12	.	13	.	
+.	.	8	8	.	
+10	.	9	11	.	
+.	11	13	10	.	
+12	12	14	13	.	
+.	.	.	.	7	
+10	.	.	.	8	
+.	12	.	.	13	
+16	13	.	.	14	
+.	.	11	.	10	
+13	.	12	.	12	
+.	14	16	.	14	
+17	15	17	.	15	
+.	.	.	11	10	
+13	.	.	12	10	
+.	15	.	15	15	
+17	15	.	16	15	
+.	.	14	14	14	
+16	.	14	16	14	
+.	17	19	17	16	
+19	17	19	18	16	//all visited, the min is 16 (which gives the shortest length)
+
+00: 0	0	0	0	0	
+01: 0	0	0	0	0	
+02: 0	0	0	0	0	
+03: 1	0	0	0	0	
+04: 0	0	0	0	0	
+05: 2	0	0	0	0	
+06: 0	2	1	0	0	
+07: 1	2	0	0	0	
+08: 0	0	0	0	0	
+09: 3	0	0	0	0	
+10: 0	3	0	1	0	
+11: 3	0	0	1	0	
+12: 0	0	3	2	0	
+13: 3	0	0	2	0	
+14: 0	2	3	1	0	
+15: 3	2	0	1	0	
+0: 0	0	0	0	0	
+0: 4	0	0	0	0	
+0: 0	4	0	0	1	
+0: 1	4	0	0	0	
+0: 0	0	4	0	2	
+0: 4	0	4	0	0	
+0: 0	2	1	0	1	
+0: 4	2	1	0	0	
+0: 0	0	0	4	3	
+0: 3	0	0	4	0	
+0: 0	4	0	1	3	
+0: 3	4	0	1	0	
+0: 0	0	4	4	2	
+0: 3	0	4	2	0	
+0: 0	2	1	1	3	
+31: 3	2	1	1	0	//previous position for all visited
+sequence is 4,0,3,1,2
+the traceback:
+last 4: 0x1f-->0 (parent is 0)
+clear bit 4: [0xf][0] we get 3
+clear bit 0: [0x0e][3] we get 1
+clear bit 3: [0x06][1] we get 2
+
+reconstruct the string: adding sequence 2,1,3,0,4
+
+Then the problem becomes to: find the shortest path in this graph which visits every node exactly once. This is a Travelling Salesman Problem.
+Apply TSP DP solution. Remember to record the path.
 
 1092. Shortest common supersequence
 approach 1: find the longest common subsequence and add only once of the gcd
@@ -848,9 +1129,9 @@ lee's solution to find the lcs string without backtracing.
                 res += A[i++];
             while (B[j] != c)
                 res += B[j++];
-            res += c, i++, j++;
+            res += c, i++, j++;//do not forget to advance i and j
         }
-        return res + A.substr(i) + B.substr(j);
+        return res + A.substr(i) + B.substr(j); //adding the trailing part
     }
 
     string lcs(string& A, string& B) {
@@ -896,54 +1177,56 @@ check if s3 is interleaving of s1 and s2
 2d path using dp. 
 ```cpp
     bool isInterleave(string s1, string s2, string s3) {
-        int n1=s1.size(),n2=s2.size();
-        if(s3.length() != n1+n2) return 0;
-        if(n1==0) return s3==s2;
-        if(n2==0) return s3==s1;
-        vector<vector<bool>> dp(n1+1,vector<bool>(n2+1));
-        dp[0][0]=1; //empty vs empty
-        //boundary condition
-        for(int i=1;i<n1+1;i++) dp[i][0]=dp[i-1][0] && (s1[i-1]==s3[i-1]); //j=0, s1 compare with s3
-        for(int j=1;j<n2+1;j++) dp[0][j]=dp[0][j-1] && (s2[j-1]==s3[j-1]); //i=0: s2 compare with s3
-        for(int i=1; i<n1+1; i++)
-        {
-            for(int j=1; j< n2+1; j++)
-            {
-                dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1] ) || (dp[i][j-1] && s2[j-1] == s3[i+j-1] );
-            }
-        }   
-        return dp[n1][n2];
-    }
-```	
-115	Distinct Subsequences    		35.1%	Hard	
-number of distinct subsequence in S equals T
-that is number of ways from S to T. (similar to climbing stairs)
-combined with edit distance.
-when s[i]!=t[j], we can only come from dp[i-1][j] (since we cannot delete t[j])
-when s[i]==t[j], we can reach (i,j) from (i-1,j-1) or (i-1,j)
-```cpp
-    int numDistinct(string s, string t) {
-        //dp edit distance
-        int m=s.size(),n=t.size();
-        vector<vector<int>> dp(m+1,vector<int>(n+1));
-        //dp[i,j] represent number of subsequence for s(0...i) vs t[0..j]
-        //allowing only deletion from s
-        //boundary: dp[0,0]=1
-        for(int i=0;i<=m;i++) dp[i][0]=1; //when t is empty, need delete all s
-        for(int i=1;i<=m;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                if(s[i-1]!=t[j-1]) dp[i][j]=dp[i-1][j]; //need delete this char, i proceed one
-                else dp[i][j]=dp[i-1][j-1]+dp[i-1][j]; //delete: i proceed one, keep: dp[i-1][j-1]
+        int m=s1.size(),n=s2.size();
+        if(s3.size()!=m+n) return 0;
+        vector<vector<bool>> dp(m+1,vector<bool>(n+1));
+        dp[0][0]=1;
+        for(int i=1;i<=m;i++) dp[i][0]=dp[i-1][0] && s3[i-1]==s1[i-1];
+        for(int i=1;i<=n;i++) dp[0][i]=dp[0][i-1] && s3[i-1]==s2[i-1];
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                dp[i][j]=(dp[i-1][j] && s3[i+j-1]==s1[i-1]) ||
+                    (dp[i][j-1] && s3[i+j-1]==s2[j-1]);
             }
         }
         return dp[m][n];
     }
-```
+```	
+115	Distinct Subsequences    		35.1%	Hard	
+Problem Summary
+return the number of distinct subsequence of S which is equal to t.
+
+idea
+this is two string compare with only deletion in S is allowed, The number of distinct subsequence is similar to climbing stairs.
+
+if s[i-1]!=t[j-1], dp[i,j]=d[i-1,j] where we need skip this char else we have two choices use this char or not: if we use dp[i,j]=dp[i-1,j-1] if we do not use dp[i,j]=dp[i-1,j]
+
+This is also similar to walking in a 2d matrix.
+
+code
+```cpp
+    int numDistinct(string s, string t) {
+        int m=s.size(),n=t.size();
+        vector<vector<long>> dp(m+1,vector<long>(n+1));
+        //dp[i,j] the number of sequence matches s[0..i-1] and p[0...j-1]
+        for(int i=0;i<=m;i++) dp[i][0]=1; //t is empty: only empty can match
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(s[i-1]!=t[j-1]) //we need skip this char
+                    dp[i][j]=dp[i-1][j];
+                else dp[i][j]=dp[i-1][j-1]+dp[i-1][j]; //use it or not use it.
+            }
+        }
+        return dp[m][n];
+    }
+```	
+comments
+- the key is when we delete char i-1, why it is dp[i-1,j] instead of dp[i-1,j-1]. since adding this char makes the same amount of subsequence
+- easily overflow
 
 123	Best Time to Buy and Sell Stock III    		33.8%	Hard	
-two transaction, it is a special edition of K transaction
+two transaction, it is a special edition of K transaction.
+
 188	Best Time to Buy and Sell Stock IV    		26.4%	Hard	
 the idea is based on previous k-1 transaction, add a more transaction
 dp[k][i]=max(dp[k][i-1],dp[k-1][j]+price[i]-price[j]), no operation or operation
@@ -972,6 +1255,9 @@ dp[k][i]=max(dp[k][i-1],dp[k-1][j]+price[i]-price[j]), no operation or operation
         return maxprof;
     }
 ```	
+note the inner side has some optimization to reduce O(N^2) to O(N)
+so the complexity is O(NK).
+
 132	Palindrome Partitioning II    		27.5%	Hard	
 return min number of cuts so that each substr is a palindrome.
 this is a dp. odd length and even length
@@ -992,6 +1278,10 @@ two subproblems: odd length and even length pal-string.
         return cut[n];
     }
 ```	
+- implementation on this is not that simple.
+- bounary condition -1,0,.....n-1
+- the two inner loop is tricky.
+
 140	Word Break II    		27.4%	Hard	
 a list of words and a string, cut it into dictionary words.
 return all possible combination.
@@ -1054,17 +1344,18 @@ consider this also a dp problem using top down+memoization.
 dp+dfs can choose the top down method to finish two at the same time.
 
 always prefer shorter and concise code!!!!
+approach:
+-. we are using the prefix as the subproblem for convenience
+-. we use hashset for memoization.
+-. append the suffix word to all subproblem output (combine)
+-. append all the strings into answer.
+
 ```cpp
     unordered_map<string, vector<string>> m;
-
-    vector<string> combine(string word, vector<string> prev){
-        for(int i=0;i<prev.size();++i){
-            prev[i]+=" "+word;
-        }
-        return prev;
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> ms(wordDict.begin(),wordDict.end());
+        return wordBreak(s,ms);
     }
-
-public:
     vector<string> wordBreak(string s, unordered_set<string>& dict) {
         if(m.count(s)) return m[s]; //take from memory
         vector<string> result;
@@ -1081,6 +1372,12 @@ public:
         }
         m[s]=result; //memorize
         return result;
+    }    
+    vector<string> combine(string word, vector<string> prev){
+        for(int i=0;i<prev.size();++i){
+            prev[i]+=" "+word;
+        }
+        return prev;
     }
 ```
 We shall always choose the most concise approach due to very limited time!!!!
@@ -1503,6 +1800,7 @@ it involves two or more small dp problems:
         return res%mod;
     }
 ```
+
 600	Non-negative Integers without Consecutive Ones    		32.8%	Hard	
 binary form does not contain consecutive ones <=n
 convert n to binary, it will have m bits
@@ -1883,89 +2181,6 @@ dp
         return accumulate(endwith,endwith+26,0LL)%mod;
     }
 	
-943	Find the Shortest Superstring    		38.1%	Hard	
-this is a good question
-similar problem: shortest superstring of two string. it uses subsequences.
-but this question needs substring. suffix A and prefix B shall be maxmized, so the overlap can be maxmized
-convert the overlaps to distance to each other (directed graph) and then min the distance.
-dijkstra: need to trace back to get the path.
-
-```cpp
-    string shortestSuperstring(vector<string>& A) {
-        int n=A.size(); //number of nodes
-        vector<vector<int>> graph(n,vector<int>(n));
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                graph[i][j]=calc(A[i],A[j]);
-                graph[j][i]=calc(A[j],A[i]);
-            }
-        }
-        //dp: also need keep the path
-        //other dimension shall be the bitset
-        int m=1<<n;
-        vector<vector<int>> dp(m,vector<int>(n,INT_MAX)),path(m,vector<int>(n));
-        int last=-1,gmin=INT_MAX;
-        //dp[i,j]: min distance starting from node j and visiting other nodes indicated in the bitset
-        for(int i=1;i<m;i++) //0x0001 to 0xffff
-        {
-            for(int j=0;j<n;j++)
-            {
-                if(i & (1<<j)) //if node j is visited
-                {
-                    int prev=i-(1<<j); //previous status
-                    if(prev==0) dp[i][j]=A[j].length();
-                    else //try to use other edge to relax  
-                    {
-                        for(int k=0;k<n;k++)
-                        {
-                            if(dp[prev][k]<INT_MAX && dp[i][j]>dp[prev][k]+graph[k][j])
-                            {
-                                dp[i][j]=dp[prev][k]+graph[k][j];
-                                path[i][j]=k; //save the node
-                            }
-                        }
-                    }
-                }
-                if(i==m-1 && gmin>dp[i][j]) {gmin=dp[i][j];last=j;}
-            }
-        }
-
-        //backtrace to get the results, path stored in path[i][j]
-        int curr=m-1; //0xffff
-        vector<int> seq;
-        cout<<last<<endl;
-        while(curr)
-        {
-            seq.push_back(last);
-            int t=path[curr][last];
-            curr-=(1<<last);
-            last=t;
-        }
-        //now connect the strings
-        string ans=A[seq.back()];//the first
-        for(int i=seq.size()-2;i>=0;i--)
-        {
-            //cout<<seq[i]<<": ";
-            int num_app=graph[seq[i+1]][seq[i]];
-            int len=A[seq[i]].length();
-            //cout<<len<<" "<<num_app<<endl;
-            ans+=A[seq[i]].substr(len-num_app);
-        }
-        return ans;
-    }
-    
-    int calc(string& a,string& b) //the overlap of a+b
-    {
-        int m=a.size(),n=b.size();
-        for(int i=1;i<a.size();i++) //no duplicates
-        {
-            if(b.substr(0,m-i)==a.substr(i)) return n-(m-i);
-        }
-        return n;
-    }
-```
 	
 903	Valid Permutations for DI Sequence    		44.2%	Hard	
 dp
@@ -2002,26 +2217,45 @@ A move consists of merging exactly K consecutive piles into one pile, and the co
 Find the minimum cost to merge all piles of stones into one pile.  If it is impossible, return -1.
 
 dp
+```cpp
+    int mergeStones(vector<int>& stones, int K) {
+        int n = stones.size();
+        if ((n - 1) % (K - 1)) return -1;
 
-    int mergeStones(vector<int>& stones, int K)
-    {
-        int N = (int)stones.size();
-        if((N - 1) % (K - 1)) return -1;
+        vector<int> prefix(n + 1);
+        for (int i = 0; i <  n; i++)
+            prefix[i + 1] = prefix[i] + stones[i];
 
-        vector<int> sum(N + 1, 0);
-        for(int i = 0; i < N; i++) sum[i + 1] = sum[i] + stones[i];
-
-        vector<vector<int> > dp(N + 1, vector<int>(N, 0));
-        for(int l = K; l <= N; l++)
-            for(int i = 0; i + l <= N; i++)
-            {
-                dp[l][i] = 10000;
-                for(int k = 1; k < l; k += K - 1)
-                    dp[l][i] = min(dp[l][i], dp[k][i] + dp[l - k][i + k]);
-                if((l - 1) % (K - 1) == 0) dp[l][i] += sum[i + l] - sum[i];
+        vector<vector<int> > dp(n, vector<int>(n));
+        for (int m = K; m <= n; ++m)
+            for (int i = 0; i + m <= n; ++i) {
+                int j = i + m - 1;
+                dp[i][j] = INT_MAX;
+                for (int mid = i; mid < j; mid += K - 1)
+                    dp[i][j] = min(dp[i][j], dp[i][mid] + dp[mid + 1][j]);
+                if ((j - i) % (K - 1) == 0)
+                    dp[i][j] += prefix[j + 1] - prefix[i];
             }
-        return dp[N][0];
+        return dp[0][n - 1];
     }
+```
+this is similar to the removing boxes. The merged pile has the sum of all piles.
+using reverse thinking:
+We keep merging K piles of stones until there is only one pile.
+
+For the last step, stones[i .. j] (original) are divided into K piles, 
+and we merge them into one pile, which costs sum(nums[i .. j]) + cost to make stones[i .. j] form K piles.
+
+The problem get the minimum cost to make stones[i .. j] form 1 pile equals to
+
+	the minimum cost to make stones[i .. j] form K piles
+	+ sum(nums[i .. j])
+The subproblem the minimum cost to make stones[i .. j] form K piles equals to
+
+	the minimum cost to make stones[i .. k] form K - 1 piles
+	+ the minimum cost to make stones[k + 1 .. j] form 1 pile 
+	+ sum(nums[i .. j])
+	
 	
 956	Tallest Billboard    		38.0%	Hard	
 You are installing a billboard and want it to have the largest height.  The billboard will have two steel supports, one on each side.  Each steel support must be an equal height.
@@ -2190,7 +2424,122 @@ Above solution can be reduced to 1D since it only involves with m-1. Please atte
 
 egg drop is considered a puzzle in geeksforgeeks.
 
+828	Unique Letter String    		39.6%	Hard	
+A character is unique in string S if it occurs exactly once in it.
 
+For example, in string S = "LETTER", the only unique characters are "L" and "R".
+
+Let's define UNIQ(S) as the number of unique characters in string S.
+
+For example, UNIQ("LETTER") =  2.
+
+Given a string S with only uppercases, calculate the sum of UNIQ(substring) over all non-empty substrings of S.
+
+If there are two or more equal substrings at different positions in S, we consider them different.
+
+Since the answer can be very large, return the answer modulo 10 ^ 9 + 7.
+
+we build a hash for all 26 chars, and record its index;
+Assuming dp[i] is the number of unique letter string for S[0...i].
+There is two cases:
+
+S[i] does not appear in the front, then we add a char to all substr ending at i. that is we add 1 to 0,1,....i-1
+S[i] appears in the front, assuming the last occurance is j, then we add 1 for all substr from j+1 to i-1.
+from j to k (assuming k the previous position to j with the same char) we minus 1 for all substr from k+1 to j
+when there are >=2 occurance of the same char, we have no changes.
+dp[i]=dp[i-1]+1+(dp[i-1]-dp[i-2)+delta
+when s[i] does not appear: delta=i
+when s[i] appears, delta=(i-j-1)-(j-k)
+So we use a hashmap to maintain the last two occurance of each character.
+```cpp
+    int uniqueLetterString(string S) {
+        vector<vector<int>> hash(26,vector<int>());
+        int n=S.size();
+        vector<long long> dp(n+1,0);
+        const int mod=1e9+7;
+        dp[1]=1;hash[S[0]-'A'].push_back(0);
+        for(int i=1;i<n;i++)
+        {
+            int c=S[i]-'A';
+            dp[i+1]=dp[i]+1;
+            int diff=dp[i]-dp[i-1];//previous addition
+            if(hash[c].size()) //same char in the front
+            {
+                int j=hash[c].back();
+                int k;
+                if(hash[c].size()>1) k=hash[c][0];
+                else k=-1;
+                dp[i+1]+=diff+(i-j-1)-(j-k);//we add 1 to j+1 and minus 1 to k+1
+            }
+            else //there is no same char in the front
+            {
+                dp[i+1]+=i+diff;//we add one to all previous solution
+            }
+            hash[c].push_back(i);
+            if(hash[c].size()>2)
+            {
+                hash[c][0]=hash[c][1];
+                hash[c][1]=hash[c][2];
+                hash[c].pop_back();
+            }
+        }
+        return dp[n]%mod;
+    }
+```
+
+920	Number of Music Playlists    		43.9%	Hard	
+Your music player contains N different songs and she wants to listen to L (not necessarily different) songs during your trip.  You create a playlist so that:
+
+Every song is played at least once
+A song can only be played again only if K other songs have been played
+Return the number of possible playlists.  As the answer can be very large, return it modulo 10^9 + 7.
+
+dp
+    int numMusicPlaylists(int N, int L, int K) {
+        const int mod = 1000000007;
+        
+        vector<vector<long long>> dp(N+1, vector<long long>(L+1));
+        dp[1][1] = 1;
+        for(int i = 2; i <= N; ++i) dp[i][i] = (dp[i-1][i-1] * i) % mod;
+        for(int n = 1; n <= N; ++n) 
+        {
+            for(int l = n+1; l <= L; ++l) 
+            {
+                dp[n][l] = ((dp[n][l-1] * ((n-K)>0? (n-K) : 0)) % mod + (dp[n-1][l-1] * n) % mod) % mod;
+            }
+        }
+        
+        return dp[N][L];
+    }
+	
+879	Profitable Schemes    		36.7%	Hard	
+There are G people in a gang, and a list of various crimes they could commit.
+
+The i-th crime generates a profit[i] and requires group[i] gang members to participate.
+
+If a gang member participates in one crime, that member can't participate in another crime.
+
+Let's call a profitable scheme any subset of these crimes that generates at least P profit, and the total number of gang members participating in that subset of crimes is at most G.
+
+How many schemes can be chosen?  Since the answer may be very large, return it modulo 10^9 + 7.
+
+dynmaic knapsack problem
+```cpp
+    int profitableSchemes(int G, int P, vector<int> group, vector<int> profit) {
+        vector<vector<int>> dp(P + 1, vector<int>(G + 1, 0));
+        dp[0][0] = 1;
+        int res = 0, mod = 1e9 + 7;
+        for (int k = 0; k < group.size(); k++) {
+            int g = group[k], p = profit[k];
+            for (int i = P; i >= 0; i--)
+                for (int j = G - g; j >= 0; j--)
+                    dp[min(i + p, P)][j + g] = (dp[min(i + p, P)][j + g] + dp[i][j]) % mod;
+        }
+        for (int x: dp[P]) res = (res + x) % mod;
+        return res;
+    }
+```
+	
 ## heap	
 23	Merge k Sorted Lists    		34.7%	Hard	
 typically using heap.
@@ -2595,6 +2944,47 @@ four side corner shall be once (no overlap)
     }
 ```
 				
+1044 Longest Duplicate Substring    		22.9%	Hard	
+direct hash: not perfect may have collision.
+
+```cpp
+    int p = INT_MAX / 26 / 26 * 26 - 1; // = 82595499
+    // order of 26 mod 82595499 is 11799354 > 50000, so this choice should result in minimum collision
+    string longestDupSubstring(string S) {
+        int hi = S.size(), lo = 0, idx = 0;
+        while (hi - lo > 1) {
+            auto mid = (hi + lo) / 2;
+            int pow = 1, h = 0;
+            for (int i = mid - 1; i >= 0; --i) {
+                h += (S[i] - 'a') * pow, h %= p;
+                pow *= 26, pow %= p;
+            }
+            unordered_multimap<int,int> h2i = {{h,0}}; // hash to indices
+            auto i = 0;
+            for ( ; i + mid < S.size(); ++i) {
+                h *= 26, h %= p;
+                h += (S[i+mid] - 'a') - (S[i] - 'a') * pow, h %= p;
+                h += p, h %= p;
+                auto its = h2i.equal_range(h);
+                auto it = its.first;
+                for ( ; it != its.second; ++it) {
+                    auto j = i+1, k = it->second;
+                    for ( ; j < i + mid; ++j, ++k) {
+                        if (S[j] != S[k]) break;
+                    }
+                    if (j == i + mid) break;
+                }
+                if (it != its.second) break;
+                h2i.insert({h,i+1});
+            }
+            if (i + mid < S.size())
+                lo = mid, idx = i + 1;
+            else hi = mid;
+        }
+        return S.substr(idx,lo);
+    }
+```
+
 ## stack/deque			
 32	Longest Valid Parentheses    		25.6%	Hard	
 using a stack to remove all valid pairs and then we leave with some intervals, then find the largest
@@ -2967,6 +3357,32 @@ using iterative stack
         }
         return root;
     }
+
+862	Shortest Subarray with Sum at Least K    		22.2%	Hard	
+Calculate prefix sum B of list A.
+B[j] - B[i] represents the sum of subarray A[i] ~ A[j-1]
+Deque d will keep indexes of increasing B[i].
+For every B[i], we will compare B[i] - B[d[0]] with K.
+
+Time Complexity:
+Loop on B O(N)
+Every index will be pushed only once into deque. O(N)
+
+C++:
+
+    int shortestSubarray(vector<int> A, int K) {
+        int N = A.size(), res = N + 1;
+        vector<int> B(N + 1, 0);
+        for (int i = 0; i < N; i++) B[i + 1] = B[i] + A[i];
+        deque<int> d;
+        for (int i = 0; i < N + 1; i++) {
+            while (d.size() > 0 && B[i] - B[d.front()] >= K)
+                res = min(res, i - d.front()), d.pop_front();
+            while (d.size() > 0 && B[i] <= B[d.back()]) d.pop_back();
+            d.push_back(i);
+        }
+        return res <= N ? res : -1;
+    }
 	
 ## backtracking
 37	Sudoku Solver    		37.2%	Hard	
@@ -3011,7 +3427,6 @@ typical backtracking, trial & back
 		return 1;
 	}
 ```
-
 
 51	N-Queens    		39.5%	Hard	
 nxn board and place n queens without attacking each other
@@ -3149,6 +3564,7 @@ dfs approach:
         board.insert(pos, n, c);
     }
 ```
+this is also very similar to the problem of removing boxes
 
 753	Cracking the Safe    		46.4%	Hard	
 There is a box protected by a password. The password is n digits, where each letter can be one of the first k digits 0, 1, ..., k-1.
@@ -3187,7 +3603,7 @@ start node: n repeated 0's
 end node: all n-length combinations among digits 0..k-1 are visited
 
 visitedComb: all combinations that have been visited
-
+```java
     public String crackSafe(int n, int k) {
         // Initialize pwd to n repeated 0's as the start node of DFS.
         String strPwd = String.join("", Collections.nCopies(n, "0"));
@@ -3225,7 +3641,7 @@ visitedComb: all combinations that have been visited
         
         return false;
     }
-	
+```	
 	
 ## dfs/bfs
 	
@@ -3762,6 +4178,118 @@ and then dfs to find the number
         count[x]++;
     }
 	
+980	Unique Paths III    		71.0%	Hard	
+dfs the peculiar requirement: need to walk every empty cell exactly once.
+```cpp
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        int m=grid.size(),n=grid[0].size();
+        int nsteps=0,sx=0,sy=0;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]==1) sx=i,sy=j;
+                if(grid[i][j]!=-1) nsteps++;
+            }
+        }
+        return dfs(grid,sx,sy,1,nsteps);
+    }
+    int dfs(vector<vector<int>>& grid,int sx,int sy,int step,int nsteps)
+    {
+        int m=grid.size(),n=grid[0].size();
+        if(sx<0 || sx>=m || sy<0 || sy>=n || grid[sx][sy]==-1) return 0;
+        if(grid[sx][sy]==2) return step==nsteps?1:0;
+        grid[sx][sy]=-1; //mark it visited
+        int ans=dfs(grid,sx+1,sy,step+1,nsteps);
+        ans+=dfs(grid,sx-1,sy,step+1,nsteps);
+        ans+=dfs(grid,sx,sy+1,step+1,nsteps);
+        ans+=dfs(grid,sx,sy-1,step+1,nsteps);
+        grid[sx][sy]=0;
+        return ans;
+    }	
+	
+854	K-Similar Strings    		33.5%	Hard	
+swap exactly k-times
+return the smallest k.
+bfs
+```cpp
+    int kSimilarity(string A, string B) {
+        if (A == B) return 0;
+		queue<string> que;
+		unordered_set<string> vis;
+		que.push(A);
+		int ans = 0, len = A.length();
+		while (!que.empty())
+		{
+			ans++;
+			int m = que.size(), i=0;
+			while (m--)
+			{
+				string str = que.front(); que.pop();
+				i = 0;
+				while (str[i] == B[i]) i++;
+				for (int j = i + 1; j < len; j++)
+				{
+					if (str[j] != B[j] && str[j] == B[i])
+					{
+						string temp = str;
+						swap(temp[i], temp[j]);
+						if (temp == B) return ans;
+						if (vis.insert(temp).second) que.push(temp);
+						
+					}
+				}
+			}
+		}
+		return ans;
+    }
+```
+
+847	Shortest Path Visiting All Nodes    		46.8%	Hard	
+An undirected, connected graph of N nodes (labeled 0, 1, 2, ..., N-1) is given as graph.
+
+graph.length = N, and j != i is in the list graph[i] exactly once, if and only if nodes i and j are connected.
+
+Return the length of the shortest path that visits every node. You may start and stop at any node, you may revisit nodes multiple times, and you may reuse edges.
+
+standard process with a state using bfs.
+
+```cpp
+    struct State{
+        int mask,source;
+        State(int m,int s):mask(m),source(s){}
+    };
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int m=graph.size();
+        int len=1<<m;
+        vector<vector<int>> dp(m,vector<int>(len,INT_MAX));
+        queue<State> qs;
+        for(int i=0;i<m;i++) 
+        {
+            dp[i][1<<i]=0; //self to self distance is 0
+            qs.push(State(1<<i,i));
+        }
+        while(!qs.empty())
+        {
+            State state=qs.front();
+            //cout<<state.source<<" "<<hex<<state.mask<<endl;
+            qs.pop();
+            for(int next:graph[state.source]) //connected nodes
+            {
+                int nextmask=state.mask|(1<<next);
+                if(dp[next][nextmask]>dp[state.source][state.mask]+1) //passing this node is closer
+                {
+                    dp[next][nextmask]=dp[state.source][state.mask]+1;
+                    qs.push(State(nextmask,next));
+                }
+            }
+        }
+        //shortest path 
+        int ans=INT_MAX;
+        for(int i=0;i<m;i++) ans=min(ans,dp[i][(1<<m)-1]);
+        return ans;
+    }
+```			
 ## intervals
 57	Insert Interval    		31.3%	Hard	
 insert and merge
@@ -4185,6 +4713,42 @@ this is similar to the median in a data stream.
     }
 ```	
 
+992	Subarrays with K Different Integers    		44.6%	Hard	
+Given an array A of positive integers, call a (contiguous, not necessarily distinct) subarray of A good if the number of different integers in that subarray is exactly K.
+
+(For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3.)
+
+Return the number of good subarrays of A.
+
+sliding window with hashmap
+```cpp
+    int subarraysWithKDistinct(vector<int>& A, int K) {
+        int ans=0;
+        int i=0,j=0,k=0;//use 3 pointers, i, j for the two left i<j
+        unordered_map<int,int> mp;
+        while(k<A.size())
+        {
+            mp[A[k]]++;
+            /*while(mp.size()>K)
+            {
+                mp[A[i]]--;
+                if(mp[A[i]]==0) mp.erase(A[i]);
+                i++;
+            }*/
+            if(mp.size()>K) {i=j+1;mp.erase(A[j]);}
+            if(j<i) j=i;
+            if(mp.size()==K) 
+            {
+                while(mp[A[j]]>1) {mp[A[j]]--;if(mp[A[j]]==0) mp.erase(A[j]);j++;}
+                ans+=j-i+1;
+            }
+            //cout<<i<<" "<<j<<" "<<k<<endl;
+            k++;
+        }
+        return ans;
+    }
+```	
+
 ## tree	
 99	Recover Binary Search Tree    		34.8%	Hard	
 two elements of a binary search tree are swapped. recover it
@@ -4358,6 +4922,59 @@ public int calSteps(int n, long n1, long n2) {
 }
 ```
 
+834	Sum of Distances in Tree    		39.6%	Hard	
+An undirected, connected tree with N nodes labelled 0...N-1 and N-1 edges are given.
+
+The ith edge connects nodes edges[i][0] and edges[i][1] together.
+
+Return a list ans, where ans[i] is the sum of the distances between node i and all other nodes.
+
+```cpp
+    vector<int> sumOfDistancesInTree(int N, vector<vector<int>>& edges) 
+    {
+        vector<unordered_set<int>> tree(N);//adjacent matrix
+        vector<int> res(N, 0);
+        vector<int> count(N, 0);
+        if (N == 1) return res;
+        for (auto e : edges) 
+        {
+            tree[e[0]].insert(e[1]);
+            tree[e[1]].insert(e[0]);
+        }
+        unordered_set<int> seen1, seen2;
+        dfs(0, seen1, tree, res, count);
+        dfs2(0, seen2, tree, res, count, N);
+        return res;
+    }
+
+    void dfs(int root, unordered_set<int>& seen, vector<unordered_set<int>>& tree, vector<int>& res, vector<int>& count) 
+    {
+        seen.insert(root);
+        for (auto i : tree[root])//root as a root tree
+        {
+            if (!seen.count(i)) //not visited
+            {
+                dfs(i, seen, tree, res, count); //child first
+                count[root] += count[i];
+                res[root] += res[i] + count[i]; //later the root
+            }
+        }
+        count[root]++;
+    }
+
+    void dfs2(int root, unordered_set<int>& seen, vector<unordered_set<int>>& tree, vector<int>& res, vector<int>& count, int N) 
+    {
+        seen.insert(root);
+        for (auto i : tree[root])
+        {
+            if (!seen.count(i)) 
+            {
+                res[i] = res[root] - count[i] + N - count[i];
+                dfs2(i, seen, tree, res, count, N);
+            }
+        }
+    }
+```	
 ## union find/disjoint set
 128	Longest Consecutive Sequence    		41.8%	Hard	
 need O(n)
@@ -4565,71 +5182,10 @@ public:
 };
 ```
 
-745	Prefix and Suffix Search    		30.7%	Hard	
-Given many words, words[i] has weight i.
-
-Design a class WordFilter that supports one function, WordFilter.f(String prefix, String suffix). It will return the word with given prefix and suffix with maximum weight. If no word exists, return -1.
-trie. 
-prefix trie and suffix trie? shall be able to combine together. it shall also contain the weight
-For 'ape', revert suffix and insert 'epa', 'aepa', 'apepa', 'apeepa'.
-```cpp
-struct Trie {
-    unordered_map<char,Trie*> nxt;
-    int mx;//stores the current max weight
-    
-    Trie() {
-        mx = -1;
-    }
-    
-    void add(string w, int x) {
-        Trie *cur = this;
-        for (char c:w) {
-            if (!cur->nxt.count(c)) cur->nxt[c] = new Trie();
-            cur= cur->nxt[c];
-            cur->mx = max(cur->mx,x);
-        }
-    }
-    
-    int f(string w) {
-        Trie *cur = this;
-        for (char c:w) {
-            if (!cur->nxt.count(c)) return -1;
-            cur= cur->nxt[c];
-        }
-        return cur->mx;
-    }
-};
-
-class WordFilter {
-public:
-    Trie* root;
-    
-    WordFilter(vector<string> words) {
-        root = new Trie();
-        for (int i = 0; i < words.size(); ++i) {
-            int m = min(10,(int)words[i].size());
-            string r = words[i].substr(words[i].size()-m) + "*";
-            reverse(r.begin(),r.end());
-            string t;
-            for (int j = 0; j < m; ++j) {
-                root->add(t + r,i);
-                t+= words[i][j];
-            }
-            root->add(t+r,i);
-        }
-    }
-    
-    int f(string prefix, string suffix) {
-        reverse(suffix.begin(), suffix.end());
-        return root->f(prefix + "*" + suffix);
-    }
-};
-
-```
 
 928	Minimize Malware Spread II    		39.3%	Hard	
 union find
-
+```cpp
     int minMalwareSpread(vector<vector<int>>& graph, vector<int>& initial) {
         //the idea: build the disjoint set by removing all infected nodes
         //add the infected nodes except the removed one one by one and find the one with most infected
@@ -4683,6 +5239,7 @@ union find
         else {parent[i_id]=j_id;size[j_id]+=size[i_id];size[i_id]=0;}
         num_set--;
     }    
+```
 
 924	Minimize Malware Spread    		39.9%	Hard	
 union find
@@ -5008,6 +5565,59 @@ union find
         return prime;
     }
 	
+778	Swim in Rising Water    		47.8%	Hard	
+return the min time so that start and end connected.
+binary search or union find
+```cpp
+    int swimInWater(vector<vector<int>>& grid) {
+        const int DIRECTIONS[4][2] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        int n = grid.size();
+        
+        if (grid[n - 1][n - 1] >= n * n - 2) return grid[n - 1][n - 1];
+        
+        vector<int> connection(n * n); // position: group
+        vector<int> elevations(n * n); // elevation: position
+        
+        // bucket sort and init connection
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                elevations[grid[i][j]] = i * n + j;
+                connection[i * n + j] = i * n + j;
+            }
+        }
+        
+        // union find, e is elevation
+        for (int e = 0; e < n * n; e++) {
+            // find 4 directions of the point
+            for (int i = 0; i < 4; i++) {
+                int x = elevations[e] / n + DIRECTIONS[i][0],
+                    y = elevations[e] % n + DIRECTIONS[i][1];
+                
+                if (x < 0 || y < 0 || x == n || y == n) continue;
+								
+                // find the adjust block which elevation is lower than the current one
+                // means we can connect them
+                if (grid[x][y] < e) {
+                    connection[find(elevations[e], connection)] = find(x * n + y, connection);
+                }
+            }
+            
+            // check if the graph connected
+            if (find(0, connection) == find(n * n - 1, connection)) {
+                return e;
+            }
+        }
+        
+        return n * n - 1;
+    }
+    
+    int find(int i, vector<int>& data) {
+        while (data[i] != data[data[i]]) {
+            data[i] = data[data[i]];
+        }
+        return data[i];
+    }
+```
 	
 ## greedy
 135	Candy    		28.5%	Hard	
@@ -5282,6 +5892,49 @@ greedy: from left to right flip each 0 to 1
         }
         
         return 1;
+    }
+	
+936	Stamping The Sequence    		36.0%	Hard	
+greedy
+
+    vector<int> movesToStamp(string stamp, string target) {
+        //reverse operation: matched then change it to ***
+        //until we change the target string into *****
+        //note we can only match one end if it is covered
+        int n=target.length();
+        string final(n,'*');
+        vector<int> ans;
+        while(target!=final)
+        {
+            int ind=match_change(target,stamp);
+            if(ind==-1) return vector<int>();
+            ans.push_back(ind);
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+    int match_change(string& target,string stamp)
+    {
+        //find the first matching and return
+        //at least has one non * char inside, * matches any char
+        bool matched=0;
+        for(int i=0;i<target.size();i++)
+        {
+            int cnt_match=0;
+            int j=0;
+            for(j=0;j<stamp.size();j++)
+            {
+                if(target[i+j]=='*') continue;
+                if(target[i+j]==stamp[j]) cnt_match++;
+                else break;
+            }
+            if(j==stamp.size()&& cnt_match) 
+            {
+                for(j=0;j<stamp.size();j++) target[i+j]='*';
+                return i;
+            }
+        }
+        return -1; //no matching
     }
 	
 	
@@ -5703,6 +6356,68 @@ public:
         return 1;
     }
 };
+```
+
+745	Prefix and Suffix Search    		30.7%	Hard	
+Given many words, words[i] has weight i.
+
+Design a class WordFilter that supports one function, WordFilter.f(String prefix, String suffix). It will return the word with given prefix and suffix with maximum weight. If no word exists, return -1.
+trie. 
+prefix trie and suffix trie? shall be able to combine together. it shall also contain the weight
+For 'ape', revert suffix and insert 'epa', 'aepa', 'apepa', 'apeepa'.
+```cpp
+struct Trie {
+    unordered_map<char,Trie*> nxt;
+    int mx;//stores the current max weight
+    
+    Trie() {
+        mx = -1;
+    }
+    
+    void add(string w, int x) {
+        Trie *cur = this;
+        for (char c:w) {
+            if (!cur->nxt.count(c)) cur->nxt[c] = new Trie();
+            cur= cur->nxt[c];
+            cur->mx = max(cur->mx,x);
+        }
+    }
+    
+    int f(string w) {
+        Trie *cur = this;
+        for (char c:w) {
+            if (!cur->nxt.count(c)) return -1;
+            cur= cur->nxt[c];
+        }
+        return cur->mx;
+    }
+};
+
+class WordFilter {
+public:
+    Trie* root;
+    
+    WordFilter(vector<string> words) {
+        root = new Trie();
+        for (int i = 0; i < words.size(); ++i) {
+            int m = min(10,(int)words[i].size());
+            string r = words[i].substr(words[i].size()-m) + "*";
+            reverse(r.begin(),r.end());
+            string t;
+            for (int j = 0; j < m; ++j) {
+                root->add(t + r,i);
+                t+= words[i][j];
+            }
+            root->add(t+r,i);
+        }
+    }
+    
+    int f(string prefix, string suffix) {
+        reverse(suffix.begin(), suffix.end());
+        return root->f(prefix + "*" + suffix);
+    }
+};
+
 ```
 
 
@@ -6506,58 +7221,7 @@ private:
 
 
 	
-679	24 Game    		42.9%	Hard	
-4 numbers from 1 to 9, apply +-*/() to get the value of 24
-actually we do not have to put ()
-divide and conquer: compute any combination using +-*/ and reduce to one item
 
-```cpp
-    bool judgePoint24(vector<int>& nums) {
-        //recursive approach. 
-        //for all combination check if we can get 24
-        //pick any two numbers and do +-*/ and reduce to 3 numbers, then 2 and then 1
-        vector<double> v(nums.size());
-        for(int i=0;i<nums.size();i++) v[i]=nums[i];
-        return search24(v);
-    }
-    
-    bool search24(vector<double> v)
-    {
-        if(v.size()==1) return abs(v[0]-24)<1e-7;
-        vector<double> list;
-        char op[]={'+','*','-','/'};
-        for(int i=0;i<v.size();i++)
-        {
-            for(int j=0;j<v.size();j++)
-            {
-                if(i==j) continue; //same cards cannot be used
-                //pick v[i] op v[j]
-                //+ * a+b=b+a a*b=b*a so do not have to compute
-                for(int k=0;k<4;k++) //operations
-                {
-                    if((op[k]=='+' || op[k]=='*') && i>j) continue;
-                    if(op[k]=='/' && v[j]==0) continue; //cannot divide 0
-                    double res;
-                    switch(op[k])
-                    {
-                        case '+': res=v[i]+v[j];break;
-                        case '-': res=v[i]-v[j];break;
-                        case '*': res=v[i]*v[j];break;
-                        case '/': res=v[i]/v[j];break;
-                    }
-                    //remove i,j and add res int a new list
-                    list.clear();
-                    for(int l=0;l<v.size();l++) if(l!=i && l!=j) list.push_back(v[l]);
-                    list.push_back(res);
-                    //for(int l=0;l<list.size();l++) cout<<list[i]<<",";cout<<endl;
-                    if(search24(list)) return 1;
-                }
-            }
-        }
-        return 0;
-        
-    }
-```	
 683	K Empty Slots    		34.1%	Hard	
 
 
@@ -6595,10 +7259,6 @@ left to right max and right to left max
 ```
 	
 
-
-	
-
-	
 711	Number of Distinct Islands II    		46.2%	Hard	
 
 
@@ -6688,59 +7348,7 @@ hashmap + stack
 
 772	Basic Calculator III    		44.2%	Hard	
 774	Minimize Max Distance to Gas Station    		41.8%	Hard	
-778	Swim in Rising Water    		47.8%	Hard	
-return the min time so that start and end connected.
-binary search or union find
-```cpp
-    int swimInWater(vector<vector<int>>& grid) {
-        const int DIRECTIONS[4][2] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        int n = grid.size();
-        
-        if (grid[n - 1][n - 1] >= n * n - 2) return grid[n - 1][n - 1];
-        
-        vector<int> connection(n * n); // position: group
-        vector<int> elevations(n * n); // elevation: position
-        
-        // bucket sort and init connection
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                elevations[grid[i][j]] = i * n + j;
-                connection[i * n + j] = i * n + j;
-            }
-        }
-        
-        // union find, e is elevation
-        for (int e = 0; e < n * n; e++) {
-            // find 4 directions of the point
-            for (int i = 0; i < 4; i++) {
-                int x = elevations[e] / n + DIRECTIONS[i][0],
-                    y = elevations[e] % n + DIRECTIONS[i][1];
-                
-                if (x < 0 || y < 0 || x == n || y == n) continue;
-								
-                // find the adjust block which elevation is lower than the current one
-                // means we can connect them
-                if (grid[x][y] < e) {
-                    connection[find(elevations[e], connection)] = find(x * n + y, connection);
-                }
-            }
-            
-            // check if the graph connected
-            if (find(0, connection) == find(n * n - 1, connection)) {
-                return e;
-            }
-        }
-        
-        return n * n - 1;
-    }
-    
-    int find(int i, vector<int>& data) {
-        while (data[i] != data[data[i]]) {
-            data[i] = data[data[i]];
-        }
-        return data[i];
-    }
-```
+
 	
 780	Reaching Points    		27.5%	Hard	
  a move (x,y)->either (x,x+y) or (x+y,y)
@@ -6856,29 +7464,7 @@ C++:
 
 
 
-805	Split Array With Same Average    		24.4%	Hard	
-split the array into two parts, so that the average is the same
-assuming group A has k elements, B has n-k elements
-Asum/k=Bsum/(n-k)-->B=A*(n-k)/k-->A+B=A*n/k=T-->A/k=T/n. so the target is the original average.
-also T*k/n must be a integer so T*k%n==0
-and it is changed to a combination sum problem then.
 
-```cpp
-    bool splitArraySameAverage(vector<int>& A) {
-        int n = A.size(), m = n/2, totalSum = accumulate(A.begin(), A.end(), 0);
-        sort(A.rbegin(), A.rend()); // Optimization
-        for (int i = 1; i <= m; ++i) 
-            if (totalSum*i%n == 0 && combinationSum(A, 0, i, totalSum*i/n)) return true;
-        return false;
-    }
-    bool combinationSum(vector<int>& nums, int idx, int k, int tar) {
-        if (tar > k * nums[idx]) return false; // Optimization, A is sorted from large to small
-        if (k == 0) return tar == 0;
-        for (int i = idx; i <= nums.size()-k; ++i) 
-            if (nums[i] <= tar && combinationSum(nums, i+1, k-1, tar-nums[i])) return true;
-        return false;
-    }
-```	
 
 810	Chalkboard XOR Game    		45.0%	Hard	
 We are given non-negative integers nums[i] which are written on a chalkboard.  Alice and Bob take turns erasing exactly one number from the chalkboard, with Alice starting first.  If erasing a number causes the bitwise XOR of all the elements of the chalkboard to become 0, then that player loses.  (Also, we'll say the bitwise XOR of one element is that element itself, and the bitwise XOR of no elements is 0.)
@@ -6917,68 +7503,7 @@ C++:
 
 	
 
-828	Unique Letter String    		39.6%	Hard	
-A character is unique in string S if it occurs exactly once in it.
 
-For example, in string S = "LETTER", the only unique characters are "L" and "R".
-
-Let's define UNIQ(S) as the number of unique characters in string S.
-
-For example, UNIQ("LETTER") =  2.
-
-Given a string S with only uppercases, calculate the sum of UNIQ(substring) over all non-empty substrings of S.
-
-If there are two or more equal substrings at different positions in S, we consider them different.
-
-Since the answer can be very large, return the answer modulo 10 ^ 9 + 7.
-
-we build a hash for all 26 chars, and record its index;
-Assuming dp[i] is the number of unique letter string for S[0...i].
-There is two cases:
-
-S[i] does not appear in the front, then we add a char to all substr ending at i. that is we add 1 to 0,1,....i-1
-S[i] appears in the front, assuming the last occurance is j, then we add 1 for all substr from j+1 to i-1.
-from j to k (assuming k the previous position to j with the same char) we minus 1 for all substr from k+1 to j
-when there are >=2 occurance of the same char, we have no changes.
-dp[i]=dp[i-1]+1+(dp[i-1]-dp[i-2)+delta
-when s[i] does not appear: delta=i
-when s[i] appears, delta=(i-j-1)-(j-k)
-So we use a hashmap to maintain the last two occurance of each character.
-```cpp
-    int uniqueLetterString(string S) {
-        vector<vector<int>> hash(26,vector<int>());
-        int n=S.size();
-        vector<long long> dp(n+1,0);
-        const int mod=1e9+7;
-        dp[1]=1;hash[S[0]-'A'].push_back(0);
-        for(int i=1;i<n;i++)
-        {
-            int c=S[i]-'A';
-            dp[i+1]=dp[i]+1;
-            int diff=dp[i]-dp[i-1];//previous addition
-            if(hash[c].size()) //same char in the front
-            {
-                int j=hash[c].back();
-                int k;
-                if(hash[c].size()>1) k=hash[c][0];
-                else k=-1;
-                dp[i+1]+=diff+(i-j-1)-(j-k);//we add 1 to j+1 and minus 1 to k+1
-            }
-            else //there is no same char in the front
-            {
-                dp[i+1]+=i+diff;//we add one to all previous solution
-            }
-            hash[c].push_back(i);
-            if(hash[c].size()>2)
-            {
-                hash[c][0]=hash[c][1];
-                hash[c][1]=hash[c][2];
-                hash[c].pop_back();
-            }
-        }
-        return dp[n]%mod;
-    }
-```
 	
 829	Consecutive Numbers Sum    		33.4%	Hard	
 math.
@@ -6996,59 +7521,7 @@ math.
         
     }
 ```	
-834	Sum of Distances in Tree    		39.6%	Hard	
-An undirected, connected tree with N nodes labelled 0...N-1 and N-1 edges are given.
 
-The ith edge connects nodes edges[i][0] and edges[i][1] together.
-
-Return a list ans, where ans[i] is the sum of the distances between node i and all other nodes.
-
-```cpp
-    vector<int> sumOfDistancesInTree(int N, vector<vector<int>>& edges) 
-    {
-        vector<unordered_set<int>> tree(N);//adjacent matrix
-        vector<int> res(N, 0);
-        vector<int> count(N, 0);
-        if (N == 1) return res;
-        for (auto e : edges) 
-        {
-            tree[e[0]].insert(e[1]);
-            tree[e[1]].insert(e[0]);
-        }
-        unordered_set<int> seen1, seen2;
-        dfs(0, seen1, tree, res, count);
-        dfs2(0, seen2, tree, res, count, N);
-        return res;
-    }
-
-    void dfs(int root, unordered_set<int>& seen, vector<unordered_set<int>>& tree, vector<int>& res, vector<int>& count) 
-    {
-        seen.insert(root);
-        for (auto i : tree[root])//root as a root tree
-        {
-            if (!seen.count(i)) //not visited
-            {
-                dfs(i, seen, tree, res, count); //child first
-                count[root] += count[i];
-                res[root] += res[i] + count[i]; //later the root
-            }
-        }
-        count[root]++;
-    }
-
-    void dfs2(int root, unordered_set<int>& seen, vector<unordered_set<int>>& tree, vector<int>& res, vector<int>& count, int N) 
-    {
-        seen.insert(root);
-        for (auto i : tree[root])
-        {
-            if (!seen.count(i)) 
-            {
-                res[i] = res[root] - count[i] + N - count[i];
-                dfs2(i, seen, tree, res, count, N);
-            }
-        }
-    }
-```	
 
 
 843	Guess the Word    		43.6%	Hard	
@@ -7064,51 +7537,7 @@ a lot of words compare with one pattern.
  
  minmax problem.  hard to understand.
  
-847	Shortest Path Visiting All Nodes    		46.8%	Hard	
-An undirected, connected graph of N nodes (labeled 0, 1, 2, ..., N-1) is given as graph.
 
-graph.length = N, and j != i is in the list graph[i] exactly once, if and only if nodes i and j are connected.
-
-Return the length of the shortest path that visits every node. You may start and stop at any node, you may revisit nodes multiple times, and you may reuse edges.
-
-standard process with a state using bfs.
-
-```cpp
-    struct State{
-        int mask,source;
-        State(int m,int s):mask(m),source(s){}
-    };
-    int shortestPathLength(vector<vector<int>>& graph) {
-        int m=graph.size();
-        int len=1<<m;
-        vector<vector<int>> dp(m,vector<int>(len,INT_MAX));
-        queue<State> qs;
-        for(int i=0;i<m;i++) 
-        {
-            dp[i][1<<i]=0; //self to self distance is 0
-            qs.push(State(1<<i,i));
-        }
-        while(!qs.empty())
-        {
-            State state=qs.front();
-            //cout<<state.source<<" "<<hex<<state.mask<<endl;
-            qs.pop();
-            for(int next:graph[state.source]) //connected nodes
-            {
-                int nextmask=state.mask|(1<<next);
-                if(dp[next][nextmask]>dp[state.source][state.mask]+1) //passing this node is closer
-                {
-                    dp[next][nextmask]=dp[state.source][state.mask]+1;
-                    qs.push(State(nextmask,next));
-                }
-            }
-        }
-        //shortest path 
-        int ans=INT_MAX;
-        for(int i=0;i<m;i++) ans=min(ans,dp[i][(1<<m)-1]);
-        return ans;
-    }
-```	
 
 850	Rectangle Area II    		45.0%	Hard	
 axis aligned, rect represented using bottom left and top right coordinate
@@ -7121,101 +7550,13 @@ and the two are bounded.
 similar question: 223 rectangle area: two rectangle.
 brutal force: try to use two rectangle area. now we have n rectangles.
 
-854	K-Similar Strings    		33.5%	Hard	
-swap exactly k-times
-return the smallest k.
-bfs
-```cpp
-    int kSimilarity(string A, string B) {
-        if (A == B) return 0;
-		queue<string> que;
-		unordered_set<string> vis;
-		que.push(A);
-		int ans = 0, len = A.length();
-		while (!que.empty())
-		{
-			ans++;
-			int m = que.size(), i=0;
-			while (m--)
-			{
-				string str = que.front(); que.pop();
-				i = 0;
-				while (str[i] == B[i]) i++;
-				for (int j = i + 1; j < len; j++)
-				{
-					if (str[j] != B[j] && str[j] == B[i])
-					{
-						string temp = str;
-						swap(temp[i], temp[j]);
-						if (temp == B) return ans;
-						if (vis.insert(temp).second) que.push(temp);
-						
-					}
-				}
-			}
-		}
-		return ans;
-    }
-```
-	
-
-	
-862	Shortest Subarray with Sum at Least K    		22.2%	Hard	
-Calculate prefix sum B of list A.
-B[j] - B[i] represents the sum of subarray A[i] ~ A[j-1]
-Deque d will keep indexes of increasing B[i].
-For every B[i], we will compare B[i] - B[d[0]] with K.
-
-Time Complexity:
-Loop on B O(N)
-Every index will be pushed only once into deque. O(N)
-
-C++:
-
-    int shortestSubarray(vector<int> A, int K) {
-        int N = A.size(), res = N + 1;
-        vector<int> B(N + 1, 0);
-        for (int i = 0; i < N; i++) B[i + 1] = B[i] + A[i];
-        deque<int> d;
-        for (int i = 0; i < N + 1; i++) {
-            while (d.size() > 0 && B[i] - B[d.front()] >= K)
-                res = min(res, i - d.front()), d.pop_front();
-            while (d.size() > 0 && B[i] <= B[d.back()]) d.pop_back();
-            d.push_back(i);
-        }
-        return res <= N ? res : -1;
-    }
-	
 
 
 	
-879	Profitable Schemes    		36.7%	Hard	
-There are G people in a gang, and a list of various crimes they could commit.
 
-The i-th crime generates a profit[i] and requires group[i] gang members to participate.
 
-If a gang member participates in one crime, that member can't participate in another crime.
 
-Let's call a profitable scheme any subset of these crimes that generates at least P profit, and the total number of gang members participating in that subset of crimes is at most G.
-
-How many schemes can be chosen?  Since the answer may be very large, return it modulo 10^9 + 7.
-
-dynmaic knapsack problem
-```cpp
-    int profitableSchemes(int G, int P, vector<int> group, vector<int> profit) {
-        vector<vector<int>> dp(P + 1, vector<int>(G + 1, 0));
-        dp[0][0] = 1;
-        int res = 0, mod = 1e9 + 7;
-        for (int k = 0; k < group.size(); k++) {
-            int g = group[k], p = profit[k];
-            for (int i = P; i >= 0; i--)
-                for (int j = G - g; j >= 0; j--)
-                    dp[min(i + p, P)][j + g] = (dp[min(i + p, P)][j + g] + dp[i][j]) % mod;
-        }
-        for (int x: dp[P]) res = (res + x) % mod;
-        return res;
-    }
-```
+	
 	
 882	Reachable Nodes In Subdivided Graph    		38.1%	Hard	
 so hard to understand
@@ -7347,31 +7688,7 @@ Now, given two positive integers L and R (represented as strings), return the nu
 913	Cat and Mouse    		28.9%	Hard	
 so hard to understand
 
-920	Number of Music Playlists    		43.9%	Hard	
-Your music player contains N different songs and she wants to listen to L (not necessarily different) songs during your trip.  You create a playlist so that:
 
-Every song is played at least once
-A song can only be played again only if K other songs have been played
-Return the number of possible playlists.  As the answer can be very large, return it modulo 10^9 + 7.
-
-dp
-    int numMusicPlaylists(int N, int L, int K) {
-        const int mod = 1000000007;
-        
-        vector<vector<long long>> dp(N+1, vector<long long>(L+1));
-        dp[1][1] = 1;
-        for(int i = 2; i <= N; ++i) dp[i][i] = (dp[i-1][i-1] * i) % mod;
-        for(int n = 1; n <= N; ++n) 
-        {
-            for(int l = n+1; l <= L; ++l) 
-            {
-                dp[n][l] = ((dp[n][l-1] * ((n-K)>0? (n-K) : 0)) % mod + (dp[n-1][l-1] * n) % mod) % mod;
-            }
-        }
-        
-        return dp[N][L];
-    }
-	
 
 	
 927	Three Equal Parts    		30.4%	Hard	
@@ -7405,49 +7722,6 @@ same number of 1s
 	
 
 	
-	
-936	Stamping The Sequence    		36.0%	Hard	
-greedy
-
-    vector<int> movesToStamp(string stamp, string target) {
-        //reverse operation: matched then change it to ***
-        //until we change the target string into *****
-        //note we can only match one end if it is covered
-        int n=target.length();
-        string final(n,'*');
-        vector<int> ans;
-        while(target!=final)
-        {
-            int ind=match_change(target,stamp);
-            if(ind==-1) return vector<int>();
-            ans.push_back(ind);
-        }
-        reverse(ans.begin(),ans.end());
-        return ans;
-    }
-    int match_change(string& target,string stamp)
-    {
-        //find the first matching and return
-        //at least has one non * char inside, * matches any char
-        bool matched=0;
-        for(int i=0;i<target.size();i++)
-        {
-            int cnt_match=0;
-            int j=0;
-            for(j=0;j<stamp.size();j++)
-            {
-                if(target[i+j]=='*') continue;
-                if(target[i+j]==stamp[j]) cnt_match++;
-                else break;
-            }
-            if(j==stamp.size()&& cnt_match) 
-            {
-                for(j=0;j<stamp.size();j++) target[i+j]='*';
-                return i;
-            }
-        }
-        return -1; //no matching
-    }
 	
 
 
@@ -7521,39 +7795,11 @@ we can jump lower to 4, lower(5) = higher(4) = false
     }
 	
 	
-980	Unique Paths III    		71.0%	Hard	
-dfs the peculiar requirement: need to walk every empty cell exactly once.
 
-    int uniquePathsIII(vector<vector<int>>& grid) {
-        int m=grid.size(),n=grid[0].size();
-        int nsteps=0,sx=0,sy=0;
-        for(int i=0;i<m;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                if(grid[i][j]==1) sx=i,sy=j;
-                if(grid[i][j]!=-1) nsteps++;
-            }
-        }
-        return dfs(grid,sx,sy,1,nsteps);
-    }
-    int dfs(vector<vector<int>>& grid,int sx,int sy,int step,int nsteps)
-    {
-        int m=grid.size(),n=grid[0].size();
-        if(sx<0 || sx>=m || sy<0 || sy>=n || grid[sx][sy]==-1) return 0;
-        if(grid[sx][sy]==2) return step==nsteps?1:0;
-        grid[sx][sy]=-1; //mark it visited
-        int ans=dfs(grid,sx+1,sy,step+1,nsteps);
-        ans+=dfs(grid,sx-1,sy,step+1,nsteps);
-        ans+=dfs(grid,sx,sy+1,step+1,nsteps);
-        ans+=dfs(grid,sx,sy-1,step+1,nsteps);
-        grid[sx][sy]=0;
-        return ans;
-    }
 	
 982	Triples with Bitwise AND Equal To Zero    		53.9%	Hard	
 O(N^2)
-
+```cpp
     int countTriplets(vector<int>& A) {
         unordered_map<int,int> mp;
         int n=A.size();
@@ -7569,41 +7815,7 @@ O(N^2)
         }
         return ans;
     }
-	
-992	Subarrays with K Different Integers    		44.6%	Hard	
-Given an array A of positive integers, call a (contiguous, not necessarily distinct) subarray of A good if the number of different integers in that subarray is exactly K.
-
-(For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3.)
-
-Return the number of good subarrays of A.
-
-sliding window with hashmap
-
-    int subarraysWithKDistinct(vector<int>& A, int K) {
-        int ans=0;
-        int i=0,j=0,k=0;//use 3 pointers, i, j for the two left i<j
-        unordered_map<int,int> mp;
-        while(k<A.size())
-        {
-            mp[A[k]]++;
-            /*while(mp.size()>K)
-            {
-                mp[A[i]]--;
-                if(mp[A[i]]==0) mp.erase(A[i]);
-                i++;
-            }*/
-            if(mp.size()>K) {i=j+1;mp.erase(A[j]);}
-            if(j<i) j=i;
-            if(mp.size()==K) 
-            {
-                while(mp[A[j]]>1) {mp[A[j]]--;if(mp[A[j]]==0) mp.erase(A[j]);j++;}
-                ans+=j-i+1;
-            }
-            //cout<<i<<" "<<j<<" "<<k<<endl;
-            k++;
-        }
-        return ans;
-    }
+```
 	
 	
 
@@ -7666,6 +7878,7 @@ Return an array of answers.  Each value answer[i] should be equal to the answer 
   
 1012 Numbers With Repeated Digits    		34.4%	Hard	
 convert to equivalent: numbers without repeating digits
+```cpp
     int numDupDigitsAtMostN(int N) {
         //equivalent: N-number of digits without repeative
         if(N<10) return 0;
@@ -7711,48 +7924,11 @@ convert to equivalent: numbers without repeating digits
         for(int i=0;i<len;i++) ans*=(n-i);
         return ans;
     }
-	
+```	
 
 
 	
-1044 Longest Duplicate Substring    		22.9%	Hard	
-direct hash
-    int p = INT_MAX / 26 / 26 * 26 - 1; // = 82595499
-    // order of 26 mod 82595499 is 11799354 > 50000, so this choice should result in minimum collision
-    string longestDupSubstring(string S) {
-        int hi = S.size(), lo = 0, idx = 0;
-        while (hi - lo > 1) {
-            auto mid = (hi + lo) / 2;
-            int pow = 1, h = 0;
-            for (int i = mid - 1; i >= 0; --i) {
-                h += (S[i] - 'a') * pow, h %= p;
-                pow *= 26, pow %= p;
-            }
-            unordered_multimap<int,int> h2i = {{h,0}}; // hash to indices
-            auto i = 0;
-            for ( ; i + mid < S.size(); ++i) {
-                h *= 26, h %= p;
-                h += (S[i+mid] - 'a') - (S[i] - 'a') * pow, h %= p;
-                h += p, h %= p;
-                auto its = h2i.equal_range(h);
-                auto it = its.first;
-                for ( ; it != its.second; ++it) {
-                    auto j = i+1, k = it->second;
-                    for ( ; j < i + mid; ++j, ++k) {
-                        if (S[j] != S[k]) break;
-                    }
-                    if (j == i + mid) break;
-                }
-                if (it != its.second) break;
-                h2i.insert({h,i+1});
-            }
-            if (i + mid < S.size())
-                lo = mid, idx = i + 1;
-            else hi = mid;
-        }
-        return S.substr(idx,lo);
-    }
-	
+
 	
 1063 Number of Valid Subarrays    		75.7%	Hard	
 1067 Digit Count in Range    		32.2%	Hard	
