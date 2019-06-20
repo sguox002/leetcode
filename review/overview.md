@@ -104,23 +104,7 @@ using two pointers.
 move all zeros to behind
 just use a two pointer to store the non-zeros. and then fill all zeros behind
 
-448	Find All Numbers Disappeared in an Array		Easy	<br/>
-1 to n, n is the size of the array, some appear twice, some once, find all missing.
 
-The idea is very similar to problem 442. Find All Duplicates in an Array: https://leetcode.com/problems/find-all-duplicates-in-an-array/.
-First iteration to negate values at position whose equal to values appear in array. Second iteration to collect all position whose value is positive, which are the missing values. 
-Complexity is O(n) Time and O(1) space.
-for example: [4,3,2,7,8,2,3,1]
-element 0: 4: we mark A[3] as -7, [4,3,2,-7,8,2,3,1]
-element 1: 3: we mark A[2] as -2, [4,3,-2,-7,8,2,3,1]
-element 2: 2: we mark A[1] as -3, [4,-3,-2,-7,8,2,3,1]
-element 3: -7: we mark A[6] as -3, [4,-3,-2,-7,8,2,-3,1]
-element 4: 8: we mark A[7] as -1, [4,-3,-2,-7,8,2,-3,-1]
-element 5: 2, we mark A[1] as -3, [4,-3,-2,-7,8,2,-3,-1]
-element 6: -3: we mark A[2] as -2, [4,-3,-2,-7,8,2,-3,-1]
-element 7: -1: we mark A[0] as -4, [-4,-3,-2,-7,8,2,-3,-1]
-only A[4] and A[5] are positive, so 5 and 6 are missing.
-cyclic linking.
 
 
 169	Majority Element		Easy	<br/>
@@ -218,131 +202,512 @@ simple
 
 724	Find Pivot Index		Easy	<br/>
 sum of its left=sum of its right
-left+A[i]+right=tsum
-left+right=tsum-A[i]
+left+A[i]+right=tsum=2*left+A[i]=tsum -> 2*left=tsum-A[i]
 
 35	Search Insert Position		Easy	<br/>
+lower bound >=
+
 849	Maximize Distance to Closest Person		Easy	<br/>
+left and right shall be treated specially and middle.
+
 26	Remove Duplicates from Sorted Array		Easy	<br/>
+only one copy is left.
+two pointer.
+
 747	Largest Number At Least Twice of Others		Easy	<br/>
+find the max and second max.
+- find max and second max in O(n)
+- sort.
+
 643	Maximum Average Subarray I		Easy	<br/>
+length=k.
+sliding window to get the max sum.
+
 624	Maximum Distance in 	Easy	<br/>
+
 88	Merge Sorted Array		Easy	<br/>
+two pointer merge
+
 840	Magic Squares In Grid		Easy	<br/>
+1 to 9 and row, col, diagonal sum are all the same.
+check the number of magic square.
+brutal force O(N^2)
+
 219	Contains Duplicate II		Easy	<br/>
+the index difference <=K.
+using hashmap to record the index.
+earlier index can be discarded.
+
 941	Valid Mountain Array		Easy	<br/>
+two pointer to climb the mountain.
+
 914	X of a Kind in a Deck of Cards		Easy	<br/>
+x>=2, count into hashmap and find the gcd
+
 605	Can Place Flowers		Easy	<br/>
+flower has to have space in its left and right (except the two boundaries)
+to avoid boundary: let the previous flower at -2, and add 0 and 1 at the back.
+then check the spots available.
+
 581	Shortest Unsorted Continuous Subarray		Easy	<br/>
+if sort the subarray, the whole array is sorted.
+sort and find the first different from left and second difference from right
+
 189	Rotate Array		Easy	<br/>
+rotate by k steps. [1,2,3,4,5,6,7] rotate by 3 [5,6,7,1,2,3,4]
+first limit k in 0 to n-1
+method 1: reverse the whole, reverse the first k. reverse the remaining
+method 2: using rotate
+
 532	K-diff Pairs in an Array		Easy	<br/>
+absolute difference is K.
+method 1: sort, loop and find k+A[i], skip duplicates. O(nlogn)
+method 2: hashmap O(N)
+
 414	Third Maximum Number		Easy	<br/>
+use O(n) to find the max, 2nd max, 3rd max.
+
 665	Non-decreasing Array		Easy	<br/>
-<br/>
+check if we can modify at most 1 element and the array is non-decreasing.
+greedy: When you find nums[i-1] > nums[i] for some i, you will prefer to change nums[i-1]'s value, since a larger nums[i] will give you more risks that you get inversion errors after position i. But, if you also find nums[i-2] > nums[i], then you have to change nums[i]'s value instead, or else you need to change both of nums[i-2]'s and nums[i-1]'s values.
+and then we count the changes.
+
 950	Reveal Cards In Increasing Order		Medium	<br/>
+reveal the top, move the next top to bottom, until no cards left
+return an initial order which can reveal in increasing order.
+approach: this requires, the smallest always on the top. sort it first in descending order, and then use a deque. reverse build the array
+i.e. move the back to front, and then insert the element on the front
+17,13,7,5,3,2
+17 
+13 17 
+11 17 13 
+7 13 11 17 
+5 17 7 13 11 
+3 11 5 17 7 13 
+2 13 3 11 5 17 7 
+
 723	Candy Crush 	Medium	<br/>
 969	Pancake Sorting		Medium	<br/>
+a move: reverse the first k element with k<length to sort the array. any choice
+greedy: find the largest and flip it to top, and then flip it to its position
+[3,2,4,1]:
+largest 4: k=3: [4,2,3,1]
+flip k=4: [1,3,2,4]
+largest 3: k=2, [3,1,2,4]
+flip k=3: [2,1,3,4]
+largest 2: k=2, [1,2,3,4]
+
 280	Wiggle Sort 	Medium	<br/>
+
+448	Find All Numbers Disappeared in an Array		Easy	<br/>
+1 to n, n is the size of the array, some appear twice, some once, find all missing.
+
+The idea is very similar to problem 442. Find All Duplicates in an Array: https://leetcode.com/problems/find-all-duplicates-in-an-array/.
+First iteration to negate values at position whose equal to values appear in array. Second iteration to collect all position whose value is positive, which are the missing values. 
+Complexity is O(n) Time and O(1) space.
+for example: [4,3,2,7,8,2,3,1]
+element 0: 4: we mark A[3] as -7, [4,3,2,-7,8,2,3,1]
+element 1: 3: we mark A[2] as -2, [4,3,-2,-7,8,2,3,1]
+element 2: 2: we mark A[1] as -3, [4,-3,-2,-7,8,2,3,1]
+element 3: -7: we mark A[6] as -3, [4,-3,-2,-7,8,2,-3,1]
+element 4: 8: we mark A[7] as -1, [4,-3,-2,-7,8,2,-3,-1]
+element 5: 2, we mark A[1] as -3, [4,-3,-2,-7,8,2,-3,-1]
+element 6: -3: we mark A[2] as -2, [4,-3,-2,-7,8,2,-3,-1]
+element 7: -1: we mark A[0] as -4, [-4,-3,-2,-7,8,2,-3,-1]
+only A[4] and A[5] are positive, so 5 and 6 are missing.
+cyclic linking.
+
 442	Find All Duplicates in an Array		Medium	<br/>
+n elements and each element is in [1,n] some appeared twice, some appeared once. find all appeared twice.
+method 1: sort, O(nlogn)
+method 2: hashmap counting, O(n)+O(n)
+method 3: cyclic linking. mark seen as -1
+[4,3,2,7,8,2,3,1]
+4: mark A[3]: [4,3,2,-7,8,2,3,1]
+3: mark A[2]: [4,3,-2,-7,8,2,3,1]
+2: mark A[1]: [4,-3,-2,-7,8,2,3,1]
+7: mark A[6]: [4,-3,-2,-7,8,2,-3,1]
+8: mark A[7]: [4,-3,-2,-7,8,2,-3,-1]
+2: mark A[1]: it is already marked, it appeared twice
+3: mark A[2], it is already marked, it appeared twice
+
 370	Range Addition 	Medium	<br/>
 531	Lonely Pixel I 	Medium	<br/>
 695	Max Area of Island		Medium	<br/>
+dfs
+
 1031 Maximum Sum of Two Non-Overlapping Subarrays		Medium	<br/>
+left sum and right sum from both direction.
+make sure they do not overlaps
+The two subarray's length shall be L and M.
+sliding window sum max from left
+sliding window sum max from right
+
 238	Product of Array Except Self		Medium	<br/>
+left product and right product from two direction.
+no division is allowed.
+
 245	Shortest Word Distance III 	Medium	<br/>
 78	Subsets		Medium	<br/>
+array of distinct elements, return all possible subset (power set 2^n)
+backtracking
+
 565	Array Nesting		Medium	<br/>
+n elements from 0 to n-1. find the longest cycle.
+treat it as a linked-list.
+using a visited bool array for cycle detection
+
 1011 Capacity To Ship Packages Within D Days		Medium	<br/>
+binary search
+
 495	Teemo Attacking		Medium	<br/>
+time series, with a duration, this is interval merging.
+update the tend and accumulate each segment's length.
+
 835	Image Overlap		Medium	<br/>
+two same sized images. translation in 2d. the overlap is the sum of product.
+method 1: the dx dy from -(n-1) to (n-1). find the top left xy and bottom right xy, and calculate the overlaps. O(N^4)
+method 2: the image could be a sparse matrix. we can store the image with only 1 in a larger sized image in 1d. for this example input max is 30*30
+adding shift, max could be 100x100. loop on LA and LB and generate the hashmap i-j vs counter, choose the max.
+prepairing O(N^2) looping O(La*Lb)
+
 667	Beautiful Arrangement II		Medium	<br/>
+arrange 1 to n, so that neighboring has exactly k distinct integers |a1-a0|=...=|An-1-An\
+        //1,k+1,2,k,3,k-1,4,k-2.....but do not use duplicates
+        //the distance is k,k-1......1
+        //until they meet 
+		
+1052. grumpy bookstore owner
+can apply a technique to not grumpy for x mins.
+maximize the satisfaction.
+sliding window of x to find the largest grumy window
+
+216. Combination Sum III		
+1 to 9, choose k number from them and add to a number n. find all combination.
+backtracking.
+
 769	Max Chunks To Make Sorted		Medium	<br/>
-216	Combination Sum III		Medium	<br/>
+split into chunks and sort them separatly and the whole array is sorted.
+compare with sorted, put into hashset and if the two are equal, then it is a segment.
+
 1035 Uncrossed Lines		Medium	<br/>
+dp, find the longest commin subsequence
+
 714	Best Time to Buy and Sell Stock with Transaction Fee		Medium	<br/>
+dp
+
 900	RLE Iterator		Medium	<br/>
+array: even index element is the number of repeat times of its next element.
+next(n) remove n elements in the sequence
+approach: separate the value into a vector, and index into a prefix length. then use binary search to find the index.
+
 287	Find the Duplicate Number		Medium	<br/>
+n+1 elements in the range [1,n]. find the duplicate one. assuming only one duplicate.
+O(1) and cannot modify the array.
+xor 1 to n. then the duplicate will appear 3 times.
+
 926	Flip String to Monotone Increasing		Medium	<br/>
+flip 0 to 1 and 1 to 0.
+checking all position and left is all 0 and right is all 1.
+from both direction and find the min sum of moves.
+
+1014. best sightseeing pair
+A[i]+A[j]+i-j maximize it.
+two direction to do the A[i]+i and A[j]-j-1
+
 39	Combination Sum		Medium	<br/>
+no duplicates, find all combination adds up to target.
+each number can be used multiple times.
+backtracking or knapsack.
+
 48	Rotate Image		Medium	<br/>
-1014 Best Sightseeing Pair		Medium	<br/>
+check with a simple example
+
 62	Unique Paths		Medium	<br/>
+dp
+
 729	My Calendar I		Medium	<br/>
+check if there is double booking. event is defined [s,e). so ending time overlap does not count.
+method 1: bind start with +1 and end with -1, and sort it and check if the accumulated >=2
+method 2: put the intervals in sorted order (set), and find the insert position and check if there is overlap
+
+
 1007 Minimum Domino Rotations For Equal Row		Medium	<br/>
+greedy
+
 64	Minimum Path Sum		Medium	<br/>
+dp
+
 59	Spiral Matrix II		Medium	<br/>
+generate the spiral matrix from 1 to n^2.
+define top, bottom, left right boundary and fill
+
 533	Lonely Pixel II 	Medium	<br/>
 873	Length of Longest Fibonacci Subsequence		Medium	<br/>
+dp
+
 718	Maximum Length of Repeated Subarray		Medium	<br/>
+dp
+
 978	Longest Turbulent Subarray		Medium	<br/>
+sign flipls between each adjacent pair.
+brutal force compare with previous
+
 16	3Sum Closest		Medium	<br/>
+find the 3 sum closest to target
+3 pointer
+
+1040. moving stone until consecutive II
+moving window to contain most stones.
+
 621	Task Scheduler		Medium	<br/>
+same task needs a cooling interval n. return the min number of intervals needed
+greedy: hashmap to count each task, get the max, we need has (max-1) periods. The last period only has the ties.
+
 289	Game of Life		Medium	<br/>
+8 neighbors
+<2 living neighbors, dies
+=2 and 3, live
+>3 dies
+=3: dead become live
+compute next status.
+- boundary cells, outside are all 0 (dead)
+- use high bits to indicate new status ( so we have old and new status)
+
 611	Valid Triangle Number		Medium	<br/>
-1040 Moving Stones Until Consecutive II		Medium	<br/>
+a+b>c is a valid triangle
+sort first.
+iterate two loops on the first two sides, binary search to find the lower_bound. O(n^2logn)
+
 259	3Sum Smaller 	Medium	<br/>
+
 11	Container With Most Water		Medium	<br/>
+container min(Hl,Hr)*(r-l)
+if Hl is smaller, l++, until we see a larger one
+if Hr is smaller, r--, until we see a larger one
+
 974	Subarray Sums Divisible by K		Medium	<br/>
+prefix sum%k, same modular will be the subarray
+
 562	Longest Line of Consecutive One in Matrix 	Medium	<br/>
+
 548	Split Array with Equal Sum 	Medium	<br/>
 795	Number of Subarrays with Bounded Maximum		Medium	<br/>
 915	Partition Array into Disjoint Intervals		Medium	<br/>
+parition into two subarray, left elements <=right elements
+two direction: get the left max, and right min.
+
 153	Find Minimum in Rotated Sorted Array		Medium	<br/>
+binary search
+
 380	Insert Delete GetRandom O(1)		Medium	<br/>
+all O(1)
+insert, remove, getrandom
+a vector store the elements
+a ihashmap to store the index (iterator)
+
 945	Minimum Increment to Make Array Unique		Medium	<br/>
+sort and then increase by 1
+
 792	Number of Matching Subsequences		Medium	<br/>
+a list of words, find number of words which are subsequence of S.
+method 1: two pointer to determine if it is subsequence O(L) for each matching. O(nL) complexity
+method 2: convert s to a map with the char vs its all indices. binary search for the next indices.
+
 870	Advantage Shuffle		Medium	<br/>
+shuffle A so that to maxmize the number of A[i]>B[i].
+if cannot beat, use the smallest one. if can beat use the smallest one which can beat.
+use a multiset to store or sort and binary search
+
 90	Subsets II		Medium	<br/>
+input has duplicates, but output cannot.
+approach 1: backtracking with a set to get rid of duplicates
+approach 2: sort it. the duplicated k numbers, we have option to include 0,1,2,..k elements of them.
+keep appendng to previous results.
+for example [1,2,2]
+0: []
+1: [],[1] (add 0 or 1)
+2: [],[1],[2],[1,2],[2,2],[1,2,2] (add 0,1,2 of 2 to previous)
+
 560	Subarray Sum Equals K		Medium	<br/>
+find the total number of subarray sums to K.
+make a hashset of the prefix sum vs the counter, and find the prefix-K and accumulate the number.
+
 75	Sort Colors		Medium	<br/>
+count sorting
+
 40	Combination Sum II		Medium	<br/>
+find all unique combination that sums to target
+each number can only be used once
+backtracking.
+
 162	Find Peak Element		Medium	<br/>
+binary search
+
 962	Maximum Width Ramp		Medium	<br/>
+a ramp is i<j and A[i]<=A[j] find the max width
+greedy: get the lmin and rmax and get the larget width
+
 105	Construct Binary Tree from Preorder and Inorder Traversal		Medium	<br/>
+tree
+
 80	Remove Duplicates from Sorted Array II		Medium	<br/>
-755	Pour Water 	Medium	<br/>
+inplace, leave the duplicates only <=twice.
+two pointer
+
+55	Pour Water 	Medium	<br/>
 73	Set Matrix Zeroes		Medium	<br/>
+if there is a zero in the matrix, set the row and column to be zero
+record the row and colum in hashset
+
 670	Maximum Swap		Medium	<br/>
+a number, swap at most once to get the max number.
+find the first left position and swap with its right max.
+
 120	Triangle		Medium	<br/>
+min path sum in triangle, dp
+
 106	Construct Binary Tree from Inorder and Postorder Traversal		Medium	<br/>
+tree
+
 775	Global and Local Inversions		Medium	<br/>
+global=local, only check the local inversion
+0 to n-1, local inversion will only differ by 1.
+
 277	Find the Celebrity 	Medium	<br/>
+
 713	Subarray Product Less Than K		Medium	<br/>
+sliding window product <k.
+numbers are all >0, so if j-i product >K, then we have m*(m+1)/2 groups, we can keep adding 1,2,...m. (equivalent)
+
 825	Friends Of Appropriate Ages		Medium	<br/>
+create a hashmap ages vs count.
+two group a*b if can request friend
+
 228	Summary Ranges		Medium	<br/>
+sorted array, return the summary of its ranges
+two pointers.
+
 56	Merge Intervals		Medium	<br/>
+sort using the start, and keep growing the end by merging the start<end intervals
+
 74	Search a 2D Matrix		Medium	<br/>
+row sorted and next row is larger than previous
+while matrix is sorted, essentially it is a 1d problem.
+
 209	Minimum Size Subarray Sum		Medium	<br/>
+all positives find the min size subarray sum>=K.
+using two pointer sliding window. when sum>=k record the length. and advance the left pointer
+
 954	Array of Doubled Pairs		Medium	<br/>
+array length is even, check if we can reorder so that A[2*i+1]=2*A[i].
+first, positive and negatives shall be partitioned
+second, put into a multiset and do it from smallest.
+
 34	Find First and Last Position of Element in Sorted Array		Medium	<br/>
+binary search or equal range
+
 63	Unique Paths II		Medium	<br/>
+dp
+
 33	Search in Rotated Sorted Array		Medium	<br/>
+binary search
+
 81	Search in Rotated Sorted Array II		Medium	<br/>
+binary search
+
 229	Majority Element II		Medium	<br/>
+voting algorithm. >1/3n
+need to verify if the two candidates are valid.
+
 55	Jump Game		Medium	<br/>
+array represents the max steps you can jump. check if we can reach the end.
+using bfs like method. the max jump covers all the element which are all accessible and keep updating the reachable.
+
 918	Maximum Sum Circular Subarray		Medium	<br/>
+using max and min to avoid circular.
+
 79	Word Search		Medium	<br/>
+find one word in matrix.
+dfs!
+
 18	4Sum		Medium	<br/>
+using 4 pointers, O(N^3)
+
 31	Next Permutation		Medium	<br/>
+get the next largest permutation.
+find the first sorted position and swap with the right smallest one which > the current one
+then sort the right (reverse if fine since right is decending order)
+
 54	Spiral Matrix		Medium	<br/>
+return the elements in sprial order.
+using 4 boundaries.
+
 152	Maximum Product Subarray		Medium	<br/>
+contain negatives
+need keep max and min at the same time
+only need the max number so we can use dp.
+
 457	Circular Array Loop		Medium	<br/>
+the number in the array is the step you can jump. positive goes forward, negative goes backward.
+determine if there is a loop (a loop shall contain all negative or all positives)
+start a node and record its sign and visited nodes, to see if we need exit or found a loop.
+
 907	Sum of Subarray Minimums		Medium	<br/>
+all subarray's min sum. 
+every number can be the min. find the window for each element. using two pointers.
+
 15	3Sum		Medium	<br/>
+three pointers O(N^2)
+
 163	Missing Ranges 	Medium	<br/>
-<br/>
-<br/>
+
+1074. number of submatrices that sum to target
+using the subarray sum to K for 1d array, expand to 2d array
+kadane algorithm.
+
+
 768	Max Chunks To Make Sorted II		Hard	<br/>
+same as I, but this allows for duplicates
+using multiset works for both cases.
+
 689	Maximum Sum of 3 Non-Overlapping Subarrays		Hard	<br/>
+window size is K for 3 subarrays. maxmize the sum of the 3 non-overlapping subarrays
+get the lmax, rmax and the mid has a range to loop
+
 42	Trapping Rain Water		Hard	<br/>
+stack problem: keep a decreasing stack, once the incoming one is larger, then pop back all smaller ones.
+
 128	Longest Consecutive Sequence		Hard	<br/>
+union-find
+
 782	Transform to Chessboard		Hard	<br/>
+min number of moves to transform the matrix into a chess board. you can swap rows or columns
+greedy choice: you have to make the first row 0101... and first column into 0101...
+matrix[0][0] can be 0 or 1. If n is even, does not matter. if n is odd, it depends 0 is larger or 1 is larger.
+
+
 154	Find Minimum in Rotated Sorted Array II		Hard	<br/>
+find the min, containing duplicates
+binary search in 3 cases. ><=
+
 123	Best Time to Buy and Sell Stock III		Hard	<br/>
-85	Maximal Rectangle		Hard	<br/>
-381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	<br/>
-57	Insert Interval		Hard	<br/>
+dp
+
 84	Largest Rectangle in Histogram		Hard	<br/>
+find the largest area of the histogram bars.
+- add a 0 to both end to avoid boundary
+- keep the stack increasing. when incoming is smaller, the current bar can form a rect.
+
+85	Maximal Rectangle		Hard	<br/>
+based on stack problem histogram
+
+381	Insert Delete GetRandom O(1) - Duplicates allowed		Hard	<br/>
+duplicates has several index with it, hashmap need be key vs a set of indices
+
+57	Insert Interval		Hard	<br/>
+sort the intervals, find the lower_bound and keeps merging.
+
 719	Find K-th Smallest Pair Distance		Hard	<br/>
 41	First Missing Positive		Hard	<br/>
 891	Sum of Subsequence Widths		Hard	<br/>
