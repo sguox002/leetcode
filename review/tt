@@ -32,6 +32,17 @@ variables: contains no digits inside.
 - stack store the results in string.
 this is really complicated
 
+856. score of parentheses
+it supports: 
+AB score A+B.
+(A): score 2*A.
+using a stack to evaluate the string.
+()(), we can use recursive approach or try some smarter non-recursive approach.
+when see (, push 0
+when see ), pop the stack. 
+	- if it is 0, then score is 1
+	- if it is not 0, then 2*score
+	- add the stack values.
 
 
 ## complete full tree
@@ -81,6 +92,19 @@ find kth missing number.
 why can binary search be used? 
 for example [4,7,9,10] the difference [0,3,5,6] the A[i]-A[0]-i indicates number of missing number
 
+900. RLE Iterator
+run-length encoded sequence.
+prefix sum of the counting and binary search to determine the position.
+
+878. Nth Magical Number
+divisible either by A or B.
+this is simular to the ugly number.
+counter: given a number we can easily know how many numbers before m/A+m/B-m/lcm(A,B)
+so we can use binary search for this.
+
+875 Koko eating bananas
+convert to binary search problem
+
 
 ## counting and search using binary search
 1093. statistics from large sample
@@ -113,6 +137,15 @@ only one zero is allowed.
 change up to K 0 to 1 to have the longest ones.
 equivalent: longest window which has <=k zeros
 record the 0's position and jump to next 0's position.
+
+904. fruit into basket
+equivalent: find the longest window containing only two types of fruits
+
+862. Shortest Subarray with Sum at Least K
+- first we build a prefix sum and work on that.
+- compare with front, if prefix>front()+K, then pop.
+- compare with back, pop out bigger ones (those has smaller index so can be removed).
+
 
 
 
@@ -148,6 +181,15 @@ use two pointers.
 - if A end is left, increase i.
 - if B end is left, increase j.
 
+855. exam room
+seat and leaving to maxmize the distance to nearest person.
+- brutal force. if no people seat at 0. loop to find the longest interval. (use left first).
+be careful of the left/right boundary.
+some subtle details:
+- use map to record seated position
+- fill left as possible.
+ use distance to nearst person
+
 
 
 
@@ -180,6 +222,12 @@ with some predecessor check and connect to make it longest.
 equivalent to the longest common subsequence problem
 
 1027 longest arithmetic sequence
+
+873. length of longest fib subsequences
+dp[i,j] choose A[j] and A[i] the length of fib sequence
+dp[i,j]=dp[j,k]+1
+
+
 
 960. Delete Columns to Make Sorted III
 delete column to make row sorted.
@@ -243,6 +291,24 @@ if the new add song is new, we have choices N-(j-1)
 if the new add song is odd, then we cannot choose previous K songs. we have N-K choices
 boundary: diagonal: i songs and list length=i. we have i! choices
 
+903. Valid Permutations for DI Sequence
+number of valid permutations
+dp[i,j] represents the number of valid permutation for length i, ending at number j.
+if current char is D. previous one shall be larger than j. add all those solutions
+if current char is I, previous one shall be smaller. add all those solutions
+
+887. super egg drop
+egg drop, n-1,k-1
+egg not drop: n, k
+
+877. stone game
+can use dp to reduce to subproblem
+but this one is greedy (simpler)
+
+871. Minimum Number of Refueling Stops
+the idea is similar to bfs:
+using the reachable station to update the longest distance.
+
 
 
 
@@ -279,7 +345,18 @@ this will need to reverse thinking:
 - add the initial nodes one by one and see which one infected the most.
 convert to a equivalent problem makes it much easier.
 
+859. Buddy Strings
+swap once and equal, use two pointer.
+similar: anagram
 
+854. K-Similar Strings
+swap exactly k times
+return the min K.
+abc->bca swap ab get bac,swap ac and get bca.
+bfs: find the first unmatch pair and swap them, every round we only swap one until we get the last.
+
+839. similar string group
+using union find
 
 ## bfs
 
@@ -298,6 +375,8 @@ start: mouse at node 1, cat at node 2.
 - a position, we need to push all its next position into queue: this including 6 steps, snakes ladders.
 - convert to 1d is equivalent but easier. (we don't need to worry the index calculations)
 - this is a very good bfs example.
+
+854 k-similar strings
 
 
 
@@ -350,6 +429,10 @@ use dfs to get two islands and find the shortest distance
 remove old calls
 add new calls
 deque
+886. possible bipartition
+color and to see if have contradiction
+
+
 
 
 ## stack: using stack to pop previous 
@@ -369,6 +452,25 @@ stack: it actually equivalent to find next larger.
 921 min add to make parentheses valid
 using stack to remove all valid pairs
 note since stack only stores (, so unmatched ) shall be recorded.
+
+901 online stok span
+typical stack problem searching for next larger.
+
+880. decoded string at index
+leet2code3: leet repeat 2 times, the previous repeated 3 times
+leetleetcode3->leetleetcodeleetleetcodeleetleetcode
+K=10, total length is 4*2*3=24.
+K=10, it is in the 2nd repeat pattern. k%8=2, 2nd char 
+
+find the char at given index.
+ha22: repeat ha 2 times, and then repeat haha 2 times.
+intuition: first decide the k range in which repeat pattern. and then reduce to a smaller repeat pattern,
+and finally to a small pattern.
+We decode the string and N keeps the length of decoded string, until N >= K.
+Then we go back from the decoding position.
+If it's S[i] = d is a digit, then N = N / d before repeat and K = K % N is what we want.
+If it's S[i] = c is a character, we return c if K == 0 or K == N
+
 
 
 ## tree
@@ -466,11 +568,31 @@ then insert a new node is equivalent to add a new element in the end.
 - creating the array does not need lengthy bfs, but to use vector to simulate the bfs (tricky)
 - parent child relation is simple and often used.
 
+897. increasing order search tree
+inorder search to linked list like tree without left subtree.
+- use reverse in order traversal
 
+894. All Possible Full Binary Trees
+left nodes: i=1,3,5,7...
+right nodes: N-i
+and then combine left and right.
 
+889. construct binary tree from preorder and postorder
 
+865. smallest subtree with all the deepest nodes
+check depth: if depth of left and righ same, return root
+left>right: go to left else go to right.
+O(N^2)
 
+reduce to O(N): some information is not saved in above approach.
+return the depth and the tree node.
+left==right, root
+left<right, right
+...
 
+863. All Nodes Distance K in Binary Tree
+convert the tree into a graph, then bfs.
+converting is tricky,
 
 ## combination and permutation
 1079. Letter Tile Possibilities
@@ -549,6 +671,25 @@ X
 870X ~ 875X
 8760 ~ 8765
 
+902. Numbers at most N given digit set
+- counting.
+[1,3,5,7]: 100
+use 1: 1,11,13,15,17
+use 3: 3,31,33,35,37
+use 5: 5,51,53,55,57
+use 7: 7,71,73,75,77
+168:
+1 digit: 4^1
+2 digit: 4^2
+3 digits up to 168: 
+first digit fixed as 1. only one options
+second digit 6: can choose 1x,3x,5x, total 3x4=12 options.
+third digit: 4 options: 1x3x4=12
+so total is 32.
+
+- backtracking.
+
+
 992. Subarrays with K Different Integers
 counting the number of subarrays.
 using two pointers or sliding window 
@@ -596,6 +737,28 @@ each number can be a min of some subarrays
 these are two stack problems to find previous larger and next larger.
 - brutal force: check range for each element O(N^2)
 - stack can reduce to O(N).
+
+891. Sum of Subsequence Widths
+sequence with= max-min.
+return the sum of width.
+- single element subsequence can ignore, since their contribution is 0.
+- does sort will change? no, the max min relative position does not matter.
+and this is the key idea
+- A[i] as the min and A[j] as the max, we need count the number of subarrays satisfying the condition.
+A[i] as the min: All A[k] with k>i can form a subsequence (include or not include) 2^(n-i).
+A[j] as the max: all A[k] with k<i can form a subsequence 2^i.
+
+
+898. Bitwise ORs of Subarrays
+to return number of distinct results.
+- use a hashset to eliminate duplicates
+- keep the results for ending at i. then we only need update based on i-1.
+[1,2,4]:
+use 1: [1]
+use 2: [1or2] [2] (based on previous)
+use 4: [1or2or4], [2or4], [4] (based on previous)
+
+
 
 ## greedy: convert to equivalent problem
 1072. Flip Columns For Maximum Number of Equal Rows
@@ -699,6 +862,17 @@ you can add x in [-k,k].
 when difference>2*K, then we can only reduce to max-min-2*K.
 otherwise we can reduce to 0.
 
+881. boats to save people
+only at most two people, with total weight limit
+sort the people, and from both end.
+
+870 advantage shuffle
+simple greedy. if you cannot beat, use the weakest one.
+if you can beat, use the weakest one who can beat.
+
+861. Score After Flipping Matrix
+row as a binary number: so the leftmost bit shall be flipped to all 1.
+remaining columns to flip to more 1 than 0
 
 
 ## two string matching
@@ -739,6 +913,11 @@ using a heap to record the candidates.
 record the winners and time in vector
 binary search.
 
+857. Minimum Cost to Hire K Workers
+use the w/q highest ratio to evaluate the payment
+payment=ratio*sumQ.
+to minimize the k worker payment, we need increase ratio and decrease the Q sum.
+using a heap for the Q.
 
 
 ## shortest path problem
@@ -752,6 +931,36 @@ visit all nodes once and get the shortest distance: traveler's problem
 - use bit to indicate visiting or not
 - use other edges to reduce the distance
 - keep the previous information and restore the shortest path.
+
+882. reachable nodes in subdivided graph.
+an edge (i,j,n) means the edge i to j are subdivided into n nodes and connected.
+start at node 0, return number of nodes you can reach at most M moves.
+dijkstra + heap
+
+why dijkstra?
+it is a shortest distance problem. From source to target, the shortest distance, the number of nodes subdivided can be considered as distance.
+- build a graph with distance
+- need set a status variable to indicate if node visited or not.
+- a min heap to use small edge first
+- if a distance can be relaxed,add it into heap.
+need revisit the dijkstra algorithm using heap.
+
+864. Shortest Path to Get All Keys
+.: empty
+#: wall
+@: starting point
+lower case letter: key
+upper case letter: locker
+a locker can be crossed if we have the key.
+return the lowest number of moves to acquire all keys.
+
+- approach 1: dijkstra
+- approach 2: bfs
+use bits for the status (up to 6 keys)
+- find starting position and number of keys
+- decide the 2^k to store the status.
+
+
 
 ## trie
 1065. Index Pairs of a String
@@ -781,6 +990,11 @@ left shall be all zero and right shall be all 1.
 915 partion array into disjoint intervals
 into two parts: left elements all <= right
 rmin and lmax.
+
+890. Find and Replace Pattern
+replace pattern from right side to avoid index change in array.
+
+
 
 
 ## think in simple
@@ -851,6 +1065,19 @@ use + for group1, - for group 2, 0 for for discarded, and this is equivalent to 
 target sum is <=tsum/2 and try to get the max.
 range [-tsum, tsum]
 
+879. Profitable Schemes
+G people
+profit[i], group[i]
+profit>=P, and people<=G.
+return number of schemes to chose?
+dp[p][g] represents number of scheme for profit p and people g.
+- profit from 1 to P. (larger than P goes to P).
+- people from 1 to G.
+adding a profit,group pair
+dp[p+profit[i]][g+group[i]]+=dp[p,g]
+need use reverse loop since we don't want use updated values.
+
+
 
 ## topological sort
 269 alien language
@@ -870,6 +1097,42 @@ direct approach: divide by 3 parts with same number of 1
 - the 1 window shall be the same
 - trailing zeros matters
 - leading zeros does not matters
+
+906. Super Palindromes
+its square is also a palindrome.
+brutal force to check all candidates.
+
+spiral matrix I.
+visit the spiral matrix in order.
+use 4 boundaries top, bot, left,right
+
+spiral matrix II.
+generate the spiral matrix.
+similar to visiting it.
+
+spiral matrix III.
+start at r0,c0. goes spiral and can go outside.
+1122334455.....
+- direction change
+- step change.
+- record only the inside matrix elements
+
+858. Mirror reflection
+extend the square and unfold the reflection.
+then becomes a simple math problem.
+
+
+sorting:
+899. orderly queue
+choose one of the first k letters, place it to the end of the string.
+k==1, we can rotate only the whole string
+k>1: can we rotate the whole stirng or rotate the string except the first char.
+this can do the bubble sort.
+
+892. Surface Area of 3D Shapes
+neighboring shapes hides both interfaces.
+just check its top and left neighbornings.
+
 
 
 ## hashmap
@@ -895,7 +1158,6 @@ use diagnonal length and center as the hash string.
 939. Minimum Area Rectangle
 use hash to sort the x and form rect with previous x.
 
-
 957. prison cells after N days
 store the status in hash
 once a status is seen, there is a cycle, and we can get the period and then skip all those periods
@@ -903,11 +1165,29 @@ once a status is seen, there is a cycle, and we can get the period and then skip
 953. Verifying an Alien Dictionary
 convert to normal order.
 
+893. groups of special equivalent strings
+odd positions can be swapped
+event positions can be swapped
+so we sort odd and event and use it as key.
+
+874. Walking Robot Simulation
+put the obstacles in hashset for easier access
+rotate: swap(dx,dy) right dy*=-1, left dx*=-1
+
+
+
+
 ## reverse thinking
 936. Stamping The Sequence
 abc to ababc
 ababc->ab***->*****
 
+## design: mostly data structure.
+895. maximum frequency stack
+push:
+pop: pop the most frequent element.
+- a hashmap frequency vs stack. ie each frequency will have a stack.
+pop: will always pop from the largest frequency stack. once it is empty we need update the hashmap
 
 
 ## trivial
@@ -989,5 +1269,35 @@ qsort
 merge sort
 bubble sort
 
+905. sort array by parity
 
+896. monotonic array
+
+888. fair candy swap
+
+884. uncommon words from two sentences
+appear only one times.
+
+883. projection area of 3d shapes
+project to xy, yz and xz.
+
+872. leaf similar trees
+
+869. reordered power of 2
+we only have 32 numbers, convert them to string and sort compare
+
+868 binary gap
+longest distance between 1s.
+
+867. transpose matrix.
+
+866. Prime Palindrome
+brutal force: try all palindrome and check if they are prime
+
+860. lemonade change
+
+
+
+# linked list
+876. middle of the linked list
 
