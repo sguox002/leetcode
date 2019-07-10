@@ -1301,3 +1301,395 @@ brutal force: try all palindrome and check if they are prime
 # linked list
 876. middle of the linked list
 
+277. Find the Celebrity
+- brutal force: record known and know O(N^2)
+- voting algorithm to choose the max known person and then check if it is real.
+
+987. Vertical Order Traversal of a Binary Tree
+a little bit difference from other vertical order:
+it needs from left to right: use stable_sort (not changing the relative order)
+
+366. find leaves of binary tree
+use depth from bottom up is the key.
+leaves are 0th layer.
+depth for each node!!!
+
+440. K-th Smallest in Lexicographical Order
+this can be solved using 10-ary tree preorder traversal.
+the trick is k is very large and we shall make optimizations
+first. bound by N. 
+
+Let n = 1500, how many numbers has the prefix “1” and in the range of n?
+
+10-19: 10
+100-199: 100
+1000-1999: 501
+If k <= 611, the answer has the prefix "1", otherwise, remove all the numbers have the prefix "1", and search the prefix "2".
+Time complexity should be O(digits^3).
+
+class Solution {
+public:
+    int findKthNumber(int n, int k, int start = 0) {
+        if(k > 0) {
+            for(int i = (start==0)?1:0; i <= 9; i++) { // append 0-9 to the prefix
+                int count = numbersBeginWith(n, 10*start+i);
+                if(k <= count) // if k <= count, the answer is begin with the prefix
+                    return findKthNumber(n, k-1, 10*start+i);
+                k -= count; // if the answer does not begin with the prefix, remove all the numbers begin with this prefix
+            }
+        }
+        return start;
+    }
+    
+    // return how many numbers are begin with the prefix and in the range of N
+    int numbersBeginWith(int n, long long prefix) 
+    {
+        long long fac = 1;
+        int count = 0;
+        for(int digit = 1; digit <= 9; digit++) {
+            long long min = prefix*fac;
+            long long max = prefix*fac+fac-1;
+            if(n < min)
+                break;
+            else if(min <= n && n <= max) {
+                count += (n-min+1);
+                break;
+            }
+            else
+                count += fac;
+            fac *= 10;
+        }
+        return count;
+    }
+};
+
+742. Closest Leaf in a Binary Tree
+closest mean the distance not the value!!!!
+-approach: convert to graph and then uses bfs.
+
+google problems
+unique email address:
+- basic string operations
+- hashset.
+
+odd even jump
+- reverse and put the previous elements in a map with lowest index
+- dp and binary search.
+
+license key formating
+- reverse count
+- remove first -
+- basic string operations
+
+fruit into baskets
+moving window containing at least two numbers
+
+longest substring without repeating char
+- hashmap with moving window
+- first check if a char in the hashmap. if we found, advance i to mp[c]+1
+
+container with most water
+- two pointer: to make it larger, we need increase the lowest bar.
+
+3sum:
+- three pointers: to reduce O(N^2) to O(N^2)
+- skip duplicates
+
+next-permutation
+find the next greater permutation (making it larger.)
+- from right to left, find the first sorted position. A[i]<A[i+1] (right is descending order)
+- swap with the right min > A[i].
+- reverse the right. (making it ascending)
+
+multiply string
+trivial
+
+rotate image
+AB -> CD->CA
+CD    AB  DB
+
+jump game
+bfs: update the longest distance using covered nodes
+
+plus one
+trivial
+
+min window substring
+containing all the chars in T.
+- hashmap to save chars in T.
+- ignore non-related chars
+- when the counter all reduce to <=0, then we know the range has all the chars.
+though not hard, but very easy to make mistakes.
+every time check the map will cause TLE.
+will need to jump directly to the related positions.
+- use unordered_map instead of map (log vs const)
+- bind the char with index can save indexing time.
+
+read n char using read4
+need a buffer
+
+longest substr with at most two distinct chars
+moving window with hashmap
+
+missing range.
+search for missed range
+trick is prev-1 and upper+1
+
+next closest time.
+backtracking would take too much time.
+19:34=>19:39
+23:59=>22:22
+greedy: from right to left: replace with next larger digit check if legal. if not available replace with min.
+
+pretty tricky.
+
+expressive word
+two pointers
+
+find and replace in string
+reverse replace
+
+max distance to closet person
+a bit trick to other problem exam room
+but this one can just keep the max distance and compare left right
+
+validate parenthesis
+trivial
+
+merge k sorted list
+using min heap.
+
+trapping raining water
+use stack descending order
+
+kth largest element in an array
+minheap
+
+meeting room II.
+interval with adding/removing event.
+
+backspace compare
+stack O(n)
+reverse count O(1) space.
+
+min cost to hire k workers
+using priority_queue
+
+k closet points to origin
+using maxheap
+
+linked list : trivial
+
+Tree and graphs
+in phone interview, tree is unlikely the problem
+binary tree max path sum.
+follow the method in array. if prefix sum<0 then restart a new segment
+dfs
+
+word ladders
+bfs
+
+number of islands
+dfs
+
+course schedule II
+remove all source node using bfs.
+
+count complete tree nodes
+O(n) is easy. depth and binary search
+O(H^2) get the depth using left and rightmost branch.
+
+longest increasing path in matrix
+dfs with memoization
+
+decode string
+recursive string evaluation
+
+evaluate division
+a bit tricky using dfs on graph
+
+diameter of a binary tree
+ldepth+rdepth
+O(N^2) 
+
+cracking the safe
+using gray code for k base.
+
+robot cleaner
+simulate the dfs.
+```cpp
+    unordered_map<int, unordered_map<int, int>> data;
+    int x=0;
+    int y=0;
+    int dx[4]={1, 0, -1, 0};
+    int dy[4]={0, 1, 0, -1};
+    int dir=0;
+    void cleanRoom(Robot& robot) {
+        if(data[x][y]==1){
+            return;
+        }
+        data[x][y]=1;
+        robot.clean();
+        for(int i=0; i<4; i++){
+            if(robot.move()){
+                x+=dx[dir];
+                y+=dy[dir];
+                cleanRoom(robot);
+                robot.turnRight();
+                robot.turnRight();
+                robot.move();
+                robot.turnRight();
+                robot.turnRight();
+                x-=dx[dir];
+                y-=dy[dir];
+            }
+            robot.turnRight();
+            dir=(dir+1)%4;
+        }
+    }
+```
+
+most stones removed with row/col..
+union find or dfs
+
+flip equivalent binary tree.
+
+recursion:
+word squares
+startwith---using trie
+trial and back--backtracking
+it is hard.
+
+strobogrammatic number II
+build on 0 digits and 1 digits
+
+word search II
+trie using dfs
+
+android unlock pattern
+connect keys [m,n].
+each key can be selected only once
+only previous selected key can be passed
+123
+456
+789
+- 1379 are in the same group and we only need calculate one and then x4
+- 2468 are in the same group and we only need calculate one and then x4
+skip:
+13/31-skip 2
+17/71-skip 4
+79/97-skip 8
+39/93-skip 6
+19/91
+73/37
+46/64
+28/82 skip 5
+
+- skip array, visited array
+- start visit 1,2,5 only
+
+    int mm;
+    int nn;
+public:
+    int DFS(vector<bool> &vis, vector<vector<int>> &skip, int cur, int size) {
+        if(size > nn) return 0;
+        if(size == nn) return 1;
+        vis[cur] = true;
+        int rst = 0;
+        for(int i = 1; i <= 9; ++i) {
+            // If vis[i] is not visited and (two numbers are adjacent or skip number is already visited)
+            if(!vis[i] && (skip[cur][i] == 0 || (vis[skip[cur][i]]))) {
+                rst += DFS(vis, skip, i, size+1);
+            }
+        }
+        vis[cur] = false;
+        return rst + (size>=mm?1:0);
+    }
+    
+    int numberOfPatterns(int m, int n) {
+        mm = m;
+        nn = n;
+        // Skip array represents number to skip between two pairs
+        vector<int> temp1(10);
+        vector<vector<int>> skip(10,temp1);
+        skip[1][3] = skip[3][1] = 2; //skip 2
+        skip[1][7] = skip[7][1] = 4; //skip 4
+        skip[3][9] = skip[9][3] = 6; //skip 6
+        skip[7][9] = skip[9][7] = 8; //skip 8
+        skip[1][9] = skip[9][1] = 
+            skip[2][8] = skip[8][2] = 
+            skip[3][7] = skip[7][3] = 
+            skip[4][6] = skip[6][4] = 5;
+        vector<bool> vis(10,false);
+        int rst = 0;
+        // DFS search each length from m to n
+        rst += DFS(vis, skip, 1, 1) * 4;    // 1, 3, 7, 9 are symmetric
+        rst += DFS(vis, skip, 2, 1) * 4;    // 2, 4, 6, 8 are symmetric
+        rst += DFS(vis, skip, 5, 1);        // 5
+        return rst;
+    }
+	
+letter combinations of a phone number
+easy
+backtracking
+
+generate parenthesis
+backtracking.
+
+sorting and searching
+median of two sorted array
+divide into 4 parts, and always be able to choose one part 
+it is very tricky
+
+find first and last position 
+equal-range
+two binary search
+
+merge interval
+start end, to grow end
+
+insert interval
+find position and merge
+
+valid anagram
+using hashmap ++ --
+
+count of smaller number
+- direct approach: O(N^2)
+- merge sort or bst approach
+why merge sort: smaller number will swap to left when doing merge sort.
+MergeSort-based solution is a standard way to solve problems related to inverse numbers.
+
+peak index in a mountain array
+standard binary search
+
+dp:
+longest palindrome substring
+only when inside is palindrome then we can add.
+dp[i][j]
+
+max subarray
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
