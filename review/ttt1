@@ -1,0 +1,171 @@
+## dp
+1105. Filling Bookcase Shelves
+thickness and height
+shelf width.
+book order cannot be changed.
+return the min height
+a book i with Wi and Hi can be placed in kth layer.
+the shelf height is decided by the max height.
+this is similar to group the array and min the sum of the max.
+so the idea is: for group i, either is belongs to previous group or to next group
+group is constrained by the width.
+if book i, belongs to previous group, then we need to update the max.
+if book i, starts a new group, then we need to update the new height.
+dp[i] is the min height for the first i books.
+
+## think simple using computer way.
+1103. Distribute Candies to People
+it is just a 1 to n and arranged in rows, so do not use those complicated methods
+but just use iteration and %
+
+## Array
+
+1131. maximum of absolute value expression
+first need to remove the abs.
+|a[i]-b[j]|+|b[i]-a[j]|+|i-j|, we have 8 combinations (3 +/- selections)
+a[i]-b[j]+b[i]-a[j]+i-j  --> [a[i]+b[i]+i]-[a[j]+b[j]+j]
+a[i]-b[j]+b[i]-a[j]+j-i --> [a[i]+b[i]-i]-[a[j]+b[j]-j]
+a[i]-b[j]+a[j]-b[i]+i-j --> [a[i]-b[i]+i]-[a[j]-b[j]+j]
+a[i]-b[j]+a[j]-b[i]+j-i. --> [a[i]-b[i]-i]-[a[j]-b[j]-j]
+b[j]-a[i]+b[i]-a[j]+i-j --> -[a[i]+b[i]+i]+[a[j]+b[j]+j]
+b[j]-a[i]+b[i]-a[j]+j-i --> -[a[i]+b[i]-i]+[a[j]+b[j]-j]
+b[j]-a[i]+a[j]-b[i]+i-j --> -[a[i]-b[i]+i]+[a[j]-b[j]+j]
+b[j]-a[i]+a[j]-b[i]+j-i. --> [a[i]-b[i]-i]-[a[j]-b[j]-j]
+then we separate i and j, it is actually 4 cases
+we find the min and max and get the max-min
+
+
+## stack
+1130. Minimum Cost Tree From Leaf Values
+the array order cannot be changed.
+- equivalent: remove the smaller at the cost A[i]*A[j]
+- greedy: to min A[i]*A[j] need combine A[i] with its next larger.
+- using stack to store a sorted sequence (sorted is a simple greedy)
+
+## bfs
+
+1129. Shortest Path with Alternating Colors
+- from 0 to all other nodes
+- using bfs to get the shortest distance
+- the distance can be greater than n since we may need to come back
+- form a graph (adjacent matrix) data structure needs 0 for blue and 1 for red
+- have two options: first start blue or start red
+- we can use simple structure for adj matrix (*2 for blue *2+1 for red)
+- self connected edge cannot be ignored since it will be able to connect the path.
+- perform two bfs.
+* the simple data structure for adj makes the problem a lot simpler.
+* using dfs are not good for this. always try bfs first for shortest distance problems.
+
+1102. Path With Maximum Minimum Value
+this is similar to the swimming in rising water.
+it asks for the min value along the path where all those smaller elements are not passable and there is only one path.
+so it is a binary search with a bfs problem
+
+
+## dfs
+1125. Smallest Sufficient Team
+- most important: convert the required skills into bits and simple the problem using dfs.
+- non-required skills are ignored.
+- do a O(N^2) loop and eliminate those people with same skills, or a subset of skills
+
+## counting in array.
+1128. Number of Equivalent Domino Pairs
+this is common seen counting in array using hashmap
+keep adding the previous occurences
+equivalent to 1+2+3+...+k 
+
+1124. Longest Well-Performing Interval
+- >8 convert to 1, <=8 convert to -1.
+- prefix sum. 
+	if prefix[i]>0 then all previous are good.
+	if prefix[i]<0 then we need to find previous smaller one
+	
+1099. Two Sum Less Than K
+common practice: sort the visited elements in a map/set and then use binary search to find the elements
+
+	
+## interval problems
+1109. Corporate Flight Bookings
+- add an event and remove an event using map for positive and negatives
+- prefix sum to get the results.
+
+	
+## Tree
+1123. Lowest Common Ancestor of Deepest Leaves
+O(N^2) is easy
+O(N): first find the left depth and right depth of the root one pass. second pass find the node with depth-1.
+O(N) single pass: get the depth and the node at the same time.
+
+1120. Maximum Average Subtree
+average: need to get the sum and number of nodes.
+using postorder traversal, we get the sum and number of nodes for its left/right subtree and then get the results for the root.
+
+1110. Delete Nodes And Return Forest
+when a node is to br removed, we need update its parent and child becomes another tree
+do not forget the root when it is not removed.
+google phone screen
+
+1104. Path In Zigzag Labelled Binary Tree
+full tree, the node from leaf to parent is n/2 and apply the zigzag relation.
+
+
+
+## heap
+1121. Divide Array Into Increasing Sequences
+greedy: choose K increasing subsequences from the most frequent one
+just like to get rid of a layer from the mountain and until it is flat
+
+## union find
+1101. The Earliest Moment When Everyone Become Friends
+union and find the earliest time that unites as one group
+
+## sliding window
+1100. Find K-Length Substrings With No Repeated Characters
+sliding window with win=K and using hashmap to add a new char and remove old char.
+
+
+
+## hashmap
+1122. Relative Sort Array
+sort using arr2. (using hashmap and count sort)
+
+## parsing a string or expression evaluation
+this is where recursive approach most powerful.
+
+1106. Parsing A Boolean Expression
+- single t or f.
+- ! use true & the result, and use true & the result, or use false | the results
+- the , can be ignored and do recursively
+
+1096. Brace Expansion II
+using stack and recursion
+
+
+## Misc
+1111. Maximum Nesting Depth of Two Valid Parentheses Strings
+min the max(depth(A),depth(B))
+we try to make depth a and depth b similar to minimize
+Basically, ( is 1 point, ) is -1 point.
+We try to keep total points of two groups even,
+by distributing parentheses alternatively.
+
+The good part of this solution is that,
+we actually need no extra variable to record anything.
+
+
+
+
+## trivial
+1119. Remove Vowels from a String
+1118. Number of Days in a Month
+leap year is: %4==0 %100==0 && %400==0
+1108. Defanging an IP Address
+replace . with [.]
+
+
+
+
+
+
+
+
