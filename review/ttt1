@@ -1,4 +1,9 @@
 ## dp
+
+1035. Uncrossed lines
+equivalent: longest common subsequence
+
+
 1105. Filling Bookcase Shelves
 thickness and height
 shelf width.
@@ -13,10 +18,77 @@ if book i, belongs to previous group, then we need to update the max.
 if book i, starts a new group, then we need to update the new height.
 dp[i] is the min height for the first i books.
 
+1092. Shortest Common Supersequence
+need convert to equivalent problems:
+find the longest common subsequences
+and then build the min supersequence
+similar to longest common subsequence length, but we shall use string directly to avoid trace back.
+
+1062. Longest Repeating Substring
+direct approach: using O(N^2) to build all the substrings, TLE
+dp approach: we only compare one char since previous compare is done.
+
+1044. Longest Duplicate Substring
+follow up on 1062, repeated string can overlap.
+binary search + direct hash.
+
+1048. longest string chain
+common dp practice
+
+1043. Partition Array for Maximum Sum
+element can be attached to previous group or itself become a new group
+dp with heap.
+
+1039. Minimum Score Triangulation of Polygon
+dp with i,j,k O(N^3) to split into one triangle and two subproblems
+
+
+### knapsack
+1058. Minimize Rounding Error to Meet Target
+each element can use ceil or floor (+ or -)
+so the sum max would be all ceil and sum min is all floor.
+it is equivalent to: choose from two arrays to sum to a target
+return the smallest rounding error! (since we may have multiple choices)
+only has 3 decimals
+greedy: we can get number floors and number of ceils. then sort the decimals accoring to the errors
+
+nth_element: partial sort to get the sorted position element.
+
+1049. Last Stone Weight II
+smash the stone: equal: both destroyed. smaller destroyed and remaining y-x.
+convert to equivalent:
+some elements are negative and some are positive, and the sum of positive shall be >= negative sum.
+knapsack problem
+
+1046. Last Stone Weight
+choose heaviest and smash. this is heap.
+
 ## think simple using computer way.
 1103. Distribute Candies to People
 it is just a 1 to n and arranged in rows, so do not use those complicated methods
 but just use iteration and %
+
+1089. duplicate zeros
+in place: two pointer and imagine we are using sufficient memory.
+
+1071. greatest common divisor of strings
+using same principle working for numbers.
+by subtracting the common.
+
+## two pointer
+1031 max sum of two non-overlapping subarrays
+lmax and rmax from both side
+
+
+
+## recursive
+1088. Confusing Number II
+return the confusing numbers in [1,N]
+approach 1: backtracking, will use a lot of time
+approach 2: recursive by adding previous solution 1+xx+1, 8+xx+8, 6+xx+9,9+xx+6
+similar to Strobogrammatic Number II, but it only requires length<=n.
+
+
 
 ## Array
 
@@ -42,6 +114,17 @@ the array order cannot be changed.
 - greedy: to min A[i]*A[j] need combine A[i] with its next larger.
 - using stack to store a sorted sequence (sorted is a simple greedy)
 
+1081. Smallest Subsequence of Distinct Characters
+same as eliminate duplicates
+to keep it smaller, when a small char comes, need to replace char in stack.
+
+1063. Number of Valid Subarrays
+group and the first element is <= the other elements in the group
+it is equivalent to find the next smaller in its right directions for each element.
+
+
+
+
 ## bfs
 
 1129. Shortest Path with Alternating Colors
@@ -61,12 +144,33 @@ this is similar to the swimming in rising water.
 it asks for the min value along the path where all those smaller elements are not passable and there is only one path.
 so it is a binary search with a bfs problem
 
+1091. Shortest Path in Binary Matrix
+8 directions with 0 and 1 (1 blocked). return the shortest path from top left to bottom right
+regular bfs
+
 
 ## dfs
 1125. Smallest Sufficient Team
 - most important: convert the required skills into bits and simple the problem using dfs.
 - non-required skills are ignored.
 - do a O(N^2) loop and eliminate those people with same skills, or a subset of skills
+
+1059. All Paths from Source Lead to Destination
+- lead to other nodes
+- lead to infinite cycle
+
+dfs with cycle detection
+using 3 states: visited, not visited, visiting.
+
+1036. Escape a Large Maze
+two dfs: block the source, block the target
+dfs distance > the block size, then we are outside.
+
+1034. coloring a border
+dfs using negative color, restore inner side
+
+
+
 
 ## counting in array.
 1128. Number of Equivalent Domino Pairs
@@ -83,14 +187,41 @@ equivalent to 1+2+3+...+k
 1099. Two Sum Less Than K
 common practice: sort the visited elements in a map/set and then use binary search to find the elements
 
+560. Subarray Sum Equals K
+similar to 1099. 1d
+
+1074. Number of Submatrices That Sum to Target
+using tech in 560 and reduce to 1d problem
+
+1067. Digit Count in Range
+given a digit d in [0,9], return the number of occurences in [low,high].
+- we can get [1, high]-[1,low], high low can be converted to number of digits
+same length of digits shall be counted carefully.
+
+1063. Number of Valid Subarrays
+group and the first element is <= the other elements in the group
+it is equivalent to find the next smaller in its right directions for each element.
+
 	
 ## interval problems
 1109. Corporate Flight Bookings
 - add an event and remove an event using map for positive and negatives
 - prefix sum to get the results.
 
+1094. car pooling
+add passenger and unload passenger
+
+
 	
 ## Tree
+1028. Recover a Tree From Preorder Traversal
+
+
+1038. Binary Search Tree to Greater Sum Tree
+reverse inorder traversal
+similar to array's suffix sum
+
+
 1123. Lowest Common Ancestor of Deepest Leaves
 O(N^2) is easy
 O(N): first find the left depth and right depth of the root one pass. second pass find the node with depth-1.
@@ -108,6 +239,25 @@ google phone screen
 1104. Path In Zigzag Labelled Binary Tree
 full tree, the node from leaf to parent is n/2 and apply the zigzag relation.
 
+1080. Insufficient Nodes in Root to Leaf Paths
+all path passing the node sum<limit.
+O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
+
+## greedy
+1029. two city scheduling
+greedy 1: send all to A and then send those most saving to B.
+
+1053. Previous Permutation With One Swap
+to make it smaller with one swap.
+greedy: find the first peak from right to left, and swap with leftmost element in its right < peak.
+
+1042. Flower Planting With No Adjacent
+garden has no more than 3 neighbors
+greedy: make a graph and chose available color
+
+1041 robot bounded in circle
+greedy: try a whole cycle or more cycles. repeat 4 times and we would be able to do it.
+common practice: rotation
 
 
 ## heap
@@ -115,19 +265,76 @@ full tree, the node from leaf to parent is n/2 and apply the zigzag relation.
 greedy: choose K increasing subsequences from the most frequent one
 just like to get rid of a layer from the mountain and until it is flat
 
+1090. Largest Values From Labels
+values, labels
+limited K from each labels
+return the max sum
+it is natually using heap.
+first store the values vs label in a sorted map from larger to smaller.
+
+1086. High Five
+top five scores, using minheap to keep only 5 scores.
+
+1066. Campus Bikes II
+N workers and M bikes.
+min manhattan distance and lowest index bike.
+need work on it.
+
+1057. Campus Bikes
+sorting all combinations.
+
+1054. Distant Barcodes
+rearrange so that no neighboring are the same
+using heap to arrange the two most common words
+
+## trie
+1032 stream of characters
+matching with the prefix, startwith
+
+
+
+
 ## union find
 1101. The Earliest Moment When Everyone Become Friends
 union and find the earliest time that unites as one group
+
+1061. Lexicographically Smallest Equivalent String
+union and use each group's parent.
+
 
 ## sliding window
 1100. Find K-Length Substrings With No Repeated Characters
 sliding window with win=K and using hashmap to add a new char and remove old char.
 
+1055. Shortest Way to Form String
+copy source (by deleting some chars) to get target.
+using sliding window matches.
 
+1052. grumpy bookstore owner
+convert to equivalent sliding window with most grumpy which <= k.
+
+1040. Moving Stones Until Consecutive II
+equivalent: find the window with min vacancies.
+
+
+## binary search
+1095. find in mountain array
+fidn the peak
+find in left and then find in right
+
+1060. Missing Element in Sorted Array
+kth missing elements in sorted array.
+using the first element (subtract all the element with it) and then we know:
+nums[i]-nums[0]-i is the number of missing number.
+must be familiar with tech to convert to equivalent simple problems.
 
 ## hashmap
 1122. Relative Sort Array
 sort using arr2. (using hashmap and count sort)
+
+1072. Flip Columns For Maximum Number of Equal Rows
+need convert to equivalent problem:
+flip the column. we are actually looking for the same pattern for all the rows
 
 ## parsing a string or expression evaluation
 this is where recursive approach most powerful.
@@ -139,6 +346,12 @@ this is where recursive approach most powerful.
 
 1096. Brace Expansion II
 using stack and recursion
+default operation: union using ,
+to avoid duplicate using hashset
+stack of hashset
+1087. Brace Expansion
+return all combinations
+there are no nested braces. so just connect them using dfs
 
 
 ## Misc
@@ -152,6 +365,18 @@ by distributing parentheses alternatively.
 The good part of this solution is that,
 we actually need no extra variable to record anything.
 
+### count sort
+1093. Statistics from a Large Sample
+this is already count sorted results, each element has a count and without restoring the sequence, we need to find the element
+prefix sum of the counters and find the element.
+
+### combination and permutations
+1079. Letter Tile Possibilities
+- dfs and eliminate duplicates and using permutation.
+
+### base problem
+1073. adding two negabinary numbers
+using & and >>
 
 
 
@@ -161,6 +386,18 @@ we actually need no extra variable to record anything.
 leap year is: %4==0 %100==0 && %400==0
 1108. Defanging an IP Address
 replace . with [.]
+1085. Sum of Digits in the Minimum Number
+1078. Occurrences After Bigram
+just understand the problem correctly.
+1065. Index Pairs of a String
+1064. Fixed Point
+A[i]==i binary search
+1056. confusing number
+1051. Height checker
+1047. Remove All Adjacent Duplicates In String
+simple stack problem
+1037. valid boomerang
+1030. matrix cells in distance order
 
 
 
