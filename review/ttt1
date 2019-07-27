@@ -1,4 +1,55 @@
 ## dp
+920 number of music playlist
+N songs, L songs in list.
+every song can shall be played at least once.
+a song can be played only if k other songs have been played.
+dp: subproblem i songs with j different songs.
+Think one step before the last one, there are only cases for the answer of dp[i][j]
+case 1 (the last added one is new song): listen i - 1 songs with j - 1 different songs, then the last one is definitely new song with the choices of N - (j - 1).
+Case 2 (the last added one is old song): listen i - 1 songs with j different songs, then the last one is definitely old song with the choices of j
+if without the constraint of K, the status equation will be
+dp[i][j] = dp[i-1][j-1] * (N - (j-1)) + dp[i-1][j] * j
+
+If with the constaint of K, there are also two cases
+Case 1: no changes since the last added one is new song. Hence, there is no conflict
+Case 2: now we don't have choices of j for the last added old song. It should be updated j - k because k songs can't be chosed from j - 1 to j - k. However, if j <= K, this case will be 0 because only after choosing K different other songs, old song can be chosen.
+
+if (j > k)
+dp[i][j] = dp[i-1][j-1] * (N- (j-1)) + dp[i-1][j] * (j-k)
+else
+dp[i][j] = dp[i-1][j-1] * (N- (j-1))
+
+
+931. min falling path sum
+simple dp
+
+940 distinct subsequence II
+ending with different char.
+
+115. Distinct Subsequences
+find in S the subsequence=T.
+edit distance.
+
+960. Delete Columns to Make Sorted III
+delete columns and make each row sorted
+equivalent to longest increasing subsequence but with n arrays.
+955. Delete Columns to Make Sorted II
+delete columns columns shall be sorted.
+do not need dp.
+
+964. least operators to express number
+x based 
+
+975. odd even jump
+do it from right. 
+visited forms a map and use binary search.
+
+983. min cost for tickets
+one day, 7 day and 30 day pass.
+for ith day, we can use single day, 7 day or 30 day
+
+1000 min cost to merge stones
+merge K consecutive piles into one pile, cost is equal to the k sum
 
 1027. Longest Arithmetic Sequence
 dp using difference and i.
@@ -48,6 +99,11 @@ dp with i,j,k O(N^3) to split into one triangle and two subproblems
 
 
 ### knapsack
+956. tallest billboard
+each element has three options: choose to A, choose to B, or not used
+target: sum=0
+
+
 1058. Minimize Rounding Error to Meet Target
 each element can use ceil or floor (+ or -)
 so the sum max would be all ceil and sum min is all floor.
@@ -67,7 +123,22 @@ knapsack problem
 1046. Last Stone Weight
 choose heaviest and smash. this is heap.
 
+### shortest distance problem
+943. find the shortest superstring
+equivalent: make AB the distance, and then find the shortest distance to visit each node once.
+- use all words
+- build a graph matrix. 
+- use dp to find the shortest distance (2d, with status and node) and also path information for tracing back.
+
+
 ## think simple using computer way.
+970. powerful integers
+just try brutal force loops
+
+982. Triples with Bitwise AND Equal To Zero
+triple reduce to N^2 two element bitwise
+and then add another.
+
 1103. Distribute Candies to People
 it is just a 1 to n and arranged in rows, so do not use those complicated methods
 but just use iteration and %
@@ -80,6 +151,34 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
+915. Partition Array into Disjoint Intervals
+left side < right side
+min size of left side.
+get lmax and rmin. and find the first one when lmax<rmin.
+
+923. 3Sum With Multiplicity
+using hashmap to record the frequency of each number.
+if 3 numbers from 1 set: C(n,3)
+if 3 numbers from 2 set: C(m,2)*C(n,1)
+if 3 numbers from 3 set: C(i,1)*c(j,1)*C(k,1)
+
+
+925. long pressed names
+two pointer compare
+
+926. Flip String to Monotone Increasing
+binary string: left all 0 right all 1
+find all positions to be the pivot and get the number of flips
+
+
+962. Maximum Width Ramp
+lmin for the left
+and rmax for the right
+greedy approach
+
+977 squares of sorted array
+two pointer: min may becomes max.
+
 1014. Best sightseeing pair
 lmax of A[i]+i and rmax of A[j]-j.
 
@@ -89,6 +188,12 @@ lmax and rmax from both side
 
 
 ## recursive
+984. string without AAA or BBB
+base cases: A=0 B=0
+when A>B AAB+subproblems
+when A==B AB+subproblems
+
+
 1088. Confusing Number II
 return the confusing numbers in [1,N]
 approach 1: backtracking, will use a lot of time
@@ -98,6 +203,18 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array
+912. sort an array.
+merge sort
+quick sort
+bubble sort
+
+916. Word Subsets
+use 26 char array instead of hashmap to save time.
+
+918. max sum circular subarray
+this is follow up for 1d array.
+1d array: if the previous sum <0 we begin a new segment. and find the max.
+to avoid circular array: we find the subarray max and min. then get the max of the two answers.
 
 1131. maximum of absolute value expression
 first need to remove the abs.
@@ -114,7 +231,22 @@ then we separate i and j, it is actually 4 cases
 we find the min and max and get the max-min
 
 
-## stack
+## stack & deque
+921. Minimum Add to Make Parentheses Valid
+using stack:
+if paired, popped. 
+if ) and has no match ans++ 
+if ( no match they are in the stack
+
+946. validate stack sequence
+simulate the stack, a number shall be pushed first before popped
+
+950. reveal card in increasing order.
+reveres the process using deque. 
+
+1003. check if word is valid after substitutions
+simple stack or deque problem
+
 1006 clumsy factorial
 using stack for expression evaluation.
 similar to calculator without ()
@@ -172,6 +304,38 @@ regular bfs
 
 
 ## dfs
+934. shortest bridge
+- first find the two islands using dfs
+- find the smallest distance between the two islands
+
+935. Knight Dialer
+using dp or dfs/recursive
+
+959. regions cut by slashes
+need upsample and do the dfs
+
+967. Numbers With Same Consecutive Differences
+dfs: try +k and -k. not above 9.
+
+980. Unique Paths III
+-1 obstacles, 0: empty, 1 source, 2 target
+it requires to walk on every empty cell exactly once. 
+return number of path
+it needs two requirements: walk on every cell, and reach the end.
+just regular dfs.
+63. Unique Paths II
+number of paths, using dp is faster (with obstacles)
+62. Unique Paths
+dp or pure math.
+
+
+996. number of squareful arrays
+neighboring elements sum is a square.
+return the number of permutations.
+build the graph (for each element its neighboring)
+and then dfs.
+
+
 1020. number of enclaves
 common dfs
 
@@ -232,6 +396,11 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+986. interval list intersection
+two sorted list of intervals, find the intersection.
+apply two pointer and check if two intervals intersect.
+
+
 1109. Corporate Flight Bookings
 - add an event and remove an event using map for positive and negatives
 - prefix sum to get the results.
@@ -242,11 +411,63 @@ add passenger and unload passenger
 
 	
 ## Tree
+919. Complete Binary Tree Inserter
+this is very interesting using array to implement a tree.
+
+
+938. Range Sum of BST
+easy
+
+951. flip equivalent binary tree
+left-left & right-right
+left-right & right-left
+
+958. check completeness of a binary tree.
+- bfs approach: when we see a null node, there shall have no nodes after
+- dfs approach: left depth is always>=right depth. (preorder).
+
+965. univalued binary tree.
+passing the root value to subtree
+
+968 binary tree cameras
+greedy: put the camera on the parent, so it can cover children and parents.
+using status to reflect if the root is monitored or not.
+do it from bottom to root.
+
+971. Flip Binary Tree To Match Preorder Traversal
+array is a binary tree (some subtrees flipped) preorder traversal
+first match the node, and then match left/right or right/left.
+
+979. distribute coins in binary tree
+
+also similar to the washing machine. the abs(diff) is the coins up/down the root.
+
+987. Vertical Order Traversal of a Binary Tree
+record depth, and x, and value
+there are overlaps (same position)
+preorder:
+then sort according to requirements.
+
+988. Smallest String Starting From Leaf
+simple dfs, when reaching leaf, reverse the results.
+
+993. cousins in binary tree
+only need to keep the parent information and depth information
+
+
+654. max binary tree
+build from array: max as the root, left is left subtree, right is right subtree
+heap. (used for map, set data structure, pq uses complete full binary tree).
+
+998. max binary tree II
+append a number to the array, and return the max binary tree
+- empty and it shall be the root
+- > root, it shall be the root, original root shall be its left
+- <root, it shall go to the right
+
 1008. construct binary search tree from preorder traversal
 BST, preorder, the root is always the first and divide by left and right
 using upper_bound
-
-
 
 1022. sum of root to leaf binary number
 preorder/dfs/recursive
@@ -284,6 +505,46 @@ all path passing the node sum<limit.
 O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
 
 ## greedy
+932. beautiful array
+A[k]*2!=A[i]+A[j]
+starting from [1].
+left odd and right even. expand.
+[1]
+[1,2]
+[1,3,2,4]
+[1,5,3,7,2,6,4,8]
+.....
+
+936. Stamping The Sequence
+reverse from target to source
+using greedy match.
+
+942. DI string match
+use two end meet. D choose the max, I choose the min
+
+
+945. min increment to make array unique.
+sort first and add 1.
+
+948. Bag of Tokens
+greedy: use the point for max power and use least power to gain points
+
+949. largest time for given digits.
+from the right, if we have larger digits, choose it.
+otherwise, choose the smallest.
+
+969. Pancake Sorting
+greedy: flip the min to the top, repeat.
+
+991. broken calculator
+only support *2 and -1. 
+min number of operations from x to y.
+we can also do from y to x, and is more clear. /2 +1
+
+995 min number of k consecutive bit flips
+min number of flips needed to make it all 1.
+greedy: turn the left most bit 0.
+
 1005. max sum of array after k negations
 greedy: try to negate those negatives. after that, we need compare the last negated negative with the smallest original positive
 
@@ -313,6 +574,9 @@ common practice: rotation
 
 
 ## heap
+973. k closest points to original
+heap
+
 1121. Divide Array Into Increasing Sequences
 greedy: choose K increasing subsequences from the most frequent one
 just like to get rid of a layer from the mountain and until it is flat
@@ -347,6 +611,30 @@ matching with the prefix, startwith
 
 
 ## union find
+924. Minimize Malware Spread
+return the first node which can minimize the infected nodes by removing it from initial list.
+ie, assuming the node is not affected.
+- parent node - the initial nodes, find the one with largest size
+
+928. Minimize Malware Spread II
+initial list: remove one infected nodes and disconnect its neighbors.
+union find in a reverse way: 
+build the disjoint set without the infected
+add one by one by disable the node only and add all other nodes, and check which one forms the largest number of elements.
+we are not doing merge but only count the number of sets to be union and count the number
+
+
+947. most stones removed with same row or column
+use dfs or union-find, similar to number of islands
+
+952. Largest Component Size by Common Factor
+connect the numbers when they share a factor.
+use prime factorization for each element.
+
+
+990. Satisfiability of Equality Equations
+use == relation and merge them and use != to check them
+
 1101. The Earliest Moment When Everyone Become Friends
 union and find the earliest time that unites as one group
 
@@ -355,6 +643,22 @@ union and use each group's parent.
 
 
 ## sliding window
+927. three equal parts
+binary array: leading zeros and trailing zeros, need to have the same pattern
+
+930. Binary Subarrays With Sum
+find the window contains S number of 1s, and then the left and right 0s.
+we can store all the 1s position and do sliding window on it.
+
+978. longest turbulent subarray
+we can use simple counting of +- sign
+similar to sliding window.
+
+992. subarrays with k different integers
+subarray contains exactly k different integers.
+
+sliding window using hashmap
+
 1004. Max Consecutive Ones III
 change up to k 0 to 1. longest subarrays
 equivalent to find the longest window with at most k 0s
@@ -379,6 +683,11 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+981. Time Based Key-Value Store
+time value
+get: give a timestamp, return the t<=timestamp. (closest)
+binary search using upper_bound
+
 1011. capacity to ship packages within D days
 binary search to find the capacity
 
@@ -393,6 +702,37 @@ nums[i]-nums[0]-i is the number of missing number.
 must be familiar with tech to convert to equivalent simple problems.
 
 ## hashmap
+929. Unique email address
+some simple string operations and hash
+
+937. reorder log files
+make sure using multimap to avoid key the same and log get lost.
+
+953. verifying an alien dictionary
+both mapped to a known order
+
+957. prison cells after n days
+hash to record the status and find the period
+
+963. Minimum Area Rectangle II
+rectangle is on the circle. using the circle center and diameter as the hash.
+939. Minimum Area Rectangle
+rect is along x and y axis. more similar to 2d intervals
+using hash for x and y and divide and conquer.
+
+966. Vowel Spellchecker
+first exact match
+second, case ignore match
+third: vowel misspell.
+
+997 find the town judge
+the guy knows nobody but all knows him.
+
+1001 grid illumination
+row, col, diag, anti-diag
+lights
+
+
 1010. Pairs of songs with total duration divisible by 60.
 
 1122. Relative Sort Array
@@ -435,6 +775,10 @@ we actually need no extra variable to record anything.
 1016. binary string with substring representing 1 to N.
 brutal force searching
 
+954. Array of Doubled Pairs
+negative and positive two parts
+sort and from smallest.
+
 
 ### count sort
 1093. Statistics from a Large Sample
@@ -462,6 +806,12 @@ and %K and accumulate
 1009. complement of base 10 integer
 change binary bits from 0 to 1
 
+974. Subarray Sums Divisible by K
+prefix sum %K (also note for negatives)
+and then count sort.
+
+972. equal rational number
+expand the number till double precision
 
 ## trivial
 1119. Remove Vowels from a String
@@ -481,6 +831,22 @@ A[i]==i binary search
 simple stack problem
 1037. valid boomerang
 1030. matrix cells in distance order
+1002. find common characters
+999. available captures for rook
+994. rotting oranges
+one step bfs
+989. add to array form of integer
+985. sum of even numbers after queries
+961. n-repeated element in size 2n array
+majority or hashmap
+933. number of recent calls
+922. sort array by parity II
+917. reverse only letters
+914. x of a kind in a deck of cards
+gcd
+
+
+
 
 
 
