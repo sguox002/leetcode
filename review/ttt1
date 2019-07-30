@@ -1,4 +1,37 @@
 ## dp
+790. Dominio and Tromino tiling
+using two types of shape to reach 2*N shape.
+
+799. champagne tower
+surplus goes to i+1,j and i+1,j+1
+
+801. Minimum Swaps To Make Sequences Increasing
+two arrays, swap A[i] B[i]
+return the min numbers of swaps to make both increasing.
+swap & noswap
+A[i]>A[i-1] && B[i]>B[i-1]
+if we swap, we also need swap i-1.
+if no swap, then i-1 also no swap
+
+A[i]>B[i-1] && B[i]>A[i-1]
+if we swap i, we shall not swap i-1
+if we not swap i, we shall swap i-1
+
+
+
+808. Soup Servings
+this can be recursive or dp.
+
+813. Largest Sum of Averages
+parition into <=k groups
+score: the sum of average of each group
+return the largest score.
+dp[i,j] is for array length i and divide into k groups
+we check previous to see A[i] to A[j] is a added group and get the max.
+
+
+818. race car
+
 837. New 21 Game
 this is a extension of climing stairs
 with a sliding window to the next stairs.
@@ -127,6 +160,11 @@ dp with i,j,k O(N^3) to split into one triangle and two subproblems
 
 
 ### knapsack
+823. binary trees with factors
+equivalent: all nodes shall be from the array, so combinations shall be a[i], a[j] has a common factor
+
+
+
 879. Profitable Schemes
 G people, profit p, 
 input: profit[i], group[i]. people cannot be repeatedly used.
@@ -158,6 +196,10 @@ knapsack problem
 choose heaviest and smash. this is heap.
 
 ### shortest distance problem
+787. Cheapest Flights Within K Stops
+can use dp to relax: loop over k times and using the edges to relax the distance.
+
+
 847. shortest path visiting all nodes
 bit mask status, starting nodes, ....
 bfs..
@@ -197,6 +239,24 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
+795. Number of Subarrays with Bounded Maximum
+[L,R]
+sliding window: 
+pre: the sliding window left, 
+low: 
+maxp: 
+A[i] in the range [L,R], i-pre+1
+A[i]<L && L<=maxp:  low-pre+1
+A[i]>R: reset low, pre, maxp.
+still complicated
+another approach:
+convert to find <=R and <=L-1 two subproblem.
+then it is much simpler, it is common practice for range problems.
+
+809. expressive words
+using two pointer to match and counter each char's repeat times.
+
+
 844. backspace string compare
 using stack is trivial
 using two pointer from right to left is a bit tricky.
@@ -247,6 +307,12 @@ lmax and rmax from both side
 
 
 ## recursive
+805. split array with same average
+- split the array into two parts by moving into two lists, so order does not matter.
+- assume we have m for list 1, and n for list 2. Sum(A)/m=Sum(B)/n with Sum(A)+Sum(B)=tsum, m+n=len.
+- we get Sa=tsum*m/len. Sa must be an integer, so tsum*m%len==0
+- now it reduces to combination sum.
+
 984. string without AAA or BBB
 base cases: A=0 B=0
 when A>B AAB+subproblems
@@ -262,6 +328,58 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array
+782. transform to chessboard
+we can swap rows, swap columns
+return the min number of swaps to make it a chessboard
+- need to calculate how many rows are same or xor with row 0
+- need to calculate how many cols are same or xor same with column 0
+- then we reduce it to a row and a col of numbers
+
+792. Number of Matching Subsequences
+a list of words, return number of words which is a subsequence of S.
+store the char with index in hashmap.
+and then do each word matching: 
+
+794. valid tic-tac-toe
+3x3 count row, col, diag, diagr
+
+
+
+798. Smallest Rotation with Highest Score
+Get point
+Each time when we rotate, we make index 0 to index N-1, then we get one more point.
+We know that for sure, so I don't need to record it.
+
+Lose point
+(i - A[i] + N) % N is the value of K making A[i]'s index just equal to A[i].
+For example, If A[6] = 1, then K = (6 - A[6]) % 6 = 5 making A[6] to index 1 of new array.
+So when K=5, we get this point for A[6]
+Then if K is bigger when K = (i - A[i] + 1) % N, we start to lose this point, making our score -= 1
+All I have done is record the value of K for all A[i] where we will lose points.
+
+807. Max Increase to Keep City Skyline
+seen from left the max cannot be changed
+seen from bottom, the max cannot be changed.
+each element is bound by the two max.
+
+816. ambiguous coordinates
+approach:
+- loop to divide into two half
+- each part add 0 or 1 decimal 
+- check valid.
+
+820. shortest encoding of words
+sort by length
+and shorter would be a part of longer string
+store all suffix of the string into hash set.
+
+
+822. card flipping games
+smallest number, flipping the card and the front is not in its front.
+those back and front the same, put into hashset.
+we check back and front to get the min number.
+
+
 825. Friends Of Appropriate Ages
 three conditions: 
 
@@ -395,6 +513,17 @@ support A+B and 2*A, two operations
 
 
 ## bfs
+815. bus routes
+each bus route is a circle
+from one station to another. 
+one a route: we have some stations connect other routes.
+bfs to reach the destination.
+- reconstruct the routes to a map: station vs route.
+- visited using hashset
+- queue store the route number and station number
+
+
+
 841. Keys and Rooms
 if we can unlock all the rooms
 
@@ -435,6 +564,16 @@ regular bfs
 
 
 ## dfs
+785. is graph bipartite
+giving a list of edges
+- we don't need to build the graph
+- use only color for both visited and color assigned
+- dfs on the edges.
+
+802. find eventual safe states
+- dfs
+- if meet 0, all nodes on the path will be set zero
+
 851. loud and rich
 dfs
 
@@ -500,6 +639,12 @@ dfs using negative color, restore inner side
 
 
 ## backtracking
+784. letter case permutation
+typical backtracking,
+
+797. All Paths From Source to Target
+classical backtracking
+
 842. Split Array into Fibonacci Sequence
 
 ## counting in array.
@@ -585,6 +730,14 @@ add passenger and unload passenger
 
 	
 ## Tree
+783. Minimum Distance Between BST Nodes
+apparently in order traversal, min diff only occurs between neighboring numbers
+
+814. binary tree pruning
+removing subtree with all zero.
+post-traversal: get its left and right, and check if it is leaf and 0 node, return null.
+
+
 834. sum of distances in tree.
 return the sum of each node to all other node's distance.
 this is a hard graph problem. 
@@ -725,6 +878,17 @@ all path passing the node sum<limit.
 O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
 
 ## greedy
+
+789. escape the ghost
+whoever reach the target who will win.
+
+810. chalkboard xor game
+remove one number, if the remaining bit xor ==0, then he loses.
+we can get the xor of all numbers first.
+if xor is 0, then alice win
+if xor not 0, then it means we have at least two different numbers, then we can erase any number different from xor, and won't lost
+even number length will win.
+
 861. score after flipping matrix
 greedy: keep the leftmost bits as 1 then keep the num of 1s in each column >= num of 0s.
 
@@ -853,6 +1017,12 @@ matching with the prefix, startwith
 
 
 ## union find
+803. Bricks Falling When Hit
+- only those connected to top will not falling
+- we set all the hit bricks to 0
+- add these bricks one by one and do union
+- the difference of bricks connected to top is the bricks to falling
+
 827. making a large island.
 - union find and merge to several islands
 - try all 0 cell and to see if we can connect to its neighboring islands
@@ -936,6 +1106,19 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+786. kth smallest prime fraction
+the is an upper triangle prime fraction
+row: descending order
+cols: ascending order.
+so we start from the first row, last col. and push its neighborings into heap.
+
+
+793. Preimage Size of Factorial Zeroes Function
+factorial number of zeros is a staircase increasing function.
+what we want to find is the k-zeros how many x.
+this is equivalent to find the equal-range of x.
+
+
 852. peak index in a mountain array
 simple binary search: using A[m]<A[m+1]
 
@@ -965,6 +1148,11 @@ nums[i]-nums[0]-i is the number of missing number.
 must be familiar with tech to convert to equivalent simple problems.
 
 ## hashmap
+791. custom sort string
+S is sorted using some criteria, sort T using the same criteria.
+in S, each char only appears once.
+so we just use count sorting, and that is.
+
 846. hand of straights
 it needs some tricks, use a map to get its neigbors
 
@@ -1035,6 +1223,17 @@ there are no nested braces. so just connect them using dfs
 
 
 ## Misc
+788. rotated digits
+rotate each digit individually.
+brutal force is fine to loop each number.
+
+796. Rotate String
+we double the string and see if we can find the other string inside.
+
+800. Similar RGB Color
+find the r,g,b and the shortest rr,gg,bb
+
+
 1111. Maximum Nesting Depth of Two Valid Parentheses Strings
 min the max(depth(A),depth(B))
 we try to make depth a and depth b similar to minimize
@@ -1078,6 +1277,11 @@ this is similar idea: count and the array value and then search.
 - dfs and eliminate duplicates and using permutation.
 
 ### math problem
+781. Rabbits in forest
+- different answers cannot be the same group
+- same answer could be one group but could also be another group (when there are more rabits answering)
+
+
 829. consecutive numbers sum
 just check brute force: if it can be decomposed to : x,x+1,x+2....x+i.
 
@@ -1129,6 +1333,10 @@ and then count sort.
 expand the number till double precision
 
 ## linked-list
+817. linked list components
+return number of groups given an array
+store array in hashset, and check one by one to see if they are in the hashset
+
 876. middle of the linked list.
 slow and fast.
 
@@ -1186,6 +1394,15 @@ swap only two letters in A so that A==B
 831. masking personal information
 830. positions of large group: simple two pointer
 824. goat latin
+819. most common word
+821. shortest distance to a character.
+two passes: first get the shortest distance to its left and then get the distance to its right.
+812. largest triangle area
+sorted
+811. subdomain visit count
+simple hash
+804. unique morse code words
+simple hash
 
 
 
