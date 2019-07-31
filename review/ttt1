@@ -1,4 +1,8 @@
 ## dp
+764. Largest Plus Sign
+brutal force to search at each position
+dp: 4 direction growing.
+
 790. Dominio and Tromino tiling
 using two types of shape to reach 2*N shape.
 
@@ -196,6 +200,10 @@ knapsack problem
 choose heaviest and smash. this is heap.
 
 ### shortest distance problem
+
+743. Network Delay Time
+bellman algorithm: loop over all nodes and using all edges to relax the distance
+
 787. Cheapest Flights Within K Stops
 can use dp to relax: loop over k times and using the edges to relax the distance.
 
@@ -239,6 +247,13 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
+763. Partition Labels
+each char appears only in one part.
+this is also a bfs like approach:
+we record each char's last index
+everytime we see a char, we update our max range(like bfs)
+if our max range==current char's last position, we got a partition.
+
 795. Number of Subarrays with Bounded Maximum
 [L,R]
 sliding window: 
@@ -328,6 +343,47 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array
+748. Shortest Completing Word
+using hashmap to record the occurance of each char (convert to lower)
+and check if the word contains the map.
+need to return the first, so using stable_sort (when equal the order is not changed)
+
+750. Number Of Corner Rectangles
+this is very tricky. 
+check for rect with 4 corners all '1'
+idea: 
+- for ith row, we check all previous row to see how many cols are 1
+- the number of rects are then cnt*(cnt-1)/2
+
+1139. Largest 1-Bordered Square
+need to find the largest square.
+idea: similar to dp approach
+- count the horizontal length of 1s and vertical length of 1s
+- then we use the min of veritcal and horizontal as the square length and check the other two horizontal and vertical
+
+
+758. bold words in string
+it says easy, but actually not.
+bold all keywords in the string.
+using a bool array and set it.
+
+761. special binary strings
+special binary string: num0s==num1s, each prefix num1s>=num0s.
+equivalent: need to break the string into special binsry strings and sort.
+11011000
+1(10)(1100)0
+swap the first and 2nd special binary string.
+also equivalent to valid parenthesis.
+the key is '1'+specialstring+'0'
+
+760. Find Anagram Mappings
+this is for numbers. combine the index and sort (making them same order)
+
+777. swap adjacent in LR string
+R go to the right, L goes to left
+R and L are bound by the LR.
+so just need to count the x between L R and see the changes.
+
 782. transform to chessboard
 we can swap rows, swap columns
 return the min number of swaps to make it a chessboard
@@ -447,6 +503,9 @@ we find the min and max and get the max-min
 
 
 ## stack & deque
+755. Pour Water
+hard to understand the problem.
+
 828. unique letter string
 using hashmap with stack.
 if a char is smaller and we still have the char in later, then we can safely remove that char in the stack.
@@ -511,8 +570,30 @@ using iterative stack
 856. score of parentheses
 support A+B and 2*A, two operations
 
+772. Basic Calculator III
+including +-*/() and space.
+ignore spaces
+
+770. basic calculator IV
+expressions... symbolic programming calculator
+
+
+
 
 ## bfs
+752. Open the Lock
+with deadends
+0000 to target
+same thing from target to 0000
+layer: each digit +1 or -1
+
+
+773. sliding puzzle
+convert the 2x3 board to string, 0 represents the empty slot.
+target is 123450
+bfs to push all possible swaps
+
+
 815. bus routes
 each bus route is a circle
 from one station to another. 
@@ -564,6 +645,14 @@ regular bfs
 
 
 ## dfs
+749. Contain Virus
+cell 0 is unaffected, cell 1 is affected.
+wall installed on boundary.
+each day you can only block one region.
+so basically, we need to find the region with the most neighbors and install walls
+and the other region will grow and we get the next and install walls.
+
+
 785. is graph bipartite
 giving a list of edges
 - we don't need to build the graph
@@ -639,6 +728,9 @@ dfs using negative color, restore inner side
 
 
 ## backtracking
+756. Pyramid Transition Matrix
+get all the combinations and backtracking to next layer.
+
 784. letter case permutation
 typical backtracking,
 
@@ -703,6 +795,15 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+757. Set Intersection Size At Least Two
+the intersection shall contain at least two elements from each interval.
+- sort the intervals according to the end.
+- get two elements from the first ..
+
+759. Employee Free Time
+similar adding/removing an event.
+and then prefix to find if we have common
+
 850. rectangle area II
 this is a very good question on 2d interval
 - add a rectangle and remove a rectangle, (x,y,value)
@@ -730,6 +831,31 @@ add passenger and unload passenger
 
 	
 ## Tree
+742. Closest Leaf in a Binary Tree
+given a target key, find the nearest leaf. (means min number of edges).
+it is equivalent to find the node, and then get the smallest depth leaf node.
+- preorder search to get the node
+- bfs to search, return the first seen leaf node.
+- what if it is already the leaf? we need go back to parent and then go down.
+it is also similar to the lowest common ancestor.
+
+
+776. split BST
+given a target value, split it into two subtree:
+one tree has nodes <= target
+one tree has nodes > target
+keep most the structure of the original tree
+- if root<=target, its right may contain some nodes <=target. and it is a subproblem
+ [less,greater]=subproblem
+ less attached to root->right, and the smaller shall be the root.
+ greater 
+ it is very tricky: the greater is then attached to root's parent's left.
+ 
+ 
+779. K-th Symbol in Grammar
+first row 0, then 0->01 and 1->10
+this is a full binary tree.
+
 783. Minimum Distance Between BST Nodes
 apparently in order traversal, min diff only occurs between neighboring numbers
 
@@ -878,6 +1004,18 @@ all path passing the node sum<limit.
 O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
 
 ## greedy
+754. reach a number
+can go left or right. min number to reach the number
+- go above the number
+- if difference is even, make half the negative
+- if difference is odd, then go another step, and negative
+
+765. couples holding hands
+greedy: we divide all numbers by 2, so the couples share the same number
+we swap once we see difference. every time we at least fix one pair. without causing less.
+
+775. global and local inversions
+needs all global inversions==local inversions
 
 789. escape the ghost
 whoever reach the target who will win.
@@ -1008,8 +1146,21 @@ sorting all combinations.
 1054. Distant Barcodes
 rearrange so that no neighboring are the same
 using heap to arrange the two most common words
+767. reorganize string
+same to 1054
 
 ## trie
+745. prefix and suffix search
+words[i] has weight i.
+search(prefix, suffix) return the word with max weight.
+smart solution using one trie.
+by adding suffix together with the orginal
+for example apple:
+apple$apple, pple$apple, ple$apple,le$apple,e$apple
+when query we just need to query suffix$prefix and check which one starts with this.
+weight i: each node contains the max weight (if we iterate from smaller to larger, it is automatically updated.
+be sure to add the empty suffix.
+
 1032 stream of characters
 matching with the prefix, startwith
 
@@ -1106,6 +1257,21 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+774. Minimize Max Distance to Gas Station
+given a list of station position in a row, add k more station so that the max distance is minimized.
+observation: for a distance, if we add one, it reduces to d/2
+if we add 2, it shall reduce to d/2 (but if we add based on previous result, we will get d/2)
+so we need think it globally.
+
+we can convert it to equivalent binary search problem:
+the max distance is max, min distance can be 0
+equivalent: using max distance D, how many stations we shall add.
+
+
+778. swim in rising water
+check the first time when connected.
+using binary search
+
 786. kth smallest prime fraction
 the is an upper triangle prime fraction
 row: descending order
@@ -1148,6 +1314,13 @@ nums[i]-nums[0]-i is the number of missing number.
 must be familiar with tech to convert to equivalent simple problems.
 
 ## hashmap
+769. Max Chunks To Make Sorted
+compare with sorted
+then check if hash is the same
+768. Max Chunks To Make Sorted II
+same to 769, but with duplicate in the hash so use multiset
+
+
 791. custom sort string
 S is sorted using some criteria, sort T using the same criteria.
 in S, each char only appears once.
@@ -1223,6 +1396,8 @@ there are no nested braces. so just connect them using dfs
 
 
 ## Misc
+751. ip to cidr
+
 788. rotated digits
 rotate each digit individually.
 brutal force is fine to loop each number.
@@ -1276,7 +1451,21 @@ this is similar idea: count and the array value and then search.
 1079. Letter Tile Possibilities
 - dfs and eliminate duplicates and using permutation.
 
+### gray code
+753. Cracking the Safe
+reflection code.
+2^k: base k reflection code, 
+- loop 2^k
+- reflect and change the last digit
+
+
 ### math problem
+780. reaching a point
+from (sx,sy) to (tx,ty) by transforming (x,x+y) or (x+y,y)
+- from target to source is the same
+- transform (x,y-x) or (x-y,y)
+- the transform must be tx-sx % x==0 or ty-sy % x==0
+
 781. Rabbits in forest
 - different answers cannot be the same group
 - same answer could be one group but could also be another group (when there are more rabits answering)
@@ -1403,6 +1592,16 @@ sorted
 simple hash
 804. unique morse code words
 simple hash
+766. toeplitz matrix
+762. prime number of set bits in binary representation
+747. largest number at least twice of others
+get the largest and second largest using one pass.
+746. min cost climbing stairs
+simple dp
+744. Find Smallest Letter Greater Than Target
+sorted char list, using upper_bound
+
+
 
 
 
