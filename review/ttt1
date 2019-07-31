@@ -1,4 +1,11 @@
 ## dp
+740. delete and earn
+similar to robber, using bins to store.
+
+741. cherry pickup
+two branches to walk simultaneously.
+
+
 764. Largest Plus Sign
 brutal force to search at each position
 dp: 4 direction growing.
@@ -503,6 +510,9 @@ we find the min and max and get the max-min
 
 
 ## stack & deque
+739. Daily Temperatures
+stack to find next greater element
+
 755. Pour Water
 hard to understand the problem.
 
@@ -795,6 +805,16 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+732. My Calendar III
+interval [start,end) half close half open
+k-booking
+similarly using ++/-- and prefix sum
+
+731. My Calendar II
+triple booking. similar approach as 732
+729. My Calendar I
+double booking, similar as 732.
+
 757. Set Intersection Size At Least Two
 the intersection shall contain at least two elements from each interval.
 - sort the intervals according to the end.
@@ -839,6 +859,9 @@ it is equivalent to find the node, and then get the smallest depth leaf node.
 - what if it is already the leaf? we need go back to parent and then go down.
 it is also similar to the lowest common ancestor.
 
+another approach: convert the tree into graph and then use bfs
+- dfs to build the relation
+- bfs to find the node.
 
 776. split BST
 given a target value, split it into two subtree:
@@ -1004,6 +1027,12 @@ all path passing the node sum<limit.
 O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
 
 ## greedy
+738. Monotone Increasing Digits
+given N, find the largest number with increasing digit <=N.
+approach:
+from right to left, find the first position where A[i]<A[i-1].
+and then change all digits in its right to '9'
+
 754. reach a number
 can go left or right. min number to reach the number
 - go above the number
@@ -1168,11 +1197,39 @@ matching with the prefix, startwith
 
 
 ## union find
+737. Sentence Similarity II
+a-b is similar then b-a is also similar
+a-b similar, b-c similar, then a,b,c are similar
+sentense similar: number of words are the same, 
+
+data structure: map<string,int> as parent
+self cooked union-find has defects: can only merge the current group to previous, but cannot merge the previous 
+group into even previous group
+using int for parent are not good.
+- for each pair, set its parent to itself
+- merge inside pair words
+
+734. Sentence Similarity
+similarity is not transferrable. only is symmetric.
+data structure is important: 
+each string can belong to multiple index group, two words are similar or not, they shall have same index/
+
+
+["a","very","delicious","meal"]
+["one","really","delicious","dinner"]
+[["great","good"],["extraordinary","good"],["well","good"],["wonderful","good"],["excellent","good"],["fine","good"],["nice","good"],
+["any","one"],["some","one"],["unique","one"],["the","one"],["an","one"],["single","one"],["a","one"],
+["truck","car"],["wagon","car"],["automobile","car"],["auto","car"],["vehicle","car"],
+["entertain","have"],["drink","have"],["eat","have"],["take","have"],
+["fruits","meal"],["brunch","meal"],["breakfast","meal"],["food","meal"],["dinner","meal"],["super","meal"],["lunch","meal"],["possess","own"],["keep","own"],["have","own"],["extremely","very"],["actually","very"],["really","very"],["super","very"]]
+
+
 803. Bricks Falling When Hit
 - only those connected to top will not falling
 - we set all the hit bricks to 0
 - add these bricks one by one and do union
 - the difference of bricks connected to top is the bricks to falling
+
 
 827. making a large island.
 - union find and merge to several islands
@@ -1600,6 +1657,8 @@ get the largest and second largest using one pass.
 simple dp
 744. Find Smallest Letter Greater Than Target
 sorted char list, using upper_bound
+733. flood fill
+simple dfs
 
 
 
