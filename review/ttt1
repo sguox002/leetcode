@@ -1,4 +1,34 @@
 ## dp
+651. 4 keys keyboard
+A, ctrl-a, ctrl-c,ctl-v.
+for N times, max number of A can be printed.
+dp[i] = max(dp[i], dp[i-j]*(j-1)) j in [3, i)
+
+650. 2 Keys Keyboard
+copy all and paste all.
+dp[i-1]=dp[j-1]+i/j
+
+656. coin path
+A: index from 1, -1: you cannot jump, A[i] is the cost.
+integer B: the largest step you can jump. i+1,i+2...i+B.
+return the jump path using min cost.
+if multiple path exist, return the lexico smallest.
+[1,2,4,-1,2], jump 2.
+do it from right to left and then we can always choose the leftmost solution
+note: there are multiple paths in the solution. so we need use linked-list searching for the path.
+path[i] is the next position of i.
+
+553. strange printer
+similar to removing box
+
+718. Maximum Length of Repeated Subarray
+larget common subarray or substring.
+
+730. count different palindromic subsequences
+only have abcd.
+dp[i][x] is for the subproblem length=i and ending with x.
+
+
 740. delete and earn
 similar to robber, using bins to store.
 
@@ -350,6 +380,10 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array
+658. Find K Closest Elements
+find the k closest number abs(num-x)
+sorted using abs(num-x) using comparator objector
+
 748. Shortest Completing Word
 using hashmap to record the occurance of each char (convert to lower)
 and check if the word contains the map.
@@ -576,7 +610,10 @@ it is equivalent to find the next smaller in its right directions for each eleme
 1028. Recover a Tree From Preorder Traversal
 using iterative stack
 
-### using stack to evalute expression
+### expression evaluation using stack
+726. number of atoms
+using map in the stack. similar approach for expression evaluation (nested)
+
 856. score of parentheses
 support A+B and 2*A, two operations
 
@@ -738,6 +775,19 @@ dfs using negative color, restore inner side
 
 
 ## backtracking
+526. Beautiful Arrangement
+index from 1 to N: either A[i]%i==0 or i%A[i]==0
+return the number of beautiful arrangement.
+- first construct the array from 1 to N. (which is one beautiful arrangement.)
+- loop over each element and swap with the end
+
+667. Beautiful Arrangement II
+n: 1 to n.
+k: need |a1-a2|, ....|a(n-1)-a(n)| has excatly k distinct numbers
+correctly understand: it does not ask for there are k numbers between, but asks for the difference is k numbers
+greedy: 1,k+1,2,k.....and then all difference is 1.
+so difference is k,k-1,k-2.....1,1,1,..1
+
 756. Pyramid Transition Matrix
 get all the combinations and backtracking to next layer.
 
@@ -851,6 +901,39 @@ add passenger and unload passenger
 
 	
 ## Tree
+652. Find Duplicate Subtrees
+using hashmap, serialize the tree for each node.
+we have to use root+left+right and store in map.
+
+
+653. Two sum, input is BST
+just follow two sum in array
+
+654. Maximum Binary Tree
+this is actually the heap.
+recursively choose the max and divide into left and right
+
+655. Print Binary Tree
+arrange each node's position
+
+662. Maximum Width of Binary Tree
+full binary.
+dfs. child is always 2*n,2*n+1
+
+
+663. Equal Tree Partition
+remove one edge and make the two subtree the same sum.
+just similar to array, we do in order traversal and put the sum of all subtrees into hashmap
+then we check if the sum is even and half sum exist.
+if sum==0, then we check number of 0.
+
+
+666. Path Sum IV
+the tree is represented as an array.
+each number: first digit is the depth, second digit is the level position, 3rd digit is the value.
+using full tree storing in an array, (non-existent node all 0)
+while building the array we can accumulate the sum till the leaf.
+
 742. Closest Leaf in a Binary Tree
 given a target key, find the nearest leaf. (means min number of edges).
 it is equivalent to find the node, and then get the smallest depth leaf node.
@@ -1027,6 +1110,17 @@ all path passing the node sum<limit.
 O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
 
 ## greedy
+
+
+665. Non-decreasing Array
+modify at most 1 element.
+This problem is like a greedy problem. 
+When you find nums[i-1] > nums[i] for some i, you will prefer to change nums[i-1]'s value, 
+since a larger nums[i] will give you more risks that you get inversion errors after position i. 
+But, if you also find nums[i-2] > nums[i], then you have to change nums[i]'s value instead, 
+or else you need to change both of nums[i-2]'s and nums[i-1]'s values.
+
+
 738. Monotone Increasing Digits
 given N, find the largest number with increasing digit <=N.
 approach:
@@ -1197,6 +1291,8 @@ matching with the prefix, startwith
 
 
 ## union find
+721. Accounts Merge
+
 737. Sentence Similarity II
 a-b is similar then b-a is also similar
 a-b similar, b-c similar, then a,b,c are similar
@@ -1271,6 +1367,43 @@ union and use each group's parent.
 
 
 ## sliding window
+727. Minimum Window Subsequence
+find the min substring which T is a subsequence of it.
+if there are multiple answer, return the first one. (leftmost)
+using two pointer match we can get the sliding window.
+it is not efficient when there are a lot of first char.
+need some optimizations: we check from right to left and see next jumping position
+
+    string minWindow(string S, string T) {
+        int m=S.size(),n=T.size();
+        int si=0,ti=0,len=m,start=-1;
+        while(si<m){
+            if(S[si]==T[ti]){
+                if(++ti == n) {
+                    //check feasibility from left to right
+                    int end=si+1;
+                    //check optimization from right to left
+                    while(--ti>=0){
+                        while(S[si--]!=T[ti]);
+                    }
+                    si++,ti++;
+                    //record the current smallest candidate
+                    if(end-si<len){
+                        len=end-si;
+                        start=si;
+                    }
+                }
+            }
+            si++;
+        }
+        return start==-1?"":S.substr(start,len);
+    }
+another approach: dp
+dp[i,j] stores the starting index of the substring T[0..i] and S[0...j]
+similar to edit distance, with just jump
+after get all combinations and then we check the smallest
+
+
 904. fruit into baskets
 equivalent: longest window which contains <= 2 kind of trees
 
@@ -1314,6 +1447,10 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+719. Find K-th Smallest Pair Distance
+the absolute difference between pairs is between 0 and A[n]-A[0]
+using a difference we count how many is less than it
+
 774. Minimize Max Distance to Gas Station
 given a list of station position in a row, add k more station so that the max distance is minimized.
 observation: for a distance, if we add one, it reduces to d/2
@@ -1371,6 +1508,11 @@ nums[i]-nums[0]-i is the number of missing number.
 must be familiar with tech to convert to equivalent simple problems.
 
 ## hashmap
+659. Split Array into Consecutive Subsequences
+get the frequency of each number
+and then count required and used.
+pretty tricky.
+
 769. Max Chunks To Make Sorted
 compare with sorted
 then check if hash is the same
@@ -1453,6 +1595,14 @@ there are no nested braces. so just connect them using dfs
 
 
 ## Misc
+722. remove comments
+aproach 1: regex
+appraoch 2: remove // and /* */ for multiline
+
+
+723. candy crush
+find all those candy to crush, and marking them as negative and move forward
+
 751. ip to cidr
 
 788. rotated digits
@@ -1517,6 +1667,10 @@ reflection code.
 
 
 ### math problem
+660. Remove 9
+removing all numbers containing 9
+equivalent: 9-base problem and we get the nth number.
+
 780. reaching a point
 from (sx,sy) to (tx,ty) by transforming (x,x+y) or (x+y,y)
 - from target to source is the same
@@ -1579,6 +1733,10 @@ and then count sort.
 expand the number till double precision
 
 ## linked-list
+725. split linked list in parts
+k in each parts.
+just use similar ideas in array
+
 817. linked list components
 return number of groups given an array
 store array in hashset, and check one by one to see if they are in the hashset
@@ -1659,7 +1817,30 @@ simple dp
 sorted char list, using upper_bound
 733. flood fill
 simple dfs
+724. Find Pivot Index
+left sum=right sum, and it is a simple both end problem
+720. longest word in dictionary
+661. image smoother
+need use a new image
+657. robot returning to origin.
+UDRL without rotation
 
+knowledge
+- random_shuffle
+loop from back and swap with previous random
+void random_shuffle( RandomIt first, RandomIt last )
+{
+    typename std::iterator_traits<RandomIt>::difference_type i, n;
+    n = last - first;
+    for (i = n-1; i > 0; --i) {
+        using std::swap;
+        swap(first[i], first[std::rand() % (i+1)]);
+        // rand() % (i+1) isn't actually correct, because the generated number
+        // is not uniformly distributed for most values of i. A correct implementation
+        // will need to essentially reimplement C++11 std::uniform_int_distribution,
+        // which is beyond the scope of this example.
+    }
+}
 
 
 
