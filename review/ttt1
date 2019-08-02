@@ -1,4 +1,18 @@
 ## dp
+583. Delete Operation for Two Strings
+edit distance problem
+
+600. Non-negative Integers without Consecutive Ones
+use two dp array dp0 ending with 0, dp1 ending with 1
+need to remove the extra where >=N.
+
+629. k inverse pairs array
+array 1 to n, find the number of permuations which have exactly k inverse pairs
+recurrence relation dp[i][j]=dp[i][j-1]+dp[i-1][j]-dp[i-1][j-i]
+if we put n as the last number then all the k inverse pair should come from the first n-1 numbers
+if we put n as the second last number then there's 1 inverse pair involves n so the rest k-1 comes from the first n-1 numbers
+
+
 634. Find the Derangement of An Array
 array 1 to n.
 a permutation where none of the element is in its original position
@@ -25,6 +39,10 @@ similar to max increasing subsequence
 count how many palindrome substring
 using dynamic: dp[i,j]=dp[i+1,j]+dp[i,j-1]-dp[i-1,j-1]
 must make sure the inside is palindrome.
+
+712. min ascii delete sum for two strings
+
+714. best time to buy and sell stocks with transaction fee
 
 651. 4 keys keyboard
 A, ctrl-a, ctrl-c,ctl-v.
@@ -228,6 +246,23 @@ dp with i,j,k O(N^3) to split into one triangle and two subproblems
 
 
 ### knapsack
+416. partition equal subset sum
+- no need 2d but using 1d
+- using vector<int> to get the sum
+- return target=sum/2
+
+2d approach using bool:
+dp[i-1][j] || dp[i-1][j-nums[i-1]]
+base: target=0 for all dp[i][0]=1
+then we can optimize it in space. (using reverse looping)
+
+698. Partition to K Equal Sum Subsets
+backtracking: 
+
+other similar problem: 
+minimize the difference sum of the two parts. maxmize the one group sum bound by tsum/2
+the input has negatives: shift to all positives
+
 638. shopping offers
 combine the price and the quantity
 need to match both exactly.
@@ -411,6 +446,24 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array
+605. can place flower
+add the end 0 and 1 to avoid ending process
+
+
+611. Valid Triangle Number
+a+b>c so just find the upper bound
+
+616. add bold tag in string
+using bool array to indicate the char to be bold
+and automatically merge
+
+624. max distance in array
+k sorted array, find the max absolute difference among different arrays.
+we set the min as a[0][0] and max as a[0].back()
+then we update the min and max using array i. and get the max diff.
+get the max diff first since we cannot get the diff from the same array, ie. we use all previous.
+this is a bit tricky.
+
 658. Find K Closest Elements
 find the k closest number abs(num-x)
 sorted using abs(num-x) using comparator objector
@@ -646,6 +699,8 @@ it is equivalent to find the next smaller in its right directions for each eleme
 using iterative stack
 
 ### expression evaluation using stack
+591. tag validator
+
 640. solve the equation
 include x, +- and coefficient, numbers
 and we want to reduce lhs and rhs into ax+b format.
@@ -667,6 +722,24 @@ expressions... symbolic programming calculator
 
 
 ## bfs
+573. squirrel simulation
+squirrel in one position, tree in one position, and several nuts in other places
+squirrel get the nut one by one and put under the tree.
+squirrel position-closest nut->tree->closet nut->tree.....
+lesson: bfs is overkill, using manhatton distance
+Proof: Let the minimum distance from each nut to the tree be a_1, ..., a_n and 
+let the minimum distance from each nut to the initial squirrel position be b_1, ..., b_n. 
+Note that the minimum distance between two positions in the matrix is determined by their Manhattan distance.
+
+Then, if the squirrel were to start at the tree, then the minimum total distance required to collect all the nuts is 2a_1 + ... + 2a_n. 
+However, since the squirrel starts elsewhere, we just need to substitute one of the 2a_i terms with a_i + b_i. 
+Or equivalently, we replace one of the a_i terms in the sum with b_i. 
+To minimize the total sum value at the end, we choose i that maximizes a_i - b_i.
+
+
+similar problem: 1138. alpha board path.
+
+
 752. Open the Lock
 with deadends
 0000 to target
@@ -731,6 +804,27 @@ regular bfs
 
 
 ## dfs
+576. out of boundary paths
+number of paths
+out of boundary +1
+inside: +0
+
+
+582. kill process
+using map to assemble all the children, forming a tree relation
+then dfs
+
+695. max area of island
+
+694. number of distinct island
+only translational
+
+
+711. number of distinct island
+it supports translation, roation and reflection
+dfs to get the coordinate for an island, and then perform all possible rotations/reflections
+and find the canonical representation by sorting
+
 749. Contain Virus
 cell 0 is unaffected, cell 1 is affected.
 wall installed on boundary.
@@ -894,6 +988,15 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+715. range module
+addrange: merge to previous intervals
+queryrange: check if the range is tracked
+removerange: remove the range.
+approach 1: using event add/removal
+approach 2: merge interval.
+
+
+
 732. My Calendar III
 interval [start,end) half close half open
 k-booking
@@ -940,6 +1043,30 @@ add passenger and unload passenger
 
 	
 ## Tree
+572. Subtree of Another Tree
+helper is_sametree
+but it is O(N^2)
+using serialization and check if the shorter one is a substring using preorder traversal.
+
+590. n-ary tree postorder traversal
+589. n-ary tree preorder traversal
+
+606. Construct String from Binary Tree
+a kind of serialization
+if does not have right no ()
+if does not have left but have right need add ()
+
+
+617. merge two binary trees
+simple: if both null, null
+either is null, return it
+both is not null, return sum
+
+623. add one row to tree
+need use bfs to add nodes
+get to the previous layer and create new nodes and connect
+
+
 637. average of levels in binary tree
 simple
 
@@ -975,6 +1102,10 @@ the tree is represented as an array.
 each number: first digit is the depth, second digit is the level position, 3rd digit is the value.
 using full tree storing in an array, (non-existent node all 0)
 while building the array we can accumulate the sum till the leaf.
+
+700 search in BST-linked
+701 insert into a BST.
+insert to the leaf
 
 742. Closest Leaf in a Binary Tree
 given a target key, find the nearest leaf. (means min number of edges).
@@ -1150,8 +1281,23 @@ full tree, the node from leaf to parent is n/2 and apply the zigzag relation.
 1080. Insufficient Nodes in Root to Leaf Paths
 all path passing the node sum<limit.
 O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
+it is not so easy:
+when a leaf node < limit, return null, else return itself
+otherwise, check its left and right
+if left and right are removed, 
+
 
 ## greedy
+575. Distribute Candies
+distribute candies between brother and sister, what the max kinds of candies sister can get.
+half of the candies, num types of the candies. whichever is min, 
+621 task schedule
+greedy: find the most common task and arrange in a period of (n+1) task
+if there are multiple most common task we need add one extra for each.
+finally ans shall be >= number of tasks
+
+
+
 649 dota2 senate
 greedy to ban the immediate person and move the senate to the end.
 using queue.
@@ -1277,6 +1423,17 @@ common practice: rotation
 
 
 ## heap
+630 course schedule III
+the idea: greedy choice: sort the courses according to the closing time, always choose the closing time earlier to ensure more courses taken
+using the heap to remove the longest courses in the pq.
+
+
+632 smallest range
+k lists, find the smallest range includes at least one number from each of the list
+inuition: similar to merge sort, we store each head element in pq, and pop the smallest and take the followed one from the same list.
+we are looking for the max and min.
+
+
 857. min cost to hire k workers
 quality, wage expectation, ....
 this is quite tricky: 
@@ -1419,6 +1576,10 @@ union and use each group's parent.
 
 
 ## sliding window
+713. Subarray Product Less Than K
+similarly, if the window is k then we have k*(k+1)/2 
+and we just add the count ending at current number and keeps growing the window
+
 727. Minimum Window Subsequence
 find the min substring which T is a subsequence of it.
 if there are multiple answer, return the first one. (leftmost)
@@ -1499,6 +1660,9 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+702. Search in a Sorted Array of Unknown Size
+assuming r=INT_MAX
+
 644. maximum average subarray II
 window size >=k.
 equivalent: max average is the max element, min average is the min element
@@ -1568,6 +1732,18 @@ nums[i]-nums[0]-i is the number of missing number.
 must be familiar with tech to convert to equivalent simple problems.
 
 ## hashmap
+594. Longest Harmonious Subsequence
+max and min difference is exactly one.
+sort the array using map
+and then from the smallest try to get the longest
+
+599. Minimum Index Sum of Two Lists
+record the string vs index
+find the intersection
+
+609. Find Duplicate File in System
+using file content as the key and name as value
+
 659. Split Array into Consecutive Subsequences
 get the frequency of each number
 and then count required and used.
@@ -1727,7 +1903,30 @@ reflection code.
 
 
 ### math problem
+587. Erect the Fence
+convex hull algorithm, gift wrapping 
 
+
+592. fraction addition and subtraction
+
+
+593. valid square
+6 lengths 4 are the same and 2 are the same
+
+625. min factorization
+factorization of the number, and the digit product=num
+factorization always get a pair.
+and the factor can be decomposed again into smaller numbers until we get one digit number
+so it becomes a recursive.
+- shortest number of digits---
+- choose the smallest factor between [2,9] for example 15=3*5
+We only need to pick the largest factor in [2, 9] each time and put it to the front of current result. (So that the first pick is put at the least significant digit).
+Why it works?
+Lets forget about how we put the digits for a moment. If we just pick the largest factor in [2, 9] every time, we can guarantee the result has the shortest length (least digits).
+Now if we have the shortest length, the way to make this number smallest is to put the largest one to the least significant.
+
+
+710. random pick with blacklist
 
 645. set mismatch
 array 1 to n , and one number is converted to other number.
@@ -1804,6 +2003,12 @@ and then count sort.
 expand the number till double precision
 
 ## linked-list
+708. insert into a cyclic sorted list
+- empty list, insert and linked to itself
+- value is between prev and next.
+- all values are the same and insert any where
+
+
 725. split linked list in parts
 k in each parts.
 just use similar ideas in array
@@ -1817,6 +2022,31 @@ slow and fast.
 
 
 ## design
+588. design in-memory file system
+ls: list files and directories
+mkdir: 
+addContentToFile: create/append contents to file
+readContentFromFile: 
+
+this is a file tree structure.
+using trie. or n-ary tree structure.
+
+604 design compressed string iterator
+similar to the count and array using binary search and prefix sum
+
+622. design circular queue
+using vector and head, tail
+
+631. design excel sum formula
+row from 1 to 26
+col from A to Z
+set: set the value at row and col
+get: get the value at row col
+sum: sum(r,c,numbers) sum the numbers and set the value at row col
+the trick is when one element is changed, the formula shall be applied to the cells again.
+
+
+
 635. design log storage system
 store the log with timestamp.
 retrieve using granuity
@@ -1834,6 +2064,13 @@ the idea: for each frequency build a stack: hash: frequency vs stack
 value - frequency
 freq - stack.
 
+716. max stack
+using two stacks. 
+the only trick is: popmax, we need find the element and pop and save all those elements and put back.
+
+707. design linked list
+706 design hashmap
+705. design hashset
 
 ## trivial
 1119. Remove Vowels from a String
@@ -1907,6 +2144,19 @@ left sum=right sum, and it is a simple both end problem
 need use a new image
 657. robot returning to origin.
 UDRL without rotation
+717. 1 bit and 2 bit characters
+two pointer: see 1 jump 2, see 0 jump 1
+709. to lower case
+704. binary search
+703. kth largest elment in a stream
+simple heap
+633. sum of seuare numbers
+brutal force
+628. max product of three numbers
+598. range addition
+all operations is from [0,0] to [i,j] so there are fixed overlaps
+
+
 
 knowledge
 - random_shuffle
@@ -1924,6 +2174,8 @@ void random_shuffle( RandomIt first, RandomIt last )
         // which is beyond the scope of this example.
     }
 }
+
+- pascal triangle each number is C(n,m)
 
 
 
