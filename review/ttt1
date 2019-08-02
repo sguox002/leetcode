@@ -1,4 +1,31 @@
 ## dp
+634. Find the Derangement of An Array
+array 1 to n.
+a permutation where none of the element is in its original position
+count the number of derangement.
+we have n! permutations.
+1 can be put any position except 0.
+2 can be put any position except 1.
+...
+dp[0]=1 []
+dp[1]=0 [1]
+dp[2]=1 [1,2]
+
+dp[n]=(n-1)*(dp[n-1]+dp[n-2])
+
+
+639. decode ways II
+combine with previous digit or on its own.
+
+
+646. max length of pair chain
+similar to max increasing subsequence
+
+647. palindromic substrings
+count how many palindrome substring
+using dynamic: dp[i,j]=dp[i+1,j]+dp[i,j-1]-dp[i-1,j-1]
+must make sure the inside is palindrome.
+
 651. 4 keys keyboard
 A, ctrl-a, ctrl-c,ctl-v.
 for N times, max number of A can be printed.
@@ -201,6 +228,10 @@ dp with i,j,k O(N^3) to split into one triangle and two subproblems
 
 
 ### knapsack
+638. shopping offers
+combine the price and the quantity
+need to match both exactly.
+
 823. binary trees with factors
 equivalent: all nodes shall be from the array, so combinations shall be a[i], a[j] has a common factor
 
@@ -544,6 +575,10 @@ we find the min and max and get the max-min
 
 
 ## stack & deque
+636. Exclusive time of functions
+using stack, need to subtract the other function's time
+
+
 739. Daily Temperatures
 stack to find next greater element
 
@@ -611,6 +646,10 @@ it is equivalent to find the next smaller in its right directions for each eleme
 using iterative stack
 
 ### expression evaluation using stack
+640. solve the equation
+include x, +- and coefficient, numbers
+and we want to reduce lhs and rhs into ax+b format.
+
 726. number of atoms
 using map in the stack. similar approach for expression evaluation (nested)
 
@@ -901,6 +940,9 @@ add passenger and unload passenger
 
 	
 ## Tree
+637. average of levels in binary tree
+simple
+
 652. Find Duplicate Subtrees
 using hashmap, serialize the tree for each node.
 we have to use root+left+right and store in map.
@@ -1110,7 +1152,9 @@ all path passing the node sum<limit.
 O(N): the limit - val. if leaf<limit, return null, the left and right both returns null, then the root is also removed.
 
 ## greedy
-
+649 dota2 senate
+greedy to ban the immediate person and move the senate to the end.
+using queue.
 
 665. Non-decreasing Array
 modify at most 1 element.
@@ -1273,6 +1317,14 @@ using heap to arrange the two most common words
 same to 1054
 
 ## trie
+642. Design Search Autocomplete System
+add a count in the node.
+
+648. replace words
+replace the word with prefix in the dictionary
+build the trie using the dictionary 
+and then find if it starts with.
+
 745. prefix and suffix search
 words[i] has weight i.
 search(prefix, suffix) return the word with max weight.
@@ -1447,6 +1499,14 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+644. maximum average subarray II
+window size >=k.
+equivalent: max average is the max element, min average is the min element
+so we can use binary search (double) and find the k.
+for double: right-left>eps, l=mid,r=mid
+
+643. maximum average subarray I.
+fixed window size k.
 719. Find K-th Smallest Pair Distance
 the absolute difference between pairs is between 0 and A[n]-A[0]
 using a difference we count how many is less than it
@@ -1667,6 +1727,17 @@ reflection code.
 
 
 ### math problem
+
+
+645. set mismatch
+array 1 to n , and one number is converted to other number.
+that is: one number missing and one number duplicates
+find the two numbers.
+using xor: suppose duplicate is a, and missing is b, then we get a^b
+if we find the duplicate, and problem solved.
+using the hashmap to count.
+or check all seen element to negative.
+
 660. Remove 9
 removing all numbers containing 9
 equivalent: 9-base problem and we get the nth number.
@@ -1746,6 +1817,18 @@ slow and fast.
 
 
 ## design
+635. design log storage system
+store the log with timestamp.
+retrieve using granuity
+using multimap to store to accept duplicate key.
+using binary search
+
+642. design search auto-complete system
+see trie.
+641 design circular deque
+using vector, head tail pointer
+
+
 895. max frequency stack
 the idea: for each frequency build a stack: hash: frequency vs stack
 value - frequency
