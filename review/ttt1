@@ -1,4 +1,11 @@
 ## dp
+546. remove boxes
+
+
+551 student attendenace record I.
+552 student attendance record II
+dp: valid without A, and then add A any position.
+
 583. Delete Operation for Two Strings
 edit distance problem
 
@@ -250,6 +257,7 @@ dp with i,j,k O(N^3) to split into one triangle and two subproblems
 - no need 2d but using 1d
 - using vector<int> to get the sum
 - return target=sum/2
+base condition: sum=0, all true, not selecting any of it.
 
 2d approach using bool:
 dp[i-1][j] || dp[i-1][j-nums[i-1]]
@@ -262,6 +270,13 @@ backtracking:
 other similar problem: 
 minimize the difference sum of the two parts. maxmize the one group sum bound by tsum/2
 the input has negatives: shift to all positives
+
+548. Split Array with Equal Sum
+triplet (i,j,k) cut it into 4 segments, left, right, mid1, mid2
+so we can start from left and right, check if we can get a target sum.
+tsum=4*psum+A[x]+A[y]+A[z].
+prefix sum from left. and try all combinations (fix x and z).
+suffix sum from right.
 
 638. shopping offers
 combine the price and the quantity
@@ -446,6 +461,47 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array
+533. lonely pixel II
+this is again in matrix to find pattern problem.
+row R and col c has exactly N black pixels.
+
+531. Lonely Pixel I
+same row and col does not have other black pixels.
+we can count the black pixel in each row and col.
+
+
+555. Split Concatenated Strings
+a list of strings: each string can reverse or not reverse.
+string order cannot be altered.
+forming a loop and cut at any places
+get the max string.
+- first, need compare if we shall reverse the string or not.
+- second, we need check where to cut the get the largest.
+approach 1: dfs, try reverse/no reverse two options and then check every cut position
+approach 2: bfs, 
+assuming we cut at sj (inside), it will generate two substr:
+s0,s1.....sj....sn.
+sj_post,....sn s0,s1....sj_pre
+so we need max sj+1....sn and s0 to sj-1.
+sj can be reversed or not reversed
+the approach:
+find the max string for each input string
+try all possible cut position and get the max.
+note
+
+560. Subarray Sum Equals K
+prefix sum so that subarray sum reduces to subtraction.
+then we can use loop to find prefx+k.
+or using map and add the count.
+this is a highly rated question
+
+564. Find the Closest Palindrome
+the closest palindrome can be < the number or > the number
+same length or less, up to 999xxxx9
+longer length: 10xxxx01
+so we just find all these palindrome numbers and sort using the number and choose the difference smallest.
+
+
 605. can place flower
 add the end 0 and 1 to avoid ending process
 
@@ -626,8 +682,22 @@ b[j]-a[i]+a[j]-b[i]+j-i. --> [a[i]-b[i]-i]-[a[j]-b[j]-j]
 then we separate i and j, it is actually 4 cases
 we find the min and max and get the max-min
 
+### cyclic linking
+565. array nesting.
+find the longest cycle in the array containing 0 to n-1
+
 
 ## stack & deque
+556. Next Greater Element III
+same digits used and get the next greater number.
+next_permutation: equivalent
+503. Next Greater Element II
+circular array: find the next greater element
+using stack to store one copy of the array first
+496. Next Greater Element I
+two arrays: one array is subset of another array. same as find greater element for each element in the same array.
+using stack.
+
 636. Exclusive time of functions
 using stack, need to subtract the other function's time
 
@@ -722,6 +792,14 @@ expressions... symbolic programming calculator
 
 
 ## bfs
+542. 01 Matrix
+this is a good bfs. 
+the first layer is those 1s around 0. 
+the 2nd layer is those attached to those cells in the queue
+if the value is the level, it is processed
+otherwise we need to push to queue.
+the layer concept is not that clear, but it is a very good bfs problem.
+
 573. squirrel simulation
 squirrel in one position, tree in one position, and several nuts in other places
 squirrel get the nut one by one and put under the tree.
@@ -804,6 +882,12 @@ regular bfs
 
 
 ## dfs
+547. friend circle
+simple dfs
+
+562. Longest Line of Consecutive One in Matrix
+this seeks for vertical, horizontal, diag, anti-diag 4 types of dfs.
+
 576. out of boundary paths
 number of paths
 out of boundary +1
@@ -988,6 +1072,11 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+554. Brick Wall
+similar to interval problem.
+we accumulate the length and store in hashmap and the max one is the position.
+do not include the last position.
+
 715. range module
 addrange: merge to previous intervals
 queryrange: check if the range is tracked
@@ -1043,6 +1132,51 @@ add passenger and unload passenger
 
 	
 ## Tree
+536. Construct Binary Tree from String
+this is a expression evalulation or stack problem
+or recursive problem.
+
+538. convert bst to greater tree
+suffix sum
+
+543. Diameter of Binary Tree
+diameter: left +root+right (the longest path between any two nodes)
+O(N^2) approach: left depth+right depth vs max(left diameter, right diameter).
+O(N) approach: record the diameter while searching for depth
+
+545. boundary of binary tree
+counter-clockwise direction, output the nodes
+left bound
+bottom
+right bound
+
+node.left is left bound if node is left bound;
+node.right could also be left bound if node is left bound && node has no right child;
+Same applys for right bound;
+if node is left bound, add it before 2 child - pre order;
+if node is right bound, add it after 2 child - post order;
+A leaf node that is neither left or right bound belongs to the bottom line;
+
+
+549. binary tree longest consecutive sequence II.
+have ascending and descending two directions.
+we return the pair of length
+at the root, we connect ascending or descending.
+path includes passing the parent node.
+
+298. Binary Tree Longest Consecutive Sequence
+path only involve parent-child relation
+only ascending order.
+
+559. max depth of n-ary tree
+
+563. Binary Tree Tilt
+tilt: absolute difference between the sum of subtree and right subtree.
+O(N^2): postorder to get the tilt with helper to get the subtree sum.
+O(N): we need save some information
+get the sum of a subtree and find the tilt.
+this is similar to memoization while doing traversal.
+
 572. Subtree of Another Tree
 helper is_sametree
 but it is O(N^2)
@@ -1288,6 +1422,19 @@ if left and right are removed,
 
 
 ## greedy
+544. Output Contest Matches
+strongest vs the weakest.
+1,2,3,4,5,6,7,8
+first round: (1,8),(2,7),(3,6),(4,5) pairs
+second round: ((1,8),(4,5)),((2,7),(3,6))
+do this until only two teams.
+a simple while loop (divide by 2 every time).
+
+
+561. array partition I
+sum of min of pairs to be min. 
+sort and simple math.
+
 575. Distribute Candies
 distribute candies between brother and sister, what the max kinds of candies sister can get.
 half of the candies, num types of the candies. whichever is min, 
@@ -1660,6 +1807,9 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+540. single element in a sorted array
+using binary search and count and we can find the one
+
 702. Search in a Sorted Array of Unknown Size
 assuming r=INT_MAX
 
@@ -1732,6 +1882,10 @@ nums[i]-nums[0]-i is the number of missing number.
 must be familiar with tech to convert to equivalent simple problems.
 
 ## hashmap
+567. Permutation in String
+check if a string contains the permutation of another string
+using hashmap to check if the hashmap> the other hashmap.
+
 594. Longest Harmonious Subsequence
 max and min difference is exactly one.
 sort the array using map
@@ -1903,6 +2057,17 @@ reflection code.
 
 
 ### math problem
+537. complex number multiplication
+simple.
+
+539. Minimum Time Difference
+find the two time difference
+if it is over half a day, then add a day
+unwrap
+
+
+553. optimal division
+
 587. Erect the Fence
 convex hull algorithm, gift wrapping 
 
@@ -2022,6 +2187,10 @@ slow and fast.
 
 
 ## design
+535 encode and decode tinyURL
+using 0-9A-Za-z total 62 chars to get a 6 char long string.
+using random 62 mod
+
 588. design in-memory file system
 ls: list files and directories
 mkdir: 
@@ -2155,8 +2324,8 @@ brutal force
 628. max product of three numbers
 598. range addition
 all operations is from [0,0] to [i,j] so there are fixed overlaps
-
-
+566. reshape the matrix
+557. Reverse Words in a String III
 
 knowledge
 - random_shuffle
