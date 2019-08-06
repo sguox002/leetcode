@@ -1,4 +1,27 @@
 ## dp
+471. Encode String with Shortest Length
+encode it into k[str], it adds k and []
+encode must make the string shorter.
+string i,j can be encode into shorter string.
+"abbbabbbcabbbabbbc"
+abbb repeat twice, 2[abbb]c2[abbb]c.
+and this can be encoded again as 2[2[abbb]c]
+recursive (top down could be easier?)
+any good way to detect the repeating pattern?
+
+dfs: (recursive approach)
+using from 0 to i and see if we have repeat
+check if encoded string is shorter
+update.
+
+
+472. Concatenated Words
+a list of dictionary words find all strings which can be concatenated by other strings in the dictionary
+-. only longer string can do this
+-. solve the string using previous smaller strings.
+-. mark all the positions and concat. (dp problem)
+this also can be done using dfs/backtracking.
+
 546. remove boxes
 
 
@@ -253,6 +276,11 @@ dp with i,j,k O(N^3) to split into one triangle and two subproblems
 
 
 ### knapsack
+474. ones and zeros
+you have m 0s and n 1s, and a list of 01 strings
+return the max number of words can be chosen.
+dp[i,j]=max(dp[i,j],dp[i-mk][j-nk]  mk and nk is the number of 0s and 1s in string k.
+
 416. partition equal subset sum
 - no need 2d but using 1d
 - using vector<int> to get the sum
@@ -461,6 +489,39 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array
+466. Count The Repetitions
+S1=[s1,n1]
+S2=[s2,n2]
+find the max M such that [S2,M] can be obtained from S1.
+approach: repeat pattern
+use two pointer to find s2 in S1, then record, the position and find reocurrance and skip
+very tricky using the two pointer.
+record i0%m, i0 and nmatch
+period=i0-mp[i0%m][0]
+nmatch=match-mp[i0%m][1]
+
+
+467. Unique Substrings in Wraparound String
+neigboring char difference is 1 or 25
+find the number of unique string.
+ending with different char and different length.
+
+
+468. validate ip address
+ipv4 and ipv6
+simple string manipulations
+
+475. heaters
+sort house and heater's position
+the closet heater to the house shall cover it. 
+approach 1: cover the left from left to right, cover right from right to left, similar to distribute candies
+approach 2: find each heater's max radius.
+
+481. magical string
+the count of contiguous '1' or '2' will get the string itself.
+return the length=n magical string
+starting with 1,2,2...
+
 533. lonely pixel II
 this is again in matrix to find pattern problem.
 row R and col c has exactly N black pixels.
@@ -992,6 +1053,11 @@ dfs using negative color, restore inner side
 
 
 ## backtracking
+473. matchsticks to square
+this is to divide the array into 4 parts to target sum
+using backtracking
+once the stick is used, put them in visited.
+
 526. Beautiful Arrangement
 index from 1 to N: either A[i]%i==0 or i%A[i]==0
 return the number of beautiful arrangement.
@@ -1723,6 +1789,15 @@ union and use each group's parent.
 
 
 ## sliding window
+480. sliding window median
+sliding window max/min using dq
+sliding window median is much harder.
+approach 1: using one max heap for left, and one min heap for right
+so the median can be computed with the top elements of the two heap.
+old element moving out of window: since it maybe inside the heap, we need to ignore them.
+approach 2: similar to brutal force. maintainng the k elements in a multiset and apply sliding window.
+
+
 713. Subarray Product Less Than K
 similarly, if the window is k then we have k*(k+1)/2 
 and we just add the count ending at current number and keeps growing the window
@@ -2057,6 +2132,41 @@ reflection code.
 
 
 ### math problem
+469. a list of points to check if the polygon is convex.
+in the plane, (x,y).
+three points we find the cross product.
+
+470. implement rand10 using rand7.
+rand7 generate 1 to 7 uniformly
+rand10 generate 1 to 10 uniformly
+use rand7() generate number between 0 to 48
+7*(rand7()-1)+rand7()-1 (cannot just use 7*rand7, it will generate only 7 numbers)
+when it is in the range [40,48] we regenerate, so we get random number [0,39]
+-question: why cannt use other multiple?
+1/49+9/49*1/49+(9/49)^2*1/49+...
+=1/49*(1+9/49+(9/49)^2+.....)
+=1/49*49/40
+=1/40
+- question: why 49? it must be n^b.
+- question: how to improve the efficiency?
+
+478. generate random point in a circle
+angle from -pi to pi
+r from 0 to 1, 
+x=rcos(a)
+y=rsin(a)
+x^2+y^2=r^2
+do random along angle and radius direction. note r direction need use sqrt(r).
+
+479. Largest Palindrome Product
+n digit, from 10000 to 99999
+brutal force check n digit*ndigit will get 2n digits.
+
+477. Total Hamming Distance
+hamming distance is total different bits.
+O(N) solution: divide it into two sets 
+and then choose one from each set.
+
 537. complex number multiplication
 simple.
 
