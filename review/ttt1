@@ -1,4 +1,15 @@
 ## dp
+403. Frog Jump
+frog can jump k-1,k,k+1, k is previous step
+this can be solved using recursive approach
+pretrim: when neigboring elements > i, then cannot reach
+
+446. arithmetic slices II-subsequence
+dp: using vector of map since diff is not in limited range
+413. Arithmetic Slices
+return the number of slices
+dp[i]: once we find 3, we add previous dp.
+
 464. can I win.
 choose from 1 to n, and add to a target, whoever get >=target wins
 two players play optimally.
@@ -470,6 +481,8 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
+392. is subsequence
+
 457. circular array loop
 positive: go forward num step
 negative: move backward num step
@@ -578,6 +591,35 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array & string
+388. Longest Absolute File Path
+\n directory end
+\t: indent, number of \t is the level
+file with .extension
+
+390. Elimination Game
+from left to right, remove the first and every one after
+then reverse direction
+find the last number remaining
+simulate the process. 
+ajust the head, step, and direction
+everytime the remaining will be cut by half.
+
+418. sentence screen fitting
+how many number of repeats can fit.
+treat it as 1d, concat the array into one string.
+- first char in each row cannot be a space, minus 1
+- a word cannot be break into two halves
+- last char could: add extra spaces or remove one space
+using a start pointer, change a line add ncols
+first char is space, advance a char in string (using % for repeating)
+first char is not space and previous line char is also not a space, then we need go back.
+
+
+
+419. Battleships in a Board
+xxx
+- it has space in either end
+- it is horizontal or vertical
 
 454. 4sum II
 four lists, A[i]+B[j]+C[k]+D[l]=0
@@ -860,11 +902,21 @@ then we separate i and j, it is actually 4 cases
 we find the min and max and get the max-min
 
 ### cyclic linking
+442. Find All Duplicates in an Array
+elements are from 1 to n. some appear twice
+find all appear twice.
+using cyclic linking and mark those seen as negative (using cyclic linking)
+once we see the negative, it is a seen candidate.
+
 565. array nesting.
 find the longest cycle in the array containing 0 to n-1
 
 
 ## stack & deque
+402. remove k digits
+remove k digits to make the number smallest
+using stack to maintain a increasing sequence, remove stack top if it is larger than current.
+
 456. 132 pattern
 the idea using stack: we can have 3 number comparing.
 from right to left and keeps a monotonic decreasing stack.
@@ -957,6 +1009,22 @@ it is equivalent to find the next smaller in its right directions for each eleme
 using iterative stack
 
 ### expression evaluation using stack
+385. Mini Parser
+"[123,[456,[789]]]": a nested integer, 123 and a nested list [45,6, [789]]
+
+deserialize the nested integer
+using stringstream to process the input
+using the string to build the nested integer
+
+394. Decode string
+s = "3[a]2[bc]", return "aaabcbc".
+s = "3[a2[c]]", return "accaccacc".
+s = "2[abc]3[cd]ef", return "abcabccdcdcdef".
+
+439. Ternary Expression Parser
+"F?1:T?4:5", recursive first evaluate T?4:5 get 4
+then evaluate F?1:4 get 4
+
 591. tag validator
 
 640. solve the equation
@@ -980,6 +1048,10 @@ expressions... symbolic programming calculator
 
 
 ## bfs
+433. Minimum Genetic Mutation
+from star to end, min change (everytime change just one)
+similar to the word ladder.
+
 490. The Maze
 maze: the boundary are all walls, 0 empty space and 1 wall.
 from start to destination, check if it can stop at destination.
@@ -1091,6 +1163,16 @@ regular bfs
 Note: need check start/end position first.
 
 ## dfs
+399. evaluate division
+a/b, b/c....
+
+417. Pacific Atlantic Water Flow
+top and left boundary belongs to pacific
+bottom and right belongs to atlantic
+using left and top dfs and mark them as 1
+using right and bottom dfs and mark them as 2 (or)
+return all those marked as 3.
+
 465. optimal account balancing
 add up the debts and everyone has a balance
 if the debt is 0, then drop the person from consideration.
@@ -1311,6 +1393,18 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+436. find right interval
+for each interval find if there is a right interval
+this is very similar to the stack problem of next greater element
+but this is for interval
+also can use binary search tree to optimize.
+435. non-overlapping interval
+find the min number of interval to remove.
+greedy: 
+convert to equivalent: max number of non-overlapped intervals.
+sort the interval using the end. use the leftmost end first, and find larget non-overlapped region
+greedy is: make the end smaller to have more regions.
+
 452. min number of arrows to burst balloons
 sort the interval
 similar to bfs: the leftmost end shall be the first shot position, and all those with start<=this will be eliminated
@@ -1380,6 +1474,35 @@ add passenger and unload passenger
 
 	
 ## Tree
+426. convert binary search tree to sorted doubly linked list
+inorder traversal
+use dummy and prev.
+
+429. n-ary tree level order traversal
+simple
+
+428. serialize and deserialize n-ary tree
+encode: root+ number of child+child
+decode: using stringstream
+
+431. Encode N-ary Tree to Binary Tree
+encode it into a binary tree
+put the first child into left and other children into the first child's right.
+
+440. kth smallest in lexi order
+n-ary tree traversal
+0 has child 1,2,3,4,5,6,7,8,9
+1 has child 10,11....19
+2 has child 20.....29
+10 has child 100,101.....109
+preorder traversal will give the order.
+need first determine the layer.
+
+similar 386. Lexicographical Numbers
+this can be generated using greedy.
+1,10,100...
+when overlimit, 1001,....
+
 450. delete node in a bst
 search the node and delete it.
 delete a node we shall cover its parent and left/right child
@@ -1725,6 +1848,26 @@ if left and right are removed,
 
 
 ## greedy
+397. Integer Replacement
+/2 +1 -1 three operations
+min number of operations
+even number /2
+odd number: if +1 %4==0 then +1, else -1
+
+406. Queue Reconstruction by Height
+each pair is [height, k] k is number of person taller in front of him
+so sort: height descending order, k in ascending order
+insert the less tall person one by one. the position is fixed
+[[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+sort as [7,0],[7,1],[6,1],[5,0][,[5,2],[4,4]
+the array grows as: (current always <= all elements)
+[7,0]
+[7,0],[7,1]
+[7,0],[6,1],[7,1]
+[5,0],[7,0],[6,1],[7,1]
+[5,0],[7,0],[6,1],[5,2],[7,1]
+[5,0],[7,0],[6,1],[5,2],[4,4],[7,1]
+
 462. Minimum Moves to Equal Array Elements II
 a move: select an element +1 or -1
 target: all element becomes the same
@@ -1891,6 +2034,14 @@ common practice: rotation
 
 
 ## heap
+407. Trapping Rain Water II
+2d cell: store the i,j pair
+heap: do it like bfs, but only with the max next layer.
+42. Trapping Rain Water
+1d cell, using monotonic stack.
+using the current bar, poped stack bar, bar on the top.
+two bounary and one is the low for containing water.
+
 502. IPO
 project number <=k.
 given a list of projects with capital needed and profit.
@@ -1956,6 +2107,10 @@ using heap to arrange the two most common words
 same to 1054
 
 ## trie
+425. word squares
+using trie and backtracking.
+422. valid word square
+
 642. Design Search Autocomplete System
 add a count in the node.
 
@@ -2058,6 +2213,10 @@ union and use each group's parent.
 
 
 ## sliding window
+424. Longest Repeating Character Replacement
+with k replaces
+sliding window with at most k other chars.
+
 480. sliding window median
 sliding window max/min using dq
 sliding window median is much harder.
@@ -2151,6 +2310,12 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+410. Split Array Largest Sum
+split into m subarrays, minimize the largest subarray sum
+binary search: smallest largest sum: max element,
+largest sum: the whole array sum
+binary search: given a target sum, check number of parts
+
 483. Smallest Good Base
 integer n: using base m it can be represented as 1111...1
 n is a long, up to 10^18
@@ -2249,6 +2414,17 @@ must be familiar with tech to convert to equivalent simple problems.
 ```	
 
 ## hashmap
+391. perfect rectangle
+overlapped rectangle
+check there is no overlap
+-. area=total area
+-. outside corner points appear only one time
+- inner side points appear even times
+
+438. Find All Anagrams in a String
+similar:
+min window substring
+
 451. Sort Characters By Frequency
 similar to count sort
 using hashmap
@@ -2368,6 +2544,19 @@ there are no nested braces. so just connect them using dfs
 
 
 ## Misc
+
+423. Reconstruct Original Digits from English
+appear only in single number
+appear twice...
+combined
+z, only in zero
+w: only in two
+u: only in four
+x: only in six
+g: only in eight
+
+
+
 527. Word Abbreviation
 - first char+ num abbreviated+last char
 - if cannot get less, no abbreviation
@@ -2448,8 +2637,62 @@ reflection code.
 - loop 2^k
 - reflect and change the last digit
 
+## divide and conquer
+395. Longest Substring with At Least K Repeating Characters
+each char in the string must appear >=k times.
+using a hashmap, find the first char which appears <k times
+divide it into two parts: left and right
+base: if find one<k, recursive, otherwise, return the whole string
+
+beautiful array
+divide and conquer.
+divide into odd and even
+[1,2,3,4,5,6,7,8]
+- divide to [1,3,5,7], [2,4,6,8] (bit0=0/1)
+- divide [1,3,5,7] into two sets (bit1=0/1)
+  [1,5],[3,7]
+
 
 ### math problem
+382. Linked List Random Node
+eahc node shall have the same probability.
+https://leetcode.com/problems/linked-list-random-node/discuss/85659/Brief-explanation-for-Reservoir-Sampling
+
+
+384. shuffle an array
+random shuffle-std function
+    for (i = n-1; i > 0; --i) {
+        swap(first[i], first[std::rand() % (i+1)]);
+		
+389. find the difference
+two string, one string = permuation of the other string + another letter.
+find the different one
+xor of the two string
+
+
+396. rotate function
+F(k) = 0 * Bk[0] + 1 * Bk[1] + ... + (n-1) * Bk[n-1].
+find the max.
+derive the recurrence relation:
+F(k)-F(k-1)=Sum(A)-nA(n-k)
+
+398. random pick index
+given a target number, return the index randomly (with duplicate)
+You have a file consisting of characters. The characters in the file can be read sequentially, but the length of the file is unknown. How do you pick a character so that every character in the file has equal probability of being chosen?
+
+For this problem we can take algorithm like this:
+
+Draw the 1st char. If there is a second char, then we will hold 1st char by prob = 1/2, and replace the 1st char to 2nd char with prob = 1/2. After this step we suppose that the char is X now.
+
+After then, if there is 3rd char, then we will hold the X with prob = 2/3 and replace X to 3rd char with prob = 1/3. Why do they hold the same prob to be picked?
+Because:
+Obviously, Prob(the 3rd char is picked) = 1/3;
+Prob(the 2nd char is picked) = 1 * 1/2 * 2/3 = 1/3;
+Prob(the 1st char is picked) = 1 * 1/2 * 2/3 = 1/3;
+
+So we can say that when we now has n chars and there is still another char in the file, we can pick the other char with prob= 1/(n+1), also keep original char with prob = n/(n+1), then we can secure each char is picked with same prob = 1/(n+1), because prob = 1 * 1/2 * 2/3 * ···· * n/(n+1) = 1/(n+1).
+
+
 458. poor pig.
 x-base problem
 
@@ -2641,8 +2884,71 @@ and then count sort.
 
 972. equal rational number
 expand the number till double precision
+# bits
+393. UTF-8 Validation
+start with 110, need one followed
+start with 1110, need 2 followed
+start with 11110, need 3 followed
+
+411. Minimum Unique Word Abbreviation
+a string has a ist of abbreviations
+given a string, return the min length abbrevaitons
+the abbreviation cannot conflict with the list.
+length of string <21.
+use bit to represent the abbreviations.
+word:
+word, 0000
+1ord: 1000
+2rd:  1100
+w3:   0111
+a number is consider 1 length
+a char is considered 1 length
+a32bc: length=4, a,b,c,32
+in binary format: neighboring 1s are considered as 1 length
+for [00101,10001] the mask is 00001, means keep the last char, "4e"
+abbreviation to binary
+binary to abbreviation
+count the length
+
+
+421. Maximum XOR of Two Numbers in an Array
+32 bits and separate in two halves
+and decide the final results of each bit.
+
+## graph
+444. Sequence Reconstruction
+connect the sequence (overlap the same)
+[1,2],[1,3],[2,3]
+[1,2] connect with [2,3] we get [1,2,3]
+[1,2],[1,3] can build 1,2,3 or 1,3,2 (building is a bit different:
+a,b->c if a and b are both subsequence of c.)
+asks: - if we can - if it is the only one.
+This question can be simplified to three conditions:
+similar to course schedule I/II.
+using topological sort.
+graph can be represented as vector<unordered_set> to record the outcoming edges
+the last node shall be a source node. and step by step to strip the source node
+and we can build the sequence.
+
+
+TopSort order exists
+Whether the TopSort order is the only one (Uniqueness of Topological sort, Hamilton path, see https://en.wikipedia.org/wiki/Topological_sorting#Uniqueness).如果不是，那么说明有些pair只有偏序关系，没有全序关系，这样不能完全确定元素之间的顺序
+the only top sort order constructed should be equal to the org.
+index == org.length (check condition 3) && index == map.size() (check all the vertex in the graph has been visited, so the top sort order exists, check condition 1)
+
+How to check only one order? queue.size() should always be one, then only one element at a time has indegree to be 0, so you only have one choice (check condition 2)
+
+
+similar:
+943. find the shortest superstring
+1092. shortest common supersequence
 
 ## linked-list
+430. flattern a multilevel doubly linked list
+
+445. Add Two Numbers II
+reverse list and add, and then reverse
+
 708. insert into a cyclic sorted list
 - empty list, insert and linked to itself
 - value is between prev and next.
@@ -2662,6 +2968,24 @@ slow and fast.
 
 
 ## design
+379. design phone directory
+hashset to store used unused
+
+
+380. Insert Delete GetRandom O(1)
+using a vector and a hashmap for the index
+swap to end
+381. Insert Delete GetRandom O(1) - Duplicates allowed
+using a vector to store data
+a hashmap of value vs a collection of index
+
+432. All O`one Data Structure
+inc/dec/getmaxkey/getminkey
+design a matrix like data structure.
+each row: contains a list of keys and a value
+and a key to row iterator and list iterator map for O(1) access
+
+
 460 LFU cache
 freq vs list
 key vs value,freq
@@ -2819,6 +3143,19 @@ n=sum(its divisor except itself)
 506 relative ranks
 sort with index
 482. license key formating
+415. add strings
+414. third max number
+single loop to get the max,2nd max and 3rd max.
+412. fizzbuzz
+409. Longest Palindrome
+count, palindrome only supports 1 char with odd number
+405. convert number to hex
+404. sum of left leaves
+401. binary watch
+400. nth digit
+387. first unique character in string
+two pass using hashmap
+
 
 
 knowledge
