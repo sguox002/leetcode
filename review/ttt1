@@ -1,4 +1,12 @@
 ## dp
+464. can I win.
+choose from 1 to n, and add to a target, whoever get >=target wins
+two players play optimally.
+a number cannot be reused.
+use bit to indicate if it is used.
+use win and lose for memoization
+top down recursive approach.
+
 471. Encode String with Shortest Length
 encode it into k[str], it adds k and []
 encode must make the string shorter.
@@ -21,6 +29,56 @@ a list of dictionary words find all strings which can be concatenated by other s
 -. solve the string using previous smaller strings.
 -. mark all the positions and concat. (dp problem)
 this also can be done using dfs/backtracking.
+
+486. Predict the Winner
+classical subproblems
+two player take turns: using a-b.
+
+514. Freedom Trail
+dp[k,j] ring position and code
+
+517. Super Washing Machines
+subtract the average
+passing all loads (negative or positive) to left
+and the passing max or the single machines load, max
+
+516. Longest Palindromic Subsequence
+approach 1: find the longest common subsequence between s and rs (reversed)- edit distance
+approach 2: check dp[i,j] ..
+
+
+568. maximize vaction days
+N cities
+flights[i][j] represents airline between city i and j. 0 means no flights
+k weeks to travel
+take flights at most once per day
+only take flights on Monday morning
+days[i,j] vacation days in the city i and week j.
+initil position in city 0 on Monday.
+flights=
+[0,1,1]
+[1,0,1]
+[1,1,0]
+days
+[1,3,1]
+[6,0,3]
+[3,3,3]
+week 0 flight to city 1, take 6 days vacation
+week 1 flight to city 2, take 3 days vacation
+week 2 stays at city 2, take 3 days vacation
+
+days = [
+[7,0,0],
+[0,7,0],
+[0,0,7]]
+week 0: 7 days at city 0
+week 1: 7 days at city 1
+week 2: 7 days at city 2
+
+dp[i,j] represents the max days in week i at city j.
+dp[i,j]=max(dp[i-1,k]+days[j][i]
+i only depends on i-1, so space complexity can be reduced.
+
 
 546. remove boxes
 
@@ -73,6 +131,10 @@ must make sure the inside is palindrome.
 712. min ascii delete sum for two strings
 
 714. best time to buy and sell stocks with transaction fee
+121. best time to buy and sell stock
+allows at most one transaction
+dp[i]=max(dp[i-1],price[i]-price[j])
+note: do not accumulate.
 
 651. 4 keys keyboard
 A, ctrl-a, ctrl-c,ctl-v.
@@ -281,6 +343,21 @@ you have m 0s and n 1s, and a list of 01 strings
 return the max number of words can be chosen.
 dp[i,j]=max(dp[i,j],dp[i-mk][j-nk]  mk and nk is the number of 0s and 1s in string k.
 
+494. target sum
+using +/- to reach a target
+a+b=tsum
+a-b=target
+it is a variation of knapsack.
+note: the 1d optimization is from 2d dp problem.
+
+518. coin change 2
+dp[i]+=dp[i-c] for all combinations
+322. coin change
+min number of coins
+pick or not pick the coin
+allows repeatition
+
+
 416. partition equal subset sum
 - no need 2d but using 1d
 - using vector<int> to get the sum
@@ -393,6 +470,18 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
+457. circular array loop
+positive: go forward num step
+negative: move backward num step
+array is a cycle.
+determine if there is a cycle
+approach: check each element as start, using hashset to store seen.
+mark non cycle elements to 0 and ignore them.
+
+524. Longest Word in Dictionary through Deleting
+loop for each word
+for each word, using two pointer
+
 763. Partition Labels
 each char appears only in one part.
 this is also a bfs like approach:
@@ -488,7 +577,17 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 
-## Array
+## Array & string
+
+454. 4sum II
+four lists, A[i]+B[j]+C[k]+D[l]=0
+A[i]+B{j] first, C[k]+D[l] first
+reduces to 2 sum
+18. 4sum
+one array find a+b+c+d=0
+sort and using O(N^3) two pointer
+
+
 466. Count The Repetitions
 S1=[s1,n1]
 S2=[s2,n2]
@@ -521,6 +620,16 @@ approach 2: find each heater's max radius.
 the count of contiguous '1' or '2' will get the string itself.
 return the length=n magical string
 starting with 1,2,2...
+
+521. longest uncommon subsequence I
+two strings
+longer string cannot be the subsequence of shorter ones.
+522. longest uncommon subsequence II
+multiple strings
+sort using length. the unique longest string 
+
+532. K-diff Pairs in an Array
+sort and find the difference=k pairs.
 
 533. lonely pixel II
 this is again in matrix to find pattern problem.
@@ -713,6 +822,13 @@ visiting in spiral order: shrinking spiral
 59. Spiral Matrix II
 fill the spiral: shrinking spiral.
 
+498. Diagonal Traverse
+idea: hit the wall and rebounce
+need take care of 4 corners.
+dir: 0 and 1.
+
+
+
 890. find and replace pattern
 from right to left.
 
@@ -749,6 +865,17 @@ find the longest cycle in the array containing 0 to n-1
 
 
 ## stack & deque
+456. 132 pattern
+the idea using stack: we can have 3 number comparing.
+from right to left and keeps a monotonic decreasing stack.
+i<j<k, a[i]<a[k]<a[j]: that is to find a peak pattern.
+when we found num[i]>top, we found one relation s3<s2
+[3, 1, 4, 2]
+push 2 in stack: [2]
+4>2, s3=2, pop and push 4, [4]
+1<s3, s1=1, s1<s3<s2. 
+the stack stores the right max.
+
 556. Next Greater Element III
 same digits used and get the next greater number.
 next_permutation: equivalent
@@ -853,6 +980,25 @@ expressions... symbolic programming calculator
 
 
 ## bfs
+490. The Maze
+maze: the boundary are all walls, 0 empty space and 1 wall.
+from start to destination, check if it can stop at destination.
+the ball will run along the direction and will only change direction when hit a wall.
+505. The maze II
+find the shortest distance. (number of empty space travelled)
+if cannot stop return -1;
+in this question, we need the path.
+one way: store the parent information inside the queue. note has to use pointer.
+one way: using pq. dijkstra algorithm
+why the first way fails? because it still bases on the layer structure, but here each layer has different distance. we need to relax it.
+499. The Maze III
+add a hole position. now the destination is the hole 
+the ball will drop into the hole if passing it.
+asks: shortest distance, and lex smallest path. (LRUD)
+similar to II, we need add a path string so that we can restore the path.
+dijkstra is very similar to bfs but using pq to replace q.
+
+
 542. 01 Matrix
 this is a good bfs. 
 the first layer is those 1s around 0. 
@@ -936,13 +1082,36 @@ using bfs like to cover the max distance.
 this is similar to the swimming in rising water.
 it asks for the min value along the path where all those smaller elements are not passable and there is only one path.
 so it is a binary search with a bfs problem
+note: binary search often cause infinite loop (does not work for two elements). It is interesting to use l+1<r and use l=m and r=m.
+
 
 1091. Shortest Path in Binary Matrix
 8 directions with 0 and 1 (1 blocked). return the shortest path from top left to bottom right
 regular bfs
-
+Note: need check start/end position first.
 
 ## dfs
+465. optimal account balancing
+add up the debts and everyone has a balance
+if the debt is 0, then drop the person from consideration.
+brutal force to get the min.
+
+
+488. zuma game
+4 colors: RGBW
+Given a row of balls on table and some balls in hand.
+remove balls when >=3 same color balls together.
+return min balls needed.
+??
+
+489. robot room cleaner
+simulate the dfs.
+store visited info into a hashmap 2d matrix
+
+
+529. minesweeper
+
+
 547. friend circle
 simple dfs
 
@@ -1058,6 +1227,10 @@ this is to divide the array into 4 parts to target sum
 using backtracking
 once the stick is used, put them in visited.
 
+491. Increasing Subsequences
+find all possible increasing subsequences
+regular backtracking
+
 526. Beautiful Arrangement
 index from 1 to N: either A[i]%i==0 or i%A[i]==0
 return the number of beautiful arrangement.
@@ -1138,6 +1311,15 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+452. min number of arrows to burst balloons
+sort the interval
+similar to bfs: the leftmost end shall be the first shot position, and all those with start<=this will be eliminated
+
+495. teemo attacking
+attacked and then poison for a duration.
+using bfs-like method to eliminate the overlaps.
+accumulate the poison time at the same time.
+
 554. Brick Wall
 similar to interval problem.
 we accumulate the length and store in hashmap and the max one is the position.
@@ -1198,6 +1380,61 @@ add passenger and unload passenger
 
 	
 ## Tree
+450. delete node in a bst
+search the node and delete it.
+delete a node we shall cover its parent and left/right child
+- node is a leaf, just return null.
+- node has left only, bring its left up
+- node has right only, bring its right up
+- node has both left and right, bring the leftmost leaf in the right branch.
+if it is the root: 
+449. serialize and deserialize BST.
+using stringstream
+
+
+124. Binary Tree Maximum Path Sum
+there are a few similar questions on this.
+-. similar to 1d array. if previous sum<0, then we are not connecting it
+-. for tree. we are looking for the subtree parent-child path sum (since only it can be used to connect root and right)
+-. during the traversal, we also update the max path sum (by connecting left and right)
+112. path sum
+from root to leaf (preorder)
+113. path sum II
+find all root to leaf path sum equal target.
+backtracking.
+437. path sum III
+path does not need to start from root or end at leaf. 
+path needs going down.
+this is similar to find the subarray sum to target. using hashmap (prefix sum)
+
+
+
+501. Find Mode in Binary Search Tree
+modes: most frequent elements
+
+508. Most Frequent Subtree Sum
+post order traversal and hash map
+
+510. inorder succrssor in BST II
+node has parent, left and right.
+if node has right, go to the leftmost in the right branches
+if node has no right, need go to its parent
+285. Inorder Successor in BST
+there is no parent field in node.
+binary search.
+
+513. Find Bottom Left Tree Value
+using depth O(N^2) is straightforward.
+from O(N^2) to O(N) people often refer it as memoization, while traversal, store the results
+idea: keeping the depth, when leaf is found and depth > stored max depth, we update the answer
+using preorder, the left is always found first.
+
+515. find largest value in each tree row
+traversal
+
+530. min absolute difference in BST.
+similar to array problem.
+
 536. Construct Binary Tree from String
 this is a expression evalulation or stack problem
 or recursive problem.
@@ -1488,6 +1725,24 @@ if left and right are removed,
 
 
 ## greedy
+462. Minimum Moves to Equal Array Elements II
+a move: select an element +1 or -1
+target: all element becomes the same
+greedy: sort and get the median position, similar to best meeting point.
+453. Minimum Moves to Equal Array Elements
+a move: make n-1 element +1.
+assuming final results is t: n*t=tsum+(n-1)*m
+
+484. Find Permutation
+DI string for 1 to n. find the lex smallest permutation matching the DI string.
+For example, given IDIIDD we start with sorted sequence 1234567
+Then for each k continuous D starting at index i we need to reverse [i, i+k] portion of the sorted sequence.
+IDIIDD
+1234567 // sorted
+1324765 // answer
+
+
+
 544. Output Contest Matches
 strongest vs the weakest.
 1,2,3,4,5,6,7,8
@@ -1636,10 +1891,24 @@ common practice: rotation
 
 
 ## heap
+502. IPO
+project number <=k.
+given a list of projects with capital needed and profit.
+initial capital is W.
+return the max final capital.
+greedy: using W find the most profitable project with capital <=W.
+binary search the capital , heap to find the max profit.
+
+
 630 course schedule III
 the idea: greedy choice: sort the courses according to the closing time, always choose the closing time earlier to ensure more courses taken
 using the heap to remove the longest courses in the pq.
+207. course schedule
+if we can complete
+using topology sort, remove source nodes the layer by layer.
 
+210. course schedule II
+output the complete order.
 
 632 smallest range
 k lists, find the smallest range includes at least one number from each of the list
@@ -1882,6 +2151,12 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+483. Smallest Good Base
+integer n: using base m it can be represented as 1111...1
+n is a long, up to 10^18
+one idea: the representation of n for base 2 is longest, and do binary search
+other: direct math. for n the longest length is log(n)/log(2). using some simple math.
+
 540. single element in a sorted array
 using binary search and count and we can find the one
 
@@ -1914,6 +2189,11 @@ equivalent: using max distance D, how many stations we shall add.
 778. swim in rising water
 check the first time when connected.
 using binary search
+
+1044. Longest Duplicate Substring
+follow up on 1062, repeated string can overlap.
+binary search + direct hash.
+
 
 786. kth smallest prime fraction
 the is an upper triangle prime fraction
@@ -1955,8 +2235,36 @@ kth missing elements in sorted array.
 using the first element (subtract all the element with it) and then we know:
 nums[i]-nums[0]-i is the number of missing number.
 must be familiar with tech to convert to equivalent simple problems.
+```cpp
+    int missingElement(vector<int>& nums, int k) {
+        //binary search
+        int l=0,r=nums.size();
+        while(l<r){
+            int m=l+(r-l)/2;
+            if(nums[m]-nums[0]-m>=k) r=m;
+            else l=m+1;
+        }
+        return l+nums[0]+k-1;
+    }
+```	
 
 ## hashmap
+451. Sort Characters By Frequency
+similar to count sort
+using hashmap
+
+523. Continuous Subarray Sum
+subarray size>=2
+adds up to multiple of k.
+
+prefix sum and same remainder
+k=0 case.
+
+525. contiguous array
+01 array, longest substr with equal number of 0 and 1
+consider 0 as -1, we are looking for the longest subarray with sum=0
+prefix sum with same number.
+
 567. Permutation in String
 check if a string contains the permutation of another string
 using hashmap to check if the hashmap> the other hashmap.
@@ -2060,6 +2368,16 @@ there are no nested braces. so just connect them using dfs
 
 
 ## Misc
+527. Word Abbreviation
+- first char+ num abbreviated+last char
+- if cannot get less, no abbreviation
+- cannot have the same abbrviation, increase the prefix until it is unique
+direct approach: create all abbreviation and increase prefix for conflict
+other approaches: create trie to resolve conflicts
+abbr-list of words
+
+
+
 722. remove comments
 aproach 1: regex
 appraoch 2: remove // and /* */ for multiline
@@ -2132,6 +2450,12 @@ reflection code.
 
 
 ### math problem
+458. poor pig.
+x-base problem
+
+463. island perimeter
+try each grid and check if it attaches with upper and left grid.
+
 469. a list of points to check if the polygon is convex.
 in the plane, (x,y).
 three points we find the cross product.
@@ -2166,6 +2490,47 @@ brutal force check n digit*ndigit will get 2n digits.
 hamming distance is total different bits.
 O(N) solution: divide it into two sets 
 and then choose one from each set.
+
+492. construct the rectangle
+L>=W, L*W=A. 
+min the L, W difference.
+find the two factors which are closest.
+
+493. reverse pairs
+i<j and nums[i]>2*nums[j]
+there are indices and values at the same time.
+if we sort with index, or using map.
+find the element < num/2 log(n)
+find the elements with index > j takes O(n)
+better approach using binary search tree.
+
+504. base 7.
+
+497. random point in non-overlapping rectangles
+first random pick a rectangle, and then random generate a point inisde the rect.
+note the area of the rectangle is a weight on the rectangle
+note: the area shall cover the boundary, otherwise it will be incorrect (since it covers both boundary).
+
+
+519. random flip matrix
+all 0 in 2d matrix, randomly choose a 0 and flip to 1.
+store flipped position in hashmap
+update the size
+random number hits the flipped:
+ Fisher–Yates shuffle.
+ generate random from 0 to n : m
+swap m and n
+decrease n
+1,2,3,4,5,6,7,8
+first roll: 6, 1,2,3,4,5,8,7 (swap 8 and 6)
+2nd roll: 2, 1,7,3,4,5,8 (swap 2 and 7)
+3rd roll: 6,  1,7,3,4,5 (last one no swap)
+4th roll: 1,  5,7,3,4
+
+(brutal force: used one we skip and until we get the right position)
+
+528. radom pick with weight
+prefix sum of the weight and then random pick using binary search
 
 537. complex number multiplication
 simple.
@@ -2297,6 +2662,18 @@ slow and fast.
 
 
 ## design
+460 LFU cache
+freq vs list
+key vs value,freq
+key vs list interator for O(1) operation
+read/write 
+
+146. LRU Cache
+list of pair key-value
+map: key vs list iterator for O(1)
+read/write
+
+
 535 encode and decode tinyURL
 using 0-9A-Za-z total 62 chars to get a 6 char long string.
 using random 62 mod
@@ -2436,6 +2813,13 @@ brutal force
 all operations is from [0,0] to [i,j] so there are fixed overlaps
 566. reshape the matrix
 557. Reverse Words in a String III
+509. fib number
+507. perfect number
+n=sum(its divisor except itself)
+506 relative ranks
+sort with index
+482. license key formating
+
 
 knowledge
 - random_shuffle
@@ -2455,15 +2839,6 @@ void random_shuffle( RandomIt first, RandomIt last )
 }
 
 - pascal triangle each number is C(n,m)
-
-
-
-
-
-
-
-
-
 
 
 
