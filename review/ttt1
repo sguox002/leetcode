@@ -3177,5 +3177,149 @@ void random_shuffle( RandomIt first, RandomIt last )
 
 - pascal triangle each number is C(n,m)
 
+amazon
+* two sum: hashmap
+* Longest Substring Without Repeating Characters
+hashmap to store char's index
+one pass to get the window length
+* string to integer
+using stringstream
+* container with most water
+two pointer
+* integer to roman
+0-9
+10-90
+100-900
+1000-3000
+* roman to integer
+right to left.
+*. 3sum
+two pointer, unique triplets, sort
+*. 3sum closest
+two pointer, sort, tsum<target, make it larger, else make it smaller
+* strstr: match
+* rotate image
+* group anagrams
+*. min window substr
+hashmap with two pointer
+*. compare version number
+using stringstream, default 0
+* product array except self
+left and right product
+* missing number
+xor
+*. integer to english
+every hundred
+1-19
+20-90
+others are the same
+*. first unique char
+hashmap
+* valid parentheses- stack,counter
+*. most common word, hashmap
+*. reorder log files
+using multimap, key could be the same
+*. trapping rain water
+using stack
+*. add two numbers-linked list
+*. merge two sorted list
+*. reverse nodes in k groups.
+a bit tricky, reverse need return both the head and tail.
+* copy list with random pointer
+hashmap node-id, id-node
+*. reverse linked list
+*. merge k sorted list
+using a min heap
+*. valid bst
+*. symmetric. compare left right
+*. binary tree level order traversal
+bfs
+recursive
+*. binary tree zigzag traversal
+*. binary tree max path sum
+O(N) solve the left parent to child, right parent to child
+and using 1d array max subarray sum, if leftsum<0 ignore left.
+*. word ladder II
+bfs with path traceback.
+*. word ladder- bfs
+*. number of islands-dfs
+*. course schedule- cycle detection using topological sort.
+*. course schedule II- topology sort, layer by layer
+*. lowerest common ancestor
+O(N)
+*. diameter of binary tree
+longest path. 
+left longest path, right longest path
+add the node.
+*. cutoff trees for golf event
+bfs
+*. flood fill
+dfs
+*. letter combination of phone number
+dfs.
+*. generate parentheses
+dfs/recursive
+*. word search
+dfs. avoid repeatedly visit, change and restore
+*. word search II
+using trie and dfs search
+*. median of two sorted arrays
+binary search in 4 sections
+*. search in rotated sorted array
+find the pivot and then treat it as a sorted array from pivot
+*. merge interval
+*. two sum II-bst
+*. kth largest element in an arrays
+min heap
+*. meeting room II
+++ --
+*. top k frequent element
+heap
+* k closest pointts to origin
+heap
+*. longest palindrome substring
+dp, substring
+*. max subarray
+dp: local max, gmax
+*. best time to buy and sell stocks
+dp[i]=max(dp[i-1],price[i]-price[j)
+* word break
+check every position
+* coin change
+*. lRU cache
+*. min stack
+* find median from data stream
+*. serialize and deserialize binary tree
+* design search auto complete
+* design tic-tac-toe
+*. max freq stack
+*. reverse integer
+*. partion labels
+bfs like approach
+*. prison cells after n days
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
