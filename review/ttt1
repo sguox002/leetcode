@@ -1,4 +1,14 @@
 ## dp
+300. longest increasing subsequence
+
+309. best time to buy and sell stocks with cooldown
+
+313. super ugly number
+dp for n ugly primes
+312. burst balloons
+consider from the last condition first and get clear subproblem definition
+
+
 337. house robber III
 in a tree
 using memoization
@@ -17,12 +27,21 @@ the key observations:
 4 corners are the same (1379)
 (2468) are the same
 skippable: 2,4,6,8,5
-
+354. Russian Doll envelopes
+similar: longest increasing subsequence
 
 361. bomb enemy
+
 it is hard to think it as dp problem.
 i think it is union find problem
 
+brutal force: a W will separate the row and column into two parts
+loop all rows
+	loop the row
+	see a W or the leftmost: reset row counter
+	count number of E until hit W.
+	
+	
 368. Largest Divisible Subset
 sort and use dp
 
@@ -38,6 +57,58 @@ approach II. sort and swap.
 unsorted array, rearrange so that a[0]<a[1]>a[2]<a[3]>a[4]...
 idea: using the median value parition into two parts (left and right) and then choose one from left and one from right
 the difficulty is how to find the median.
+using nth element to find the median
+and then arrange the array into three parts <median ==median and >median
+this we can use 3 pointer to arrange. 
+A[j]<med, swap(A[i++],A[j++])
+A[j]>med, swap(A[j],A[k--]) note j cannot move formward since we need do another compare
+A[j]==med, j++
+
+for example:
+3,1,2,4,3,5,4,1, med=3
+3,
+check 1: 1,3,2,4,3,5,4,1
+check 2, 1,2,3,4,3,5,4,1
+check 4: 1,2,3,1,3,5,4,4
+check 1: 1,2,1,3,3,5,4,4
+check 3:
+check 5: 1,2,1,3,3,4,5,4
+done
+
+then rearrange into wiggle form. 
+for n%2==0, arrange it into even, right part into odd positions
+for n%2==1, arrange n/2+1 into even, 
+this is also tricky to do inplace:
+1,2,1,3,3,4,5,4 i=0, j=4
+move 3 to position 1:
+1,3,2,1,3,4,5,4
+move 4 to position 3:
+1,3,2,4,1,3,5,4
+move 5 to position 5
+1,3,2,4,1,5,3,4
+but this is not O(n).
+
+
+1139. Largest 1-Bordered Square
+record each position's left and top 1's length
+and then check at each position the longest square can form
+
+1143. longest common subsequence
+simple dp
+
+1140. Stone Game II
+M=1 initially
+x in the range [1,2M]
+after that M=max(M,x)
+overlapping problems
+if A choose x, remaining problem is [x,n] with M=max(x,M), x=[1,2M]
+return max A can get.
+A+B=tsum
+max A-B
+need 2d dp: 
+dp[i,j] represents the max stone A can get starting at i with M=j.
+dp[i,j]=max(suffix[i]-dp[i+x][max(j,x)] x in the range [1,2j]
+
 
 403. Frog Jump
 frog can jump k-1,k,k+1, k is previous step
@@ -495,6 +566,19 @@ knapsack problem
 choose heaviest and smash. this is heap.
 
 ### shortest distance problem
+317. Shortest Distance from All Buildings
+matrix: 0 empty land, 1, building, 2, obstacles
+find an empty place which has shortest distance to all building.
+building and obstacles cannot pass.
+using bfs: 
+either from building to empty cells or empty cells to building
+a single bfs will get those reachable cells, with the shortest distance to building i.
+non-reachable are discarded.
+and then accumulate the distance
+note:
+first time just assign the distance
+later we use a tmp map to store current time dist (must occur in previous)
+and then accumulate the results back.
 
 743. Network Delay Time
 bellman algorithm: loop over all nodes and using all edges to relax the distance
@@ -652,6 +736,10 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array & string
+315 count smaller numbers after self
+easy for brutal force O(N^2)
+merge sort, hard to understand.
+
 327. Count of Range Sum
 [low,upper], count the number of subarray sum in the range.
 - brutal force. trivial
@@ -684,6 +772,9 @@ find the kth element
 binary search in the range [smallest, largest]
 and count the elements smaller than the target
 
+1138. Alphabet Board Path
+this does not need bfs with path tracing
+but use manhanton distance is fine
 
 388. Longest Absolute File Path
 \n directory end
@@ -1007,6 +1098,9 @@ find the longest cycle in the array containing 0 to n-1
 
 
 ## stack & deque
+316. remove duplicate letters
+using hashmap and monotonic stack
+
 402. remove k digits
 remove k digits to make the number smallest
 using stack to maintain a increasing sequence, remove stack top if it is larger than current.
@@ -1160,6 +1254,13 @@ expressions... symbolic programming calculator
 
 
 ## bfs
+301. Remove Invalid Parentheses
+although this can be done using dfs, bfs is more straightforward since bfs gives the min distance.
+the approach:
+if valid then we cannot go to next layer but only finish the current layer
+next layer we only remove one ( or ) and push them into queue.
+- bad: it blindly remove the ( and use set to avoid duplicates and could be cost.
+
 330. Patching Array
 a sorted array and integer n, add/patch some numbers so that n can be reached using sum of some elements
 bfs like:
@@ -1299,6 +1400,18 @@ regular bfs
 Note: need check start/end position first.
 
 ## dfs
+302. Smallest Rectangle Enclosing Black Pixels
+dfs to find the minx,maxx, miny and maxy, then the rect is defined
+interesting, this can be approached using binary search.
+we can condense the matrix into one single row and one single column. and then use binary search to find the 4 boundaries.
+
+200. number of islands
+simple dfs
+
+305. Number of Islands II
+addLand, then return number of islands after the operation
+union find is more suitable for the dynamic changes.
+
 329. longest increasing path in a matrix
 dfs with memoization
 
@@ -1443,6 +1556,16 @@ dfs using negative color, restore inner side
 
 
 ## backtracking
+293. Flip Game
+flip ++ to -- until no one can move.
+return all possible next states
+
+294. Flip Game II
+determine if the start player can win.
+backtracking all the starting options
+- straightforward backtracking is simple
+- need use memoization...note before win[s]=1, we need first restore it (it is the solution for s not for t)
+
 473. matchsticks to square
 this is to divide the array into 4 parts to target sum
 using backtracking
@@ -1539,6 +1662,8 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+352. Data Stream as Disjoint Intervals
+
 370. Range Addition
 add a number to a range
 using + - a number to the start and end.
@@ -1625,6 +1750,20 @@ add passenger and unload passenger
 
 	
 ## Tree
+297. serialize and deserialize binary tree
+
+298. Binary Tree Longest Consecutive Sequence
+path from parent to child only.
+preorder traversal.
+
+310 min height trees
+actually this is a graph problem
+choose any node as the root and get the min height
+remove the leaf nodes layer by layer.
+
+314. Binary Tree Vertical Order Traversal
+recursive in order traversal with x and y information and then stable sort
+
 333. largest BST subtree
 equivalent to find the longest sorted segment in a 1d array.
 since we are looking for the node, it is a bit different from that.
@@ -1640,7 +1779,9 @@ observation: each node has two nodes (either number or #)
 a non null node has 1 in degree and 2 out degreen nodes has 2n out degrees, and n-1 in degrees. 
 so for each node -1, and +2
 
-366. find leaves of binary tree
+1145. binary tree coloring game
+greedy: we can place the node on parent, left, or right child
+depending which has >n/2 nodes
 
 426. convert binary search tree to sorted doubly linked list
 inorder traversal
@@ -2023,6 +2164,21 @@ if left and right are removed,
 
 
 ## greedy
+306. additive number
+this is equivalent to 842. split array into fib sequence 
+using iteration to max length allowed for the first and second number then decide the whole array
+can use backtracking
+
+321. Create Maximum Number
+choose from two lists
+- try all combinations (i,j) i from list 1 and j from list 2 with i+j=k.
+greedy: choose the max from m-(i-1).
+and then merge from two lists.
+
+1147. longest chunked palindrome decomposition
+find the shortest string head=tail, and reduce the problem
+recursive
+
 397. Integer Replacement
 /2 +1 -1 three operations
 min number of operations
@@ -2215,6 +2371,9 @@ common practice: rotation
 
 ## heap
 347. top k frequent elements
+358. Rearrange String k Distance Apart
+using the heap and arrange k chars and repeat.
+once we need the char but we don't have it from the heap, we cannot make the arrangement.
 
 407. Trapping Rain Water II
 2d cell: store the i,j pair
@@ -2238,10 +2397,21 @@ the idea: greedy choice: sort the courses according to the closing time, always 
 using the heap to remove the longest courses in the pq.
 207. course schedule
 if we can complete
-using topology sort, remove source nodes the layer by layer.
+approach 1: using topology sort, remove source nodes the layer by layer.
+approach 2: dfs/topological sort, with cycle detection. (have 3 states)
 
 210. course schedule II
 output the complete order.
+
+1136. parallel courses
+[x,y] x is the prerequisite of y.
+each semester you can study any number of courses.
+return the min number of semesters
+very similar to above problem.
+note using map<int,set<int>> will use longer time (logn)
+need optimize
+- use vector<unordered_set> can pass oj.
+
 
 632 smallest range
 k lists, find the smallest range includes at least one number from each of the list
@@ -2331,6 +2501,9 @@ matching with the prefix, startwith
 
 
 ## union find
+323. Number of Connected Components in an Undirected Graph
+- using the edge to merge nodes
+- another approach: form a graph and do dfs.
 721. Accounts Merge
 
 737. Sentence Similarity II
@@ -2619,9 +2792,19 @@ must be familiar with tech to convert to equivalent simple problems.
 ```	
 
 ## hashmap
+299. bulls and cows
+we need first match bulls and change the hashmap and then match the cows
+
+
+311. sparse matrix multiplication
+using hashmap to record the value, i, j and then perform the matrix multiplication
+
 325. Maximum Size Subarray Sum Equals k
 using hashmap to save the prefix sum vs index (first index for that sum)
 and then find the longest subarray.
+
+1146. snapshot array
+using map<snapid,map<int,int>> to record the status
 
 391. perfect rectangle
 overlapped rectangle
@@ -2863,6 +3046,16 @@ divide into odd and even
 
 
 ### math problem
+296. best meeting point
+median, idea from 1d.
+median is often used for many problems
+
+295. find median from data stream
+using two heaps.
+
+319. bulb switch
+odd times, even times, and factors
+
 335. self crossing
 only the previous 3 directions matters
 
@@ -2870,6 +3063,23 @@ only the previous 3 directions matters
 it can also be a dynamic problem
 2*2=4
 choose 3 first until to 4
+
+356. line reflection
+first arrange the points in x and y sorted order.
+then we get max_x and min_x
+the reflection line shall be in the mid.
+then we check y make sure they are paired
+357. count numbers with unique digit
+n digits: 9*9*8*7*...
+
+360. sort transformed array
+sorted array, apply ax^2+bx+c.
+x can be considered x coordinate
+y=ax^2+bx+c, could be a down parabolic or up shape. 
+a=0 case
+a>0 case
+a<0 case
+use two pointer both end.
 
 365. water and jug problem
 
@@ -3108,6 +3318,10 @@ and then count sort.
 972. equal rational number
 expand the number till double precision
 # bits
+318. Maximum Product of Word Lengths
+product of two words length which shares no common letters
+convert chars to bits, and share problem is solved.
+
 342. power of 4
 1 bit are all on even bits
 
@@ -3149,6 +3363,15 @@ count the length
 and decide the final results of each bit.
 
 ## graph
+1135. Connecting Cities With Minimum Cost
+two problems:
+- if the cities can be formed one group
+- the smallest costs connect any pair of cities (max min)
+union-find: 
+sort by cost
+loop over edges, if union(city1,city2) add the cost.
+
+
 444. Sequence Reconstruction
 connect the sequence (overlap the same)
 [1,2],[1,3],[2,3]
@@ -3215,6 +3438,27 @@ stores the interval as a sorted intervals (set)
 every time add a val, start and end are the val
 find the lower_bound and check if it can merge with previus interval
 
+353. Design snake game
+the snake eats the food and grows by one.
+the snake eat the food and occupy the tail previous position.
+using a deque for that.
+
+355. design twitter
+postTweet(user,tweetID)
+getNewFeed(user)
+follow(followerID,followeeID)
+unfollow(followerID,followeeID)
+
+data structure:
+a vector to store the user-news pairs
+a hashmap to map the user vs news id (index in the array)
+a hashmap to map the user vs its followers
+
+
+359. logger rate limiter
+each message shall be prinited if and only if it is not printed in last 10 seconds
+using a map, once it is printed, we add its timestamp by 10 second
+only if the ts> timestamp, it wll be printed.
 
 362. design hit counters
 count the number of hits in the past 5 mins
@@ -3305,6 +3549,11 @@ the only trick is: popmax, we need find the element and pop and save all those e
 707. design linked list
 706 design hashmap
 705. design hashset
+
+# binary index tree or segement tree
+308. range sum query 2d-mutable
+
+307. range sum query - mutable
 
 ## trivial
 1119. Remove Vowels from a String
@@ -3409,7 +3658,14 @@ count, palindrome only supports 1 char with odd number
 400. nth digit
 387. first unique character in string
 two pass using hashmap
+
 367. valid perfect square
+1137. nth triboncii number 
+similar to fib number
+1133. largest unique number
+map with greater
+1134. armstrong number
+k digits number = sum(digit^k)
 350 intersection of two arrays II
 keep duplicates,hashmap, once matched, --
 349. intersection of two arrays
@@ -3551,6 +3807,7 @@ check every position
 *. lRU cache
 *. min stack
 * find median from data stream
+two pq, push to left or right or replace the median.
 *. serialize and deserialize binary tree
 * design search auto complete
 * design tic-tac-toe
@@ -3559,6 +3816,76 @@ check every position
 *. partion labels
 bfs like approach
 *. prison cells after n days
+
+Mock: on site
+* roman to integer
+* lca of a binary tree
+* word ladder
+* median from stream
+
+* symmetric tree
+* snake and ladders
+convert to 1d, and layer add, bfs
+* word break-dp
+* word break II
+- dp+dfs
+- top down recursive is also fine. maybe simpler. with memoization.
+
+* best time to buy and sell stock
+* binary tree zigzag level order traversal
+* number of islands
+* lru cache
+
+* missing elements in sorted array- binary search
+* uncrossed lines - dp
+* number of submatrices sums to target
+- reduce to 1d problem
+
+* game of life
+* shortest path in binary matrix- bfs
+* path with max min value - binary search
+
+* course schedule - remove source nodes layer by layer
+* course schedule II- similar approach
+* binary tree max path sum- tricky
+
+online:
+* most common word
+* cut off trees for golf event
+
+* two sum
+* prison cells after n days
+
+* rect overlap
+* partition label
+
+* two sum-bst
+* greatest common divisor of strings
+
+* moving average from stream
+* number of equivalent domino pairs
+
+phone interveiw
+* first unique char in a string
+* reverse linked list
+* search in rotated sorted array
+note: binary search if l=m, will have two element infinite loop problem.
+
+* valid bst
+* add two numbers
+* product of array except self
+
+* valid parentheses
+* min stack
+* group anagrams
+
+* flood fill
+* insufficient nodes in root to leaf path
+
+
+
+
+
 
 
 
