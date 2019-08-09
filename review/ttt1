@@ -1,4 +1,24 @@
 ## dp
+337. house robber III
+in a tree
+using memoization
+similar: 198. house robber, in 1d array
+213. house robber II, in circular array
+
+338 counting bits
+from 0 to n, counting set bits in each number.
+f[i]=f[i/2]+(i%2)
+i&(i-1) drops the LSB
+f[i]=f[i&(i-1)]+1
+
+
+351. Android unlock patterns
+the key observations:
+4 corners are the same (1379)
+(2468) are the same
+skippable: 2,4,6,8,5
+
+
 361. bomb enemy
 it is hard to think it as dp problem.
 i think it is union find problem
@@ -9,6 +29,15 @@ sort and use dp
 376. wiggle subsequence
 find the longest wiggle subsequence (not subarray)
 use up and down, interleaving
+280. wiggle sort
+unsorted array, rearrange so that a[0]<=a[1]>=a[2]<=a[3]>=a[4]...
+in-place O(1), and O(N) complexity
+O(N), odd position violates, even position violates and swap.
+approach II. sort and swap.
+324. wiggle sort II.
+unsorted array, rearrange so that a[0]<a[1]>a[2]<a[3]>a[4]...
+idea: using the median value parition into two parts (left and right) and then choose one from left and one from right
+the difficulty is how to find the median.
 
 403. Frog Jump
 frog can jump k-1,k,k+1, k is previous step
@@ -623,6 +652,27 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array & string
+327. Count of Range Sum
+[low,upper], count the number of subarray sum in the range.
+- brutal force. trivial
+- merge sort
+* get the prefix sum (convert to prefix[i]-prefix[j] in the range
+* divide and conquer, 
+divide by half: left and right, check right elements to left elements and count the diff in the range
+(this we preserve the i>j requirement)
+(in range can be equivalent to one < problem and one less equal problem)
+divide until only 1 element left, then merge.
+inplace_merge(low,mid,high) using compare to sort.
+merge sort is not trivial:
+
+void merge_sort(Iter first,Iter last){
+	if(last-first<=1) return; //no element
+	Iter mid=first+(last-first)/2;
+	merge_sort(first,mid);
+	merge_sort(mid,last);
+	inplace_merge(first,mid,last);
+}
+
 373. Find K Pairs with Smallest Sums
 two sorted lists and find k-pairs
 this is very similar to find the kth element in matrix with rows sorted.
@@ -972,6 +1022,12 @@ push 2 in stack: [2]
 1<s3, s1=1, s1<s3<s2. 
 the stack stores the right max.
 
+334. Increasing Triplet Subsequence
+123 pattern
+first update the left min (s1)
+if num>min=> S2
+if num>s2 then we found the sequence.
+
 556. Next Greater Element III
 same digits used and get the next greater number.
 next_permutation: equivalent
@@ -1059,6 +1115,18 @@ using iterative stack
 deserialize the nested integer
 using stringstream to process the input
 using the string to build the nested integer
+341. flatten nested list iterator
+design an iterator to flatten the nested integer.
+- first the nested integer is a vector of nested integer
+- a nested integer itself is another vector
+- so we need use stack to push/pop until we reach an integer.
+- maintaining a begin and a end iterator, every time we see a nested integer
+we push the begin and end then iterator til the end, and then popped.
+similar:
+339. nest list weight sum
+depth from root to leaf
+364. nested list weight sum II
+depth count from leaf to root
 
 394. Decode string
 s = "3[a]2[bc]", return "aaabcbc".
@@ -1092,6 +1160,17 @@ expressions... symbolic programming calculator
 
 
 ## bfs
+330. Patching Array
+a sorted array and integer n, add/patch some numbers so that n can be reached using sum of some elements
+bfs like:
+using the element what is the farthest number can reach
+[1,3], n=6
+1 can reach 1.
+cannot reach 2, add 2
+1,2: can reach 3
+1,2,3: can reach 6 (4,5 is included)
+
+
 339. Nested List Weight Sum
 nested list is hard to understand. 
 an integer is a leaf node
@@ -1220,6 +1299,9 @@ regular bfs
 Note: need check start/end position first.
 
 ## dfs
+329. longest increasing path in a matrix
+dfs with memoization
+
 399. evaluate division
 a/b, b/c....
 
@@ -1543,6 +1625,21 @@ add passenger and unload passenger
 
 	
 ## Tree
+333. largest BST subtree
+equivalent to find the longest sorted segment in a 1d array.
+since we are looking for the node, it is a bit different from that.
+inorder will lose the root information.
+postorder will be more suitable:
+find the leftmax and rightmin. if root>leftmax and root<rightmin, then it is a valid bst subtree.
+(also another way to validate the BST.)
+also need count the number of nodes in the left and right subtree.
+
+331. verify preorder serialization of a binary tree
+observation: each node has two nodes (either number or #) 
+- approach 1: count in degree and out degree.
+a non null node has 1 in degree and 2 out degreen nodes has 2n out degrees, and n-1 in degrees. 
+so for each node -1, and +2
+
 366. find leaves of binary tree
 
 426. convert binary search tree to sorted doubly linked list
@@ -2117,6 +2214,8 @@ common practice: rotation
 
 
 ## heap
+347. top k frequent elements
+
 407. Trapping Rain Water II
 2d cell: store the i,j pair
 heap: do it like bfs, but only with the max next layer.
@@ -2190,6 +2289,18 @@ using heap to arrange the two most common words
 same to 1054
 
 ## trie
+336. Palindrome Pairs
+- brutal force: try all combinations and check if the combination is plaind
+- trie approach: 
+we need to store in the trie node:
+*. is_end to indicate the word is done
+*. the word index so it shall be a vector of index
+- store the words in reverse order in trie.
+- using the words to search in the trie.
+if begin matches, then we check the remaining part is valid
+
+
+
 425. word squares
 using trie and backtracking.
 422. valid word square
@@ -2296,6 +2407,9 @@ union and use each group's parent.
 
 
 ## sliding window
+340. Longest Substring with At Most K Distinct Characters
+using hashmap to record number of different chars in a window
+
 424. Longest Repeating Character Replacement
 with k replaces
 sliding window with at most k other chars.
@@ -2505,6 +2619,10 @@ must be familiar with tech to convert to equivalent simple problems.
 ```	
 
 ## hashmap
+325. Maximum Size Subarray Sum Equals k
+using hashmap to save the prefix sum vs index (first index for that sum)
+and then find the longest subarray.
+
 391. perfect rectangle
 overlapped rectangle
 check there is no overlap
@@ -2745,6 +2863,14 @@ divide into odd and even
 
 
 ### math problem
+335. self crossing
+only the previous 3 directions matters
+
+343. integer break
+it can also be a dynamic problem
+2*2=4
+choose 3 first until to 4
+
 365. water and jug problem
 
 372. super pow
@@ -2982,6 +3108,9 @@ and then count sort.
 972. equal rational number
 expand the number till double precision
 # bits
+342. power of 4
+1 bit are all on even bits
+
 371. Sum of Two Integers
 not allowed to use + -.
 xor for addition
@@ -3048,6 +3177,9 @@ similar:
 1092. shortest common supersequence
 
 ## linked-list
+328. odd even linked list
+traverse the list and save into two lists and then connect
+
 369. plus one lined list
 
 430. flattern a multilevel doubly linked list
@@ -3074,6 +3206,16 @@ slow and fast.
 
 
 ## design
+348. design tic-tac-toe
+use +1 for player A, -1 for player B.
+hashmap to validate the board.
+
+352. data stream as disjoint intervals
+stores the interval as a sorted intervals (set)
+every time add a val, start and end are the val
+find the lower_bound and check if it can merge with previus interval
+
+
 362. design hit counters
 count the number of hits in the past 5 mins
 deque to maintain the hits in time.
@@ -3268,6 +3410,13 @@ count, palindrome only supports 1 char with odd number
 387. first unique character in string
 two pass using hashmap
 367. valid perfect square
+350 intersection of two arrays II
+keep duplicates,hashmap, once matched, --
+349. intersection of two arrays
+no duplicates
+346. moving average from data stream
+345. reverse vowels of a string
+344. reverse string
 
 
 
