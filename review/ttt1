@@ -1,4 +1,12 @@
 ## dp
+276. Paint Fence
+k colors, <=2 contiguous fences can have the same color.
+use same and diff 
+if previous two are the same, current have k-1 choices
+if previous two are different, current have k choices
+
+279. Perfect Squares
+dp[i] dp[i-j*j]+j*j
 300. longest increasing subsequence
 
 309. best time to buy and sell stocks with cooldown
@@ -626,6 +634,10 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
+283. move zeros
+move zeros to the end
+just fill the front using the non-zero elements
+
 392. is subsequence
 
 457. circular array loop
@@ -736,6 +748,15 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array & string
+273. integer number to english
+every 1000 we change
+
+277. Find the Celebrity
+calc knows and known for each person
+
+289. Game of Life
+in-place change.
+
 315 count smaller numbers after self
 easy for brutal force O(N^2)
 merge sort, hard to understand.
@@ -1254,6 +1275,10 @@ expressions... symbolic programming calculator
 
 
 ## bfs
+286. Walls and Gates
+gates to room's closest distance
+using the gates as the first layer and do the bfs
+
 301. Remove Invalid Parentheses
 although this can be done using dfs, bfs is more straightforward since bfs gives the min distance.
 the approach:
@@ -1400,6 +1425,12 @@ regular bfs
 Note: need check start/end position first.
 
 ## dfs
+282. Expression Add Operators
+given a string of digits, apply +-* between them to get to the target.
+it can be considered as divide and conquer, dfs, backtracking....
++- is simple
+but * is not.
+
 302. Smallest Rectangle Enclosing Black Pixels
 dfs to find the minx,maxx, miny and maxy, then the rect is defined
 interesting, this can be approached using binary search.
@@ -1750,6 +1781,19 @@ add passenger and unload passenger
 
 	
 ## Tree
+270. Closest Binary Search Tree Value
+similar to closed element in sorted array. the element is between the upper_bound and the one before it.
+272. Closest Binary Search Tree Value II
+k values to be found. 
+convert to array is always simple (sort and get the k smallest O(nlogn)
+using pq to store only k numbers can reduce to o(nlogk)
+
+285. Inorder Successor in BST
+find the one after a given node
+equivalent to: upper_bound for array
+so apply similar approach to find the first node with val>p.
+binary search.
+
 297. serialize and deserialize binary tree
 
 298. Binary Tree Longest Consecutive Sequence
@@ -2680,6 +2724,9 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+278. First Bad Version
+note if uses l=m, will get infinite loop on two elements.
+
 374. Guess number higher or lower
 simple binary search problem
 375. Guess Number Higher or Lower II
@@ -2792,6 +2839,18 @@ must be familiar with tech to convert to equivalent simple problems.
 ```	
 
 ## hashmap
+288. Unique Word Abbreviation
+the statement is really confusing, but the problem is simple.
+
+290. Word Pattern
+char vs word
+just map the first char to the first word
+and then check conflicts
+291. word pattern II
+the words has no separate.
+maybe can do using backtracking.
+similar to 290 by adding space to separate them.
+
 299. bulls and cows
 we need first match bulls and change the hashmap and then match the cows
 
@@ -3046,6 +3105,10 @@ divide into odd and even
 
 
 ### math problem
+287. Find the Duplicate Number
+n+1 number has 1 to n.
+xor
+
 296. best meeting point
 median, idea from 1d.
 median is often used for many problems
@@ -3429,6 +3492,20 @@ slow and fast.
 
 
 ## design
+271. Encode and Decode Strings
+encode a list of string into one string and decode it back.
+the string contains any char in addition to 256 asciis.
+we often has such kind of design in reality. to make it unique we add a length and separater
+
+281. Zigzag Iterator
+alternative take a element from each of the list.
+use a pair of begin and end to define a list
+use a stack/queue (queue for this application since we all go forward) to store the pairs
+can also applies to k lists.
+
+284. Peeking Iterator
+just use copy constructor to localize an object and call its next.
+
 348. design tic-tac-toe
 use +1 for player A, -1 for player B.
 hashmap to validate the board.
