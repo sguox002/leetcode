@@ -1,12 +1,41 @@
 ## dp
-276. Paint Fence
-k colors, <=2 contiguous fences can have the same color.
-use same and diff 
-if previous two are the same, current have k-1 choices
-if previous two are different, current have k choices
+221. maximal square.
+the idea: get the longest left 1s and up longest 1st
+and then the min of the two
+reduced to 1d: get the min of the two direction
+if top and left are 1: then dp[i]=dp[i-1] (i,i) vs (i-1,i-1)
 
-279. Perfect Squares
-dp[i] dp[i-j*j]+j*j
+
+542. 01 matrix
+do it like 1d array, from left to right and then right to left to update the distance.
+
+256. paint house
+n houses with 3 different colors, no adjacent color, each color with different costs. find the min cost
+dp: if i-1 house is painted with color 0, then i house can be colored with 1 or 2
+dp[i][0] color with red
+dp[i][1] color with green
+dp[i][2] color wth blue
+
+265. paint house II
+k colors.
+if previous house is painted with color k, then 
+dp[i][j]=min(dp[i-1][k])+cost[i][j] k!=j.
+base: 0 houses all costs=0
+initial it as INT_MAX
+skip when previous is not zero and color the same
+O(mn^2)
+optimize: reduce 2d dp 1d and reduce complexity from O(mn^2) to O(mn)
+
+276. paint fences
+it asks the number of painting ways
+with k colors
+<=2 adjacent fence can have the same color.
+we have same and diff two choices
+same[i]=diff[i-1]
+diff[i]=(k-1)*(same[i-1]+diff[i-1]) we have k-1 choices
+
+
+
 300. longest increasing subsequence
 
 309. best time to buy and sell stocks with cooldown
@@ -15,6 +44,11 @@ dp[i] dp[i-j*j]+j*j
 dp for n ugly primes
 312. burst balloons
 consider from the last condition first and get clear subproblem definition
+264. ugly number II
+nth ugly number with only 2,3,5 prime factors
+
+263. Ugly number
+check if it is a ugly number
 
 
 337. house robber III
@@ -468,6 +502,10 @@ dp with i,j,k O(N^3) to split into one triangle and two subproblems
 
 
 ### knapsack
+1155. Number of Dice Rolls With Target Sum
+dice with f faces, dp knapsack with repeat.
+can optimize using 1d dp space
+
 377. combination sum IV
 no duplicates, allow repetive use.
 return the number of combinations
@@ -634,9 +672,17 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
-283. move zeros
-move zeros to the end
-just fill the front using the non-zero elements
+259. 3sum smaller
+find the number of triplets with sum<target
+reduce to O(N^2)
+
+15. 3sum 
+triplet sum==target (0)
+3 pointers
+
+16. 3sum closest
+similar to 3sum
+
 
 392. is subsequence
 
@@ -727,6 +773,33 @@ lmax and rmax from both side
 
 
 ## recursive
+241. Different Ways to Add Parentheses
++-* add different parenthesis and get all possible results.
+divide and conquer
+() can be added in before and after numbers
+so use recursive and combine results
+
+when 
+246. Strobogrammatic Number
+check if a number is strobogrammatric. (look the same when rotated 180 degree)
+upside down, and left to right.
+247. Strobogrammatic Number II
+find all Strobogrammatic number that are of length n.
+idea: build from smaller solutions
+n=0 {}
+n=1, 0,1,8
+n=2, by adding {1,1},{8,8},{9,6},{6,9} based on n=0
+n=3, by adding {1,1},{8,8},{9,6},{6,9} based on n=1
+248. Strobogrammatic Number III
+given a range [low,high] and find the number of Strobogrammatic Number in the range.
+- equivalent to: number(high)-number(low-1), we already know get the number for length n.
+for example 123, we can get length=1, and 2 ie 1 to 99.
+then we have 101,111,...
+dp[0]=1, dp[1]=3, dp[2]=5, dp[i]=dp[i-2]*5
+
+- dfs: generate all the numbers in the range.
+
+
 805. split array with same average
 - split the array into two parts by moving into two lists, so order does not matter.
 - assume we have m for list 1, and n for list 2. Sum(A)/m=Sum(B)/n with Sum(A)+Sum(B)=tsum, m+n=len.
@@ -748,14 +821,46 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array & string
-273. integer number to english
-every 1000 we change
+214. shortest palindrome
+adding characters in the front of a string.
+brutal force: from the end to left we check each substr to end and see if it is a palindrome. the first one is the shortest
+will get TLE
 
-277. Find the Celebrity
-calc knows and known for each person
+- O(N)- KMP
+- recursive: 
+228. Summary Ranges
+group continuous number
+better use two pointer
+pay attention to the last segment. 
+also: pay attention to overflow.
 
-289. Game of Life
-in-place change.
+
+169. Majority Element
+find > n/2
+- using hashmap O(N) space
+- voting algorithm O(1) space
+
+229. Majority Element II
+using two voting
+two passes to make sure candidates are valid
+1150. Check If a Number Is Majority Element in a Sorted Array
+>n/2
+check the target's lower and upper boundary
+
+
+238. product of array except self
+left and right product from both direction
+
+266. Palindrome Permutation
+check if a string can form a palindrome
+allow only one group of odd
+
+267. Palindrome Permutation II
+return all possible palindrome permutation
+backtracking.
+count each number occurance, if there is a odd, it must be in the middle.
+remaining is half of these characters for the left.
+note it is not limited as lower case english letters.
 
 315 count smaller numbers after self
 easy for brutal force O(N^2)
@@ -1224,6 +1329,15 @@ it is equivalent to find the next smaller in its right directions for each eleme
 using iterative stack
 
 ### expression evaluation using stack
+227. Basic Calculator II
+support +-*/ and spaces
+using stack, stringstream add a + in the begin and after to avoid special treatment
+772. Basic Calculator III
++-*/ and ()
+224. Basic Calculator
++-()
+
+
 385. Mini Parser
 "[123,[456,[789]]]": a nested integer, 123 and a nested list [45,6, [789]]
 
@@ -1275,9 +1389,11 @@ expressions... symbolic programming calculator
 
 
 ## bfs
-286. Walls and Gates
-gates to room's closest distance
-using the gates as the first layer and do the bfs
+269. Alien Dictionary
+unknown order sequence, but given a list of sorted words
+from the sorted words we can get a directed graph
+similar to course schedule II, we can do a topological sorting
+bfs.
 
 301. Remove Invalid Parentheses
 although this can be done using dfs, bfs is more straightforward since bfs gives the min distance.
@@ -1425,12 +1541,6 @@ regular bfs
 Note: need check start/end position first.
 
 ## dfs
-282. Expression Add Operators
-given a string of digits, apply +-* between them to get to the target.
-it can be considered as divide and conquer, dfs, backtracking....
-+- is simple
-but * is not.
-
 302. Smallest Rectangle Enclosing Black Pixels
 dfs to find the minx,maxx, miny and maxy, then the rect is defined
 interesting, this can be approached using binary search.
@@ -1587,6 +1697,19 @@ dfs using negative color, restore inner side
 
 
 ## backtracking
+254. Factor Combinations
+find all combinations of a number
+from the smallest factor 2 to sqrt(n). once we determined the first, the second is a subproblem
+a bit tricky:
+start from 2 (n, start, ....)
+end case: n<start
+n%i==0 then add i and n/i into current vector, and then add to answer
+pop the n/i and keep going smaller.
+
+loop from 2 to sqrt(n): so the current factor is always smallest.
+backtrack: start from i, instead of 2 again. 
+
+
 293. Flip Game
 flip ++ to -- until no one can move.
 return all possible next states
@@ -1693,6 +1816,11 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+252. meeting room
+give a list of interval, check if one can attend all.
+253. meeting room II
+find the number of conference rooms needed.
+
 352. Data Stream as Disjoint Intervals
 
 370. Range Addition
@@ -1778,21 +1906,48 @@ apply two pointer and check if two intervals intersect.
 1094. car pooling
 add passenger and unload passenger
 
-
 	
 ## Tree
-270. Closest Binary Search Tree Value
-similar to closed element in sorted array. the element is between the upper_bound and the one before it.
-272. Closest Binary Search Tree Value II
-k values to be found. 
-convert to array is always simple (sort and get the k smallest O(nlogn)
-using pq to store only k numbers can reduce to o(nlogk)
+222. Count Complete Tree Nodes
+O(N^2) using depth and count
+for complete tree:
+the left depth is the left edge
+the right depth is right's left edge so getting depth would be reduced to O(logn)
+O(logn*logn)
 
-285. Inorder Successor in BST
-find the one after a given node
-equivalent to: upper_bound for array
-so apply similar approach to find the first node with val>p.
-binary search.
+226. invert binary tree
+postorder: invert left and right and then swap left and right
+
+230 kth smallest element in a BST.
+
+236. Lowest Common Ancestor of a Binary Tree
+O(N)
+if current node==p or q return it
+left subtree find pq
+right subtree find pq
+if left find one and right find one, we get the root
+otherwise left or right
+235. Lowest Common Ancestor of a Binary Search Tree
+check the value 
+and then goes to left or right
+
+250. count univalue substree
+postorder is more suitable
+if left is univalue and right is univalue, and count univalue subtree
+so we need to do two things: check if valid, count the number of univalue subtree
+the condition shall:
+if left then check left vs root
+if right then check right vs root
+
+
+257. binary tree path
+simple preorder or dfs
+
+255. verify preorder sequence in BST
+root, left, right sequence.
+using root to divide into left and right recursively.
+leftmax<root<rightmin
+
 
 297. serialize and deserialize binary tree
 
@@ -2414,6 +2569,18 @@ common practice: rotation
 
 
 ## heap
+215. kth largest element in an array
+using pq.
+pq is faster than set. (pq used full binary tree, set use tree structure).
+
+239. Sliding Window Maximum
+using a dq
+the front is the current max
+from back to front is sorted.
+when a new elements comes, pop those elements smaller than it.
+pop the front element if it is out of the window.
+(storing the index)
+
 347. top k frequent elements
 358. Rearrange String k Distance Apart
 using the heap and arrange k chars and repeat.
@@ -2545,6 +2712,12 @@ matching with the prefix, startwith
 
 
 ## union find
+261. graph valid tree
+check whether the graph with edges make a tree
+use eges to merge the nodes, 
+- there is no cycle, edge two nodes have the same parents
+- n nodes n-1 edges
+
 323. Number of Connected Components in an Undirected Graph
 - using the edge to merge nodes
 - another approach: form a graph and do dfs.
@@ -2624,6 +2797,12 @@ union and use each group's parent.
 
 
 ## sliding window
+1156. Swap For Longest Repeated Character Substring
+the idea is sliding window with at most one different char, and there must be another char outside the window
+however implementation is not easy. why is hard since I am not clear the details steps
+
+
+
 340. Longest Substring with At Most K Distinct Characters
 using hashmap to record number of different chars in a window
 
@@ -2724,8 +2903,13 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
-278. First Bad Version
-note if uses l=m, will get infinite loop on two elements.
+74. Search a 2D Matrix
+2d matrix actually sorted like a 1d matrix. so we can treat it as 1d
+another approach: start from the bottom left element, so we only have 1 choice every step
+240. Search a 2D Matrix II
+rows are sorted, columns are sorted
+use the bottom left as the root and treat it similar to a BST.
+
 
 374. Guess number higher or lower
 simple binary search problem
@@ -2839,17 +3023,35 @@ must be familiar with tech to convert to equivalent simple problems.
 ```	
 
 ## hashmap
-288. Unique Word Abbreviation
-the statement is really confusing, but the problem is simple.
+217 contains duplicate
+convert to hashset and check if size is reduced
+219. contains duplicate II
+with index different <=k.
+on the fly to check the index difference of same number
+220. contains duplicate III
+value difference <=t, and index difference <=k.
+using sorted map for previous visited elements and binary search to find the element
+(only keep the values inside the k window).
 
-290. Word Pattern
-char vs word
-just map the first char to the first word
-and then check conflicts
-291. word pattern II
-the words has no separate.
-maybe can do using backtracking.
-similar to 290 by adding space to separate them.
+
+243. Shortest Word Distance
+return the word distance in a list
+word vs its list of index
+
+244. Shortest Word Distance II
+similar to 243
+
+245. Shortest Word Distance III
+may contain inside a group distance.
+
+249. Group Shifted Strings
+note it is cycle shift.
+convert each string back to abc....
+for example: abc, bcd, xyz,yza, they belongs to the same group.
+
+1153. String Transforms Into Another String
+one observation: directly map and if same char mapped to different char return 0
+other: we need at least one unused char for swapping.
 
 299. bulls and cows
 we need first match bulls and change the hashmap and then match the cows
@@ -3105,10 +3307,22 @@ divide into odd and even
 
 
 ### math problem
-287. Find the Duplicate Number
-n+1 number has 1 to n.
-xor
+223. Rectangle Area
+two overlaps
 
+233. Number of Digit One
+count total number of digit 1 from 1 to n.
+this generally shall use log(n) algorithm, process digit by digit
+current digit >1
+current digit ==1
+current digit <1
+and it divides into left and right then we calculate the 1s
+
+1154. day of the year
+leap year %400==0 ||(%100!=0 && %4==0)
+
+258. add digits
+modular property: add digits repeatedly. 
 296. best meeting point
 median, idea from 1d.
 median is often used for many problems
@@ -3380,7 +3594,25 @@ and then count sort.
 
 972. equal rational number
 expand the number till double precision
+
 # bits
+231. power of two
+
+136 single element
+find the one appear once. using xor
+
+137 single element II
+every element appear three times except one appear once.
+bit operations: add each single bit and %3. the remaining is the bit of that occurs only once.
+
+use true table and karough map.
+
+
+260 single number III
+two numbers appear once and all other appear twice
+xor and then choose a bit different divide into two sets and then apply the find single element
+
+
 318. Maximum Product of Word Lengths
 product of two words length which shares no common letters
 convert chars to bits, and share problem is solved.
@@ -3463,6 +3695,10 @@ similar:
 1092. shortest common supersequence
 
 ## linked-list
+234. palindrome linked list
+
+237. delete node in a linked list
+
 328. odd even linked list
 traverse the list and save into two lists and then connect
 
@@ -3492,19 +3728,13 @@ slow and fast.
 
 
 ## design
-271. Encode and Decode Strings
-encode a list of string into one string and decode it back.
-the string contains any char in addition to 256 asciis.
-we often has such kind of design in reality. to make it unique we add a length and separater
 
-281. Zigzag Iterator
-alternative take a element from each of the list.
-use a pair of begin and end to define a list
-use a stack/queue (queue for this application since we all go forward) to store the pairs
-can also applies to k lists.
+225. implement stack using queues
 
-284. Peeking Iterator
-just use copy constructor to localize an object and call its next.
+232. implement queue using stacks
+
+251. Flatten 2D Vector
+2d vector flatten. simple, similar to nested integer but more straightforward
 
 348. design tic-tac-toe
 use +1 for player A, -1 for player B.
@@ -3960,9 +4190,85 @@ note: binary search if l=m, will have two element infinite loop problem.
 * insufficient nodes in root to leaf path
 
 
+interviewing.io:
+
+8/9/2019
+
+Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
+
+Example 1:
+Input:nums = [1,1,1], k = 2
+Output: 2
+
+1060. Missing Element in Sorted Array
+Given a sorted array A of unique numbers, find the K-th missing number starting from the leftmost number of the array.
+
+ 
+
+Example 1:
+
+Input: A = [4,7,9,10], K = 1
+Output: 5
+Explanation: 
+The first missing number is 5.
+
+8/10/2019
+There is a fence with n posts, each post can be painted with one of the k colors.
+
+You have to paint all the posts such that no more than two adjacent fence posts have the same color.
+
+Return the total number of ways you can paint the fence.
+
+n=3,k=2, answer=6
+n=10,k=5, answer=7348480
 
 
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
 
+For example, given n = 3, a solution set is:
+
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+
+mock
+Given a matrix consists of 0 and 1, find the distance of the nearest 0 for each cell.
+
+The distance between two adjacent cells is 1.
+
+[[0,0,0],
+ [0,1,0],
+ [1,1,1]]
+ 
+ 
+ Output:
+[[0,0,0],
+ [0,1,0],
+ [1,2,1]]
+ 
+ first, update all those neighboring to 0 (non zero elements)
+ if they are close to 0, return 1, otherwise add to queue. that is the first layer
+ 
+another approach: dp
+check its top and left  (first pass)
+then check its bottom and right from other direction (second pass)
+boundary: make it large.
+
+just similar to 1d array left and right min distance problem.
+[[1,0,1,1,0,0,1,0,0,1],
+[0,1,1,0,1,0,1,0,1,1],
+[0,0,1,0,1,0,0,1,0,0],
+[1,0,1,0,1,1,1,1,1,1],
+[0,1,0,1,1,0,0,0,0,1],
+[0,0,1,0,1,1,1,0,1,0],
+[0,1,0,1,0,1,0,0,1,1],
+[1,0,0,0,1,1,1,1,0,1],
+[1,1,1,1,1,1,1,0,1,0],
+[1,1,1,1,0,1,0,0,1,1]]
 
 
 
