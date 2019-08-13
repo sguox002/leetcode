@@ -1,4 +1,43 @@
 ## dp
+120 triangle
+find the min path sum
+
+132. Palindrome Partitioning II
+min number of cuts to make it palindrome
+dp:
+base case: cut into a single char
+for each position i, expand left and right
+odd case i+j
+even case. i+j+1
+131. Palindrome Partitioning
+return all combinations
+backtrack.
+use a temp vector, start, and check if the substr is palindrome
+
+135. candy
+two direction to satisfy the condition
+get the min left direction and right direction
+similar problem 01 matrix
+
+139. word break
+check if substr is in the list.
+140. word break II
+dp and then dfs.
+
+53. max subarray sum
+local max and global max
+
+152. Maximum Product Subarray
+product has min/max conversion
+
+161. one edit distance
+simple observations:
+length differenece >1 could not be the answer
+same size, only one char different
+different size: just igore that char and compare
+
+174. dungeon game
+
 221. maximal square.
 the idea: get the longest left 1s and up longest 1st
 and then the min of the two
@@ -39,7 +78,10 @@ diff[i]=(k-1)*(same[i-1]+diff[i-1]) we have k-1 choices
 300. longest increasing subsequence
 
 309. best time to buy and sell stocks with cooldown
-
+188. best time to buy and sell stocks (at most k transactions)
+123. best time to buy and sell stocks III
+122. best time to buy and sell stocks II
+121. best time to buy and sell stocks I
 313. super ugly number
 dp for n ugly primes
 312. burst balloons
@@ -821,6 +863,30 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array & string
+148. sort list
+merge sort
+147. insertion sort list
+
+
+164. Maximum Gap
+required linear time
+use bucket sort
+put into (max-min)/(n-1) buckets
+in each bin, only store the min and max.
+
+
+179. largest number
+using string compare to arrange the sort
+
+151. Reverse Words in a String
+reverse words, input is a list of words
+reverse the whole string first so the index is fixed
+
+186. Reverse Words in a String II
+input is a char array. inplace requirement.
+two pointer.
+once we find a word, we reverse it and after all done, reverse the whole.
+
 214. shortest palindrome
 adding characters in the front of a string.
 brutal force: from the end to left we check each substr to end and see if it is a palindrome. the first one is the shortest
@@ -828,6 +894,12 @@ will get TLE
 
 - O(N)- KMP
 - recursive: 
+
+163. missing ranges
+found missing ranges in the range [lower,upper]
+check against previous value
+to avoid special treat on two sides, add lower and upper
+
 228. Summary Ranges
 group continuous number
 better use two pointer
@@ -1224,6 +1296,12 @@ find the longest cycle in the array containing 0 to n-1
 
 
 ## stack & deque
+150. evaluate reverse polish notation
+straightforward stack.
+
+158. Read N Characters Given Read4 II - Call multiple times
+using a deque buffer to store read outside
+
 316. remove duplicate letters
 using hashmap and monotonic stack
 
@@ -1387,8 +1465,12 @@ expressions... symbolic programming calculator
 
 
 
-
 ## bfs
+127. word ladder
+126. word ladder II
+need find the path.
+also it allows multiple nodes (parent different) in the same layer
+
 269. Alien Dictionary
 unknown order sequence, but given a list of sorted words
 from the sorted words we can get a directed graph
@@ -1908,6 +1990,41 @@ add passenger and unload passenger
 
 	
 ## Tree
+124. Binary Tree Maximum Path Sum
+path shall be from parent to child.
+it can cross the root and connect left and right path.
+this is similar to the max subarray sum in 1d
+
+- a parent to child path sum
+- connected root sum
+- recursive subproblem is to find the parent-child path sum
+
+129. sum root to leaf numbers
+dfs or preorder, similar to backtracking
+
+145 binary tree postorder traversal
+144. binary tree preorder traversal
+iterative
+
+156. binary tree upside down
+a tree: right nodes are all leaf nodes, with a sibling or empty.
+upside down: original right nodes turn into left leaf nodes
+- left most leaf node becomes the root
+for a node:
+left becomes the parent, right becomes the left, node becomes right
+how to traverse?
+post: first left and then right (since right is leaf so no recursive)
+change the root is very tricky:
+root->left->left and root->left->right updates
+why we cannot use nroot->left since it is return results, and it contains substructure already
+
+173. Binary Search Tree Iterator
+one way to traverse and store everything in order
+other way: simulate the in order and store the nodes in stack.
+
+199. binary tree right side view
+preorder traversal and only keeps the last element
+
 222. Count Complete Tree Nodes
 O(N^2) using depth and count
 for complete tree:
@@ -2363,6 +2480,18 @@ if left and right are removed,
 
 
 ## greedy
+134. Gas Station
+- if net gas (gas-cost) >0, there would have a solution
+- the net is in the array. and the tsum>0
+the problem is equivalent to find the sliding window sum >0
+direct approach: 
+copy the array and reduce cyclic
+and then find the prefix sum with sliding window=N
+- station with net<0 cannot be the start.
+
+
+
+
 306. additive number
 this is equivalent to 842. split array into fib sequence 
 using iteration to max length allowed for the first and second number then decide the whole array
@@ -2613,6 +2742,9 @@ approach 2: dfs/topological sort, with cycle detection. (have 3 states)
 
 210. course schedule II
 output the complete order.
+207. Course Schedule
+check if there is cycle inside
+using dfs or above bfs approach.
 
 1136. parallel courses
 [x,y] x is the prerequisite of y.
@@ -2670,6 +2802,15 @@ using heap to arrange the two most common words
 same to 1054
 
 ## trie
+208. implement trie (prefix trie)
+
+211. add and searchh word-data structure design
+
+212. Word Search II
+a list of words to search
+dfs in the trie.
+
+
 336. Palindrome Pairs
 - brutal force: try all combinations and check if the combination is plaind
 - trie approach: 
@@ -2712,6 +2853,14 @@ matching with the prefix, startwith
 
 
 ## union find
+128. Longest Consecutive Sequence
+connect the consecuatives into one set
+combined using hashmap to record seen elements
+
+130. surrounded regions
+those connected to the 4 boundaries are excluded.
+mark them as * and all other x, and then revert back to 'O'
+
 261. graph valid tree
 check whether the graph with edges make a tree
 use eges to merge the nodes, 
@@ -2797,6 +2946,16 @@ union and use each group's parent.
 
 
 ## sliding window
+159. Longest Substring with At Most Two Distinct Characters
+sliding window with <=2 different type of chars
+
+209. min size subarray sum
+sum>=target.
+using prefix sum and then lower bound.
+more optimized: 
+sliding window:
+when the window sum>=target, we keep shrinking the left.
+
 1156. Swap For Longest Repeated Character Substring
 the idea is sliding window with at most one different char, and there must be another char outside the window
 however implementation is not easy. why is hard since I am not clear the details steps
@@ -2903,6 +3062,20 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+154. find min in rotated sorted array II
+with duplicate elements inside.
+with r--
+note binary search we need to use l=m+1 and r=m
+to avoid infinite loop due to the bias left property.
+
+153. find min in rotated sorted array
+binary search the min
+
+162. find peak element
+treat is similar to mountain array
+this is very interesting since we are looking for local max
+invariant: if left side has a rising slope
+
 74. Search a 2D Matrix
 2d matrix actually sorted like a 1d matrix. so we can treat it as 1d
 another approach: start from the bottom left element, so we only have 1 choice every step
@@ -3023,6 +3196,28 @@ must be familiar with tech to convert to equivalent simple problems.
 ```	
 
 ## hashmap
+138. copy list with random pointer
+need a map to id and id to node
+133. clone graph
+similar to 138.
+
+149. max points on a line
+using a pair as hash will need define a hash function
+we can use dx,dy using simplified form as the key to avoid that
+a line is defined a x or y intercept and dx/dy
+- gcd
+- interceptx,intercepty, dx,dy
+- intercept calculation would be a problem and shall use double precision
+using two loops to iterate
+point i as the base point to compare
+point j connect to i.
+then we don't need to worry about the b. (y interception)
+
+
+187. Repeated DNA Sequences
+only 4 chars
+direct hash
+
 217 contains duplicate
 convert to hashset and check if size is reduced
 219. contains duplicate II
@@ -3197,6 +3392,8 @@ there are no nested braces. so just connect them using dfs
 
 
 ## Misc
+166. fraction to recurring decimal
+165. compare version number
 
 423. Reconstruct Original Digits from English
 appear only in single number
@@ -3307,6 +3504,9 @@ divide into odd and even
 
 
 ### math problem
+119. pascal triangle II
+118. pascal triangle
+
 223. Rectangle Area
 two overlaps
 
@@ -3596,6 +3796,21 @@ and then count sort.
 expand the number till double precision
 
 # bits
+136 single number
+find the number appear once
+other appear twice
+137. single number II
+every number appear three times except one appear once
+using 32 bits, do it bit by bit and %3
+then combine the results.
+260 single number II
+two elements appear twice, other appear twice
+using 136 to divide into two different groups
+
+201. bitwise and of number range
+the range >1, it always has odd/even and the and for the bit 0 is always 0
+then we can reduce to a subproblem with m/2 and n/2
+
 231. power of two
 
 136 single element
@@ -3695,6 +3910,14 @@ similar:
 1092. shortest common supersequence
 
 ## linked-list
+143. reorder list
+reverse and merge two lists
+142. linked list cycle II.
+find the entry node.
+
+141. linked list cycle.
+determine if there is a cycle.
+
 234. palindrome linked list
 
 237. delete node in a linked list
@@ -3728,6 +3951,9 @@ slow and fast.
 
 
 ## design
+146. LRU cache
+
+170. two sum III-data structure design
 
 225. implement stack using queues
 
@@ -3980,6 +4206,20 @@ no duplicates
 346. moving average from data stream
 345. reverse vowels of a string
 344. reverse string
+206. reverse linked list
+205. isomrphic strings
+204. count primes
+203. remove linked list elements
+202. happy number: 
+digit square sum repeatedly till 1.
+use hashset to detect cycle to avoid infinite loop.
+191. number of 1 bits
+190. reverse bits
+189. rotate array
+limit k in 0 to n-1, (equivalent)
+then use reverse to achieve rotate.
+172. factorial trailing zeros
+171. excel sheet column number
 
 
 
