@@ -2789,11 +2789,19 @@ top five scores, using minheap to keep only 5 scores.
 
 1066. Campus Bikes II
 N workers and M bikes.
-min manhattan distance and lowest index bike.
-need work on it.
+it needs to the total sum of the distance to be minimized
+this is a matrix with distance
+we are seeking for a min path sum in the matrix from top row to bottom row
+without sharing a column.
+since workers and bikes <10, so we can use bit.
+approach 1: backtracking to try all possible combinations
+approach 2: dp visiting all nodes with min distance. traveler problem.
+only when visited all nodes and status contains m set bits) we update the answer.
 
 1057. Campus Bikes
-sorting all combinations.
+- sorting all combinations.
+- use min heap (multiset or pq)
+note pq is sorted in descending order so make sure the comp is correct.
 
 1054. Distant Barcodes
 rearrange so that no neighboring are the same
@@ -3504,6 +3512,16 @@ divide into odd and even
 
 
 ### math problem
+470. implement rand10 using rand7
+the idea is to use 7*rand7+rand7 to generate rand49
+and if generate number in 40 to 48, roll again
+the probability:
+r=1/49
+q=9/49
+r*(1+q+q^2+....)
+=r*1/(1-q)=1/40.
+to improve the efficiency of state usage, we can keep on adding 7 power.
+
 119. pascal triangle II
 118. pascal triangle
 
