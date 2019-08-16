@@ -1,4 +1,59 @@
 ## dp
+overlapped problems, once you made a move, it will divide several subproblems
+we need define the subproblem clearly. sometimes the subproblem is clear but sometimes not.
+
+simple dp:
+62. unique paths
+number of paths
+63. unique paths II
+with obstacles
+70. climbing stairs
+this is the basic problem for number of ways similar problem.
+
+top down approach:
+usually with memoization
+87. scramble string
+similar to swap tree.
+using recursive approach is the best.
+divide by left and right and check if left left, right, right, left right, right,left is scramble.
+
+edit distance problem
+insert, replace, delete
+from one string to another
+72. edit distance
+
+5. longest palindromic substring
+dp[i][j]=dp[i+1][j-1]+2 if s[i]=s[j]
+
+10. regular expression matching
+two strings matching dp[i,j] 
+
+44. wildcard matching
+two strings matching
+
+55. jump game
+each number is the max steps can jump
+45. jump game II.
+reach the last index in min number of jumps
+bfs like approach or dp.
+
+53. max subarray
+largest sum
+compare prefix+i and i.
+
+
+91. decode ways
+
+97. interleaving string
+s3 is formed by interleaving of s1 and s2
+2d matrix path.
+
+115. distinct subsequence
+distinct subsequence of S equals T
+base case: T is empty
+s[i]!=t[j], need delete s[i]
+s[i]==t[j]: we can delete or keep
+
 120 triangle
 find the min path sum
 
@@ -518,6 +573,10 @@ if book i, belongs to previous group, then we need to update the max.
 if book i, starts a new group, then we need to update the new height.
 dp[i] is the min height for the first i books.
 
+dp[i]=min(dp[i-1]+hi,dp[j-1]+max(hj,hi)), the index is important for the correctness.
+
+
+
 1092. Shortest Common Supersequence
 need convert to equivalent problems:
 find the longest common subsequences
@@ -714,6 +773,12 @@ using same principle working for numbers.
 by subtracting the common.
 
 ## two pointer
+11. Container With Most Water
+
+80. remove duplicates from sorted array II
+leave two copies at most
+using two pointer
+
 259. 3sum smaller
 find the number of triplets with sum<target
 reduce to O(N^2)
@@ -863,6 +928,76 @@ similar to Strobogrammatic Number II, but it only requires length<=n.
 
 
 ## Array & string
+1 two sum.
+8. string to integer
+6. zigzag conversion
+
+13. roman to integer
+12. integer to roman
+
+18. 4sum
+16. 3 sum closest
+15. 3sum
+
+30 substring with concatenation of all words
+all words are of the same length, find all starting index that is conact of each word exactly once
+using sliding window
+in the sliding window the map shall be the same as the dictionary
+28. implement strstr()
+
+
+31. next permutation
+
+46. permuations
+all distinct numbers
+return all possible permutations
+backtracking
+47. permuation II
+with duplicates
+return all unique permutations
+sort the input
+skip duplicates
+
+48. rotate image
+
+59. spiral matrix II
+generate the matrix
+54. spiral matrix
+traverse the matrix
+498. diagnona traverse.
+
+65. validate number
+the number could be really large
+using string
+- first char need to be 0123456789+-. find_first_not_of
+- skip space
+- skip +-
+- <=1 dot.
+- exponent e or E
+- exponent check
+- trailing space
+
+68. text justifications
+each line contains maxchars, space shall be evenly distributed
+remaining space shall be assigned from left to right.
+
+73. set matrix zeros
+if element is 0, set its row and col to 0
+do it in place and O(1) space
+use hash to record rows and cols O(m+n) space
+the clever idea: 
+find the last row which has 0 (it will be all set to 0)
+use that row to store the columns which shall be set to 0
+then row by row set 0
+then set col to 0 as stored in the last row
+set the last row to 0
+
+75. sort colors
+inplace and O(1) space
+count sort
+
+88. merge sorted array
+
 148. sort list
 merge sort
 147. insertion sort list
@@ -1299,6 +1434,24 @@ find the longest cycle in the array containing 0 to n-1
 
 
 ## stack & deque
+32. Longest Valid Parentheses
+remove all valid pairs and leave unpaired in stack and get the distance
+
+42. trapping rain water
+montonic stack
+
+71. simplify path
+
+84. largest rectangle in histogram
+monotonic stack
+the area is the min of the height * the width
+to avoid boundary, add a 0 to both ends
+stack in sorted order. when current bar < top, then we pop it. 
+use it as the lowest bar to calculate the area.
+
+85. maximal rectangle
+use 84, and reduce to 1d problem
+
 150. evaluate reverse polish notation
 straightforward stack.
 
@@ -1626,6 +1779,8 @@ regular bfs
 Note: need check start/end position first.
 
 ## dfs
+17. letter combinations of a phone number
+
 302. Smallest Rectangle Enclosing Black Pixels
 dfs to find the minx,maxx, miny and maxy, then the rect is defined
 interesting, this can be approached using binary search.
@@ -1782,6 +1937,49 @@ dfs using negative color, restore inner side
 
 
 ## backtracking
+22. generate parentheses
+
+36. valid sudoku
+37. sudoku solver
+a very hard backtracking problem
+
+
+39. combination sum
+get all combinations
+using backtrack
+40. Combination Sum I
+each number can only be used once, containing duplicates
+skip duplicates, using backtrack
+216. Combination Sum III
+n 1 to 9, choose k numbers adds up to a target
+return all unique combinations
+backtrack
+377. Combination Sum IV
+find number of combinations, given a input and a target. without duplicates
+knapsack
+
+51. n-queens
+return all solutions
+52. n-queens II
+return number of solutions
+- backtracking
+
+
+77. combinations
+1 to n and choose k
+
+78. subsets
+distinct integers, return all subset
+choose or not choose
+90 subsets II.
+contain duplicates, but the answer shall not contain duplicates
+approach 1: using hashset to eliminate duplicates
+approach 2: 
+sort the array
+count the same number: it could add 1 to nrepeat
+add current number to the back of all previous stored results (new)
+
+
 254. Factor Combinations
 find all combinations of a number
 from the smallest factor 2 to sqrt(n). once we determined the first, the second is a subproblem
@@ -1901,6 +2099,14 @@ it is equivalent to find the next smaller in its right directions for each eleme
 
 	
 ## interval problems
+57. insert interval
+intervals are sorted
+find the lower_bound and upper_bound
+- no overlapping, insert it
+- with overlapping, min and max, delete the range
+
+56 merge interval
+
 252. meeting room
 give a list of interval, check if one can attend all.
 253. meeting room II
@@ -1993,6 +2199,71 @@ add passenger and unload passenger
 
 	
 ## Tree
+96. unique bst.
+count the number of unique bst. 
+dp in tree: subproblem choose i and left 1 to i-1 and right i+1 to n.
+95. unique BST II.
+find all possible unique bst.
+similar: backtrack get left and right vector and then combine
+it is important: when no nodes, it shall return 0 and add a null to the vector
+thus we can combine.
+
+94. binary tree inorder traversal
+iterative
+
+112. path sum
+root to leaf path = target
+113. path sum II
+find all path which sums to target
+similar to backtracking
+437. path sum III
+do not need to start at root or end at leaf. but need go downwards
+O(N^2): preorder or dfs, for path containing the root node, if the sum==target, we add 1
+not easy
+
+use similar approach in 1d array: prefix sum and check current sum
+prefix[i]-prefix[j]=target.-> prefix[j]=prefix[i]-target
+666. path sum IV
+use 3 digit number to represent value, depth, position in the level as in full binary tree.
+consider it as a full binary tree.
+
+111. min depth of binary tree
+need consider left null or right null case
+110. balanced binary tree
+depth difference <=1
+if difference >1 early exit.
+
+109. convert sorted list to bst
+height balanced, divide by half
+
+108. convert sorted array to bst
+107. Binary Tree Level Order Traversal II
+102. Binary Tree Level Order Traversal
+106. construct binary tree from inorder and postorder
+105. construct binary tree from preorder and inorder
+104. max depth of binary tree
+103. binary tree zigzag level order traversal
+101. symmetric tree
+100. same tree
+99. recover bst
+two elements are swapped in BST. recover it.
+traversal and record reversed pairs
+if only one pair: swap 
+if has two pairs: the two pairs must has one positive and one negative diff.
+
+
+98. validate bst
+
+114. flatten binary tree to linked list
+reversed in order 
+
+
+116. Populating Next Right Pointers in Each Node
+perfect binary tree
+bfs.
+
+117. Populating Next Right Pointers in Each Node II
+use a dummy node and bfs 
 124. Binary Tree Maximum Path Sum
 path shall be from parent to child.
 it can cross the root and connect left and right path.
@@ -2232,9 +2503,9 @@ get the sum of a subtree and find the tilt.
 this is similar to memoization while doing traversal.
 
 572. Subtree of Another Tree
-helper is_sametree
-but it is O(N^2)
-using serialization and check if the shorter one is a substring using preorder traversal.
+- helper is_sametree but it is O(N^2)
+- using serialization and check if the shorter one is a substring using preorder traversal. (need bracket the values)
+
 
 590. n-ary tree postorder traversal
 589. n-ary tree preorder traversal
@@ -2821,6 +3092,8 @@ same to 1054
 a list of words to search
 dfs in the trie.
 
+70 word search
+dfs
 
 336. Palindrome Pairs
 - brutal force: try all combinations and check if the combination is plaind
@@ -2840,6 +3113,15 @@ using trie and backtracking.
 
 642. Design Search Autocomplete System
 add a count in the node.
+- trienode: using map<char,trienode*>, 
+- store the string, and count in the last node.
+- lexi order using a pq: with string vs count
+- input: when see #, update the trie. do search in trie on the fly
+- do the dfs with the prefix and add in pq;
+- output the top 3 strings
+need to reset the pq after every mathing
+note: when doing the dfs, found a leaf node cannot return, need keep going
+
 
 648. replace words
 replace the word with prefix in the dictionary
@@ -2957,6 +3239,9 @@ union and use each group's parent.
 
 
 ## sliding window
+76. min window substring
+sliding window with hashmap
+
 159. Longest Substring with At Most Two Distinct Characters
 sliding window with <=2 different type of chars
 
@@ -3073,6 +3358,20 @@ equivalent: find the window with min vacancies.
 
 
 ## binary search
+34. find first and last postion of element in sorted array
+equal_range
+or binary search
+
+33. search in rotated sorted array
+find the pivot and do it as in sorted array.
+
+69. sqrt(x)
+
+81. search in rotated sorted array II
+contains duplicate
+when left=mid=right, we reduce the range ++/--
+other cases similar to binary search.
+
 154. find min in rotated sorted array II
 with duplicate elements inside.
 with r--
@@ -3207,6 +3506,8 @@ must be familiar with tech to convert to equivalent simple problems.
 ```	
 
 ## hashmap
+49. group anagrams
+
 138. copy list with random pointer
 need a map to id and id to node
 133. clone graph
@@ -3403,6 +3704,8 @@ there are no nested braces. so just connect them using dfs
 
 
 ## Misc
+93. restore ip addresses
+
 166. fraction to recurring decimal
 165. compare version number
 
@@ -3500,8 +3803,20 @@ reflection code.
 2^k: base k reflection code, 
 - loop 2^k
 - reflect and change the last digit
+89. gray code
+reflect code
+total 2^n code
+0, 1
+11, 10
+
+reflect back and then set the MSB to 1.
 
 ## divide and conquer
+4. median of two sorted array
+
+50. pow(x,n)
+reduce to x*x,n/2
+
 395. Longest Substring with At Least K Repeating Characters
 each char in the string must appear >=k times.
 using a hashmap, find the first char which appears <k times
@@ -3527,6 +3842,19 @@ q=9/49
 r*(1+q+q^2+....)
 =r*1/(1-q)=1/40.
 to improve the efficiency of state usage, we can keep on adding 7 power.
+29. divide two integers
+using subtraction
+
+43. multiply strings
+
+60. permuation sequence
+n 1 to 9, find the kth permutation.
+k/(n-1)! to get the first number, remaining
+k/(n-2)! to get the second number, remaining
+
+
+67. add binary 
+66. plus one
 
 119. pascal triangle II
 118. pascal triangle
@@ -3934,6 +4262,39 @@ similar:
 1092. shortest common supersequence
 
 ## linked-list
+25. reverse nodes in k-group
+23. merge k sorted list
+using a minheap.
+21. merge two sorted lists
+19. Remove Nth Node From End of List
+two passes
+
+24. swap nodes in pairs
+
+61. rotate list
+do it similar to array. reverse 
+
+
+83. remove duplicate from sorted list
+leave one
+duplicate: p->next keeps going to next
+
+82. remove duplicate from sorted list II
+remove all instance
+we need a pre and post and curr to do this job
+
+
+86. Partition List
+given x, <x appear first and >=x  follows
+original order preserves
+
+two list and merge
+
+
+92. reverse linked list II
+from m to n. do it in one pass.
+go to m-1 and use curr and next and prev and keep counting
+
 143. reorder list
 reverse and merge two lists
 142. linked list cycle II.
@@ -4534,10 +4895,169 @@ just similar to 1d array left and right min distance problem.
 [1,1,1,1,1,1,1,0,1,0],
 [1,1,1,1,0,1,0,0,1,1]]
 
+google mock
+logger rate limit: hashmap
+campus bikes: heap
+all path from source to destination: graph dfs, cycle detection
+compus bike II: dp, traveller problem
 
-google practice
+group shifted string: hashmap
+number of islands: dfs
+sentence screen fitting: two pointer
+number of islands II: union find
 
-less familiar
+sentence similarity: hashmap
+sentence similarity II: union find
+android lock pattern: dfs
+design search auto complete system:
+
+
+occurences after bigram: find first+second, and third, use prev1, prev0 to keep update
+binary string with substrings: try convert to binary and find
+largest value from labels: hashmap to store top k elements, and then add into pq and pop number of wanted.
+fill bookcase shelves: dp, 
+
+peak index in a mountain array: binary search
+find in mountain array: 3 binary search
+delete nodes and return forest
+
+toeplitz matrix: check with previous
+bulls and cows: hashmap two passes, first pass to get the bull, 2nd pass to get the cows
+evaluate division: dfs
+min cost to hire k workers: sort + heap
+
+google tagged practices
+1021. Remove Outermost Parentheses
+a bit tricky, using counting, when cnt++>0 for (, cnt-->1 for )
+because there are nested ()
+
+977. square of a sorted array
+original two ends, result array from right
+811. subdomain visit count
+find_first_of the start position needs to advance to avoid infinite loop
+1047. Remove All Adjacent Duplicates In String
+a bit tricky to remove which one first.
+
+237. Delete Node in a Linked List
+only can access to the node
+swap the val to the tail
+
+788. Rotated Digits
+
+google selection problems:
+easy: 
+1108. defanging an ip address
+1021. remove outermost parentheses
+821. shortest distance to a character
+788. rotated digits
+448. find all numbers disappeared in an array
+543. diameter of binary tree
+844. backspace string compare
+O(1) is pretty tricky:
+- we need save the valid char in a and b.
+- first reset to $
+- only valid assign a char.
+53. max subarray
+be sure to set int_min for initial and prefix=0;
+572. Subtree of Another Tree
+using serialization, similar to 1d problem.
+note need brackets the values otherwise it will match wrong.
+459. Repeated Substring Pattern
+- KMP
+- just check from 1 to n/2 and see if it is same pattern (n%i==0)
+141. linked list cycle
+160. Intersection of Two Linked Lists
+using slow and fast.
+686. Repeated String Match
+need take care of A longer or = B.
+
+581. Shortest Unsorted Continuous Subarray
+- sort and compare O(nlogn)
+- get lmax and rmin and compare O(n). be careful of the sorted case.
+168. Excel Sheet Column Title
+1-A
+27-AA.
+665. Non-decreasing Array
+modify at most 1 element
+greedy: if A[i]<A[i-1] we can decrease A[i-1] or increase A[i]
+increase A[i] will cause more problems for followed elements
+A[i]<A[i-2], then we have to increase A[i]
+
+medium:
+535. Encode and Decode TinyURL
+hashmap with 62 char
+using an id to increase from 000000 to grow (62-base)
+encode using id to generate the string
+decode using string to generate id
+longurl vs shorturl, this used to retrieve the shorturl and generate new shorturl.
+decoding we need calculate the id and get the long url from the map
+encode: start from id as the index, and find the char. does not have relation with the longurl.
+
+544. Output Contest Matches
+n->n/2->n/4->n/8...
+1,2,3,4,5,6,7,8
+(1,8),(2,7),(3,6),(4,5)
+((1,8),(4,5)),((2,7),(3,6))
+(((1,8),(4,5)),((2,7),(3,6)))
+implementation is tricky: need assign a vector of string
+
+979. Distribute Coins in Binary Tree
+similar to 1d, super washing machine
+from bottom to up:
+the number of move is: abs(left)+abs(right)
+the net value of the subtree is root-1+left+right
+366. Find Leaves of Binary Tree
+first we need do bottom up: (a bit similar to camera monitoring)
+postorder: height
+at the same time check the ans size with the level: 
+the depth is leaf=0, root is highest.
+
+280. wiggle sort
+unsorted array, reorder it inplace. nums[0]<=nums[1]>=nums[2]
+[3,5,2,1,6,4]
+odd index shall be larger than its left, 
+even index shall be smaller than its left
+1087. brace expansion
+union and product using stack
+using hashset for the union and product.
+144. binary tree preorder traversal-iterative
+94. binary tree inorder traversal- iterative
+156. Binary Tree Upside Down
+right is all leaf, so recursive does not include right
+right becomes left, parent becomes left
+get the left subtree subproblem solved.
+root->left->left=root->right (root's left has been changed)
+root->left->right=root;
+base case: root empty, left empty, return the root (null or root itself)
+very easy to get into cyclic loop:
+241. differnet ways to add parenthese
+39. combination sum- find all unique combination sums to target. backtrack
+input has no duplicates
+250. count univalue subtrees
+root=left=right
+left is unival and right is unival (empty tree subtree is also unival)
+1007. min domino rotations for equal row
+first all swap to A[0] 
+second all swap to B[0]
+The most critical part: if using A[0] we can put in array A or B. so it has two choices.
+check: in A row, number of domi = A[0] and number of domi in B row=A[0] (not equal)
+1066. campus bike II
+it needs find the smallest sum of distance.
+which is a shortest distance visiting all people problem
+using bits to indicate the status dp[i,status], (status=2^n, n is the number of bikes)
+using edge to reduce the dp[i,j]
+loop over i.
+	loop over status
+		loop over bikes
+dp[i][s]=min(dp[i][s],dp[i-1][prev]+edge[i-1][k])
+399. evaulate division
+build graph and then dfs.
+graph using string vs vector<pair<string,double>>
+hashset for visited
+dfs base:
+node not in the map, return -1
+src=dst return 1
+prev result
 386. Lexicographical Numbers
 n-ary tree
 we do not need build the tree but follow similar approach
@@ -4622,9 +5142,112 @@ note need to avoid parent-child-parent visit.
 another approach- union find, no need adjacent matrix
 
 742. closet leaf in a binary tree.
-approach: find the node, then do dfs
+approach: find the node, then do dfs/bfs
+note it can go down or up. does not matter. so we need to keep forming the graph
+build the graph while dfs, also find the node at the same time.
+then do a bfs.
 
-familiar
+334. increasing triplet subsequence
+approach 1: using stack? s1<s2<s3 sequence
+keep increasing. once we have a element in stack we know it is smaller than current value
+and we update the s2. if we found new element >s2, we are done
+approach 2: O(N) left min, and then second min, and then third min
+just like the O(n) find the three 
+we need keep the ordering
+similar to 132 pattern
+    bool increasingTriplet(vector<int>& nums) {
+        int s1=INT_MAX,s2=INT_MAX;
+        for(int i: nums){
+            if(i<=s1) s1=i; //
+            else if(i<=s2) s2=i;
+            else return 1;
+        }
+        return 0;
+    }
+	
+662. Maximum Width of Binary Tree
+dfs approach: using 2n, 2n+1, but need to avoid overflow for extreme case. need start from 0 for the first node
+bfs approach: avoid overflow.
+274. H-index 
+very bad problem
+81. search in rotated sorted array II
+binary search:
+mid>hi, check left side, and compare with target
+mid<hi, check right side and compare with target
+mid==hi:	hi--
+
+332. reconstruct itinerary- backtracking.
+given a list of edges (directed), we need form the itinerary starting from JFK
+if there are multiple answers, return the lexi smallest one.
+this is a graph: each edge can only be used once. and shall used all. need to smallest.
+we can start the smallest first and the first solution is our answer.
+data structure: hashmap start vs dest in sorted order
+avoid revisit edges: using a hashmap, start vs set.
+valid answer: visited include all edges
+we need keep the index information, the data structure shall changed to:
+hash: start vs dest+ edge index
+v: just use unordered_set.
+to avoid multiple same edge lost using multimap.
+this is a slow solution though
+
+837. New 21 Game- dp climbing stairs
+
+310 min height tree -- graph bfs remove outer layer first
+
+708. insert into a cyclic sorted list
+
+271. Encode and Decode Strings
+this is a design. we add the beginning the length and the end $
+
+288. unique word abbreviation
+
+familiar:
+951. Flip Equivalent Binary Trees
+986. Interval List Intersections
+two pointer
+1110. delete nodes and return forest
+442. Find All Duplicates in an Array
+label seen as negative. if we revisit a negative, it is the duplciates
+need use abs for the answer.
+973. k closest points to origin
+406. queue reconstruction by height
+702 search in a sorted array of unknown size
+739. daily temperaures
+1055. Shortest Way to Form String
+two pointer, note need return the ceil (i+m-1)/m. repeat using %.
+hashmap to handle non-included char.
+1057. campus bikes
+695. Max Area of Island
+540. single element in a sorted array-binary search
+451. sort char by frequency
+281. Zigzag Iterator
+two lists, using two pointer
+22. generate parenthese-backtrack
+347. top k frequent element-heap
+609. find duplicate file in system- hashmap
+238. product of array except self- both direction product
+947. most stones reomove wth same row or column- union find or dfs
+78. subsets- backtrack (input no duplicates)
+529. minesweeper-dfs/bfs
+1011. capacity to shup packages within d days-binary search
+12. integer to roman- list all possible representations
+981. time based key-value store
+714. best time to buy and sell stocks with fee- dp
+939. min area rectangle- parallel to xy, hashmap
+900. rle iterator- accum sum and binary search
+287. find the duplicate numbers (1 to n, xor)
+378. Kth Smallest Element in a Sorted Matrix- heap similar to merge sorting
+328. Odd Even Linked List- break into two lists and connect
+48. roate image
+173. binry search tree iterator- inorder using stack
+846. hands of straights- hashmap and gcd
+382. linked list random node- hashmap using id
+215. kth largest element in an array- heap, keep popping the largest when size>k.
+636. exclusive time of functions - single thread, popped stack time shall be subtracted.
+199. binary tree right side view
+1048. longest string chain- dp
+62. unique paths- dp
+49. group anagram- hashmap
 343. integer break
 math or dp
 490. the maze
@@ -4690,6 +5313,194 @@ array is simple. for list we need to find the mid point (using fast and slow)
 300. longest increasing subsequence- dp
 853. car fleet-slowest, using time to reach destination
 622. design circular queue- using head and tail
+208. implement trie (prefix tree)
+616. add bold tag in string - use a bool vector
+388. longest absolute file path
+855. exam room
+116. populating next right pointers in each node--bfs with a dummy can simplify
+207. course schedule- graph cycle detection
+375. guess number higher or lower - with cost, divide into two subproblem
+dp top down with memoiztion, and minmax
+417.pacifc/atlantic water flow, dfs with two status
+438. find all anagrams in a string
+277. find the celebrity- similar to town judge
+148. sort list - merge sort, other sorting tech
+187. repeat dna sequences- direct hash
+542. 01 matrix - dp two directions.
+for matrix, dp tech is quite useful.
+201. Bitwise AND of Numbers Range
+simple: if range >1 the and of the 0th bit is 0, so we keep reducing range by half
+1091. shortest path in binary matrix (only along 0)---bfs
+56. merge interval-
+393. utf8 validation- different start with skipping different bytes
+139. word break- check if breakable, dp 
+497. random point in non-overlapping rectangles
+first need use the area as the weight for each rectangle
+randomly choose a rect
+then randomly generate points in it.
+210. course schedule II. bfs removing all the leaf nodes first
+222. count complete tree nodes
+117. populating next right pointer in each node II
+19. remove nth nodes from end of list. 
+two pass- trivial
+one pass: two pointer at the same time, with a gap of n+1.
+34. find first and last position of element in sorted array
+221. maximal square-- dp
+777. swap adjacent in LR string
+greedy, check the LR string only and check the x
+63. unique paths II
+304. range sum query 2d - immutable
+prefix sum similar
+33. search in rotated sorted array
+150 evaluate reverse polish notation
+6. zigzag conversion 
+229. majority element II- voting
+55. jump game- dp or bfs
+385. mini parser- recursive 
+987 vertical order traversal of binary tree
+79. word search -dfs
+2. add two numbers
+322. coin change- min number of coins dp knapsack
+43. multiply strings
+353. design snake games - deque
+18. 4 sum
+54. spiral matrix
+31. next permutation
+310 max product subarray- similar to sum, with min/max
+3. longest substring without repeating char-- sliding window with hashmap
+50. pow(x,n)
+138. copy list with random pointer
+133. clone graph
+5. longest palindrome substring-- just grow at every position
+also can use dp
+146. lru cache
+98. validate bst
+127 word ladder - bfs
+15. 3sum
+130. surrounded region - dfs/bfs/union-find
+163. missing ranges - one pass
+166. fraction to recurring decimal
+29. divide two integers
+8. atoi
+
+hard problems.
+less familiar
+527. word abbreviation??
+753. cracking the safe- reflected gray code
+992. subarrays with k different integers
+ask number of good array
+736. Parse Lisp Expression
+expression evaluation
+843. guess the word
+random generated words, so we can randomly pick a word to guess
+to maximize the match possibility, 
+the idea: compute the matches[i,j] and then we choose the one which has the least 0 matches
+guess for 10 times
+- choose the initial list
+- compute the matches[i][j]==0
+- choose the word with the min 0 matches
+- add those words into a new list
+- repeat the above process with the new list
+
+679. 24 game- add +-*/() to get 24. / is real division.
+465. Optimal Account Balancing
+315. cout smaller numbers after self
+943. Find the Shortest Superstring-
+shortest distance to visit all nodes
+727. min window subsequence
+string s and t, find the min window substring w which t is a subsequence of w.
+just keep those char in T with index in s, the do a sliding window search (no, wrong)
+first char matching is all the position we shall start search
+need optimize for so many start positions.
+248. Strobogrammatic Number III
+backtracking>
+480. sliding window median
+308. range sum query 2d- mutable binary index tree
+218. skyline problem
+710 random pick with blacklist
+269. Alien Dictionary
+a bit similar to the course schedule II using bfs
+
+
+familiar
+980. unique path III. 
+visiting each cell exactly once, dfs counting
+489. robot cleaner- simulate dfs
+296. best meeting point - median, math
+428. serialize and deserialize n-ary tree
+1096. brace expansion II
+773. slidng puzzle- bfs
+669, remove 9- 9 base math
+857. min cost to hire k workers - heap
+159. longest substring with at most two distinct chars- hashmap+ sliding window
+975. odd even jump- from right to left, visited maintain a map
+458. poor pig- n-base problem
+425. word square- backtrack
+42. trapping rain water - monotonic stack, decreasing
+410. Split Array Largest Sum-- binary search
+774. Minimize Max Distance to Gas Station- binary search
+128. Longest Consecutive Sequence- union find
+1032. Stream of Characters- trie
+297. serialize and deserialize binary tree
+preorder, deserialize also preorder
+51. n-queens- backtrack
+329. longest increasing path in a matrix - dfs
+340. lonest substring with at most k distinct characters -sliding window with hashmap
+239. sliding window max - dequeue
+642. design search autocomplete system - trie, heap, dfs...
+72. edit distance - dp
+317. Shortest Distance from All Buildings- bfs with multiple start
+37. sudoku solver - backtrack
+295. find median from data stream
+403. frog jump- dp top down
+818. race car - dp
+23. merge k sorted list- heap
+363. max sum of rectangle no larger than K- reduce to 1d
+note: m^2nlogn) so if m is large need use n^2mlogm
+839. similar string groups--union find
+1036. escape a large maze- dfs
+354. russian doll envelopes- dp
+85. maximal rectangle--reduce to 1d, stack..
+552. student attendance record II- dp
+224. basic calculator- stack, evaluate expression
+316. remove duplicate letters- stack, monotonic
+84. largest rectangle in histogram- stck, montonic
+76. min window substring- hashmap
+57. insert interval
+685. redundant connection II- union find
+124. binary tree max path sum- use similar idea in 1d array
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
