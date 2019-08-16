@@ -1291,6 +1291,9 @@ find all appear twice.
 using cyclic linking and mark those seen as negative (using cyclic linking)
 once we see the negative, it is a seen candidate.
 
+448. Find All Numbers Disappeared in an Array
+similar to 442. marked seen
+
 565. array nesting.
 find the longest cycle in the array containing 0 to n-1
 
@@ -3438,6 +3441,9 @@ find all those candy to crush, and marking them as negative and move forward
 788. rotated digits
 rotate each digit individually.
 brutal force is fine to loop each number.
+however the easiest way is to do logn, digit by digit, O(nlogn) loop for all numbers
+
+
 
 796. Rotate String
 we double the string and see if we can find the other string inside.
@@ -4527,6 +4533,175 @@ just similar to 1d array left and right min distance problem.
 [1,0,0,0,1,1,1,1,0,1],
 [1,1,1,1,1,1,1,0,1,0],
 [1,1,1,1,0,1,0,0,1,1]]
+
+
+google practice
+
+less familiar
+386. Lexicographical Numbers
+n-ary tree
+we do not need build the tree but follow similar approach
+
+498. diagonal traverse
+it is similar to spiral matrix
+there are several approaches to do it
+but best to follow the trace
+4 boundaries:
+r>=m: the bottom line
+c>=n: right line
+r<0: top line
+c<0: left line
+the order matters since there is overlap.
+if we combine them together, then we have 4 corner to consider too.
+298. Binary Tree Longest Consecutive Sequence
+only from parent to child: similar to find the longest consecuative sequence in 1d array.
+using preorder or dfs.
+note: it could have ascending order or descending order
+so we need solve both at the same time.
+743. network delay time
+typical dijkstra algorithm
+equiv: from node k to all other nodes the largest time.
+signal always follow the shortest path to propagate.
+bellman-ford: for each node, using all the edge to relax it.---similar to dp
+O(N*E) complexity
+
+dijkstra: using a pq. --similar to bfs
+it needs to build a graph adjacency matrix
+put into a min heap (pq is faster)
+pop and use all its outgoing edges and try to relax the distance
+if relaxed, the child node is pushed into heap, otherwise no
+O(NlogN+E) much efficient (pq similar to sort, nlogn)
+
+131. Palindrome Partitioning- backtracking to gt all combinations
+from left to right, if left is pal and then right is a subproblem
+backtracking is most suitable. 
+it will iterate all possible combinations. 
+each position can be a cut or not. O(n*2^n), n is for checking palindrome
+
+659. split array into consecutive subsequences
+subseq len>=3, subsequence need to be consecuative
+input is sorted. 
+key observations: the frequency. if a number has >1 frequency, they shall be in k groups
+similar: 1121. Divide Array Into Increasing Sequences
+greedy or heap approach.
+interesting it can be a interval problem. the histogram (hashmap) is the prefix sum of the adding and removing events
+the difference will get the events.
+for example:[1,2,2,3,3,3,4,4,5,6]
+1:1, 2:2,3:3,4:2,5:1,6:1
+then we know:
+event start at 1,2,3
+event end at 3,4,6
+now reduce to a problem of combination which all >=3
+and the solution is [1,2,3],[2,3,4],[3,4,5,6]
+[1,2,3,3,4,4,5,5]
+-> [1:1,2:1,3:2,4:2,5:2]
+start at 1, 3
+end at 5,5 (since 5 is 2)
+pair the interval just using sorted order.
+inverse problem of interval add/removal.
+
+450. delete node in bst.
+find the node. (no need...just a subproblem)
+node is leaf, remove it
+node has left and right,swap the node with the right leftmost, and remove leaf
+node has left only, promote left
+node has right only....
+correct approach:
+- val<root, go to left
+- val>root, go to right
+- val==root
+if no left, promote right
+if no right, promote left
+if has both, promote the right subtree leftmost node
+
+261. graph valid tree
+with edges only, it is dfs with cycle detection
+a tree will have n node and n-1 edges.
+dfs with cycle detection.
+note need to avoid parent-child-parent visit.
+another approach- union find, no need adjacent matrix
+
+742. closet leaf in a binary tree.
+approach: find the node, then do dfs
+
+familiar
+343. integer break
+math or dp
+490. the maze
+check if can reach the destination (not pass)
+bfs
+64. min path sum
+911. online election
+833. find and replace in string
+289. game of life
+1024. video stiching- dp
+137. single numeber II--two single number problem
+692. top k frequent words
+351. andriod unlock patterns- dfs with some conditions
+963. min area rectangle II- any orientation
+524. Longest Word in Dictionary through Deleting
+sort dict according to length, and then check if it is a subsequence
+621. task scheduler- hashmap to find the most frequent jobs
+11. container with most water
+394. decode string- recursive expresssion evaluation
+24. swap nodes in pair (linked list)
+16. 3sum closest
+731. my calendar II- triple booking
+1145. binary tree coloring game
+greedy, counting nodes
+688. knight probability in chessboard
+dfs
+247. stobogrammatic number II
+length=n, build from length =1,2,3,4,...
+soon we can find the relation
+802. find eventual safe states- bfs, change one digit each time.
+505. maze II
+309. best time to buy and sell stock with cooldown
+36. valid sudoku
+785. is graph bipartie
+no need adj, no need visit, using color
+809. expressive words
+737. sentence similarity- union find
+518. coin change 2- number of combinations, dp
+380. Insert Delete GetRandom O(1)
+767. reorganize string--heap
+153. Find Minimum in Rotated Sorted Array- no duplicates, binary search
+129. sum root to leaf numbers
+253. meeting room II
+681. next closest time -greedy
+528. random pick with weight
+75. sort colors
+40. combination sum II. 
+each can be used only once. sum to target. backtracking
+103. binary tree zigzag level order traversal
+279. perfect square- min number of square sum--knapsack dp repetition allowed
+560. subarray sum equals K--prefix sum and hashmap
+17. letter combinations of a phone number- dfs
+105. construct tree from pre and inorder -recursive
+379. design phone directory - used and unused
+200. number of islands
+109. Convert Sorted List to Binary Search Tree
+array is simple. for list we need to find the mid point (using fast and slow)
+904. fruit into baskets--sliding window
+935. knight dialer-dfs
+162. find peak element - binary search
+284. peeking iterator - local object call next
+240. search a 2d matrix II- starts from the bottom left.
+300. longest increasing subsequence- dp
+853. car fleet-slowest, using time to reach destination
+622. design circular queue- using head and tail
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
