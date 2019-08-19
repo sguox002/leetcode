@@ -38,6 +38,7 @@ we need build intuition to commonly seen type of problems.
 960	Delete Columns to Make Sorted III	53.3%	Hard	
 576	Out of Boundary Paths	32.7%	Medium	
 87	Scramble String	32.0%	Hard	
+808	Soup Servings	38.0%	Medium	
 
 # non-dp is more suitable:
 410	Split Array Largest Sum	42.8%	Hard	-binary search
@@ -59,6 +60,12 @@ this is very similar to 418, which can be solved usign two pointer
 727	Minimum Window Subsequence 38.0%	Hard	
 need some optimization using two pointer (in case a lot of first char matching...)
 76. Minimum Window Substring (similar to 727, but not required the order)
+898	Bitwise ORs of Subarrays	35.1%	Medium	
+use set and or the set.
+982	Triples with Bitwise AND Equal To Zero	54.3%	Hard
+number of triples: first get two and and then check against it.
+871	Minimum Number of Refueling Stops	29.8%	Hard	
+heap or dp:
 
 # need more work:
 ## knapsack
@@ -73,6 +80,7 @@ need some optimization using two pointer (in case a lot of first char matching..
 1049 Last Stone Weight II	40.1%	Medium	
 1155	Number of Dice Rolls With Target Sum	50.0%	Medium	
 1058 Minimize Rounding Error to Meet Target 39.7%	Medium	
+879	Profitable Schemes	37.4%	Hard	
 
 ## 1d/2d array
 generally use two direction updates, or reduce to 1d equivalent problem.
@@ -176,6 +184,11 @@ this is a more complicated version of climbing stairs.
 parition into <=K parts, this is similar to k transactions, we based on previous k-1 transactions and try to add one more split
 983	Minimum Cost For Tickets	57.5%	Medium	
 1day,7day,30 day specials. just compare which is cheaper dp[i]
+552	Student Attendance Record II	33.7%	Hard	
+1105 Filling Bookcase Shelves	55.0%	Medium	
+either use current at the end of current shelf
+or use it on a new layer.
+
 
 ## some 2d dp which is more understandable using separate status (generally for very limited status 2 or 3)
 they are equivalent in any means.
@@ -185,6 +198,10 @@ it has two states, so use up and down.
 no adjacent same color.
 376	Wiggle Subsequence	38.0%	Medium	
 longest wiggle subsequence, two states use up and down
+801	Minimum Swaps To Make Sequences Increasing	35.5%	Medium	
+either swap current or current previous
+600	Non-negative Integers without Consecutive Ones	33.1%
+two states, previous one is 0 or 1.
 
 ## two players
 486	Predict the Winner	47.0%	Medium	
@@ -199,7 +216,7 @@ similar to 486.
 1140 Stone Game II	61.0%	Medium	
 use suffix sum is better for this. top down or bottom up.
 
-552	Student Attendance Record II	33.7%	Hard	
+
 
 ## shortest path visiting all nodes
 847	Shortest Path Visiting All Nodes	47.8%	Hard	
@@ -259,22 +276,16 @@ press n times, what is the max?
 1130 Minimum Cost Tree From Leaf Values	58.7%	Medium	
 
 361	Bomb Enemy 44.0%	Medium	
-801	Minimum Swaps To Make Sequences Increasing	35.5%	Medium	
 
 818	Race Car	35.8%	Hard	
 1000 Minimum Cost to Merge Stones	34.3%	Hard	
 1039 Minimum Score Triangulation of Polygon	42.9%	Medium	
 467	Unique Substrings in Wraparound String	34.4%	Medium	
-1105 Filling Bookcase Shelves	55.0%	Medium	
-898	Bitwise ORs of Subarrays	35.1%	Medium	
 
-600	Non-negative Integers without Consecutive Ones	33.1%	Hard	
 629	K Inverse Pairs Array	29.7%	Hard	
-982	Triples with Bitwise AND Equal To Zero	54.3%	Hard	
+	
 691	Stickers to Spell Word	39.0%	Hard	
-879	Profitable Schemes	37.4%	Hard	
-871	Minimum Number of Refueling Stops	29.8%	Hard	
-808	Soup Servings	38.0%	Medium	
+
 471	Encode String with Shortest Length 45.6%	Hard	
 940	Distinct Subsequences II	40.2%	Hard	
 
@@ -285,6 +296,290 @@ press n times, what is the max?
 1125	Smallest Sufficient Team	44.4%	Hard	
 967	Numbers With Same Consecutive Differences	37.6%	Medium	
 902	Numbers At Most N Given Digit Set	28.9%	Hard	
-
 656	Coin Path 27.2%	Hard	
 1067	Digit Count in Range 37.4%	Hard	
+
+
+# Tree
+Tree problems are mostly:
+traverse problem and apply some array tech in it.
+the hard part in tree is:
+- involve the pointer changes
+- involve the traversal
+- involve some other tech
+pay special attention to:
+how array tech used in tree.
+how to achieve O(n) time to avoid O(N^2) time.
+
+familiar
+104	Maximum Depth of Binary Tree	61.7%	Easy	
+226	Invert Binary Tree	59.2%	Easy	(flip left right)
+617	Merge Two Binary Trees	70.9%	Easy	-superposition and add.
+96	Unique Binary Search Trees	47.3%	Medium	-dp
+108 Convert Sorted Array to Binary Search Tree	52.1%	Easy	-divide by half
+100 Same Tree	50.5%	Easy	
+101 Symmetric Tree	44.1%	Easy	
+669	Trim a Binary Search Tree	60.8%	Easy	trim [L,R]
+235	Lowest Common Ancestor of a Binary Search Tree	45.8%	Easy	
+BST can compare values
+236	Lowest Common Ancestor of a Binary Tree	38.9%	Medium	
+find the node and judege the lca at the same time
+107	Binary Tree Level Order Traversal II	47.9%	Easy	
+102	Binary Tree Level Order Traversal	49.7%	Medium	
+103	Binary Tree Zigzag Level Order Traversal	42.8%	Medium	
+94	Binary Tree Inorder Traversal	57.9%	Medium	
+144	Binary Tree Preorder Traversal	52.3%	Medium	
+222	Count Complete Tree Nodes	35.8%	Medium	
+199	Binary Tree Right Side View	49.0%	Medium	
+257	Binary Tree Paths	46.9%	Easy	
+437	Path Sum III	43.5%	Easy	
+230	Kth Smallest Element in a BST	52.8%	Medium	
+337	House Robber III	48.7%	Medium	
+106	Construct Binary Tree from Inorder and Postorder Traversal	40.5%	Medium	
+653	Two Sum IV - Input is a BST	53.1%	Easy	
+98	Validate Binary Search Tree	26.1%	Medium	
+145	Binary Tree Postorder Traversal	49.7%	Hard	
+637	Average of Levels in Binary Tree	59.5%	Easy	
+889	Construct Binary Tree from Preorder and Postorder Traversal	61.2%	Medium	
+606	Construct String from Binary Tree	52.0%	Easy	
+501	Find Mode in Binary Search Tree	40.0%	Easy	
+872	Leaf-Similar Trees	63.8%	Easy	
+1008	Construct Binary Search Tree from Preorder Traversal	73.3%	Medium	
+530	Minimum Absolute Difference in BST	51.2%	Easy	
+112	Path Sum	38.4%	Easy	
+129	Sum Root to Leaf Numbers	43.4%	Medium	
+582	Kill Process 57.0%	Medium	
+589	N-ary Tree Preorder Traversal	68.5%	Easy	
+783	Minimum Distance Between BST Nodes	50.9%	Easy
+671	Second Minimum Node In a Binary Tree	43.1%	Easy	
+590	N-ary Tree Postorder Traversal	68.5%	Easy	
+987	Vertical Order Traversal of a Binary Tree	32.1%	Medium	
+429	N-ary Tree Level Order Traversal	60.3%	Easy	
+572	Subtree of Another Tree	42.0%	Easy	
+700	Search in a Binary Search Tree	69.0%	Easy	
+559	Maximum Depth of N-ary Tree	66.0%	Easy	
+270	Closest Binary Search Tree Value 44.4%	Easy	
+1022	Sum of Root To Leaf Binary Numbers	58.9%	Easy
+105	Construct Binary Tree from Preorder and Inorder Traversal	42.6%	Medium	
+938	Range Sum of BST	78.1%	Easy	[L,U]
+538	Convert BST to Greater Tree	52.0%	Easy	
+postorder, add prev to current, suffix sum.
+111	Minimum Depth of Binary Tree	35.7%	Easy
+894	All Possible Full Binary Trees	71.6%	Medium	
+try all combinations, recursive. left and right nodes are odd number
+404	Sum of Left Leaves	49.5%	Easy	
+113	Path Sum II	41.8%	Medium	- regular dfs
+652	Find Duplicate Subtrees	46.5%	Medium	
+-post order traversal, hashmap
+814	Binary Tree Pruning	71.7%	Medium	
+post order pruning.
+897	Increasing Order Search Tree	65.7%	Easy	
+convert to linked list...reverse in order is best
+426	Convert Binary Search Tree to Sorted Doubly Linked List 53.6%	Medium	
+use a dummy for prev.
+863	All Nodes Distance K in Binary Tree	49.4%	Medium	
+graph with bfs
+285	Inorder Successor in BST 35.7%	Medium	
+binary search, if not found, return root.
+701	Insert into a Binary Search Tree	76.6%	Medium	
+add the node in the first leaf position. 
+515	Find Largest Value in Each Tree Row	58.4%	Medium	
+508	Most Frequent Subtree Sum	55.2%	Medium	
+255	Verify Preorder Sequence in Binary Search Tree 44.1%	Medium	
+298	Binary Tree Longest Consecutive Sequence 44.6%	Medium	
+dfs to count.
+272	Closest Binary Search Tree Value II 46.1%	Hard
+k values closet to target. using pq. to store the absolute diff.
+1110	Delete Nodes And Return Forest	63.2%	Medium	
+951	Flip Equivalent Binary Trees	64.7%	Medium	
+1026	Maximum Difference Between Node and Ancestor	61.0%	Medium	
+use similar approach in array, previous min and max.
+
+1104	Path In Zigzag Labelled Binary Tree	70.3%	Medium	
+get the last layer and dtermine its sequence get to right
+and then use parent-child relation and then get it back.
+965	Univalued Binary Tree	66.9%	Easy	
+993	Cousins in Binary Tree	52.2%	Easy	
+549	Binary Tree Longest Consecutive Sequence II 44.8%	Medium	
+bfs
+1145	Binary Tree Coloring Game	46.0%	Medium
+greedy, counting nodes
+988	Smallest String Starting From Leaf	45.2%	Medium	
+try dfs to get each path and reverse to get the min
+
+## need pay attention
+297 Serialize and Deserialize Binary Tree	42.1%	Hard
+to string and string to tree node.
+	
+124 Binary Tree Maximum Path Sum	30.7%	Hard	
+connect left right or not connect
+similar 1d array max subarray sum. at the same time decide if connect.
+
+654	Maximum Binary Tree	76.8%	Medium	
+build from array. heap such as set built this way.
+
+99	Recover Binary Search Tree	35.4%	Hard	
+inorder search to find possible one or two reversed pairs
+
+173 Binary Search Tree Iterator	49.9%	Medium	
+use O(1) time and O(h) space so stack is necessary.
+
+95	Unique Binary Search Trees II	36.7%	Medium	-recursive.
+114	Flatten Binary Tree to Linked List	43.6%	Medium	
+postorder traversal.
+449	Serialize and Deserialize BST	48.3%	Medium	
+450	Delete Node in a BST	40.5%	Medium	
+if no left, promote right
+if no right, promote left
+if has left and right, swap the root with the right leftmost node
+delete that node
+be careful: cannot directly return it, but need to update the root->left and root->right
+** 510	Inorder Successor in BST II 54.2%	Medium	
+only know the node, with child and parent.
+similar to linked list problem only know the node.
+in order: left, root, right
+if p has right child, find the right leftmost node
+if p has no right child, need go up to the parent.
+662	Maximum Width of Binary Tree	39.5%	Medium
+dfs using parent-child relation in binary tree
+bfs avoid integer overflow.
+	
+366	Find Leaves of Binary Tree 66.9%	Medium	
+this is tricky. 
+leaf we return level 0. 
+and we build an vector.
+
+971	Flip Binary Tree To Match Preorder Traversal	43.3%	Medium	
+check root, left and right, right and left to see if match.
+
+998	Maximum Binary Tree II	61.5%	Medium	
+>root->val put the whole tree as left branch
+otherwise add in the right subtree
+
+1028	Recover a Tree From Preorder Traversal	69.7%	Hard	
+iterative stack from string.
+
+742	Closest Leaf in a Binary Tree 40.1%	Medium	
+build a graph and do bfs
+
+536	Construct Binary Tree from String 45.9%	Medium	
+expression evaluation using stack
+
+776	Split BST 52.9%	Medium	
+given target, break into <=target and > target.
+root<=target: go to right, update root->right
+else go to left, 
+
+623	Add One Row to Tree	47.7%	Medium	
+919	Complete Binary Tree Inserter	55.7%	Medium
+using array to store full binary tree, so insert is add at the end
+
+333	Largest BST Subtree 33.6%	Medium	
+similar to find the longest sorted subarray inorder traversal
+or: max of left <root < min of its right and get the length
+
+666	Path Sum IV 53.1%	Medium	
+use 3 digit to represent x,y in full tree.
+use a matrix to represent.
+
+663	Equal Tree Partition 38.3%	Medium	
+parition into two parts sum = target
+postorder to get subtree sum and using hashmap
+check total sum/2 frequency.
+
+1120	Maximum Average Subtree 60.5%	Medium
+count nodes and sum at the same time.
+
+## O(N) solution
+110 Balanced Binary Tree	41.5%	Easy	
+get depth and compare difference at the same time.
+
+1123	Lowest Common Ancestor of Deepest Leaves	64.5%	Medium	
+get the depth and max depth at the same time and check if we reach the deepest level.
+
+543	Diameter of Binary Tree	47.3%	Easy	
+longest path. 
+get the left and right longest path
+and get the diameter at the same time. 
+
+687	Longest Univalue Path	34.3%	Easy	
+similarly we need use O(N) to get two information
+longest univalue path in left and right
+and add it to get the max
+it needs two information: longest path starting at the root, and longest path inside
+116	Populating Next Right Pointers in Each Node	38.9%	Medium	
+bfs with a dummy can simplify. 
+helper calculate the max len ending at root.
+
+117	Populating Next Right Pointers in Each Node II	35.2%	Medium	
+bfs with dummy using prev. similar to linked list
+
+979	Distribute Coins in Binary Tree	67.7%	Medium	
+similar to wash machine. 
+using postorder, get the coins passing from left and right to root.
+calculate the coin to be passed away
+calculate the number of pass at the same time.
+	
+250	Count Univalue Subtrees 49.8%	Medium	
+bottom up or postorder
+see a subtree univalue and add it.
+
+563	Binary Tree Tilt	47.2%	Easy	
+tilt=absol diff between lsum and rsum. 
+O(N): get the sum in helper and calculate tilt.
+
+156	Binary Tree Upside Down 51.8%	Medium	
+no right subtree only right leaf
+pointer relations.
+root becomes right leaf node.
+
+513	Find Bottom Left Tree Value	59.1%	Medium	
+find the first node in the last row. 
+Bfs is fine.
+recursive O(N^2) is simple
+O(N): get the depth and do dfs. the first node with max depth.
+or the last node right,root,left.
+the first node with max depth.
+
+865	Smallest Subtree with all the Deepest Nodes	57.1%	Medium	
+O(N^2) usign get depth
+O(N): get the depth and the needed information
+O(N) is also a memoization of O(N^2) version
+a memoization version is easy to implement but generally use more space
+O(N) & O(1):
+get left depth and right depth
+get maxdepth
+if left==right==maxdepth we found it.
+it is important for leaf to return the h instead of 0
+
+545	Boundary of Binary Tree 35.8%	Medium	
+counter clockwise order
+pretty tricky:
+
+834	Sum of Distances in Tree	40.4%	Hard	
+pretty hard problem. 
+
+655	Print Binary Tree	52.5%	Medium	
+
+1130	Minimum Cost Tree From Leaf Values	58.7%	Medium	
+
+431	Encode N-ary Tree to Binary Tree 64.8%	Hard	
+
+428	Serialize and Deserialize N-ary Tree 55.0%	Hard	
+
+
+684	Redundant Connection	52.8%	Medium	
+undirected. using union find to find cycles
+
+685	Redundant Connection II	31.1%	Hard	
+directed, using union find 
+- has a cycle
+- has two parents
+- first loop then two parents
+- first two parents and then loop
+pretty tricky.
+
+
+968	Binary Tree Cameras	35.7%	Hard	
+from bottom up, so post order, using greedy
+
