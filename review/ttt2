@@ -1,0 +1,290 @@
+a selection of problems
+according to difficulty:
+dp, greedy, tree, stack
+heap, trie, graph
+dfs, bfs, recursive, backtrack
+hashmap, string, array, union-find
+
+we are not covering math.
+
+
+dp:
+dp problem generally is hard if we cannot think it clear. The overlapping problems we need try dp first.
+we need build intuition to commonly seen type of problems.
+
+# familiar
+70	Climbing Stairs	44.8%	Easy	
+198	House Robber	41.2%	Easy	
+121	Best Time to Buy and Sell Stock	48.0%	Easy	
+338	Counting Bits	65.4%	Medium	
+120	Triangle	40.4%	Medium	
+64	Minimum Path Sum	48.1%	Medium	
+62	Unique Paths	48.7%	Medium	
+123	Best Time to Buy and Sell Stock III	34.5%	Hard	
+303	Range Sum Query - Immutable	39.2%	Easy	
+309	Best Time to Buy and Sell Stock with Cooldown	44.6%	Medium	
+188	Best Time to Buy and Sell Stock IV	26.7%	Hard	
+91	Decode Ways	22.7%	Medium	
+264	Ugly Number II	37.1%	Medium	
+746	Min Cost Climbing Stairs	48.0%	Easy	
+714	Best Time to Buy and Sell Stock with Transaction Fee	51.2%	Medium	
+213	House Robber II	35.5%	Medium	
+63	Unique Paths II	33.6%	Medium	
+931	Minimum Falling Path Sum	59.1%	Medium	
+639	Decode Ways II	25.5%	Hard	
+688	Knight Probability in Chessboard	45.3%	Medium	
+935	Knight Dialer	41.8%	Medium	
+351	Android Unlock Patterns 46.5%	Medium	
+960	Delete Columns to Make Sorted III	53.3%	Hard	
+576	Out of Boundary Paths	32.7%	Medium	
+87	Scramble String	32.0%	Hard	
+
+# non-dp is more suitable:
+410	Split Array Largest Sum	42.8%	Hard	-binary search
+718	Maximum Length of Repeated Subarray	46.9%	Medium	 - binary search
+698	Partition to K Equal Sum Subsets	43.2%	Medium	- backtrack
+321	Create Maximum Number	25.8%	Hard	-greedy
+1025 Divisor Game	64.3%	Easy	- greedy
+392	Is Subsequence	47.4%	Easy	- greedy, two pointer
+689	Maximum Sum of 3 Non-Overlapping Subarrays	44.3%	Hard	- two pointer
+968	Binary Tree Cameras	35.7%	Hard	-greedy
+1147	Longest Chunked Palindrome Decomposition	58.7%	Hard	-greedy
+418	Sentence Screen Fitting 31.3%	Medium	-two pointer
+1136	Parallel Courses 59.5%	Hard	-bfs
+32	Longest Valid Parentheses	26.1%	Hard	-stack
+523	Continuous Subarray Sum	24.2%	Medium - hashmap with index requirement
+466	Count The Repetitions	27.5%	Hard	
+this is very similar to 418, which can be solved usign two pointer
+838	Push Dominoes	44.7%	Medium	
+727	Minimum Window Subsequence 38.0%	Hard	
+need some optimization using two pointer (in case a lot of first char matching...)
+76. Minimum Window Substring (similar to 727, but not required the order)
+
+# need more work:
+## knapsack
+279	Perfect Squares	42.8%	Medium	
+322	Coin Change	31.4%	Medium	
+638	Shopping Offers	49.4%	Medium	
+377	Combination Sum IV	43.8%	Medium	
+416	Partition Equal Subset Sum	41.3%	Medium	
+494	Target Sum	45.6%	Medium	
+956	Tallest Billboard	38.7%	Hard	
+474	Ones and Zeroes	40.2%	Medium
+1049 Last Stone Weight II	40.1%	Medium	
+1155	Number of Dice Rolls With Target Sum	50.0%	Medium	
+1058 Minimize Rounding Error to Meet Target 39.7%	Medium	
+
+## 1d/2d array
+generally use two direction updates, or reduce to 1d equivalent problem.
+53	Maximum Subarray	44.3%	Easy	(connect or not with previous)
+152	Maximum Product Subarray	29.8%	Medium	(min and max convert)
+85	Maximal Rectangle	34.2%	Hard	(reduce to 1d or dp)
+- do row by row, reduce to 1d histogram problem.  (using increasing stack, using the popped one as the highest rod)
+- dp: maintain left,right, height row by row, all three variables dependent on previous row. complicated.
+221	Maximal Square	33.8%	Medium	(1d stack, or two direction dp)
+- dp, maintaining left and top length.
+174	Dungeon Game	27.7%	Hard	- reverse direction
+304	Range Sum Query 2D - Immutable	33.5%	Medium - similar prefix	
+363	Max Sum of Rectangle No Larger Than K	35.5%	Hard	
+- do it by row or column. get the sum from row i to row j. and then reduce to 1d, solve the problem in 1d.
+1074 Number of Submatrices That Sum to Target	58.2%	Hard	
+750	Number Of Corner Rectangles 65.1%	Medium	
+1139	Largest 1-Bordered Square	43.1%	Medium	
+- dfs
+- reduce to 2 1d problem- along row or col.
+764	Largest Plus Sign	44.0%	Medium	
+135. candy
+542. 01 matrix
+1162. as far from land as possible
+
+## palindrome
+5	Longest Palindromic Substring	27.7%	Medium	- direct approach is more straightforward.
+647	Palindromic Substrings	57.7%	Medium	
+- dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1] (number of pal-seq)
+516	Longest Palindromic Subsequence	47.9%	Medium
+- s[i]=s[j] d[i+1,j-1]+2, else max(dp[i+1,j],dp[i,j-1])
+
+132	Palindrome Partitioning II	28.1%	Hard	
+- use every position (even and odd) check if i-j to i+j, i-j+1 to i+j.
+131. Palindrome Partitioning- backtracking.
+***730	Count Different Palindromic Subsequences	39.7%	Hard	
+very hard.
+4 chars, abcd
+length n.
+ dp[i][j] = dp[i][j - 1] + dp[i + 1][j] - dp[i + 1][j - 1]
+
+## string matching and edit distance
+10	Regular Expression Matching	25.6%	Hard	
+. match a single char, * matches zero or more of the preceding char
+
+44	Wildcard Matching	23.2%	Hard	
+? matches a single char, * matches any sequence of char (include empty)
+
+72	Edit Distance	38.9%	Hard	
+115	Distinct Subsequences	35.6%	Hard
+similar to edit distance, diff char, delete, same char, delete or not delete
+	
+97	Interleaving String	28.6%	Hard	
+712	Minimum ASCII Delete Sum for Two Strings	55.3%	Medium	
+
+## sequence problems
+413	Arithmetic Slices	56.2%	Medium	
+300	Longest Increasing Subsequence	41.2%	Medium	
+354	Russian Doll Envelopes	34.3%	Hard	
+646	Maximum Length of Pair Chain	49.4%	Medium	
+673	Number of Longest Increasing Subsequence	34.0%	Medium	
+446	Arithmetic Slices II - Subsequence	30.8%	Hard	
+978	Longest Turbulent Subarray	45.7%	Medium	
+1027	Longest Arithmetic Sequence	49.4%	Medium	
+1048 Longest String Chain	48.9%	Medium	
+873	Length of Longest Fibonacci Subsequence	46.6%	Medium	
+1092	Shortest Common Supersequence	48.3%	Hard	- longest common subsequence equiv.
+1143	Longest Common Subsequence	58.4%	Medium	
+1024 Video Stitching	47.0%	Medium	
+
+## common recurrence problems
+139	Word Break	36.2%	Medium	- breakable
+140	Word Break II	27.9%	Hard	- get combinations (dfs) or backtracking
+472	Concatenated Words	36.2%	Hard	- similar to 139
+96	Unique Binary Search Trees	47.3%	Medium	- number of ways
+95	Unique Binary Search Trees II	36.6%	Medium	- get all combinations
+343	Integer Break	48.3%	Medium	- math or dp
+256	Paint House 49.6%	Easy	- no ajacent same color, 3 colors
+265	Paint House II 42.1%	Hard - no adjacent same color, k colors
+dp[i,j] subproblem for number of house i, and last color is j.
+276	Paint Fence 36.9%	Easy	
+allows 2 adjacent same color, add a dimension with 2. we can use same and diff to represent the two states.
+375	Guess Number Higher or Lower II	38.3%	Medium	
+pick and number and divide into two subproblem
+975	Odd Even Jump	46.2%	Hard	
+reverse dp, and visited stored in a map
+920	Number of Music Playlists	44.1%	Hard	
+subproblem: dp[i,j] for i songs, and playlist len=l.
+517	Super Washing Machines	37.0%	Hard	
+passing and itself the max.
+357	Count Numbers with Unique Digits	47.3%	Medium	
+simple combinations, n digit
+1012 Numbers With Repeated Digits	35.3%	Hard	
+equivalent: number with unique digits up to N.
+first get the k-digit and then solve from 10...0 to N.
+740	Delete and Earn	46.5%	Medium	
+similar to house robber if arranged in order.
+
+837	New 21 Game	32.2%	Medium	
+this is a more complicated version of climbing stairs.
+813	Largest Sum of Averages	46.2%	Medium	
+parition into <=K parts, this is similar to k transactions, we based on previous k-1 transactions and try to add one more split
+983	Minimum Cost For Tickets	57.5%	Medium	
+1day,7day,30 day specials. just compare which is cheaper dp[i]
+
+## some 2d dp which is more understandable using separate status (generally for very limited status 2 or 3)
+they are equivalent in any means.
+903	Valid Permutations for DI Sequence	45.5%	Hard	
+it has two states, so use up and down.
+276	Paint Fence 36.9%	Easy	
+no adjacent same color.
+376	Wiggle Subsequence	38.0%	Medium	
+longest wiggle subsequence, two states use up and down
+
+## two players
+486	Predict the Winner	47.0%	Medium	
+pick number from either end. divide into two subproblems.
+464	Can I Win	27.7%	Medium	
+draw from a pool of numbers, target sum.
+number<20, so we can use bit status for the dp.
+dp is 2d with win/lose two status. so we can name them separately.
+
+877	Stone Game	62.0%	Medium	
+similar to 486.
+1140 Stone Game II	61.0%	Medium	
+use suffix sum is better for this. top down or bottom up.
+
+552	Student Attendance Record II	33.7%	Hard	
+
+## shortest path visiting all nodes
+847	Shortest Path Visiting All Nodes	47.8%	Hard	
+a graph with edges (undirected), can visit multiple times.
+dp[m,2^m] final answer is the min among all 0xffff... column
+using bfs: if the edge can be used to relax the distance, then it is added into the queue.
+
+943	Find the Shortest Superstring	38.6%	Hard	
+create the distance between each pair, (directed graph)
+equiv: find the shortest path visiting each node once. also need to be able to trackback.
+similar dp[n,2^n]
+visiting node j: get its previous state and use an edge k-j to relax i to j.
+
+787	Cheapest Flights Within K Stops	35.8%	Medium	
+from src to dest with at most k stops.
+use the flight (edges) to relax the cost. repeat k times.
+
+1066	Campus Bikes II 49.5%	Medium	
+m people, n bikes, dp[m,2^n] for status
+note answer lies in the column with m bits
+
+
+## top down
+312	Burst Balloons	48.2%	Hard	
+top down+memoization, reverse thinking, burst a baloon with defined left and right boundary
+and divide into two subproblems
+
+546	Remove Boxes	38.9%	Hard	
+divide into subproblem: 
+group the leading k numbers and sub, 
+solve other first and let them connect and remove.
+664	Strange Printer	37.3%	Hard	
+similar to 546. k does not count for score.
+
+403	Frog Jump	36.8%	Hard	
+current position, check if next position is reachable and then decide which to use
+
+741	Cherry Pickup	30.6%	Hard	
+two branch walk at the same time.
+
+964	Least Operators to Express Number	41.2%	Hard	
+use +/- to save, x-ary base problem
+
+887	Super Egg Drop	25.0%	Hard	
+
+650	2 Keys Keyboard	47.1%	Medium	
+copy paste, kind of greedy
+odd number: its max factor repeat
+even number: mod by 2, add 2 operations, mod by 4 could be smaller
+651	4 Keys Keyboard 51.1%	Medium	
+type A, ctl-A, ctl-c, ctl-v
+select the input and paste needs 3 operations, 
+do not make copies, len=i need i operations
+make copies: len=i, need at least i-3 operations
+press n times, what is the max?
+
+1130 Minimum Cost Tree From Leaf Values	58.7%	Medium	
+
+361	Bomb Enemy 44.0%	Medium	
+801	Minimum Swaps To Make Sequences Increasing	35.5%	Medium	
+
+818	Race Car	35.8%	Hard	
+1000 Minimum Cost to Merge Stones	34.3%	Hard	
+1039 Minimum Score Triangulation of Polygon	42.9%	Medium	
+467	Unique Substrings in Wraparound String	34.4%	Medium	
+1105 Filling Bookcase Shelves	55.0%	Medium	
+898	Bitwise ORs of Subarrays	35.1%	Medium	
+
+600	Non-negative Integers without Consecutive Ones	33.1%	Hard	
+629	K Inverse Pairs Array	29.7%	Hard	
+982	Triples with Bitwise AND Equal To Zero	54.3%	Hard	
+691	Stickers to Spell Word	39.0%	Hard	
+879	Profitable Schemes	37.4%	Hard	
+871	Minimum Number of Refueling Stops	29.8%	Hard	
+808	Soup Servings	38.0%	Medium	
+471	Encode String with Shortest Length 45.6%	Hard	
+940	Distinct Subsequences II	40.2%	Hard	
+
+514	Freedom Trail	41.0%	Hard	
+790	Domino and Tromino Tiling	36.5%	Medium	
+1055	Shortest Way to Form String 58.8%	Medium	
+568	Maximum Vacation Days 38.5%	Hard	
+1125	Smallest Sufficient Team	44.4%	Hard	
+967	Numbers With Same Consecutive Differences	37.6%	Medium	
+902	Numbers At Most N Given Digit Set	28.9%	Hard	
+
+656	Coin Path 27.2%	Hard	
+1067	Digit Count in Range 37.4%	Hard	
