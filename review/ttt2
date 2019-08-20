@@ -583,3 +583,76 @@ pretty tricky.
 968	Binary Tree Cameras	35.7%	Hard	
 from bottom up, so post order, using greedy
 
+# heap
+## familar
+23	Merge k Sorted Lists	35.6%	Hard	
+215	Kth Largest Element in an Array	49.3%	Medium	
+295	Find Median from Data Stream	38.0%	Hard	
+347	Top K Frequent Elements	56.1%	Medium	
+378	Kth Smallest Element in a Sorted Matrix	50.4%	Medium	
+actually is 1d.
+451	Sort Characters By Frequency	56.9%	Medium	
+692	Top K Frequent Words	46.7%	Medium	
+778	Swim in Rising Water	48.6%	Hard	- binary search
+857	Minimum Cost to Hire K Workers	48.1%	Hard	
+871	Minimum Number of Refueling Stops	29.8%	Hard	
+973	K Closest Points to Origin	61.5%	Medium	
+1054	Distant Barcodes	39.3%	Medium
+264	Ugly Number II	37.1%	Medium	
+factor 2,3,5, can also use pq.
+313	Super Ugly Number	42.3%	Medium	
+can still 
+239	Sliding Window Maximum	39.0%	Hard
+montonic deque, when the k-w is on the front, pop it.
+index queue.
+253	Meeting Rooms II 43.4%	Medium	
+-interval with prefix sum
+818	Race Car	35.8%	Hard	-dp
+703	Kth Largest Element in a Stream	46.9%	Easy	
+1046	Last Stone Weight	62.0%	Easy	
+
+
+## less familiar
+719	Find K-th Smallest Pair Distance	29.6%	Hard	
+- binary search after sort. O(Nlogn) counting O(N^2)
+- heap: generate all the difference and put in heap, not preferred.
+
+373	Find K Pairs with Smallest Sums	34.3%	Medium	
+two sorted list. will create a table with sorted order
+786	K-th Smallest Prime Fraction	40.5%	Hard
+a sorted table
+note: pq will accept duplicates so we need avoid pushing same element multiple times
+otherwise it will produce incorrect results.
+using visited hashset to solve this
+-corner case: both are empty, one is empty, k > m*n.
+
+358	Rearrange String k Distance Apart 33.3%	Hard	
+hashmap count the chars, distance >=k
+put the map pairs into pq
+get k elements from the pq, update the count
+then put them back into pq.
+similar to 767
+
+659	Split Array into Consecutive Subsequences	41.2%	Medium	
+reversed interval problem. using hashmap.
+
+767	Reorganize String	43.5%	Medium	
+no ajacent be the same
+pop two and update and then push in again if not zero.
+
+218	The Skyline Problem	32.2%	Hard	
+355	Design Twitter	27.9%	Medium	
+407	Trapping Rain Water II	39.7%	Hard	
+
+502	IPO	38.4%	Hard	
+
+743	Network Delay Time	43.3%	Medium	
+759	Employee Free Time 62.2%	Hard	
+	
+787	Cheapest Flights Within K Stops	35.8%	Medium	
+-dp or dijkstra using heap
+864	Shortest Path to Get All Keys	37.0%	Hard	
+-dp or dijkstra using heap
+882	Reachable Nodes In Subdivided Graph	38.6%	Hard	
+
+
