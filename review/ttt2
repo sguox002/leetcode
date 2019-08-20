@@ -634,25 +634,205 @@ then put them back into pq.
 similar to 767
 
 659	Split Array into Consecutive Subsequences	41.2%	Medium	
-reversed interval problem. using hashmap.
-
+- reversed interval problem. using hashmap.
+- hashmap to get histogram, from small to larger
+for the number: 
+if need the num, --need[num], ++need[num+1]
+else (not need it), freq[num+1],freq[num+2] has
+--freq[num+1], --freq[num+2], ++need[num+3]
+- using heap: 
+	- when number = top+1, keep going
+	- when number = top, start a new interval
+	- when number > top+1, we need wrap up the previous interval
+	
 767	Reorganize String	43.5%	Medium	
 no ajacent be the same
 pop two and update and then push in again if not zero.
 
-218	The Skyline Problem	32.2%	Hard	
-355	Design Twitter	27.9%	Medium	
-407	Trapping Rain Water II	39.7%	Hard	
 
 502	IPO	38.4%	Hard	
+<=k projects, each project has net profit pi and min capital requirement Wi.
+Initial capital W.
+the idea: push the project with capital requirment <=W into pq. choose the largest profit
+and then increase W, add again other project <=W. sort it to enable binary search
 
 743	Network Delay Time	43.3%	Medium	
-759	Employee Free Time 62.2%	Hard	
-	
+shortest distane to other node from K. and choose the max.
+dijkstra: 
+pq: from k. add those edges which reduces the dist[v] using these edges
 787	Cheapest Flights Within K Stops	35.8%	Medium	
+similar to 743
 -dp or dijkstra using heap
-864	Shortest Path to Get All Keys	37.0%	Hard	
+dp using the edge to relax the distance.
+other approach include dfs, bfs, bellman-ford, dijkstra
+
+***864	Shortest Path to Get All Keys	37.0%	Hard	
 -dp or dijkstra using heap
+. empty, # wall, @ starting point, lower letter: keys, upper letter: locks
+a lock can be walked over if we have the key.
+return the min moves to acquire all keys.
+use bfs.
+bit to indicate the keys.
+note: since they are multiple paths to reach the same position. we cannot set visit directly
+this is very important for bfs, we need check that.
+also do not change the char in the grid, since we still need them
+- ie. when the queue has several field, we need include the visited all the information
+using above measures cannot solve the problem since each node can be visited multiple times
+very useful.
+
+759	Employee Free Time 62.2%	Hard	
+understand the problem, each person has a list of interval times.
+this is like a k-list common interval problem. -->k list interval merge problem.
+for each person the intervals are non overlapped.
+heap can be used:
+the earliest start time, add all those start time < current endinng
+when adding a new interval, we need update the current ending
+and thus we have the common free time interval
+- another approach use interval start++ and end --
+save all prefix=0 segment.
+this is so far the simplest approach.
+
+218	The Skyline Problem	32.2%	Hard	
+seems an interval problem and then form the skyline.
+brutal foce: from the left to right we sample each point value and the remove those same y intervals
+-using the event add and removal method
+	- the event add x vs h, the event removal x vs -h. (using multiset to add same)
+	(actually we set add as -h and removal as +h)
+	- maintain a min heap on the height. (multiset)
+	- the tricky part: when we see a negative we insert into the min heap. else we remove i.
+	- and we use the highest as our current height.
+		
+
+355	Design Twitter	27.9%	Medium	
+postTweet--add into data and save into data structure user id vs his news
+getNewsFeed(user)-- get the newest 10 by himself or he followed-- that is where the heap uses.
+similar to n-list merge.
+follow
+unfollow
+
+407	Trapping Rain Water II	39.7%	Hard	
+using min heap pq;
+first push the 4 boundary cells into pq. cell include height and i, j.
+- contribution when the outside smallest > current
+- then we push the max(outside smallest, curr) into queue (the higher will block the rain)
+- similar to bfs.
+
 882	Reachable Nodes In Subdivided Graph	38.6%	Hard	
+each edge is subdivided into different number of nodes
+return the number of nodes you can reach in M moves.
+- build the graph using subnode number as weight
+- use a min heap -pq (store distance vs dest nodes from 0)
+- then try all its child, get the new dist to child, record used moves
+- relax the distance and push to pq.
+still has problem on it.
+
+# binary search
+## familiar: 
+50	 Pow(x, n)	28.4%	Medium	
+167	 Two Sum II - Input array is sorted	51.1%	Easy	
+153	 Find Minimum in Rotated Sorted Array	43.4%	Medium	
+154	 Find Minimum in Rotated Sorted Array II	39.7%	Hard	
+with duplicates
+33	 Search in Rotated Sorted Array	33.1%	Medium	
+81	 Search in Rotated Sorted Array II	32.7%	Medium	
+with duplicates, based on 154.
+349	 Intersection of Two Arrays	56.1%	Easy	
+350	 Intersection of Two Arrays II	48.7%	Easy	
+29	 Divide Two Integers	16.2%	Medium	
+240	 Search a 2D Matrix II	41.2%	Medium	
+74	 Search a 2D Matrix	35.1%	Medium	
+69	 Sqrt(x)	31.9%	Easy	
+162	 Find Peak Element	41.7%	Medium	
+35	 Search Insert Position	41.1%	Easy	
+378	 Kth Smallest Element in a Sorted Matrix	50.4%	Medium	
+300	 Longest Increasing Subsequence	41.2%	Medium	
+278	 First Bad Version	30.9%	Easy	
+34	 Find First and Last Position of Element in Sorted Array	34.0%	Medium	
+374	 Guess Number Higher or Lower	40.1%	Easy	
+230	 Kth Smallest Element in a BST	52.8%	Medium	
+852	 Peak Index in a Mountain Array	70.0%	Easy	
+475	 Heaters	32.1%	Easy	
+392	 Is Subsequence	47.4%	Easy	
+367	 Valid Perfect Square	40.3%	Easy	
+270	 Closest Binary Search Tree Value 44.4%	Easy	
+1064	 Fixed Point 76.9%	Easy	
+1060	 Missing Element in Sorted Array 54.4%	Medium	
+1095	 Find in Mountain Array	34.1%	Hard	
+1150	 Check If a Number Is Majority Element in a Sorted Array 68.5%	Easy
+222	 Count Complete Tree Nodes	35.8%	Medium	
+287	 Find the Duplicate Number	50.7%	Medium	
+410	 Split Array Largest Sum	42.8%	Hard	
+718	 Maximum Length of Repeated Subarray	46.9%	Medium	
+longest common subarray problem
+354	 Russian Doll Envelopes	34.3%	Hard	
+dp is more suitable
+209	 Minimum Size Subarray Sum	35.4%	Medium	
+sliding window is more suitable
+454	 4Sum II	51.2%	Medium	
+has 4 lists. a+b+c+d=0 combine 2 and 2, then check equal
+363	 Max Sum of Rectangle No Larger Than K	35.5%	Hard	
+using kadane algorithm and reduces to 1d array problem.
+528	 Random Pick with Weight	43.0%	Medium	
+math, prefix sum.
+981	 Time Based Key-Value Store	51.4%	Medium	
+352	 Data Stream as Disjoint Intervals	44.1%	Hard	
+can use ++/-- with seen ignored. (otherwise will messup)
+merge becomes really simple.
+719	 Find K-th Smallest Pair Distance	29.6%	Hard	
+see  heap
+174	 Dungeon Game	27.7%	Hard	
+dp or similar to swimming 
+441	 Arranging Coins	38.5%	Easy	
+658	 Find K Closest Elements	38.5%	Medium	
+sort using abs diff.
+1011	 Capacity To Ship Packages Within D Days	53.8%	Medium	
+binary search best
+862	 Shortest Subarray with Sum at Least K	22.5%	Hard	
+778	 Swim in Rising Water	48.6%	Hard	
+786	 K-th Smallest Prime Fraction	40.5%	Hard	
+875	 Koko Eating Bananas	46.8%	Medium	
+
+## need to improve
+4	 Median of Two Sorted Arrays	27.1%	Hard
+two sorted array binary search: divide and conquer
+
+327	 Count of Range Sum	33.3%	Hard	
+range sum in [lower, upper]. 
+prefix sum and using it for divide and conquer.
+divide by half, and use right - left to get the count <lower and <=upper
+merge sort.
+
+315	 Count of Smaller Numbers After Self	38.9%	Hard	
+
+887	 Super Egg Drop	25.0%	Hard	
+493	 Reverse Pairs	23.5%	Hard	
+
+1111	 Maximum Nesting Depth of Two Valid Parentheses Strings	65.3%	Medium	
+
+
+275	 H-Index II	35.7%	Medium	
+
+911	 Online Election	47.8%	Medium	
+1044	 Longest Duplicate Substring	22.6%	Hard	
+483	 Smallest Good Base	34.4%	Hard	
+644	 Maximum Average Subarray II 29.4%	Hard	
+436	 Find Right Interval	43.3%	Medium	
+710	 Random Pick with Blacklist	32.0%	Hard	
+774	 Minimize Max Distance to Gas Station 42.8%	Hard	
+704	 Binary Search	49.0%	Easy	
+497	 Random Point in Non-overlapping Rectangles	36.0%	Medium	
+302	 Smallest Rectangle Enclosing Black Pixels 49.8%	Hard	
+702	 Search in a Sorted Array of Unknown Size 60.6%	Medium	
+668	 Kth Smallest Number in Multiplication Table	42.6%	Hard	
+744	 Find Smallest Letter Greater Than Target	44.4%	Easy	
+878	 Nth Magical Number	25.8%	Hard	
+1157	 Online Majority Element In Subarray	31.2%	Hard	
+927	 Three Equal Parts	30.9%	Hard	
+793	 Preimage Size of Factorial Zeroes Function	39.2%	Hard	
+
+
+
+
+
 
 
