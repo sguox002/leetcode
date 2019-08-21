@@ -1243,6 +1243,8 @@ udlr: we will try dlru sequence.
 use pq with a new node structure, compare with dist, if dist the same, compare with string
 approach: pop the top node, and update the distance and add to the pq.
 similar to 505, the edge is weighted.
+then the first one which see the hole is the answer.
+
 815	 Bus Routes	40.5%	Hard	
 build a map for each station, vs number of routes
 more similar to bfs in graph.
@@ -1294,32 +1296,335 @@ hashmap to record the last occurance.
 977	 Squares of a Sorted Array	71.8%	Easy	
 844	 Backspace String Compare	46.5%	Easy	
 925	 Long Pressed Name	44.5%	Easy
+986	 Interval List Intersections	63.7%	Medium	
+632	 Smallest Range Covering Elements from K Lists	48.7%	Hard	
+min heap, similar to k-list merge.
+424	 Longest Repeating Character Replacement	44.7%	Medium	
+equivalent to longest sliding window with <=k different chars.
+159	 Longest Substring with At Most Two Distinct Characters 47.6%	Hard	
+hashmap
+532	 K-diff Pairs in an Array	30.2%	Easy	
+sort and find.
+259	 3Sum Smaller 45.4%	Medium	
+838	 Push Dominoes	44.7%	Medium	
+360	 Sort Transformed Array 47.1%	Medium	
+881	 Boats to Save People	44.4%	Medium	
+1093	 Statistics from a Large Sample	43.5%	Medium	
+567	 Permutation in String	38.9%	Medium	
+fixed sliding window, histogram the same.
+524	 Longest Word in Dictionary through Deleting	46.4%	Medium	
+from longest: check if subsequence.
+487	 Max Consecutive Ones II 47.1%	Medium	
+flip <=1 times.
+1004	 Max Consecutive Ones III	54.3%	Medium	
+change up to k values
+923	 3Sum With Multiplicity	34.3%	Medium	
+merge all duplicates and use simple math
+930	 Binary Subarrays With Sum	39.1%	Medium	
+sliding window with S ones. add 0 or more 0s front or after
+845	 Longest Mountain in Array	34.8%	Medium	
+left side up length and right side up length, two directions
 
 30	 Substring with Concatenation of All Words	24.0%	Hard	
 209	 Minimum Size Subarray Sum	35.4%	Medium	
-986	 Interval List Intersections	63.7%	Medium	
-632	 Smallest Range Covering Elements from K Lists	48.7%	Hard	
-159	 Longest Substring with At Most Two Distinct Characters 47.6%	Hard	
 713	 Subarray Product Less Than K	37.3%	Medium	
 723	 Candy Crush 64.1%	Medium	
 992	 Subarrays with K Different Integers	45.0%	Hard	
-424	 Longest Repeating Character Replacement	44.7%	Medium	
-567	 Permutation in String	38.9%	Medium	
-532	 K-diff Pairs in an Array	30.2%	Easy	
-828	 Unique Letter String	40.9%	Hard	
-259	 3Sum Smaller 45.4%	Medium	
-524	 Longest Word in Dictionary through Deleting	46.4%	Medium	
-838	 Push Dominoes	44.7%	Medium	
-1004	 Max Consecutive Ones III	54.3%	Medium	
-923	 3Sum With Multiplicity	34.3%	Medium	
-360	 Sort Transformed Array 47.1%	Medium	
-930	 Binary Subarrays With Sum	39.1%	Medium	
-881	 Boats to Save People	44.4%	Medium	
-826	 Most Profit Assigning Work	36.3%	Medium	
-845	 Longest Mountain in Array	34.8%	Medium	
-1093	 Statistics from a Large Sample	43.5%	Medium	
-487	 Max Consecutive Ones II 47.1%	Medium	
+number of subarrays with exactly k integers.
+3 pointers, the longest window and the shortest window satisfying the condition
 
+828	 Unique Letter String	40.9%	Hard	
+dp with hash...
+
+826	 Most Profit Assigning Work	36.3%	Medium
+difficulty, ability, profit
+each person can assign at most one job
+a job can be used multiple times.
+find the job person can do with largest profit.
+		
+# graph
+## similar
+399	Evaluate Division	48.3%	Medium	-dfs
+959	Regions Cut By Slashes	62.7%	Medium	 -dfs
+133	Clone Graph	27.9%	Medium	-hashmap + dfs
+207	Course Schedule	38.9%	Medium	-dfs cycle detection
+210	Course Schedule II	35.9%	Medium	-bfs with incoming 0
+785	Is Graph Bipartite?	44.3%	Medium	
+323	Number of Connected Components in an Undirected Graph 52.7%	Medium	
+261	Graph Valid Tree 40.3%	Medium	
+997	Find the Town Judge	49.5%	Easy	
+839	Similar String Groups	35.3%	Hard	-union find
+990	Satisfiability of Equality Equations	40.9%	Medium	-union find
+1129	Shortest Path with Alternating Colors	36.0%	Medium	-bfs
+1162	As Far from Land as Possible	36.8%	Medium	-bfs or dp
+1059	All Paths from Source Lead to Destination 45.2%	Medium	-dfs with cycle
+1136	Parallel Courses 59.6%	Hard	
+1102	Path With Maximum Minimum Value 43.9%	Medium	- binary search
+765	Couples Holding Hands	52.1%	Hard	-greedy
+310	Minimum Height Trees	30.6%	Medium	
+684	Redundant Connection	52.8%	Medium	
+1042	Flower Planting With No Adjacent	47.9%	Easy	
+
+
+269	Alien Dictionary 31.9%	Hard
+similar to course schedule II, keep adding source nodes.
+	
+332	Reconstruct Itinerary	32.3%	Medium	
+backtrack: 
+1043	Partition Array for Maximum Sum	62.6%	Medium	
+partition and change to max in the subarray. return the largest sum
+actually sum(max*size)
+dp with pq. 
+
+743	Network Delay Time	43.3%	Medium	
+841	Keys and Rooms	61.0%	Medium	
+
+928	Minimize Malware Spread II	39.4%	Hard
+	
+802	Find Eventual Safe States	44.9%	Medium	
+
+996	Number of Squareful Arrays	47.7%	Hard	
+
+685	Redundant Connection II	31.1%	Hard	
+854	K-Similar Strings	34.7%	Hard	
+swap exactly k times to make the string equal.
+return the smallest k.
+using bfs.
+
+1135	Connecting Cities With Minimum Cost 51.3%	Medium	
+sort and then union-find
+
+1153	String Transforms Into Another String 28.2%	Hard	
+need a extra space for the swapping
+mapping cannot be change
+
+444	Sequence Reconstruction 20.6%	Medium	
+uniqueness of topological sort
+If a topological sort has the property that all pairs of consecutive vertices in the sorted order are connected by edges, then these edges form a directed Hamiltonian path in the DAG. If a Hamiltonian path exists, the topological sort order is unique; no other order respects the edges of the path. Conversely, if a topological sort does not form a Hamiltonian path, the DAG will have two or more valid topological orderings, for in this case it is always possible to form a second valid ordering by swapping two consecutive vertices that are not connected by an edge to each other. Therefore, it is possible to test in linear time whether a unique ordering exists, and whether a Hamiltonian path exists, despite the NP-hardness of the Hamiltonian path problem for more general directed graphs (Vernet & Markenzon 
+- every edge shall be a subsequence in org
+- every two consecutive elements in org shall be a direct edge in seqs
+check these two conditions
+
+# union-find
+128	Longest Consecutive Sequence	42.4%	Hard	
+130	Surrounded Regions	23.7%	Medium	
+200	Number of Islands	42.5%	Medium	
+261	Graph Valid Tree 40.3%	Medium	
+305	Number of Islands II 41.4%	Hard	
+323	Number of Connected Components in an Undirected Graph 52.7%	Medium	
+399	Evaluate Division	48.3%	Medium	
+547	Friend Circles	54.6%	Medium	
+684	Redundant Connection	52.8%	Medium	
+685	Redundant Connection II	31.1%	Hard	
+721	Accounts Merge	41.9%	Medium	
+737	Sentence Similarity II 43.9%	Medium	
+765	Couples Holding Hands	52.1%	Hard	
+778	Swim in Rising Water	48.6%	Hard	
+803	Bricks Falling When Hit	29.2%	Hard	
+839	Similar String Groups	35.3%	Hard	
+924	Minimize Malware Spread	40.6%	Hard	
+928	Minimize Malware Spread II	39.4%	Hard	
+947	Most Stones Removed with Same Row or Column	54.4%	Medium	
+952	Largest Component Size by Common Factor	26.7%	Hard	
+959	Regions Cut By Slashes	62.7%	Medium	
+990	Satisfiability of Equality Equations	40.9%	Medium	
+1061	Lexicographically Smallest Equivalent String 62.7%	Medium	
+1101	The Earliest Moment When Everyone Become Friends 63.9%	Medium	
+1102	Path With Maximum Minimum Value 44.0%	Medium	
+1135	Connecting Cities With Minimum Cost 51.3%	Medium
+
+# array
+array concept can apply to tree and 2d ..
+
+## familiar
+1	Two Sum	44.4%	Easy	-hash
+18	4Sum	31.3%	Medium	
+11	Container With Most Water	46.1%	Medium	-two pointer both end
+53	Maximum Subarray	44.3%	Easy	-dp
+42	Trapping Rain Water	44.3%	Hard	-stacks
+15	3Sum	24.6%	Medium	- two pointer
+561	Array Partition I	69.8%	Easy	-math, sort
+121	Best Time to Buy and Sell Stock	48.0%	Easy	
+238	Product of Array Except Self	56.2%	Medium	-both end
+169	Majority Element	53.7%	Easy	-voting
+229	Majority Element II	32.8%	Medium	-voting
+122	Best Time to Buy and Sell Stock II	52.8%	Easy	-dp
+66	Plus One	41.6%	Easy	
+283	Move Zeroes	54.9%	Easy	-two pointer first forward, then backward
+88	Merge Sorted Array	36.6%	Easy	-two pointer
+56	Merge Intervals	36.4%	Medium	-two pointer
+16	3Sum Closest	45.8%	Medium	-two pointer
+85	Maximal Rectangle	34.3%	Hard	-dp, or reduce to 1d stack
+48	Rotate Image	50.1%	Medium	-math
+26	Remove Duplicates from Sorted Array	41.6%	Easy	
+31	Next Permutation	30.9%	Medium	-reverse
+217	Contains Duplicate	53.0%	Easy	-xor
+152	Maximum Product Subarray	29.8%	Medium	-dp.
+41	First Missing Positive	29.5%	Hard	-keeping swap to correct position
+27	Remove Element	45.4%	Easy	
+128	Longest Consecutive Sequence	42.4%	Hard	-union-find
+33	Search in Rotated Sorted Array	33.1%	Medium	-binary search
+289	Game of Life	47.1%	Medium	
+118	Pascal's Triangle	47.4%	Easy -dp	
+54	Spiral Matrix	31.1%	Medium	-boundary
+167	Two Sum II - Input array is sorted	51.1%	Easy	
+448	Find All Numbers Disappeared in an Array	54.0%	Easy	
+153	Find Minimum in Rotated Sorted Array	43.4%	Medium	-binary search
+39	Combination Sum	50.2%	Medium	-backtrack
+79	Word Search	32.1%	Medium	-dfs
+442	Find All Duplicates in an Array	62.0%	Medium	-mark seen
+621	Task Scheduler	46.1%	Medium	-totally depends on the max freq tasks
+287	Find the Duplicate Number	50.7%	Medium	-one appear twice
+219	Contains Duplicate II	35.8%	Easy	-value same, index diff<=K.
+120	Triangle	40.4%	Medium	
+64	Minimum Path Sum	48.2%	Medium	
+78	Subsets	54.5%	Medium	-backtrack
+268	Missing Number	49.1%	Easy	
+228	Summary Ranges	36.6%	Medium	-using interval add/removal or brutal force
+695	Max Area of Island	58.3%	Medium	-dfs
+560	Subarray Sum Equals K	42.7%	Medium	-hash
+59	Spiral Matrix II	47.8%	Medium	-a bit tricky, 4 boundary reflection
+62	Unique Paths	48.8%	Medium	-dp
+105	Construct Binary Tree from Preorder and Inorder Traversal	42.6%	Medium	
+717	1-bit and 2-bit Characters	49.2%	Easy	
+123	Best Time to Buy and Sell Stock III	34.5%	Hard	
+55	Jump Game	32.5%	Medium	-to see if you can get to the end
+45	Jump Game II	28.6%	Hard	-min number of steps, bfs
+697	Degree of an Array	51.2%	Easy	
+73	Set Matrix Zeroes	40.6%	Medium	
+189	Rotate Array	31.1%	Easy	
+950	Reveal Cards In Increasing Order	72.1%	Medium	-reverse deque
+280	Wiggle Sort 61.5%	Medium	-inorder, sort and swap
+75	Sort Colors	43.0%	Medium	-count sort
+832	Flipping an Image	73.2%	Easy	
+84	Largest Rectangle in Histogram	32.0%	Hard	-stack
+162	Find Peak Element	41.7%	Medium	-binary search
+905	Sort Array By Parity	72.7%	Easy	
+35	Search Insert Position	41.1%	Easy	
+457	Circular Array Loop	27.9%	Medium	-value is step and direction
+119	Pascal's Triangle II	44.8%	Easy	
+380	Insert Delete GetRandom O(1)	43.5%	Medium	
+34	Find First and Last Position of Element in Sorted Array	34.0%	Medium	
+746	Min Cost Climbing Stairs	48.0%	Easy	
+628	Maximum Product of Three Numbers	46.4%	Easy	
+126	Word Ladder II	18.5%	Hard	--bfs
+216	Combination Sum III	52.6%	Medium	-backtrack
+57	Insert Interval	31.6%	Hard	
+566	Reshape the Matrix	59.2%	Easy	
+154	Find Minimum in Rotated Sorted Array II	39.7%	Hard	
+80	Remove Duplicates from Sorted Array II	41.1%	Medium	
+718	Maximum Length of Repeated Subarray	46.9%	Medium	-dp, longest common
+106	Construct Binary Tree from Inorder and Postorder Traversal	40.6%	Medium	
+667	Beautiful Arrangement II	52.4%	Medium	
+209	Minimum Size Subarray Sum	35.4%	Medium	(sum>=target)
+766	Toeplitz Matrix	62.4%	Easy	
+81	Search in Rotated Sorted Array II	32.7%	Medium	
+74	Search a 2D Matrix	35.1%	Medium	
+867	Transpose Matrix	63.9%	Easy	
+665	Non-decreasing Array	19.5%	Easy	
+277	Find the Celebrity 37.8%	Medium	
+714	Best Time to Buy and Sell Stock with Transaction Fee	51.2%	Medium	
+907	Sum of Subarray Minimums	28.8%	Medium	-stack find next-greater
+661	Image Smoother	49.3%	Easy	
+974	Subarray Sums Divisible by K	46.4%	Medium	
+90	Subsets II	43.4%	Medium	
+1002	Find Common Characters	65.6%	Easy	
+243	Shortest Word Distance 58.2%	Easy	
+485	Max Consecutive Ones	55.4%	Easy	
+835	Image Overlap	53.6%	Medium	
+611	Valid Triangle Number	45.9%	Medium	
+1074	Number of Submatrices That Sum to Target	57.8%	Hard	
+63	Unique Paths II	33.6%	Medium	
+565	Array Nesting	53.3%	Medium	---
+1051	Height Checker	68.9%	Easy	
+713	Subarray Product Less Than K	37.3%	Medium	
+977	Squares of a Sorted Array	71.8%	Easy	
+723	Candy Crush 4.1%	Medium	---
+581	Shortest Unsorted Continuous Subarray	30.4%	Easy	
+969	Pancake Sorting	62.3%	Medium	
+163	Missing Ranges 23.4%	Medium	
+643	Maximum Average Subarray I	40.1%	Easy	
+40	Combination Sum II	43.0%	Medium	
+769	Max Chunks To Make Sorted	52.3%	Medium	
+755	Pour Water 41.5%	Medium	
+689	Maximum Sum of 3 Non-Overlapping Subarrays	44.3%	Hard	
+414	Third Maximum Number	29.4%	Easy	
+922	Sort Array By Parity II	67.3%	Easy	
+670	Maximum Swap	40.3%	Medium	
+1031	Maximum Sum of Two Non-Overlapping Subarrays	54.9%	Medium	
+674	Longest Continuous Increasing Subsequence	44.7%	Easy	
+719	Find K-th Smallest Pair Distance	29.6%	Hard	
+605	Can Place Flowers	31.2%	Easy	
+509	Fibonacci Number	66.7%	Easy	
+795	Number of Subarrays with Bounded Maximum	43.9%	Medium	
+724	Find Pivot Index	41.6%	Easy	
+888	Fair Candy Swap	56.9%	Easy	
+495	Teemo Attacking	52.6%	Medium	
+1040	Moving Stones Until Consecutive II	48.6%	Medium	
+532	K-diff Pairs in an Array	30.2%	Easy	
+1011	Capacity To Ship Packages Within D Days	53.8%	Medium	
+999	Available Captures for Rook	66.0%	Easy	
+259	3Sum Smaller 45.4%	Medium	
+1014	Best Sightseeing Pair	50.3%	Medium	
+381	Insert Delete GetRandom O(1) - Duplicates allowed	32.4%	Hard	
+775	Global and Local Inversions	39.7%	Medium	
+873	Length of Longest Fibonacci Subsequence	46.7%	Medium	
+849	Maximize Distance to Closest Person	41.4%	Easy	
+1122	Relative Sort Array	66.5%	Easy	
+891	Sum of Subsequence Widths	29.7%	Hard	
+792	Number of Matching Subsequences	44.3%	Medium	
+562	Longest Line of Consecutive One in Matrix 44.1%	Medium	
+840	Magic Squares In Grid	36.0%	Easy	
+729	My Calendar I	48.2%	Medium	
+644	Maximum Average Subarray II 29.4%	Hard	
+918	Maximum Sum Circular Subarray	32.5%	Medium	
+985	Sum of Even Numbers After Queries	62.6%	Easy	
+1010	Pairs of Songs With Total Durations Divisible by 60	45.8%	Easy	
+747	Largest Number At Least Twice of Others	40.8%	Easy	
+1035	Uncrossed Lines	51.8%	Medium	
+825	Friends Of Appropriate Ages	37.5%	Medium	
+830	Positions of Large Groups	48.1%	Easy	
+896	Monotonic Array	55.6%	Easy	
+870	Advantage Shuffle	43.2%	Medium	
+624	Maximum Distance in Arrays 37.7%	Easy	
+945	Minimum Increment to Make Array Unique	43.4%	Medium	
+914	X of a Kind in a Deck of Cards	33.9%	Easy	
+1109	Corporate Flight Bookings	47.8%	Medium	
+962	Maximum Width Ramp	42.5%	Medium	
+782	Transform to Chessboard	39.9%	Hard	
+1007	Minimum Domino Rotations For Equal Row	48.9%	Medium	
+370	Range Addition 61.0%	Medium	
+768	Max Chunks To Make Sorted II	46.6%	Hard	
+245	Shortest Word Distance III 53.9%	Medium	
+900	RLE Iterator	50.9%	Medium	
+1013	Partition Array Into Three Parts With Equal Sum	56.0%	Easy	
+978	Longest Turbulent Subarray	45.8%	Medium	
+1089	Duplicate Zeros	59.0%	Easy	
+926	Flip String to Monotone Increasing	50.3%	Medium	
+915	Partition Array into Disjoint Intervals	43.8%	Medium	
+1052	Grumpy Bookstore Owner	52.9%	Medium	
+1086	High Five 74.8%	Easy	
+548	Split Array with Equal Sum 43.8%	Medium	
+1053	Previous Permutation With One Swap	47.1%	Medium	
+1157	Online Majority Element In Subarray	31.3%	Hard	
+1146	Snapshot Array	30.8%	Medium	
+989	Add to Array-Form of Integer	44.1%	Easy	
+1064	Fixed Point 76.7%	Easy	
+1128	Number of Equivalent Domino Pairs	44.5%	Easy	
+1099	Two Sum Less Than K 61.4%	Easy	
+1018	Binary Prefix Divisible By 5	46.8%	Easy	
+531	Lonely Pixel I 57.8%	Medium	
+533	Lonely Pixel II 46.5%	Medium	
+954	Array of Doubled Pairs	35.0%	Medium	
+941	Valid Mountain Array	35.3%	Easy	
+1144	Decrease Elements To Make Array Zigzag	41.1%	Medium	
+1152	Analyze User Website Visit Pattern 37.1%	Medium	
+1085	Sum of Digits in the Minimum Number 73.9%	Easy	
+1133	Largest Unique Number 69.0%	Easy	
+1160	Find Words That Can Be Formed by Characters	71.5%	Easy	
+1150	Check If a Number Is Majority Element in a Sorted Array 68.4%	Easy	
+1151	Minimum Swaps to Group All 1's Together 56.3%	Medium
+4	Median of Two Sorted Arrays	27.1%	Hard	
 
 
 
