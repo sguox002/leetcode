@@ -977,6 +977,7 @@ equivalent to find the left next larger elements
 
 895	Maximum Frequency Stack	57.1%	Hard	
 - hashmap vs stacks
+1066	Campus Bikes II 49.6%	Medium	- pq, shortest distance with status.
 
 # backtrack
 ## familiar
@@ -988,50 +989,341 @@ all unique combinations.
 93	Restore IP Addresses	32.2%	Medium	
 -brutal force
 140	Word Break II	28.0%	Hard	
-- dfs
+- dfs or backtrack.
+
 1079	Letter Tile Possibilities	75.2%	Medium	
 use histogram and then backtrack.
 44	Wildcard Matching	23.2%	Hard -dp	
-
-46	Permutations	56.8%	Medium	
-37	Sudoku Solver	38.3%	Hard	
-51	N-Queens	40.8%	Hard	
-78	Subsets	54.5%	Medium	
-89	Gray Code	46.5%	Medium	
-
-357	Count Numbers with Unique Digits	47.3%	Medium	
-306	Additive Number	28.6%	Medium	
-131	Palindrome Partitioning	42.2%	Medium	
-77	Combinations	49.2%	Medium	
-126	Word Ladder II	18.5%	Hard	
-401	Binary Watch	45.7%	Easy	
-60	Permutation Sequence	33.9%	Medium	
-47	Permutations II	41.7%	Medium	
-52	N-Queens II	53.2%	Hard	
-216	Combination Sum III	52.6%	Medium	
-212	Word Search II	29.7%	Hard	
-
 980	Unique Paths III	71.2%	Hard	
+401	Binary Watch	45.7%	Easy	
+212	Word Search II	29.7%	Hard	-trie
+216	Combination Sum III	52.6%	Medium	
+k numbers
 784	Letter Case Permutation	58.4%	Easy	
-526	Beautiful Arrangement	55.3%	Medium	
-
-90	Subsets II	43.3%	Medium	
-320	Generalized Abbreviation 49.3%	Medium	
-211	Add and Search Word - Data structure design	31.4%	Medium	
+each letter has lower case and uppercase two choices
+126	Word Ladder II	18.5%	Hard	-bfs
+526	Beautiful Arrangement	55.3%	Medium	-divide and conquer
+357	Count Numbers with Unique Digits	47.3%	Medium
+simple math
+211	Add and Search Word - Data structure design	31.4%	Medium	- trie
 40	Combination Sum II	43.0%	Medium	
-291	Word Pattern II 41.5%	Hard	
-351	Android Unlock Patterns 46.5%	Medium	
-267	Palindrome Permutation II 34.2%	Medium	
-996	Number of Squareful Arrays	47.7%	Hard	
+target sum, each number can only be used once. contain duplicates
+sort and skip duplicated.
+351	Android Unlock Patterns 46.5%	Medium- dfs
+425	Word Squares 45.1%	Hard	- trie + backtrack
+1087	Brace Expansion 59.5%	Medium	- recursive with stack
+
+## need pay attention:
+46	Permutations	56.8%	Medium	
+get all permutation: swap a[i] with a[start]
+
+47	Permutations II	41.7%	Medium	
+sort and skip processed identical.
+
+37	Sudoku Solver	38.3%	Hard	
+solve board, try 1 to 9 put into the empty spacem and check if it is valid
+
+51	N-Queens	40.8%	Hard	
+similar to 37, try each position and check if it is valid
+
+52	N-Queens II	53.2%	Hard	
+get the number of solutions
+check all cols and increment the row.
+
+78	Subsets	54.5%	Medium	
+all power set, icluding empty.
+90	Subsets II	43.3%	Medium	
+contain duplicates
+sort and then do backtracking
+this is exactly the same as 1079. using hashmap
+only difference is 1079 for permutations, this for combinations.
+use sort and if the current number is same as previous we shall skip it
+since the previous has already covered all the combinations.
+
+89	Gray Code	46.5%	Medium	
+reflect code. growing: 0->1 reflect the previous and change the highest bit.
+	
+306	Additive Number	28.6%	Medium	
+typical trial and back. or brutal force
+similar to sudoku or n-queen, try all combinations of the first two number
+first number can go to half length
+second number can go to remaining half length
+and then do the backtracking
+we shall do string add (it could be over limit)
 842	Split Array into Fibonacci Sequence	35.2%	Medium	
+similar to 306
+
+131	Palindrome Partitioning	42.2%	Medium	
+all possible combinations
+typical backtracking.
+267	Palindrome Permutation II 34.2%	Medium
+return all palindromic permuation. 
+form the histogram and use only half of it to get the permutation.
+
+266. Palindrome Permutation- just check the histogram
+77	Combinations	49.2%	Medium	
+combinationof k numbers from 1 to n. C(n,k)
+k-1 and i+1 
+60	Permutation Sequence	33.9%	Medium	
+kth permutation sequence... use math.
+n! total
+1 fixed at first position, we have (n-1)!
+....
+these numbers can be calculated directly.
+using / and % shall pay attention to base.
+
+
+
+320	Generalized Abbreviation 49.3%	Medium	
+
+
+*** 291	Word Pattern II 41.5%	Hard	
+check if follows the same pattern
+trial and error
+pattern = "abab", str = "redblueredblue"
+a:2, b:2
+so a can match up to (n-2)/2, b can match up to (n-2)/2
+or brutal force, just do map and see if both reaches the end
+try all possible length to match current char
+if c exisit in pmap, check if s=mp[c]
+else check s exist, check if c=mp[s]
+insert the map
+backtrack
+if fail, erase the map
+	
+996	Number of Squareful Arrays	47.7%	Hard	
+adjacent pairs adds up to a square. return the number of permutations
+idea: 
+get each number's histogram, the count only contributes the number
+put all the unique pairs into hashmap <first number, all candidates>
+then do backtrack
+
 691	Stickers to Spell Word	39.0%	Hard	
-1066	Campus Bikes II 49.6%	Medium	
+-dp is the fastest. ???
+
 254	Factor Combinations 44.8%	Medium	
-425	Word Squares 45.1%	Hard	
+get all combinations:
+every time we get two factors:
+(i,n/i) is an answer, then we use n/i as a subproblem
+
+
 294	Flip Game II 48.7%	Medium	
-1087	Brace Expansion 59.5%	Medium	
+++ change to --. 
+lose or win. store all win status.
+
 411	Minimum Unique Word Abbreviation 35.1%	Hard	
 1088	Confusing Number II 36.6%	Hard
+return number of confusing numbers, using backtrack
+idea: check all permutations using 01689. (not combination)
+permutation means you can reuse the same number. reversed number shall not equal to original number
+
+
+# dfs
+## familiar:
+200	 Number of Islands	42.5%	Medium	
+108	 Convert Sorted Array to Binary Search Tree	52.2%	Easy	
+695	 Max Area of Island	58.3%	Medium	
+959	 Regions Cut By Slashes	62.7%	Medium	
+547	 Friend Circles	54.6%	Medium	
+133	 Clone Graph	27.9%	Medium	- hash and dfs
+207	 Course Schedule	38.9%	Medium	- detect cycle
+329	 Longest Increasing Path in a Matrix	40.7%	Hard	- with memoization
+947	 Most Stones Removed with Same Row or Column	54.4%	Medium	
+690	 Employee Importance	54.7%	Easy	
+130	 Surrounded Regions	23.7%	Medium	
+542	 01 Matrix	36.5%	Medium	 -dp or bfs
+417	 Pacific Atlantic Water Flow	38.1%	Medium	
+638	 Shopping Offers	49.4%	Medium	- dp
+733	 Flood Fill	51.6%	Easy	
+664	 Strange Printer	37.3%	Hard	- dp
+210	 Course Schedule II	35.9%	Medium	 -bfs
+785	 Is Graph Bipartite?	44.3%	Medium	
+721	 Accounts Merge	41.9%	Medium	- union find
+778	 Swim in Rising Water	48.6%	Hard	 - binary search
+841	 Keys and Rooms	61.0%	Medium	-bfs with status
+472	 Concatenated Words	36.2%	Hard	-dp
+491	 Increasing Subsequences	42.7%	Medium	 -dp
+756	 Pyramid Transition Matrix	52.6%	Medium	-dfs
+694	 Number of Distinct Islands 52.1%	Medium	
+711	 Number of Distinct Islands II 47.0%	Hard	 -- 8 transform
+934	 Shortest Bridge	44.5%	Medium	- get two islands and find the shortest distance
+323	 Number of Connected Components in an Undirected Graph 52.7%	Medium	
+261	 Graph Valid Tree 40.3%	Medium	
+737	 Sentence Similarity II 43.9%	Medium	-union find
+576	 Out of Boundary Paths	32.7%	Medium	
+439	 Ternary Expression Parser 54.0%	Medium	-evaluate expression
+1034	 Coloring A Border	42.9%	Medium	
+473	 Matchsticks to Square	36.4%	Medium	-dp
+827	 Making A Large Island	43.7%	Hard	-union find
+839	 Similar String Groups	35.3%	Hard	-union find
+1020	 Number of Enclaves	54.6%	Medium	
+1059	 All Paths from Source Lead to Destination 45.1%	Medium	 -dfs with cycle detection
+1136	 Parallel Courses 59.6%	Hard	 -bfs
+
+
+743	 Network Delay Time	43.3%	Medium	- shortest distance
+924	 Minimize Malware Spread	40.6%	Hard	- shortest distance
+301	 Remove Invalid Parentheses	40.0%	Hard	
+339	 Nested List Weight Sum 69.2%	Easy	
+364	 Nested List Weight Sum II 58.7%	Medium	
+679	 24 Game	43.5%	Hard	
+489	 Robot Room Cleaner 65.6%	Hard	
+332	 Reconstruct Itinerary	32.3%	Medium	
+753	 Cracking the Safe	47.5%	Hard	
+529	 Minesweeper	54.0%	Medium	
+749	 Contain Virus	41.6%	Hard	
+928	 Minimize Malware Spread II	39.4%	Hard	
+490	 The Maze 48.3%	Medium	
+488	 Zuma Game	39.7%	Hard	
+802	 Find Eventual Safe States	44.9%	Medium	
+685	 Redundant Connection II	31.0%	Hard	
+505	 The Maze II 44.9%	Medium	
+514	 Freedom Trail	41.1%	Hard	
+886	 Possible Bipartition	41.3%	Medium	
+499	 The Maze III 37.9%	Hard	
+531	 Lonely Pixel I 57.8%	Medium	
+533	 Lonely Pixel II 46.5%	Medium	
+851	 Loud and Rich	48.6%	Medium	
+1061	 Lexicographically Smallest Equivalent String 62.6%	Medium	
+
+
+# bfs
+## familiar
+200	 Number of Islands	42.5%	Medium	
+279	 Perfect Squares	42.8%	Medium	
+127	 Word Ladder	25.1%	Medium	
+126	 Word Ladder II	18.5%	Hard	- bfs with parent
+133	 Clone Graph	27.9%	Medium	
+207	 Course Schedule	38.9%	Medium	
+690	 Employee Importance	54.7%	Easy	
+130	 Surrounded Regions	23.7%	Medium	
+542	 01 Matrix	36.5%	Medium	
+417	 Pacific Atlantic Water Flow	38.1%	Medium	
+909	 Snakes and Ladders	35.1%	Medium	
+210	 Course Schedule II	35.9%	Medium
+785	 Is Graph Bipartite?	44.3%	Medium	
+675	 Cut Off Trees for Golf Event	31.5%	Hard	
+994	 Rotting Oranges	46.4%	Easy	
+934	 Shortest Bridge	44.5%	Medium	
+323	 Number of Connected Components in an Undirected Graph 52.7%	Medium	
+261	 Graph Valid Tree 40.3%	Medium	
+854	 K-Similar Strings	34.7%	Hard	
+1036	 Escape a Large Maze	35.1%	Hard	
+1162	 As Far from Land as Possible	36.7%	Medium
+773	 Sliding Puzzle	53.6%	Hard	
+301	 Remove Invalid Parentheses	40.0%	Hard	
+864	 Shortest Path to Get All Keys	37.0%	Hard	- with status
+1091	 Shortest Path in Binary Matrix	36.5%	Medium	
+286	 Walls and Gates 50.2%	Medium	- similar, edge the same, multple begins the bfs the same.
+752	 Open the Lock	47.0%	Medium	
+everytime change one char. 
+
+
+407	 Trapping Rain Water II	39.7%	Hard -2d with heap bfs
+529	 Minesweeper	54.0%	Medium
+	
+743	 Network Delay Time	43.3%	Medium	-shortest distance to other nodes with weight. (weight cannot use bfs but use pq to relax)
+	
+847	 Shortest Path Visiting All Nodes	47.8%	Hard	-shortest distance to visit all nodes. edge are the same. can use bfs but needs to store status)
+317	 Shortest Distance from All Buildings 38.6%	Hard	
+it needs the min sum of shortest distance to all the building.
+we can do bfs for each building one time by one time,
+we can also do bfs at the same time. storing the information in the higher 8 bits.
+787	 Cheapest Flights Within K Stops	35.8%	Medium	- edges are weighted. pq bfs or dp.
+
+913	 Cat and Mouse	29.0%	Hard	
+
+
+490	 The Maze 48.3%	Medium	- regular bfs, just need to travel along a direction until blocked.
+505	 The Maze II 44.9%	Medium	-shortest distance from src to dest, so actually the edge length is weighted here. need use bfs to relax the distance
+499	 The Maze III 37.9%	Hard	
+on the way, if there is a hole it will be trapped. and need output the steps.
+the min distance to get trapped. several shortest distance we need use the lex smallest
+udlr: we will try dlru sequence.
+use pq with a new node structure, compare with dist, if dist the same, compare with string
+approach: pop the top node, and update the distance and add to the pq.
+similar to 505, the edge is weighted.
+815	 Bus Routes	40.5%	Hard	
+build a map for each station, vs number of routes
+more similar to bfs in graph.
+
+1129	 Shortest Path with Alternating Colors	36.0%	Medium	
+two bfs, start with color 0 or start with color 1.
+using even number for color 0 and odd number for color 1.
+
+shortest distance problem
+- edge are equal, and no repeat, regular bfs
+- edge are equal, need parents, need treat same node with different parents different, modified bfs
+- edge are equal, can revisit to shorten distance, bfs with status, and reduce distance
+- edge are weighted, need use pq to relax the distance, until there is no more relaxed
+
+# two pointers
+## familiar
+11	 Container With Most Water	46.1%	Medium	
+42	 Trapping Rain Water	44.3%	Hard	- stack
+344	 Reverse String	63.8%	Easy	
+15	 3Sum	24.6%	Medium	
+141	 Linked List Cycle	37.8%	Easy	
+3	 Longest Substring Without Repeating Characters	28.7%	Medium	-moving window with hashmap.
+283	 Move Zeroes	54.9%	Easy	
+88	 Merge Sorted Array	36.6%	Easy	
+16	 3Sum Closest	45.8%	Medium	
+26	 Remove Duplicates from Sorted Array	41.6%	Easy	
+234	 Palindrome Linked List	36.8%	Easy	
+27	 Remove Element	45.4%	Easy	
+167	 Two Sum II - Input array is sorted	51.1%	Easy	
+349	 Intersection of Two Arrays	56.1%	Easy	
+76	 Minimum Window Substring	31.6%	Hard	--hashmap
+28	 Implement strStr()	32.7%	Easy	
+287	 Find the Duplicate Number	50.7%	Medium	
+18	 4Sum	31.3%	Medium	
+142	 Linked List Cycle II	33.1%	Medium	
+19	 Remove Nth Node From End of List	34.5%	Medium	
+345	 Reverse Vowels of a String	42.0%	Easy	
+763	 Partition Labels	71.8%	Medium	
+hashmap to record the last occurance.
+75	 Sort Colors	43.0%	Medium	
+125	 Valid Palindrome	32.0%	Easy	
+86	 Partition List	38.1%	Medium	
+457	 Circular Array Loop	27.9%	Medium	
+350	 Intersection of Two Arrays II	48.7%	Easy	
+904	 Fruit Into Baskets	41.8%	Medium	
+-sliding window
+61	 Rotate List	27.8%	Medium	
+80	 Remove Duplicates from Sorted Array II	41.1%	Medium	
+977	 Squares of a Sorted Array	71.8%	Easy	
+844	 Backspace String Compare	46.5%	Easy	
+925	 Long Pressed Name	44.5%	Easy
+
+30	 Substring with Concatenation of All Words	24.0%	Hard	
+209	 Minimum Size Subarray Sum	35.4%	Medium	
+986	 Interval List Intersections	63.7%	Medium	
+632	 Smallest Range Covering Elements from K Lists	48.7%	Hard	
+159	 Longest Substring with At Most Two Distinct Characters 47.6%	Hard	
+713	 Subarray Product Less Than K	37.3%	Medium	
+723	 Candy Crush 64.1%	Medium	
+992	 Subarrays with K Different Integers	45.0%	Hard	
+424	 Longest Repeating Character Replacement	44.7%	Medium	
+567	 Permutation in String	38.9%	Medium	
+532	 K-diff Pairs in an Array	30.2%	Easy	
+828	 Unique Letter String	40.9%	Hard	
+259	 3Sum Smaller 45.4%	Medium	
+524	 Longest Word in Dictionary through Deleting	46.4%	Medium	
+838	 Push Dominoes	44.7%	Medium	
+1004	 Max Consecutive Ones III	54.3%	Medium	
+923	 3Sum With Multiplicity	34.3%	Medium	
+360	 Sort Transformed Array 47.1%	Medium	
+930	 Binary Subarrays With Sum	39.1%	Medium	
+881	 Boats to Save People	44.4%	Medium	
+826	 Most Profit Assigning Work	36.3%	Medium	
+845	 Longest Mountain in Array	34.8%	Medium	
+1093	 Statistics from a Large Sample	43.5%	Medium	
+487	 Max Consecutive Ones II 47.1%	Medium	
+
+
+
+
+
 
 
 
