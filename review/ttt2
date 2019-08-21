@@ -555,6 +555,12 @@ it is important for leaf to return the h instead of 0
 545	Boundary of Binary Tree 35.8%	Medium	
 counter clockwise order
 pretty tricky:
+doing dfs:
+first do left side, the boundary needs to be saved
+inner side use flag to control if added to buffer
+right side using postorder traversal. 
+root, left right, root then we can do the both.
+
 
 834	Sum of Distances in Tree	40.4%	Hard	
 pretty hard problem. 
@@ -791,6 +797,22 @@ binary search best
 778	 Swim in Rising Water	48.6%	Hard	
 786	 K-th Smallest Prime Fraction	40.5%	Hard	
 875	 Koko Eating Bananas	46.8%	Medium	
+911	 Online Election	47.8%	Medium	
+store winner vs time.
+436	 Find Right Interval	43.3%	Medium	
+sort and find the lower_bound...
+704	 Binary Search	49.0%	Easy	
+497	 Random Point in Non-overlapping Rectangles	36.0%	Medium	
+first random pick a rect using the area as the weight
+then generate a random point inside the rect.
+702	 Search in a Sorted Array of Unknown Size 60.6%	Medium	
+just use int-max as the upper bound (index). 
+668	 Kth Smallest Number in Multiplication Table	42.6%	Hard	
+use binary search and count method
+744	 Find Smallest Letter Greater Than Target	44.4%	Easy	
+927	 Three Equal Parts	30.9%	Hard	
+divide the binary string and so that the three numbsers are the same.
+do not have to use binary search, but use direct approach
 
 ## need to improve
 4	 Median of Two Sorted Arrays	27.1%	Hard
@@ -812,23 +834,208 @@ merge sort.
 
 275	 H-Index II	35.7%	Medium	
 
-911	 Online Election	47.8%	Medium	
-1044	 Longest Duplicate Substring	22.6%	Hard	
+
+1044	 Longest Duplicate Substring	22.6%	Hard
+allows overlap.
+using binary search to fix the sliding window and store in hashmap
+	
 483	 Smallest Good Base	34.4%	Hard	
+binary search
 644	 Maximum Average Subarray II 29.4%	Hard	
-436	 Find Right Interval	43.3%	Medium	
+the max average and min average is the max and min element in the array
+then we can search in the range to see
+subarray length>=k.
+the extra complexity is the window size >=k.
+we are adding prefix from 0 to i
+and also maintain a prefix from 0 to i-k.
+then we can check if it is possible to get a diff >= max average
+(prefix_i-prefix_j)/(i-j)<average
+-> prefix_i-prefix_j<average*(i-j)
+-> so we can subtract the target each time.
+
 710	 Random Pick with Blacklist	32.0%	Hard	
+numbers from [0 N], with blacklists
+remap blacklist to the end of the array and reduce the array size.
+then if rand() hit the blacklist redirect it to original position
+
 774	 Minimize Max Distance to Gas Station 42.8%	Hard	
-704	 Binary Search	49.0%	Easy	
-497	 Random Point in Non-overlapping Rectangles	36.0%	Medium	
+add K gas stations so that the max distance is minimized
+reverse think: given a max distance, how many stations to be added.
+
 302	 Smallest Rectangle Enclosing Black Pixels 49.8%	Hard	
-702	 Search in a Sorted Array of Unknown Size 60.6%	Medium	
-668	 Kth Smallest Number in Multiplication Table	42.6%	Hard	
-744	 Find Smallest Letter Greater Than Target	44.4%	Easy	
-878	 Nth Magical Number	25.8%	Hard	
+
+878	 Nth Magical Number	25.8%	Hard
+binary search and count the <= the mid.
+lowest is min(A,B), largest is lcm(A,B)*N.
+given a mid value, we can count the number before it.
+	
 1157	 Online Majority Element In Subarray	31.2%	Hard	
-927	 Three Equal Parts	30.9%	Hard	
+not optimized:
+create a hashmap number vs index+cnt
+then check all numbers using binary search
+note using unordered_map<int,map<int,int>> will cause more memory and time.
+use unordered_map<int,vector<int>> will be more compact.
+need optimization:
+1. sort according to the cnt, check largest first. no need check <threshold cases
+2. random pick 
+
 793	 Preimage Size of Factorial Zeroes Function	39.2%	Hard	
+f(x) is the number of trailing 0s for x!.
+find the number of x which f(x)=K.
+simple math:
+when see a 5, we add a zero, 
+when see a 5^2, we add two zeros
+....
+count 0s for a given number x is easy, recursive or dp.
+then we use binary search to find the count is K.
+binary search is often used:
+- if direct approach is not good, try given the condition
+- if need to solve from low to high such as swimming...
+- basically there are only 5 or 0 two answers.
+
+
+# stack
+## familiar
+20	Valid Parentheses	37.1%	Easy	
+155	Min Stack	38.3%	Easy	
+150	Evaluate Reverse Polish Notation	33.1%	Medium	
+173	Binary Search Tree Iterator	49.9%	Medium	
+94	Binary Tree Inorder Traversal	58.0%	Medium	
+232	Implement Queue using Stacks	44.5%	Easy	
+103	Binary Tree Zigzag Level Order Traversal	42.8%	Medium	
+682	Baseball Game	61.6%	Easy	
+144	Binary Tree Preorder Traversal	52.3%	Medium	
+636	Exclusive Time of Functions	49.2%	Medium	
+225	Implement Stack using Queues	40.4%	Easy	
+145	Binary Tree Postorder Traversal	49.8%	Hard	
+856	Score of Parentheses	57.3%	Medium	
+- support * and +.
+1021	Remove Outermost Parentheses	75.1%	Easy	
+use counter to find the matched pair, and inside is added
+272	Closest Binary Search Tree Value II 46.1%	Hard	
+71	Simplify Path	29.4%	Medium	
+255	Verify Preorder Sequence in Binary Search Tree 44.1%	Medium	
+844	Backspace String Compare	46.5%	Easy	
+975	Odd Even Jump	46.3%	Hard	- dp
+331	Verify Preorder Serialization of a Binary Tree	39.0%	Medium	
+1047	Remove All Adjacent Duplicates In String	63.8%	Easy	
+1124	Longest Well-Performing Interval	31.0%	Medium	
+1003	Check If Word Is Valid After Substitutions	52.6%	Medium	
+using dq is a bit more convenient to remove abc.
+921	Minimum Add to Make Parentheses Valid	70.5%	Medium	
+remove all valid pairs. top is ) need to add 1. (since ) is not added
+
+## monotonic stack
+739	Daily Temperatures	60.4%	Medium	
+42	Trapping Rain Water	44.2%	Hard	
+84	Largest Rectangle in Histogram	32.0%	Hard	
+85	Maximal Rectangle	34.3%	Hard	
+316	Remove Duplicate Letters	33.2%	Hard	
+496	Next Greater Element I	60.3%	Easy	
+503	Next Greater Element II	51.8%	Medium	
+402	Remove K Digits	26.9%	Medium	
+907	Sum of Subarray Minimums	28.8%	Medium	
+- each number can be min, using stack to find next greater element in left and right
+- one stack is enough to get left and right.
+456	132 Pattern	27.5%	Medium	
+735	Asteroid Collision	39.0%	Medium	
+946	Validate Stack Sequences	58.3%	Medium	
+
+1130	Minimum Cost Tree From Leaf Values	58.6%	Medium	
+array is the leaf nodes, 0 or 2 child.
+non leaf node is the product of the largest value in its subtree.
+return the smallest possible sum.
+- dp: dp[i,j] cost for interval i to j.
+split it into left and right: dp[i,k],dp[k+1,j]
+max(A[i..k])*max(A[k+1..j])
+equivalent problem:
+Given an array A, choose two neighbors in the array a and b,
+we can remove the smaller one min(a,b) and the cost is a * b.
+What is the minimum cost to remove the whole array until only one left?
+a<b, cost a*b so we need minimize b.
+that is a*min(left,right)
+Just find the next greater element in the array, on the left and one right.
+Refer to 1019. Next Greater Node In Linked List
+use array or stack, add a int-max to avoid empty stack.
+1019	Next Greater Node In Linked List	57.0%	Medium	
+901	Online Stock Span	50.7%	Medium	
+1063	Number of Valid Subarrays 73.1%	Hard
+subarray leftmost element is <= all other elements
+equivalent to find the left next larger elements
+
+## recursive expression evaluation
+341	Flatten Nested List Iterator	48.9%	Medium	
+394	Decode String	45.9%	Medium	
+224	Basic Calculator	33.6%	Hard	
+770	Basic Calculator IV	45.7%	Hard	
+385	Mini Parser	32.3%	Medium	
+772	Basic Calculator III 42.1%	Hard	
+726	Number of Atoms	45.5%	Hard	
+439	Ternary Expression Parser 54.0%	Medium	
+591	Tag Validator	33.4%	Hard	
+880	Decoded String at Index	23.5%	Medium	
+
+895	Maximum Frequency Stack	57.1%	Hard	
+- hashmap vs stacks
+
+# backtrack
+## familiar
+22	Generate Parentheses	56.5%	Medium	
+17	Letter Combinations of a Phone Number	42.6%	Medium	
+39	Combination Sum	50.1%	Medium	
+all unique combinations.
+79	Word Search	32.1%	Medium	-dfs
+93	Restore IP Addresses	32.2%	Medium	
+-brutal force
+140	Word Break II	28.0%	Hard	
+- dfs
+1079	Letter Tile Possibilities	75.2%	Medium	
+use histogram and then backtrack.
+44	Wildcard Matching	23.2%	Hard -dp	
+
+46	Permutations	56.8%	Medium	
+37	Sudoku Solver	38.3%	Hard	
+51	N-Queens	40.8%	Hard	
+78	Subsets	54.5%	Medium	
+89	Gray Code	46.5%	Medium	
+
+357	Count Numbers with Unique Digits	47.3%	Medium	
+306	Additive Number	28.6%	Medium	
+131	Palindrome Partitioning	42.2%	Medium	
+77	Combinations	49.2%	Medium	
+126	Word Ladder II	18.5%	Hard	
+401	Binary Watch	45.7%	Easy	
+60	Permutation Sequence	33.9%	Medium	
+47	Permutations II	41.7%	Medium	
+52	N-Queens II	53.2%	Hard	
+216	Combination Sum III	52.6%	Medium	
+212	Word Search II	29.7%	Hard	
+
+980	Unique Paths III	71.2%	Hard	
+784	Letter Case Permutation	58.4%	Easy	
+526	Beautiful Arrangement	55.3%	Medium	
+
+90	Subsets II	43.3%	Medium	
+320	Generalized Abbreviation 49.3%	Medium	
+211	Add and Search Word - Data structure design	31.4%	Medium	
+40	Combination Sum II	43.0%	Medium	
+291	Word Pattern II 41.5%	Hard	
+351	Android Unlock Patterns 46.5%	Medium	
+267	Palindrome Permutation II 34.2%	Medium	
+996	Number of Squareful Arrays	47.7%	Hard	
+842	Split Array into Fibonacci Sequence	35.2%	Medium	
+691	Stickers to Spell Word	39.0%	Hard	
+1066	Campus Bikes II 49.6%	Medium	
+254	Factor Combinations 44.8%	Medium	
+425	Word Squares 45.1%	Hard	
+294	Flip Game II 48.7%	Medium	
+1087	Brace Expansion 59.5%	Medium	
+411	Minimum Unique Word Abbreviation 35.1%	Hard	
+1088	Confusing Number II 36.6%	Hard
+
+
+
+
 
 
 
