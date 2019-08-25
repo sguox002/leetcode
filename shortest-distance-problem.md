@@ -26,7 +26,7 @@ if we want to find all pairs shortest distance, bellman-ford and dijkstra are bo
 
 Floyd-Warshall's algorithm
 find all pairs shortest distance using dp principle
-
+```cpp
 for(int k = 1; k <= n; k++){
     for(int i = 1; i <= n; i++){
         for(int j = 1; j <= n; j++){
@@ -34,7 +34,7 @@ for(int k = 1; k <= n; k++){
         }
     }
 }
-
+```
 
 787. Cheapest Flights Within K Stops
 problem: 
