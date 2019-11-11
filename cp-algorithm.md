@@ -1,0 +1,100 @@
+some subjects on algorithm
+
+## base problem (number position system)
+### balance base-3 problem
+using -1,1,0 to represent a number
+n=sum(Ai*3^i), then Ai would be 0, 1, 2.
+we have to change 2 to -1 using 2=3-1 (3-1)*3^i=3^(i+1)-3^i. that is we need add a carry flag to the next when the digit is 2.
+
+```cpp
+  while(n){
+    int d=n%3;
+    n/=3;
+    int cf=0;
+    if(d==2)
+      cf=1;
+     n+=cf;
+  }
+```
+cases: n=0 and n<0, for negative cases: we just reverse every digits.
+
+### negative base problem
+using similar approach:
+n=sum(Ai*p^i), Ai is 0 to |p|-1
+when p<0, n%p will get the result from 0 to p+1 (negatives) and we need convert the digit to positive:
+Ai=-p+Ai+p
+Ai*p^i=(Ai-p+p)*p^i=(Ai-p)*p^i+p^(i+1), that means when we get the remainder <0, we add a carrier to next level
+```cpp
+  while(n){
+    int d=n%d;
+    n/=d;
+    int cf=0;
+    if(d<0){
+      cf=1;
+    }
+    n+=cf;
+ }
+ see LC1017. Convert to Base -2
+ 
+ ### gray code
+ number to gray code: i^(i>>1)
+ see LC89. Gray Code
+ gray code to number: 
+ We will move from the most significant bits to the least significant ones (the least significant bit has index 1 and the most significant bit has index k). 
+ g3  g2  g1  g0
+ |  /|  /|  /|
+ V/  V / V/  V
+ b3  b2  b1  b0
+ 
+ or equiv:
+ b3=g3
+ b2=g3^g2
+ b1=g3^g2^g1
+ b0=g3^g2^g1^g0
+ 
+```cpp
+int rev_g (int g) {
+  int n = 0;
+  for (; g; g >>= 1)
+    n ^= g;
+  return n;
+}
+```
+- gray code can form a hamiltonian cycle in a hypercube with each bit as a dimension in space.
+hamiltonian cycle  is a graph cycle (i.e., closed loop) through a graph that visits each node exactly once.
+- gray code is used in DAC to minimize conversion errors
+- gray code is also used in genetic algorithm theory
+- can be used to solve tower of hanoi
+tower of hanoi: three rods with a stack of disks in ascending order, move it one by one to another rod, following the ascending order all the time.
+represent the status using binary: the MSB represents the largest disk and the LSB represents the smallest disk
+each time we only change one bit, which is equiv to a move.
+
+Practice:
+It is necessary to arrange numbers from 0 to 2^(N+M)-1 in the matrix with 2^N rows and 2^M columns. 
+Moreover, numbers occupying two adjacent cells must differ only in single bit in binary notation. 
+Cells are adjacent if they have common side. 
+Matrix is cyclic, i.e. for each row the leftmost and rightmost matrix cells are considered to be adjacent 
+(the topmost and the bottommost matrix cells are also adjacent).
+
+Input
+The first line of input contains two integers N and M (0<N,M; N+M<=20).
+
+Output
+Output file must contain the required matrix in a form of 2^N lines of 2^M integers each.
+
+Sample test(s)
+
+Input
+1 1
+
+Output
+0 2
+1 3
+
+the number shall have n+m bits (from 0 to 2^(n+m)-1) and each row is a cyclic gray code with m bits, each col is a cyclic gray code with n bits
+but the starting is different. using different start value.
+see LC1238. Circular Permutation in Binary Representation (1d case of this problem)
+
+
+
+
