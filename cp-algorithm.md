@@ -93,7 +93,7 @@ Output
 1 3
 
 the number shall have n+m bits (from 0 to 2^(n+m)-1) and each row is a cyclic gray code with m bits, each col is a cyclic gray code with n bits
-but the starting is different. using different start value.
+but the starting is different. using different start value (xor the start value).
 see LC1238. Circular Permutation in Binary Representation (1d case of this problem)
 
 
@@ -137,8 +137,32 @@ represent the transformation using matrix and it reduces to matrix multiplicatio
 similar to opengl, we need to add 4th dimension to support translation.
 
 example 4: two number product modulo problem (ab)%m->(2*a/2*b)%m
-example 5: number of paths of length k in a graph.
 
-represent the graph in a matrix 
+example 5: number of paths of length k in a graph.
+represent the graph in a matrix G (undirected, unweighted), edge can be visited multiple times
+G[i,j] represents number of paths between i and j.
+G is the case for k=1
+starting from k: C(k+1)=C(k)*G
+C(k+1)=G^k
+matrix multiplication is O(N^3)
+
+example 6: shortest paths of a fixed length k
+We are given a directed weighted graph G with n vertices and an integer k. For each pair of vertices (i,j) we have to find the length of the shortest path between i and j that consists of exactly k edges.
+
+represent the graph using adjacency matrix, where G[i,j] represents the weight from i to j. if there is no edge, it shall be inf.
+and G is the case for k=1.
+
+again assume L(k) is the matrix for k, then we advance one step to get k+1:
+L(k+1,i,j)=min(L(k,i,p)+G(p,j)) for all p=0 to n-1
+if we define the min operation as @, L(k+1)=L(k)@G, then we get:
+L(K)=G@G....@G (since the min operation is associative ie min(a,min(b,c))=min(min(a,b),c)
+and then we can apply the binary exponential on this operator.
+
+example 7: generalization: shortest paths up to length k.
+for each vertex v, we duplicate a vertex v' and create edge [v,v'] and a self cycle in [v',v'] with weight 0. then we can convert the problem [u,v] with at most k to a problem from [u,v'] with a fixed length k+1.
+
+### gcd and euclid algorithm
+
+
 
 
