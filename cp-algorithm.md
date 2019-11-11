@@ -161,8 +161,74 @@ and then we can apply the binary exponential on this operator.
 example 7: generalization: shortest paths up to length k.
 for each vertex v, we duplicate a vertex v' and create edge [v,v'] and a self cycle in [v',v'] with weight 0. then we can convert the problem [u,v] with at most k to a problem from [u,v'] with a fixed length k+1.
 
+practice questions:
+Many well-known cryptographic operations require modular exponentiation. That is, given integers x, y and n, compute x^y mod n. In this question, you are tasked to program an efficient way to execute this calculation.
+Input
+The input consists of a line containing the number c of datasets, followed by c datasets, followed by a line containing the number ‘0’.
+Each dataset consists of a single line containing three positive integers, x, y, and n, separated by blanks. You can assume that 1 < x, n < 2^15 = 32768, and 0 < y < 2^31 = 2147483648.
+Output
+The output consists of one line for each dataset. The i-th line contains a single positive integer z such that z = x^y mod n
+for the numbers x, y, z given in the i-th input dataset.
+Sample Input
+2
+2 3 5
+2 2147483647 13
+0
+Sample Output
+3
+11
+
+question 2:
+get n^k the first 3 digits and last 3 digits
+we can get all the digits using n^k%10
+
+question 3:
+parking lot with 2n-2 spaces, 4 types of cars, total number > parking spaces, and each type of cars > parking spaces.
+parking the car with n ajacent cars the same make (exactly), return the total number of parking combinations
+2n-2 spaces, 4 types of cars, exactly n the same.
+analysis: n treated as one, then we have 2n-2-n=n-2 selections. When n cars fixed in position, we cannot choose same car in its adjacent position, left and right two cases: any combinations
+
+question 4:
+find the last digits of a^b
+a^b reduce the last digit d^b
+
+
+
 ### gcd and euclid algorithm
+### gcd
+```cpp
+int gcd (int a, int b) {
+    if (b == 0)
+        return a;
+    else
+        return gcd (b, a % b);
+}
 
+int gcd (int a, int b) {
+    while (b) {
+        a %= b;
+        swap(a, b);
+    }
+    return a;
+}
 
+int lcm (int a, int b) {
+    return a / gcd(a, b) * b;
+}
+```
+O(log(min(a,b))
+suppose d=gcd(a,b), then both a and b are divisible by d:
+a%b=a-[a/b]*b
+divide each side by d: then we see a%b is divisible by d also
+
+gcd function is associative which is often used in some problems:
+gcd(gcd(a,b),c)=gcd(a,gcd(b,c))
+this can applies to >2 numbers, such as if a group of number exist coprime combinations
+
+### extended euclid algorithm
+ax+by=gcd(a,b)
+this finds a way to represent gcd(a,b) using a and b (find its coefficient)
+- it guarantee the existence of solution (water jug problem)
+- get the solution (x,y)
 
 
