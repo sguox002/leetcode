@@ -34,6 +34,7 @@ Ai*p^i=(Ai-p+p)*p^i=(Ai-p)*p^i+p^(i+1), that means when we get the remainder <0,
     }
     n+=cf;
  }
+ ```
  see LC1017. Convert to Base -2
  
  ### gray code
@@ -96,5 +97,48 @@ but the starting is different. using different start value.
 see LC1238. Circular Permutation in Binary Representation (1d case of this problem)
 
 
+## algebra
+### binary exponential
+using divide and conquer and convert x^n to a O(logn) algorithm.
+```cpp
+long long binpow(long long a, long long b) {
+    long long res = 1;
+    while (b > 0) {
+        if (b & 1)
+            res = res * a;
+        a = a * a;
+        b >>= 1;
+    }
+    return res;
+}
+```
+
+example 1: effective computation x^n%m
+```cpp
+long long binpow(long long a, long long b, long long m) {
+    a %= m;
+    long long res = 1;
+    while (b > 0) {
+        if (b & 1)
+            res = res * a % m;
+        a = a * a % m;
+        b >>= 1;
+    }
+    return res;
+}
+```
+
+example 2: effective computation of fib series
+F(n)=F(n-1)+F(n-2)
+change to a matrix format and it reduces to a M^n problem
+
+example 3: geometric transformation, translation, scale, rotation et al
+represent the transformation using matrix and it reduces to matrix multiplication and power
+similar to opengl, we need to add 4th dimension to support translation.
+
+example 4: two number product modulo problem (ab)%m->(2*a/2*b)%m
+example 5: number of paths of length k in a graph.
+
+represent the graph in a matrix 
 
 
