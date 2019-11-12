@@ -453,6 +453,28 @@ int count_primes(int n) {
 
 this is good for followup to save memory requirement and improve cache performance.
 
+integer prime factorization:
+```cpp
+vector<long long> trial_division1(long long n) {
+    vector<long long> factorization;
+    for (long long d = 2; d * d <= n; d++) {
+        while (n % d == 0) {
+            factorization.push_back(d);
+            n /= d;
+        }
+    }
+    if (n > 1)
+        factorization.push_back(n);
+    return factorization;
+}
+```
+number of divisior
+in a map: prime vs count, number of divisor is product of each cnt+1
+
+sum of divisor:
+1+p+p^2+...+p^k for p =(p^(k+1)-1)/(p-1) and then multiply all these sum
+
+
 
 
 
