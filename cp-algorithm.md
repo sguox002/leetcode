@@ -353,6 +353,106 @@ x+y=x'+y'+k*(b-a)/g
 b>a choose smallest k
 b<a: choose max k.
 
+### fibocci series
+- matrix form:
+(Fn Fn+1)=(F0 F1)⋅P^n
+p=[0,1;1,1]
+
+- fast doubling method:
+F(2k)=F(k)*(2F(k+1)-F(k))
+F(2k+1)=F(k+1)^2+F(k)^2
+```cpp
+pair<int, int> fib (int n) {
+    if (n == 0)
+        return {0, 1};
+
+    auto p = fib(n >> 1);
+    int c = p.first * (2 * p.second - p.first);
+    int d = p.first * p.first + p.second * p.second;
+    if (n & 1)
+        return {d, c + d};
+    else
+        return {c, d};
+}
+```
+- periodicity modulo p
+
+## prime numbers
+Sieve of Eratosthenes 筛法
+```cpp
+int n;
+vector<bool> is_prime(n+1, 1);
+is_prime[0] = is_prime[1] = 0;
+for (int i = 2; i <= n; i++) {
+    if (is_prime[i] && (long long)i * i <= n) {
+        for (int j = i * i; j <= n; j += i)
+            is_prime[j] = 0;
+    }
+}
+```
+complexity analysis:
+storage: O(n), time: O(nloglog(n))
+
+optimization: 
+- sifting to only the root
+```cpp
+int n;
+vector<char> is_prime(n+1, true);
+is_prime[0] = is_prime[1] = false;
+for (int i = 2; i * i <= n; i++) {
+    if (is_prime[i]) {
+        for (int j = i * i; j <= n; j += i)
+            is_prime[j] = false;
+    }
+}
+```
+- only process odd numbers
+- block sieving
+It follows from the optimization "sieving till root" that there is no need to keep the whole array is_prime[1...n] at all time. For performing of sieving it's enough to keep just prime numbers until root of n, i.e. prime[1... sqrt(n)], split the complete range into blocks, and sieve each block separately. In doing so, we never have to keep multiple blocks in memory at the same time, and the CPU handles caching a lot better.
+
+Let s be a constant which determines the size of the block, then we have ⌈ns⌉ blocks altogether, and the block k (k=0...⌊ns⌋) contains the numbers in a segment [ks;ks+s−1]. We can work on blocks by turns, i.e. for every block k we will go through all the prime numbers (from 1 to n−−√) and perform sieving using them. It is worth noting, that we have to modify the strategy a little bit when handling the first numbers: first, all the prime numbers from [1;n−−√] shouldn't remove themselves; and second, the numbers 0 and 1 should be marked as non-prime numbers. While working on the last block it should not be forgotten that the last needed number n is not necessary located in the end of the block.
+
+Here we have an implementation that counts the number of primes smaller than or equal to n using block sieving.
+
+```cpp
+int count_primes(int n) {
+    const int S = 10000;
+
+    vector<int> primes;
+    int nsqrt = sqrt(n);
+    vector<char> is_prime(nsqrt + 1, true);
+    for (int i = 2; i <= nsqrt; i++) {
+        if (is_prime[i]) {
+            primes.push_back(i);
+            for (int j = i * i; j <= nsqrt; j += i)
+                is_prime[j] = false;
+        }
+    }
+
+    int result = 0;
+    vector<char> block(S);
+    for (int k = 0; k * S <= n; k++) {
+        fill(block.begin(), block.end(), true);
+        int start = k * S;
+        for (int p : primes) {
+            int start_idx = (start + p - 1) / p;
+            int j = max(start_idx, p) * p - start;
+            for (; j < S; j += p)
+                block[j] = false;
+        }
+        if (k == 0)
+            block[0] = block[1] = false;
+        for (int i = 0; i < S && start + i <= n; i++) {
+            if (block[i])
+                result++;
+        }
+    }
+    return result;
+}
+```
+
+this is good for followup to save memory requirement and improve cache performance.
+
 
 
 
