@@ -231,4 +231,128 @@ this finds a way to represent gcd(a,b) using a and b (find its coefficient)
 - it guarantee the existence of solution (water jug problem)
 - get the solution (x,y)
 
+ax+by=gcd(a,b)=gcd(b,a%b)
+bx+(a%b)y=g
+bx+a-[a/b]*by=g
+
+base case: a=0, x=1, gcd=b
+```cpp
+int gcd(int a, int b, int & x, int & y) {
+    if (a == 0) {
+        x = 0;
+        y = 1;
+        return b;
+    }
+    int x1, y1;
+    int d = gcd(b % a, a, x1, y1);
+    x = y1 - (b / a) * x1;
+    y = x1;
+    return d;
+}
+```
+note:
+- extended euclid algorithm also works for more than two numbers.
+
+### Linear Diophantine Equation
+ax+by=c
+- a=b=c=0, infinite solutions
+- a=b=0 c!=0, no solutions
+- find any solution if c is divisible by gcd(a,b)
+ax+by=c
+ax'*c/g+by'*c/g=c
+x=x'*c/g
+y=y'*c/g
+
+```cpp
+int gcd(int a, int b, int &x, int &y) {
+    if (a == 0) {
+        x = 0; y = 1;
+        return b;
+    }
+    int x1, y1;
+    int d = gcd(b%a, a, x1, y1);
+    x = y1 - (b / a) * x1;
+    y = x1;
+    return d;
+}
+
+bool find_any_solution(int a, int b, int c, int &x0, int &y0, int &g) {
+    g = gcd(abs(a), abs(b), x0, y0);
+    if (c % g) {
+        return false;
+    }
+
+    x0 *= c / g;
+    y0 *= c / g;
+    if (a < 0) x0 = -x0;
+    if (b < 0) y0 = -y0;
+    return true;
+}
+```
+- get all solutions
+a(x+b/g)+b(y-a/g)=c
+so x=x'+b/g and y=y'-a/g is also a solution we can just add a k integer factor
+
+- find solutions in range [xmin,xmax] and [ymin,ymax]
+the idea is to shift the solution so that x is in the range and get y range, and then shift y into [ymin, ymax] and get x range
+and then get the two intersection.
+```cpp
+void shift_solution(int & x, int & y, int a, int b, int cnt) {
+    x += cnt * b;
+    y -= cnt * a;
+}
+
+int find_all_solutions(int a, int b, int c, int minx, int maxx, int miny, int maxy) {
+    int x, y, g;
+    if (!find_any_solution(a, b, c, x, y, g))
+        return 0;
+    a /= g;
+    b /= g;
+
+    int sign_a = a > 0 ? +1 : -1;
+    int sign_b = b > 0 ? +1 : -1;
+
+    shift_solution(x, y, a, b, (minx - x) / b);
+    if (x < minx)
+        shift_solution(x, y, a, b, sign_b);
+    if (x > maxx)
+        return 0;
+    int lx1 = x;
+
+    shift_solution(x, y, a, b, (maxx - x) / b);
+    if (x > maxx)
+        shift_solution(x, y, a, b, -sign_b);
+    int rx1 = x;
+
+    shift_solution(x, y, a, b, -(miny - y) / a);
+    if (y < miny)
+        shift_solution(x, y, a, b, -sign_a);
+    if (y > maxy)
+        return 0;
+    int lx2 = x;
+
+    shift_solution(x, y, a, b, -(maxy - y) / a);
+    if (y > maxy)
+        shift_solution(x, y, a, b, sign_a);
+    int rx2 = x;
+
+    if (lx2 > rx2)
+        swap(lx2, rx2);
+    int lx = max(lx1, lx2);
+    int rx = min(rx1, rx2);
+
+    if (lx > rx)
+        return 0;
+    return (rx - lx) / abs(b) + 1;
+}
+```
+- Find the solution with minimum value of x+y
+x=x'+b/g
+y=y'-a/g
+x+y=x'+y'+k*(b-a)/g
+b>a choose smallest k
+b<a: choose max k.
+
+
+
 
