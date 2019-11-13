@@ -474,6 +474,185 @@ in a map: prime vs count, number of divisor is product of each cnt+1
 sum of divisor:
 1+p+p^2+...+p^k for p =(p^(k+1)-1)/(p-1) and then multiply all these sum
 
+## data structure
+### min stack /min queue
+- find the min in a stack i O(1)
+save the element and current min as a pair in a single stack
+
+- find the min (same problem) using queue
+add to the back and remove from the front
+using deque.
+keep the deque in nondecreasing order, so the front is always the min.
+not all the elements are stored
+when removing an element, needs check if the front is the element
+
+- queue modification using two stacks
+all elements are stored
+do not need to check the element
+
+- Finding the minimum for all subarrays of fixed length M.
+above three methods are all able to solve it.
+
+### sparse table
+sparse table is a data structure for range query of immutable array.
+the idea is to precompute the range queries for 2^j intervals (similar to binary reprsentation of any number)
+store the precomputed queries in a 2d matrix:
+for length=n, there are at least log2(n) items.
+st[i,j] represents the range for [i,i+2^j)
+st[i,j] fits nicely [i,i+2^(j-1）） and [i+2^(j-1),i+2^j) (both length 2^(j-1))
+recurrence relation:
+st[i,j]=f(st[i,j-1]+st[i+2^(j-1),j-1])
+f is the function of query.
+
+- range sum query:
+```cpp
+
+long long st[MAXN][K];
+
+for (int i = 0; i < N; i++)
+    st[i][0] = array[i];
+
+for (int j = 1; j <= K; j++)
+    for (int i = 0; i + (1 << j) <= N; i++)
+        st[i][j] = st[i][j-1] + st[i + (1 << (j - 1))][j - 1];
+		
+query:
+
+long long sum = 0;
+for (int j = K; j >= 0; j--) {
+    if ((1 << j) <= R - L + 1) {
+        sum += st[L][j];
+        L += 1 << j;
+    }
+}		
+```
+
+- range min query
+compute the min of the range [L，R].
+min(st[L,j],st[R-2^j+1,j]) j=log2(R-L+1)
+this splits into two section.
+first range L+[0,2^j-1], this mostly does not cover R.
+second range: R-2^j+1+[0,2^j-1]
+this two ranges overlaps.
+
+```cpp
+//fast calculate log2
+int log[MAXN+1];
+log[1] = 0;
+for (int i = 2; i <= MAXN; i++)
+    log[i] = log[i/2] + 1;
+
+//calculate spare table st.
+int st[MAXN][K];
+
+for (int i = 0; i < N; i++)
+    st[i][0] = array[i];
+
+for (int j = 1; j <= K; j++)
+    for (int i = 0; i + (1 << j) <= N; i++)
+        st[i][j] = min(st[i][j-1], st[i + (1 << (j - 1))][j - 1]);	
+//query in O(1)
+int j = log[R - L + 1];
+int minimum = min(st[L][j], st[R - (1 << j) + 1][j]);
+```
+above approach only works for idempotent function (which can applies multiple times without changing the results)
+for example the min function, but sum function cannot work.
+
+### disjoint set
+- naive implementation - lead to chain in worst cases
+- path compression 
+- union by rank or size. (rank: the depth, size: number of vertices)
+will has constant access time.
+
+- link by index (index is a random number)
+- coin flip linking (using random number odd/even to decide the linking)
+
+applications:
+- Connected components in a graph
+add vertices and edges into a graph
+This application is quite important, because nearly the same problem appears in Kruskal's algorithm for finding a minimum spanning tree. 
+Using DSU we can improve the O(mlogn+n^2) complexity to O(mlogn).
+using DSU:
+we sort the edges from small to long
+using the edges to union two vertices. if both vertices are in the same set, discard it.
+stop when we get N-1 edges
+
+- Search for connected components in an image
+One of the applications of DSU is the following task: there is an image of n×m pixels. Originally all are white, but then a few black pixels are drawn. You want to determine the size of each white connected component in the final image.
+
+For the solution we simply iterate over all white pixels in the image, for each cell iterate over its four neighbors, and if the neighbor is white call union_sets. Thus we will have a DSU with nm nodes corresponding to image pixels. The resulting trees in the DSU are the desired connected components.
+
+The problem can also be solved by DFS or BFS, but the method described here has an advantage: it can process the matrix row by row (i.e. to process a row we only need the previous and the current row, and only need a DSU built for the elements of one row) in O(min(n,m)) memory.
+
+- Store additional information for each set
+you can store any information in the set, such as size, depth,...
+
+- Compress jumps along a segment / Painting subarrays offline
+example: array of length L, and each query [l,r,c] will paint the cells in range [l,r] to the color c.
+return the final color of the array.
+paint in reverse order, we only need to take care of unpainted cells.
+thus we can union the same color.
+```cpp
+for (int i = 0; i <= L; i++) {
+    make_set(i);
+}
+
+for (int i = m-1; i >= 0; i--) {
+    int l = query[i].l;
+    int r = query[i].r;
+    int c = query[i].c;
+    for (int v = find_set(l); v <= r; v = find_set(v)) {
+        answer[v] = c;
+        parent[v] = v + 1;
+    }
+}
+```
+
+For the solution we can make a DSU, which for each cell stores a link to the next unpainted cell. Thus initially each cell points to itself. 
+After painting one requested repaint of a segment, all cells from that segment will point to the cell after the segment.
+when painted, point to its right. if it is painted, then it points to it next unpainted right.
+for example:
+last paint is [8,9,0], then 8->9->10
+paint [5,11,1], then we get 5->6->7->10->11->12
+good problem.
+
+- Support distances up to representative
+add distance to representative (the root of the set)
+```cpp
+void make_set(int v) {
+    parent[v] = make_pair(v, 0);
+    rank[v] = 0;
+}
+
+pair<int, int> find_set(int v) {
+    if (v != parent[v].first) {
+        int len = parent[v].second;
+        parent[v] = find_set(parent[v].first);
+        parent[v].second += len;
+    }
+    return parent[v];
+}
+
+void union_sets(int a, int b) {
+    a = find_set(a).first;
+    b = find_set(b).first;
+    if (a != b) {
+        if (rank[a] < rank[b])
+            swap(a, b);
+        parent[b] = make_pair(a, 1);
+        if (rank[a] == rank[b])
+            rank[a]++;
+    }
+}
+```
+
+- Support the parity of the path length / Checking bipartiteness online
+
+
+
+
+
+
 
 
 
