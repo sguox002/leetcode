@@ -648,6 +648,176 @@ void union_sets(int a, int b) {
 
 - Support the parity of the path length / Checking bipartiteness online
 
+### Fenwick tree
+used for updating a range and query a range using a reversible function.
+most often used function is sum
+both operation complexity is O(logn)
+
+For array A[0..N] we precompute the T[0..N]
+for every T[i] it is the function on the range [g[i],i]
+
+def sum(int r): #calculate the sum for A[0,r] using intervals seamlessly.
+    res = 0
+    while (r >= 0):
+        res += t[r]
+        r = g(r) - 1
+    return res
+
+def increase(int i, int delta): #increase A[i], we need change all T involving i.
+    for all j with g(j) <= i <= j:
+        t[j] += delta
+	
+note: for sum, we are reducing the r, for increasing, we increase the j
+0-based index:
+g[i]=i&(i+1)
+h[j]=j|(j+1)
+
+finding sum:
+```cpp
+struct FenwickTree {
+    vector<int> bit;  // binary indexed tree
+    int n;
+
+    FenwickTree(int n) {
+        this->n = n;
+        bit.assign(n, 0);
+    }
+
+    FenwickTree(vector<int> a) : FenwickTree(a.size()) {
+        for (size_t i = 0; i < a.size(); i++)
+            add(i, a[i]);
+    }
+
+    int sum(int r) {
+        int ret = 0;
+        for (; r >= 0; r = (r & (r + 1)) - 1)
+            ret += bit[r];
+        return ret;
+    }
+
+    int sum(int l, int r) {
+        return sum(r) - sum(l - 1);
+    }
+
+    void add(int idx, int delta) {
+        for (; idx < n; idx = idx | (idx + 1))
+            bit[idx] += delta;
+    }
+};
+```
+
+2d BIT:
+```cpp
+struct FenwickTree2D {
+    vector<vector<int>> bit;
+    int n, m;
+
+    // init(...) { ... }
+
+    int sum(int x, int y) {
+        int ret = 0;
+        for (int i = x; i >= 0; i = (i & (i + 1)) - 1)
+            for (int j = y; j >= 0; j = (j & (j + 1)) - 1)
+                ret += bit[i][j];
+        return ret;
+    }
+
+    void add(int x, int y, int delta) {
+        for (int i = x; i < n; i = i | (i + 1))
+            for (int j = y; j < m; j = j | (j + 1))
+                bit[i][j] += delta;
+    }
+};
+```
+
+1-based index:
+g[i]=i-i&(-i)
+h[i]=i+i&(-i)
+
+```cpp
+struct FenwickTreeOneBasedIndexing {
+    vector<int> bit;  // binary indexed tree
+    int n;
+
+    FenwickTreeOneBasedIndexing(int n) {
+        this->n = n + 1;
+        bit.assign(n + 1, 0);
+    }
+
+    FenwickTreeOneBasedIndexing(vector<int> a)
+        : FenwickTreeOneBasedIndexing(a.size()) {
+        init(a.size());
+        for (size_t i = 0; i < a.size(); i++)
+            add(i, a[i]);
+    }
+
+    int sum(int idx) {
+        int ret = 0;
+        for (++idx; idx > 0; idx -= idx & -idx)
+            ret += bit[idx];
+        return ret;
+    }
+
+    int sum(int l, int r) {
+        return sum(r) - sum(l - 1);
+    }
+
+    void add(int idx, int delta) {
+        for (++idx; idx < n; idx += idx & -idx)
+            bit[idx] += delta;
+    }
+};
+```
+
+common operation:
+point update, range query
+range update, point query
+the idea is update all the bit +x after L, and update -x all the bit after R.
+```cpp
+void add(int idx, int val) {
+    for (++idx; idx < n; idx += idx & -idx) //++idx is for 1-based
+        bit[idx] += val;
+}
+
+void range_add(int l, int r, int val) {
+    add(l, val);
+    add(r + 1, -val);
+}
+
+int point_query(int idx) {
+    int ret = 0;
+    for (++idx; idx > 0; idx -= idx & -idx)
+        ret += bit[idx];
+    return ret;
+}
+```
+range update, range query
+```cpp
+def add(b, idx, x):
+    while idx <= N:
+        b[idx] += x
+        idx += idx & -idx
+
+def range_add(l,r,x):
+    add(B1, l, x)
+    add(B1, r+1, -x)
+    add(B2, l, x*(l-1))
+    add(B2, r+1, -x*r)
+
+def sum(b, idx):
+    total = 0
+    while idx > 0:
+        total += b[idx]
+        idx -= idx & -idx
+    return total
+
+def prefix_sum(idx):
+    return sum(B1, idx)*idx -  sum(B2, idx)
+
+def range_sum(l, r):
+    return sum(r) - sum(l-1)
+```    
+
 
 
 
