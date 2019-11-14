@@ -948,6 +948,8 @@ or use binary tree search using segment tree.
 
 - Searching for the first element greater than a given amount
 give x and a range [l,r], find the first element
+we build  a max segment tree and then search in the segement tree.
+
 ```cpp
 int get_first(int v, int lv, int rv, int l, int r, int x) {
     if(lv > r || rv < l) return -1;
@@ -972,6 +974,11 @@ int get_first(int v, int lv, int rv, int l, int r, int x) {
     return get_first(2*v+1, mid+1, rv, l ,r, x);
 }
 ```
+
+confused about binary index tree vs segment tree?
+both can be used for dynamic cases (query and updates). BIT actually does not have a tree structure so cannot use tree traversal, but its navigation is determined by the simple relation. segment tree although uses the array but its inside logic is binary tree structure, so we can use those tree traversal and is more understandable (can use recursive).
+
+in a lot of cases, they are exchangeable. segment tree is more versatile.
 
 
 
