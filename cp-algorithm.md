@@ -1084,6 +1084,17 @@ int query(int v, int tl, int tr, int l, int r, int x) {
 
 - Find the smallest number greater or equal to a specified number. With modification queries.
 store the array in multiset and allows quickly update the element
+leetcode practice questions on BIT and segment tree.
+
+### treap (tree heap)
+store a pair (x,y) for x it is a binary search tree, for y it is a max heap.
+x can be considered as key, and y can be considered as priority.
+insert O(logn)
+search O(logn)
+erase O(logn)
+build O(n) for sorted, O(nlogn) for unsorted
+union(T1,T2) O(Mlog(N/M)) removing duplicates
+intersect(T1,T2) O(Mlog(N/M))
 
 
 
