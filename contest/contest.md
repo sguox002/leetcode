@@ -257,6 +257,8 @@ some observations:
 - score:
   *. current cell must be a number
   *. shall have one or more paths from left, top, topleft cell
+- base condition: we can set dp1[0,0] or dp[0,1] or dp[1,0] to 1, which means we only have one path entering to board[0,0]
+
 ```cpp
     vector<int> pathsWithMaxScore(vector<string>& board) {
         //dp
