@@ -157,5 +157,133 @@ This solution is at 100 times faster than the O(n!) solution.
 what would be the complexity then?
 - first the result char is mapped directly so we basically eliminate those chars from the loop selection
 	
+## biweek contest 16
+### 1299. Replace elemets with greatest element on right side (**)
+simple, just do it from right to left and find the max and add to answer
+
+### 1300. sum of mutated array closest to target (****)
+first we can sort the array to make calculate the sum more efficient. (but not necessary)
+second, it is a binary search problem.
+we are actually looking for a value between 0 and max_element so that the sum==target.
+when sum>=target, r=mid, else l=mid+1
+This is pretty similar to find target in a sorted array using binary search. (the target could or not in the array)
+
+```cpp
+    int findBestValue(vector<int>& arr, int target) {
+        int l=0,r=*max_element(arr.begin(),arr.end());
+        int sum=accumulate(arr.begin(),arr.end(),0);
+        if(sum<=target) return r; //cannot change 
+        //find a value for sum==target
+        while(l<r){
+            int m=l+(r-l)/2;
+            sum=0;
+            for(int t: arr) sum+=t<m?t:m;
+            if(sum>=target) r=m;
+            else l=m+1;
+        }
+        //now we find l, check if it shall be l-1 or l
+        //note binary search l shall be the one for sum>=target
+        //note the sum is not for l
+        int s1=0,s2=0;
+        for(int t: arr) {
+            s1+=t<l-1?t:l-1;
+            s2+=t<l?t:l;
+        }
+        //cout<<sum<<endl;
+        return abs(s2-target)<abs(s1-target)?l:l-1;
+    }
+```
+	
+### 1302. Deepest leaves sum. (***)
+It is simple to use two pass traversal. first pass to get the max depth, second pass to get the sum.
+```cpp
+    int deepestLeavesSum(TreeNode* root) {
+        int d=depth(root);
+        //cout<<d;
+        int ans=0;
+        dfs(root,1,d,ans);
+        return ans;
+    }
+    
+    void dfs(TreeNode* root,int d,int md,int& ans){
+        if(!root) return;
+        if(d==md) ans+=root->val;
+        dfs(root->left,d+1,md,ans);
+        dfs(root->right,d+1,md,ans);
+    }
+    
+    int depth(TreeNode* root){
+        if(!root) return 0;
+        return 1+max(depth(root->left),depth(root->right));
+    }
+```
+one pass solution:
+we need find the max depth and do the sum in one pass, a little bit tricky though
+when current depth>max depth, we need update sum and depth
+when current depth==max_depth, we need add the node to the sum.
+
+```cpp
+    int dh,sum;
+    int deepestLeavesSum(TreeNode* root) {
+        dh = sum = 0;
+        dfs(root, 0);
+        return sum;
+    }
+    void dfs(TreeNode* root, int d) {
+        if(!root) return;
+        if(d > dh) {
+			sum = root -> val;
+            dh=d;
+		}
+		else if(d == dh) {
+			sum += root -> val;
+		}
+        dfs(root -> left, d + 1);
+        dfs(root -> right, d + 1);
+    }
+```	
+other approach: level order traversal using bfs
+
+### 1301. number of paths with max score (***)
+two dp problems:
+one is max score from top left to bottom right
+second is number of max sum paths (note it asks number of path with the max score)
+
+some observations:
+- it is easy to see that from bottom right to top left is equivalent to from top left to bottom right
+- we can replace the top left and bottom right cell with 0 score cell to simplify
+- dp0[i,j] represent the max score for [i-1,j-1]
+- dp1[i,j] represent the number of max sum path for [i-1,j-1]
+- score:
+  *. current cell must be a number
+  *. shall have one or more paths from left, top, topleft cell
+```cpp
+    vector<int> pathsWithMaxScore(vector<string>& board) {
+        //dp
+        vector<int> ans={0,0};
+        int mod=1e9+7;
+        if(board.empty()) return ans;
+        int m=board.size(),n=board[0].size();
+        vector<vector<int>> dp0(m+1,vector<int>(n+1)),dp1(m+1,vector<int>(n+1)); //dp0: max, dp1 number of path for max
+        dp1[0][0]=1; //diagonal can go to E
+        board[0][0]=board[m-1][n-1]='0';
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]!='X'){
+                    dp0[i+1][j+1]=max({dp0[i+1][j],dp0[i][j+1],dp0[i][j]});//+board[i][j]-'0';
+                    if(dp0[i+1][j+1]==dp0[i+1][j]) dp1[i+1][j+1]+=dp1[i+1][j];
+                    if(dp0[i+1][j+1]==dp0[i][j+1]) dp1[i+1][j+1]+=dp1[i][j+1];
+                    if(dp0[i+1][j+1]==dp0[i][j]) dp1[i+1][j+1]+=dp1[i][j];
+                    dp1[i+1][j+1]%=mod;
+                    if(dp1[i+1][j+1]) dp0[i+1][j+1]+=board[i][j]-'0';//only when there is path we can add
+                }
+            }
+        }
+        return {dp0[m][n],dp1[m][n]};
+    }
+```	
+ 
+  
+
 
 
