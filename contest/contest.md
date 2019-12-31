@@ -1,0 +1,487 @@
+# leetcode contests
+
+## warmup contest
+### 386. Lexicographical Numbers (***)
+backtracking
+```cpp
+    vector<int> lexicalOrder(int n) {
+        vector<int> ans;
+        string ns=to_string(n);
+        int ndigit=ns.size();
+        for(int i=1;i<=9;i++)
+        backtrack(n,i,ans);
+        return ans;
+    }
+    void backtrack(int n,int t,vector<int>& ans){
+        int last_digit=t%10;
+        if(t>n) return;
+        if(t<=n) ans.push_back(t);
+        for(int i=0;i<=9;i++){
+            t=t*10+i;
+            backtrack(n,t,ans);
+            t/=10;
+        }
+    }
+```
+
+### 387. first unique character in a string (*)
+using hashmap
+
+### 388. longest absolute file path (****)
+tree structure using stack to store the directory
+also stringstream and string proces.
+```cpp
+    int lengthLongestPath(string input) {
+        //file tree can use hashmap, but we can directly use the input for parsing
+        //\n represent a line, \t represent the level
+        stringstream ss(input);
+        int level=0;
+        vector<int> vlen;
+        string name;
+        int ans=0;
+        char sbuf[256];
+        while(ss.getline(sbuf,256,'\n')){ //it will skip \n and \t
+            name=string(sbuf);
+            level=0;
+            while(name[level]=='\t') level++;
+            if(name.find(".")!=string::npos){ //this is a file
+                while(vlen.size()>level) vlen.pop_back();
+                int tlen=0;
+                for(int t: vlen) tlen+=t;
+                ans=max(ans,tlen+(int)name.size());
+            }
+            else {//a directory name
+                while(vlen.size()>level) vlen.pop_back();
+                vlen.push_back(name.size()-level);
+            }
+        }
+        return ans;
+    }
+```	
+
+## contest 2
+### 389. find the difference (**)
+find the extra char, using hashmap
+
+### 390. elimination game (****)
+dir change, step change
+do not have to do the actual elimination.
+```cpp
+    int lastRemaining(int n) {
+        //
+        int head=1,dir=1,rem=n,step=1;
+        while(rem>1){
+            if(dir || rem%2) head+=step;
+            dir^=1;
+            rem/=2;
+            step*=2;
+        }
+        return head;
+    }
+```
+
+### 391. perfect rectangle (****)
+the outside 4 points shall appear only one time, inside shall appear even times
+total area shall equal to sum of all rectangles
+```cpp
+    bool isRectangleCover(vector<vector<int>>& rectangles) {
+        //get the 4 points outside and the total area
+        //inner side points shall mod 2, outside point shall =1
+        int total=0;
+        int x0=INT_MAX,y0=INT_MAX,x1=INT_MIN,y1=INT_MIN;
+        unordered_map<string,int> mp;
+        for(auto r: rectangles){
+            x0=min(x0,r[0]);
+            y0=min(y0,r[1]);
+            x1=max(x1,r[2]);
+            y1=max(y1,r[3]);
+            mp[forms(r[0],r[1])]++;
+            mp[forms(r[0],r[3])]++;
+            mp[forms(r[2],r[1])]++;
+            mp[forms(r[2],r[3])]++;
+            total+=(r[0]-r[2])*(r[1]-r[3]);
+        }
+        if(total!=(x0-x1)*(y0-y1)) return 0;
+        if(mp[forms(x0,y0)]!=1 || mp[forms(x0,y1)]!=1 ||
+          mp[forms(x1,y0)]!=1 || mp[forms(x1,y1)]!=1) return 0;
+        //all other shall be even
+        mp.erase(forms(x0,y0));
+        mp.erase(forms(x0,y1));
+        mp.erase(forms(x1,y0));
+        mp.erase(forms(x1,y1));
+        for(auto t: mp) if(t.second%2) return 0;
+        return 1;
+    }
+    string forms(int x,int y){
+        return to_string(x)+","+to_string(y);
+    }
+```
+
+## contest 3
+392. Is subsequence (***)
+greedy match using two pointer	
+```cpp
+    bool isSubsequence(string s, string t) {
+        //greedy using two pointer
+        int i=0,j=0;
+        while(i<s.size() && j<t.size()){
+            while(j<t.size() && t[j]!=s[i]) j++;
+            i++;j++;
+        }
+        return i==s.size() && j<=t.size();
+    }
+```
+### 393. utf8 validation (***)
+idea: find the first byte signature and then check remaining contains 0x10
+```cpp
+    bool validUtf8(vector<int>& data) {
+        int i=0,rem=0;
+        while(i<data.size()){
+            if(rem==0){
+                if(data[i]<0x80) rem=0;
+                else if((data[i]&0xe0)==0xc0) rem=1;
+                else if((data[i]&0xf0)==0xe0) rem=2;
+                else if((data[i]&0xf8)==0xf0) rem=3;
+                else return 0;
+            }
+            else{
+                if((data[i]&0xc0)!=0x80) return 0;
+                rem--;
+            }
+            i++;
+        }
+        return rem==0;
+    }
+```
+
+### 394. decode string (****)
+recursive stack
+```cpp
+    string decodeString(string s) {
+        //using stack to do recursive
+        int ncopy=0;
+        stack<string> st;
+        string t;
+        int i=0;
+        //cout<<s<<": "<<endl;
+        while(i<s.size()){
+            char c=s[i];
+            if(isdigit(c)){
+                if(t.size()) st.push(t);
+                t.clear();
+                ncopy=c-'0';
+                while(i+1<s.size() && isdigit(s[i+1])){
+                    ncopy=ncopy*10+(s[++i]-'0');
+                }
+                i++;
+            }
+            else if(isalpha(c)){
+                t=c;
+                while(i+1<s.size() && isalpha(s[i+1])){
+                    t+=s[++i];
+                }
+                i++;
+            }
+            else if(c=='['){
+                int j=i+1,p=1;
+                while(p){
+                    if(s[j]=='[') p++;
+                    if(s[j]==']') p--;
+                    j++;
+                }
+                
+                j--;
+                //from i+1 to j-1 (inclusive)
+                string t=decodeString(s.substr(i+1,j-i-1));
+                //repeat:
+                string nt;
+                for(int k=0;k<ncopy;k++) nt+=t;
+                if(st.size()) st.top()+=nt;
+                else st.push(nt);
+                i=j+1;
+                t.clear();
+            }
+        }
+        string ans=t;
+        while(st.size()){
+            ans=st.top()+ans;
+            st.pop();
+        }
+        //cout<<ans<<endl;
+        return ans;
+    }
+```
+### 395. Longest Substring with At Least K Repeating Characters (*****)
+divide and conquer
+idea: using the char appear less than k times as a separator
+
+```cpp
+    int longestSubstring(string s, int k) {
+        //divide and conquer
+        //find the char less then k times and divide into two parts
+        return helper(s,k,0,s.size());
+    }
+    int helper(string& s,int k,int start,int end){
+        //cout<<s.substr(start,end-start)<<endl;
+        if(end-start<k) return 0;
+        vector<int> cnt(26);
+        
+        for(int i=start;i<end;i++) 
+            cnt[s[i]-'a']++;
+        int ans=0,l=0;
+        bool found=0;
+        for(int i=start;i<end;i++){
+            int t=cnt[s[i]-'a'];
+            if(t && t<k){
+                ans=max({ans,helper(s,k,l,i)});
+                l=i+1;
+                found=1;
+            }
+        }
+        if(found) ans=max(ans,helper(s,k,l,end));
+        else ans=end-start;
+        return ans;
+    }
+```
+
+## contest 4
+### 396. Rotate Function (***)
+find the recurrence relation using the example
+
+```cpp
+    int maxRotateFunction(vector<int>& A) {
+        //f(k)=sum(i*Bi), f(k+1)=sum((i+1)%n*Bi)
+        //f(1)-f(0)=A0+A1+....An-1-n*An-1
+        //f(2)-f(1)=A0+A1+....An-1-n*An-2
+        long tsum=accumulate(A.begin(),A.end(),0ll);
+        int n=A.size();
+        long ans=0;
+        for(int i=0;i<n;i++)
+            ans+=i*A[i];
+        long sum=ans;
+        for(int i=1;i<n;i++){
+            //cout<<sum<<endl;
+            sum+=tsum-(long)n*A[n-i];
+            ans=max(ans,sum);
+        }
+        return ans;        
+        
+    }
+```
+
+### 397. Integer Replacement (***)
+greedy: if (n+1)%4==0 then +1, if n-1%4==0 then -1
+with exception n=3;
+
+```cpp
+    int integerReplacement(int n) {
+        //equiv to from 1 to n using *2 and +/-1
+        //greedy: if n+1 %4==0 +1, n-1%4==0 -1
+        int ans=0;
+        long nn=n;
+        while(nn>1){
+            if(nn%2==0) nn/=2;
+            else{
+                if(nn>3 && (nn+1)%4==0) nn++;
+                else nn--;
+            }
+            ans++;
+        }
+        return ans;
+    }
+```
+
+### 398. random pick index (***)
+hashmap to store the index
+```cpp
+    unordered_map<int,vector<int>> mp;
+    Solution(vector<int>& nums) {
+        for(int i=0;i<nums.size();i++){
+            mp[nums[i]].push_back(i);
+        }
+    }
+    
+    int pick(int target) {
+        return mp[target][rand()%mp[target].size()];
+    }
+```
+### 399. evaluate division (*****)
+dfs approach: using previous value to cascade the division. using visited to avoid repeat visit.
+union find: only then a and b in the same set, and then find the common parent a/b=(a/parent) * (parent/b)	
+```cpp
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        //dfs: build a graph
+        unordered_map<string,unordered_map<string,double>> mp;
+        for(int i=0;i<equations.size();i++){
+            mp[equations[i][0]].insert({equations[i][1],values[i]});
+            mp[equations[i][1]].insert({equations[i][0],1.0/values[i]});
+        }
+        int n=queries.size();
+        vector<double> ans(n,1);
+        for(int i=0;i<n;i++) {
+            unordered_set<string> v;
+            ans[i]=solve(mp,queries[i][0],queries[i][1],1.0,v);
+        }
+        return ans;
+    }
+    double solve(unordered_map<string,unordered_map<string,double>>& mp,string a,string b,double prev,unordered_set<string>& v){
+        if(!mp.count(a) || !mp.count(b)) return -1.0;
+        if(a==b) return prev;
+        v.insert(a);
+        for(auto p: mp[a]){ 
+            if(v.count(p.first)) continue;
+            double ans=solve(mp,p.first,b,prev*p.second,v);
+            if(ans>0) return ans;
+        }
+        return -1.0;
+    }
+```
+## contest 5
+### 400. Nth digit (****)
+idea: binary search the number in which area, and then find the number, finally get the digit in the number
+```cpp
+    int findNthDigit(int n) {
+        if(n<10) return n;
+        vector<long> num(10,1);//1,9,2*90+9
+        num[1]=9;
+        for(int i=2;i<10;i++){
+            num[i]=9*i*pow(10,i-1)+num[i-1];
+            //cout<<num[i]<<" ";
+        }
+        int ind=upper_bound(num.begin(),num.end(),n)-num.begin(); //>=n
+        n-=num[ind-1];
+        int t=n/ind-1+pow(10,ind-1); //starting from 10...0, number of digits is ind.
+        //cout<<t;
+        int rem=n%ind;
+        if(rem) t++;else rem=ind; //rem=0, the last digit
+        //cout<<t<<" "<<rem;
+        string s=to_string(t);
+        return s[rem-1]-'0';
+    }
+```
+
+### 401. Binary Watch (****)
+idea: 10 bit all combinations and then check all valid combinations
+```cpp
+    vector<string> readBinaryWatch(int num) {
+        //hr: 4bits, min: 6bits (hr max 3 lights, min max 5 lights)
+        //use it as a whole is easier 
+        //backtrack
+        vector<string> ans;
+        if(num>8) return ans;
+        vector<bitset<10>> vbits;
+        bitset<10> t(0);
+        backtrack(num,t,0,vbits);
+        for(auto t: vbits){
+            int n=t.to_ulong();
+            int hr=(n&0x3c0)>>6;
+            int mi=n&0x3f;
+            if(hr>11 || mi>59) continue;
+            char str[6];
+            sprintf(str,"%d:%02d",hr,mi);
+            ans.push_back(string(str));
+            
+        }
+
+        return ans;
+    }
+    void backtrack(int n,bitset<10> t,int start,vector<bitset<10>>& vbit){
+        if(n==0){
+            vbit.push_back(t);
+            return;
+        }
+        for(int i=start;i<10;i++){
+            t[i]=1;
+            backtrack(n-1,t,i+1,vbit);
+            t[i]=0;
+        }
+    }
+```
+### 402. Remove K Digits	(*****)
+using stack to remove the peak digits recursively
+
+```cpp
+    string removeKdigits(string num, int k) {
+        //greedy:
+        //1432219: remove 1 digit ->132219
+        //remove 2 digit: 12219
+        //remove 3 digit: 1219. approach: from left to right, repeatedly remove the first peak digit
+        //using stack: if the curr digit is less than previous, then remove the stack top
+        
+        stack<char> st;
+        for(char c: num){
+            while(st.size() && k && c<st.top()){
+                st.pop();
+                k--;
+            }
+            st.push(c);
+            //if(k==0) break;
+        }
+        while(k--){ //still need to remove, now it is sorted
+            st.pop();
+        }
+        string ans;
+        while(st.size()) {
+            ans+=st.top();
+            st.pop();
+        }
+        //remove leading zeros
+        while(ans.back()=='0') ans.pop_back();
+        if(ans.empty()) ans="0";
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+```
+
+### 403. Frog Jump	(****)
+bfs with 3 options: k-1, k, k+1
+important optimization: if keep k+1, then A[i] and A[i+1] can only have distance less than i.
+can also use dfs (recursive approach)
+
+```cpp
+    bool canCross(vector<int>& stones) {
+        //assuming at ith stone and previous step is k, then next must have a stone at k+1, k or k-1 distance
+        //can use bfs
+        unordered_set<int> st;
+        for(int i=1;i<stones.size();i++){
+            if(stones[i]>stones[i-1]+i) return 0;
+            st.insert(stones[i]);
+        }
+        unordered_set<string> v;
+        queue<vector<int>> q; //stores position vs step
+        int n=stones.size();
+        q.push({0,0});
+        while(q.size()) {
+            int sz=q.size();
+            while(sz--){
+                auto p=q.front();
+                q.pop();
+                int pos=p[0],step=p[1];
+                //cout<<pos<<" "<<step<<endl;
+                if(pos==stones.back()) return 1;
+                int ind=0;
+                string s;
+                s=to_string(pos+step-1)+","+to_string(step-1);
+                if(step>1 && st.count(pos+step-1) && !v.count(s)) {q.push({pos+step-1,step-1});v.insert(s);}
+                s=to_string(pos+step)+","+to_string(step);
+                if(step && st.count(pos+step)&& !v.count(s)) {q.push({pos+step,step});v.insert(s);}
+                s=to_string(pos+step+1)+","+to_string(step+1);
+                if(st.count(pos+step+1)&& !v.count(s)) {q.push({pos+step+1,step+1});v.insert(s);}
+            }
+        }
+        return 0;
+    }
+```
+
+	
+
+
+	
+	
+
+	
+	
+
+	
+
+
