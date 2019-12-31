@@ -28,12 +28,12 @@ note: unordered_set insert will return a pair:
 first is the iterator, second is if it is inserted successfully.
 
 ### 1307. verbal arithmetic puzzle (rate: *****)
-typical backtracking problem with extra complexity
-first approach: O(N!) complexity
-we collect all unique letters and repeat 0 to 9 with the help of hashmap.
-however this will get TLE.
-A common mistake I often made is: loop over the letters and loop over the digits
-the recursive backtracking itself is a loop over the letters. So do not loop over it again.
+typical backtracking problem with extra complexity</br>
+first approach: O(N!) complexity</br>
+we collect all unique letters and repeat 0 to 9 with the help of hashmap.</br>
+however this will get TLE.</br>
+A common mistake I often made is: loop over the letters and loop over the digits</br>
+the recursive backtracking itself is a loop over the letters. So do not loop over it again.</br>
 
 ```cpp
     unordered_set<char> leading,chars;
@@ -78,11 +78,11 @@ the recursive backtracking itself is a loop over the letters. So do not loop ove
         return res==sum;
     }
 ```	
-it is easy to understand, however it tries a lot of unnecessary combinations.
-for example when we choose the definition for the LSB of each words, the result bit is determined.
-but this approach still tries all the combination.
-More efficient way is to try col by col from the LSB.
-This approach is more complicated since it is a two-backtracking problem:
+it is easy to understand, however it tries a lot of unnecessary combinations.</br>
+for example when we choose the definition for the LSB of each words, the result bit is determined.</br>
+but this approach still tries all the combination.</br>
+More efficient way is to try col by col from the LSB.</br>
+This approach is more complicated since it is a two-backtracking problem:</br>
 - backtracking on a single column with cf.
 - backtracking on columns (when current col fails, we need backtrack to previous col)
 It helps greatly if we define it a 2d backtracking problem with row and col.
@@ -158,6 +158,7 @@ It helps greatly if we define it a 2d backtracking problem with row and col.
 This solution is at 100 times faster than the O(n!) solution.
 what would be the complexity then?
 - first the result char is mapped directly so we basically eliminate those chars from the loop selection
+- using hashmap to store c2i will make the time from 8ms changed to 100ms, using array is much more efficient.
 	
 ## biweek contest 16
 ### 1299. Replace elemets with greatest element on right side (**)
@@ -169,6 +170,7 @@ second, it is a binary search problem.
 we are actually looking for a value between 0 and max_element so that the sum==target.
 when sum>=target, r=mid, else l=mid+1
 This is pretty similar to find target in a sorted array using binary search. (the target could or not in the array)
+(the abs(sum-target) is a v-shape curve, without abs, it is monotonic shape).
 
 ```cpp
     int findBestValue(vector<int>& arr, int target) {
@@ -234,12 +236,12 @@ when current depth==max_depth, we need add the node to the sum.
     void dfs(TreeNode* root, int d) {
         if(!root) return;
         if(d > dh) {
-			sum = root -> val;
+	    sum = root -> val;
             dh=d;
-		}
-		else if(d == dh) {
-			sum += root -> val;
-		}
+	}
+	else if(d == dh) {
+	    sum += root -> val;
+	}
         dfs(root -> left, d + 1);
         dfs(root -> right, d + 1);
     }
