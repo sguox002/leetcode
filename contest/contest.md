@@ -258,7 +258,6 @@ some observations:
   *. current cell must be a number
   *. shall have one or more paths from left, top, topleft cell
 - base condition: we can set dp1[0,0] or dp[0,1] or dp[1,0] to 1, which means we only have one path entering to board[0,0]
-
 ```cpp
     vector<int> pathsWithMaxScore(vector<string>& board) {
         //dp
@@ -285,7 +284,101 @@ some observations:
     }
 ```	
  
-  
+## contest 168
+### 1295. find numbers with even number of digits (*)
+simple, convert each number to string
+
+### 1296. divide array in sets of k consecutive numbers (***)
+greedy: sort the array first, and start from the smallest and reduce the counting using hashmap
+do not delete elements from hashmap since iterating will cause problem
+```cpp
+    bool isPossibleDivide(vector<int>& nums, int k) {
+        map<int,int> mp;
+        for(int t: nums) mp[t]++;
+        auto it0=mp.begin();
+        while(it0!=mp.end()){
+            auto it1=it0;
+            int v=it0->second;
+            int n=0;
+            
+            while(n<k){
+                if(it1->first==it0->first+n && it1->second>=v)
+                    it1->second-=v;
+                else return 0;
+                n++;it1++;
+            }
+            bool found=0;
+            for(it1=it0;it1!=mp.end();it1++) {
+                if(it1->second){
+                    found=1;
+                    it0=it1;
+                    break;
+                }
+            }
+            if(!found) it0=mp.end();
+        }
+        return 1;
+    }
+```
+### 1297. Maximum Number of Occurrences of a Substring	(***)
+an important observation: larger length substr will be covered by smaller length substr.
+two pointer with hashmap
+```cpp
+    int maxFreq(string s, int maxLetters, int minSize, int maxSize) {
+        //greedy, the minsize window works also with maxsize
+        int ans=0;
+        int i=0,j=0;
+        vector<int> mp(26);
+        unordered_map<string,int> tmp;
+        while(j<s.size()){
+            mp[s[j]-'a']++;
+            if(j-i+1==minSize){
+                int count=0;
+                for(int k=0;k<26;k++)
+                    count+=(mp[k]>0);
+                if(count<=maxLetters) 
+                    ans=max(ans,++tmp[s.substr(i,minSize)]);
+                mp[s[i]-'a']--;i++;
+            }
+            j++;
+        }
+        return ans;
+    }
+```
+Note: when length equals to window size, we first check if it satisfies the conditions, then we advance the pointer i.
+
+### 1298. Maximum Candies You Can Get from Boxes (***)
+again it is a regular bfs problem.
+we need to push all the found but un-opened boxes into queue, until we do not open any new boxes
+```cpp
+    int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        //bfs
+        queue<int> q;
+        for(int t: initialBoxes) q.push(t);
+        unordered_set<int> keys_owned;
+        int ans=0;
+        while(q.size()){
+            int sz=q.size();
+            bool found=0;
+            while(sz--){
+                int b=q.front();
+                q.pop();
+                if(status[b] || keys_owned.count(b)){
+                    ans+=candies[b];
+                    for(int k: keys[b]) keys_owned.insert(k);
+                    for(int k: containedBoxes[b]) q.push(k);
+                    found=1;
+                }
+                else q.push(b);
+            }
+            if(!found) break;
+        }
+        return ans;
+    }
+```	
+
+
+
 
 
 
