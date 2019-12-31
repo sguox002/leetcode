@@ -1,0 +1,161 @@
+## contest 169.
+### 1304. find n unique integers sum up to 0 (rate: *)
+greedy, pretty simple
+if odd, add 0
+then add +/-1, +/-2... pairs
+
+### 1305. All elements in two binary search tree (rate: **)
+inorder traversal each tree and store in array and then merge.
+
+### 1306. Jump game III (rate: ***)
+regular bfs to store the position and the jump step.
+using hashset for visited flags
+
+dfs is also OK:
+```cpp
+unordered_set<int> vis;
+bool canReach(vector<int>& arr, int st) {
+    if (st >= 0 && st < arr.size() && vis.insert(st).second) {
+        return arr[st] == 0 ||
+            canReach(arr, st + arr[st]) || canReach(arr, st - arr[st]);
+    }
+    return false;
+}
+```
+note: unordered_set insert will return a pair:
+first is the iterator, second is if it is inserted successfully.
+
+### 1307. verbal arithmetic puzzle (rate: *****)
+typical backtracking problem with extra complexity
+first approach: O(N!) complexity
+we collect all unique letters and repeat 0 to 9 with the help of hashmap.
+however this will get TLE.
+A common mistake I often made is: loop over the letters and loop over the digits
+the recursive backtracking itself is a loop over the letters. So do not loop over it again.
+
+```cpp
+    unordered_set<char> leading,chars;
+    unordered_map<char,int> mp;
+    bool used[10];
+    bool isSolvable(vector<string>& words, string result) {
+        //backtracking
+        for(string w: words){
+            leading.insert(w[0]);
+            for(char c: w) chars.insert(c);
+        }
+        leading.insert(result[0]);
+        for(char c: result) chars.insert(c);
+        vector<char> arr(chars.begin(),chars.end());
+        return backtrack(arr,0,words,result);
+    }
+    bool backtrack(vector<char>& arr,int start,vector<string>& words,string& result){
+        if(start==arr.size()){
+            if(valid(words,result)) return 1;
+            else return 0;
+        }
+        char c=arr[start];
+        for(int i=0;i<10;i++){
+            if(used[i] || (i==0 && leading.count(c))) continue;
+            used[i]=1;
+            mp[c]=i;
+            if(backtrack(arr,start+1,words,result)) return 1;
+            used[i]=0;
+            mp.erase(c);
+        }
+        return 0;
+    }
+    bool valid(vector<string>& words,string& result){
+        int sum=0;
+        for(string w: words){
+            int num=0;
+            for(char c: w) num=num*10+mp[c];
+            sum+=num;
+        }
+        int res=0;
+        for(char c: result) res=res*10+mp[c];
+        return res==sum;
+    }
+```	
+it is easy to understand, however it tries a lot of unnecessary combinations.
+for example when we choose the definition for the LSB of each words, the result bit is determined.
+but this approach still tries all the combination.
+More efficient way is to try col by col from the LSB.
+This approach is more complicated since it is a two-backtracking problem:
+- backtracking on a single column with cf.
+- backtracking on columns (when current col fails, we need backtrack to previous col)
+It helps greatly if we define it a 2d backtracking problem with row and col.
+- reverse words and result so we can do from LSB to MSB
+- col reaches result size, whole process completes, check if sum==0 (no carrier flag)
+- row reaches words size, current col is done
+  * if result char in this col is not mapped, then another backtracking:
+    map it
+	try next col
+	restore if it fails
+  * if result char in this col is mapped, check if matches
+     matched: do next col
+	 not match, return 0
+- skip current row if word does not have it
+- add current row and go to next row if result is mapped
+- otherwise try from 0 to 9 (typical one column backtracking problem)
+```cpp
+    char i2c[10];
+    int c2i[26];    
+    bool isSolvable(vector<string>& words, string result) {
+        for (auto &s : words) if (s.size() > result.size()) return false;
+        memset(c2i, -1, sizeof c2i);
+        memset(i2c, '\0', sizeof i2c);
+        for (auto& s: words) reverse(s.begin(), s.end());
+        reverse(result.begin(), result.end());
+        return backtrack(words, result, 0, 0, 0);
+    }    
+    bool backtrack(vector<string>& words, string& result, int row, int col, int sum) 
+    {
+        if (col == result.size()) return sum == 0;//finished all cols
+        
+        if (row == words.size()) //finished one col
+        {
+            int d=sum%10;
+            int cf=sum/10;
+            int t=result[col] - 'A';
+            if (c2i[t] != -1) //used
+            {
+                if (d == c2i[t])
+                    return backtrack(words, result, 0, col+1, cf);
+            }
+            else if (i2c[d] == '\0') //not used, another backtrack
+            {
+                c2i[t] = d;
+                i2c[d] = result[col];
+                if (backtrack(words, result, 0, col+1, cf)) return true;
+                c2i[t] = -1;
+                i2c[d] = '\0';
+            }
+            return false;
+        }
+        
+        if (col >= words[row].size()) //skip if current word has no char in the col
+            return backtrack(words, result, row+1, col, sum);
+        int t=words[row][col] - 'A';
+        if (c2i[t] != -1) //if current char is mapped
+            return backtrack(words, result, row+1, col, sum + c2i[t]);
+        char c=words[row][col];
+        for (int i = 0; i < 10; ++i) //not mapped
+        {
+            if (i2c[i] != '\0') continue;
+            if (i == 0 && col == words[row].size() - 1 && words[row].size() > 1) continue;
+            i2c[i] = c;
+            c2i[t] = i;
+            if (backtrack(words, result, row+1, col, sum + i))
+                return true;
+            i2c[i] = '\0';
+            c2i[t] = -1;
+        }
+        return false;
+    }
+```
+This solution is at 100 times faster than the O(n!) solution.
+what would be the complexity then?
+- first the result char is mapped directly so we basically eliminate those chars from the loop selection
+	
+
+
