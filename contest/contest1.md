@@ -1,9 +1,9 @@
 # leetcode contest II
-bi13 250/2771 got 4/4
-162: 849/6075 got 4/4
-161: 605/6255 got 4/4
-bi12: 160/2975 got 4/4
-160:  218/6150 got 4/4
+- bi13 250/2771 got 4/4
+- 162: 849/6075 got 4/4
+- 161: 605/6255 got 4/4
+- bi12: 160/2975 got 4/4
+- 160:  218/6150 got 4/4
 
 ## contest 160
 ### 1237. Find Positive Integer Solution for a Given Equation (***)
