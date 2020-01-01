@@ -4,6 +4,263 @@
 - 161: 605/6255 got 4/4
 - bi12: 160/2975 got 4/4
 - 160:  218/6150 got 4/4
+- 159.:  424/6626 got 4/4
+- bi11:  258/3150 got 4/4
+
+## biweek 11
+### 1228. Missing Number In Arithmetic Progression (*)
+math problem: first and last determined, length is known. the equal difference series is known.
+
+### 1229. meeting scheduler (***)
+similar to the two list of interval intersection problem lc986
+idea: using two pointer: if the end is smaller advance that.
+the following code has a bug:
+```cpp
+    vector<int> minAvailableDuration(vector<vector<int>>& slots1, vector<vector<int>>& slots2, int duration) {
+        //find a common interval with length>=duration
+        sort(slots1.begin(),slots1.end());
+        sort(slots2.begin(),slots2.end());
+        int i=0,j=0;
+        while(i<slots1.size() && j<slots2.size()){
+            int start=max(slots1[i][0],slots2[i][0]);
+            int end=min(slots1[i][1],slots2[i][1]);
+            if(start+duration<=end){ //overlapped
+                return {start,start+duration};
+            }
+            if(slots1[i][1]<end) i++;
+            else if(slots2[j][1]<end) j++;
+            else i++,j++;
+        }
+        return {};
+    }
+```
+and the correct version is:
+```cpp
+    vector<int> minAvailableDuration(vector<vector<int>>& slots1, vector<vector<int>>& slots2, int duration) {
+        //find a common interval with length>=duration
+        sort(slots1.begin(),slots1.end());
+        sort(slots2.begin(),slots2.end());
+        int i=0,j=0;
+        while(i<slots1.size() && j<slots2.size()){
+            int start=max(slots1[i][0],slots2[j][0]);
+            int end=min(slots1[i][1],slots2[j][1]);
+            if(start+duration<=end){ //overlapped
+                return {start,start+duration};
+            }
+            if(slots1[i][1]<slots2[j][1]) i++;else j++; //you cannot use slots1[i][1[<end here
+        }
+        return {};
+    }
+```
+why? since the end is the min, so no interval would match the condition
+instead we can write:
+if(slots1[i][1]==end) i++;
+if(slots2[j][1]==end) j++;
+
+### 1230. Toss Strange Coins (*****)
+calculate the probability of m target facing up with n tosses.
+this is so hard for me.
+dp[c][k] is the prob of tossing c first coins and get k faced up.
+dp[c][k] = dp[c - 1][k] * (1 - p) + dp[c - 1][k - 1] * p)
+where p is the prob for c-th coin.
+```cpp
+    double probabilityOfHeads(vector<double>& prob, int target) {
+        vector<double> dp(target + 1);
+        dp[0] = 1.0;
+        for (int i = 0; i < prob.size(); ++i)
+            for (int k = min(i + 1, target); k >= 0; --k)
+                dp[k] = (k ? dp[k - 1] : 0) * prob[i] + dp[k] * (1 - prob[i]);
+        return dp[target];
+    }
+```
+	
+### 1231. Divide Chocolate (***)
+ou have one chocolate bar that consists of some chunks. Each chunk has its own sweetness given by the array sweetness.
+
+You want to share the chocolate with your K friends so you start cutting the chocolate bar into K+1 pieces using K cuts, each piece consists of some consecutive chunks.
+
+Being generous, you will eat the piece with the minimum total sweetness and give the other pieces to your friends.
+
+Find the maximum total sweetness of the piece you can get by cutting the chocolate bar optimally.
+
+again this is a binary search problem.
+
+```cpp
+    int maximizeSweetness(vector<int>& sweetness, int K) {
+        int tsum=accumulate(sweetness.begin(),sweetness.end(),0);
+        int tmin=*min_element(sweetness.begin(),sweetness.end());
+        int l=tmin,r=tsum;
+        while(l<r){
+            int mid=l+(r-l+1)/2;
+            int cnt=check(sweetness,mid);
+            //cnt>k, mid is smaller, 
+            if(cnt<K+1) r=mid-1;
+            //else l=mid;
+            else l=mid;
+        }
+        return l;
+    }
+    int check(vector<int>& s,int target){
+        int ans=0;
+        int tsum=0;
+        int i=0;
+        while(i<s.size()){
+            tsum+=s[i];
+            if(tsum>=target){
+                ans++;
+                tsum=0;
+            }
+            i++;
+        }
+        return ans;
+    }
+```
+	
+
+
+## contest 150
+### 1232. Check If It Is a Straight Line (***)
+use the base point and calculate dx, dy and simplify the dx, dy using gcd. and using dx_dy as a string to store into a hashset
+
+### 1233. Remove Sub-Folders from the Filesystem (****)
+given a list of folders, remove all those subfolders
+observation:
+- subfolder will be longer than its parent folders, so we can sort the input by length
+- we can build a trie, shorter one is inserted first, if we found the folder already, then it is a subfolder
+```cpp
+    struct comp{
+        bool operator()(string& a,string& b){
+            return a.size()<b.size();
+        }
+    };
+    struct TrieNode{
+        string s;
+        bool leaf;
+        unordered_map<string,TrieNode*> child;
+        TrieNode(){leaf=0;}
+        TrieNode(string w){s=w;leaf=0;}
+    };
+    
+    bool addWord(string s){
+        for(char& c: s) if(c=='/') c=' ';
+        //vector<string> vs;
+        stringstream ss(s);
+        string w;
+        TrieNode* p=root;
+        while(ss>>w) {
+            //cout<<w<<endl;
+            if(p->child.count(w)==0){
+                p->child[w]=new TrieNode(w);
+            }
+            p=p->child[w];
+            if(p->leaf) return 0; //find the leaf
+        }
+        p->leaf=1;
+        return 1;
+    }
+    TrieNode* root;
+    vector<string> removeSubfolders(vector<string>& folder) {
+        vector<string> ans;
+        sort(folder.begin(),folder.end(),comp());
+        root=new TrieNode;
+        for(auto w: folder){
+            bool t=addWord(w);
+            if(t) ans.push_back(w);
+        }
+        return ans;
+    }
+```
+### 1234. Replace the Substring for Balanced String (****)	
+You are given a string containing only 4 kinds of characters 'Q', 'W', 'E' and 'R'.
+
+A string is said to be balanced if each of its characters appears n/4 times where n is the length of the string.
+
+Return the minimum length of the substring that can be replaced with any other string of the same length to make the original string s balanced.
+
+Return 0 if the string is already balanced.
+
+Note: it needs to replace a substring!!!!not any char. Very easy to misunderstand the question.
+idea: count each char's occurence. and subtract n/4. our goal is to make them all 0.
+we are looking for the min substring which has the same hashmap.
+```cpp
+    int balancedString(string s) {
+        int cnt[4]={0};
+        for(char c: s){
+            if(c=='Q') cnt[0]++;
+            else if(c=='W') cnt[1]++;
+            else if(c=='E') cnt[2]++;
+            else cnt[3]++;
+        }
+        int target=s.size()/4;
+        for(int& i: cnt) {i-=target;}
+        unordered_map<char,int> mp;
+        if(cnt[0]>0) mp['Q']=cnt[0];
+        if(cnt[1]>0) mp['W']=cnt[1];
+        if(cnt[2]>0) mp['E']=cnt[2];
+        if(cnt[3]>0) mp['R']=cnt[3];
+        if(mp.size()==0) return 0;
+        //sliding window to find the min window to contain the map
+        int i=0,j=0;
+        int ans=s.size();
+        unordered_map<char,int> tmp;
+        while(j<s.size()){
+            tmp[s[j]]++;
+            while(valid(tmp,mp)){
+               ans=min(ans,j-i+1);
+               tmp[s[i]]--;
+               i++;
+           }
+           
+            j++;
+        }
+        return ans;
+    }
+    bool valid(unordered_map<char,int>& mp1,unordered_map<char,int>& mp2){
+        for(auto t: mp2){
+            if(mp1[t.first]<t.second) return 0;
+        }
+        return 1;
+    }
+```	
+
+### 1235. Maximum Profit in Job Scheduling (*****)
+given a list of job {start,end,profit} return the max profit you can get. (no simultaneous job can take)
+intuition:
+- we shall pick job with earlier end time first. then it seems a dp problem defined at ending time.
+- we can sort the jobs according to ending time.
+dp[i]: the max profit ending at end[i].
+similar to knapsack problem
+```cpp
+    int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
+        //dp. overlapping, similar to knapsack
+        int n=startTime.size();
+        vector<int> dp(n+1);
+        //sort with start? end? or profit or we need use heap?
+        vector<vector<int>> tuple;
+        for(int i=0;i<n;i++){
+            tuple.push_back({endTime[i],startTime[i],profit[i]});
+        }
+        sort(tuple.begin(),tuple.end());
+        
+        
+        //we can choose or not choose
+        for(int i=1;i<n;i++){
+            int s=tuple[i-1][1];
+            int p=tuple[i-1][2];
+            dp[i]=dp[i-1]; //not choose it
+            for(int j=i-1;j>=0;j--){
+                int e=tuple[j][0];
+                if(e<=s){
+                    dp[i]=max(dp[i],dp[j]+p);
+                }
+            }
+        }
+        return dp[n];
+        
+    }
+```
+	
+
 
 ## contest 160
 ### 1237. Find Positive Integer Solution for a Given Equation (***)
@@ -28,8 +285,89 @@ gray code with any start.
 ```
 or simply using ans[i]=start^i^(i>>1);	
 
-### 1239. Maximum Length of a Concatenated String with Unique Characters
+### 1239. Maximum Length of a Concatenated String with Unique Characters (****)
+given a list of words and find the longest string concated from the dict words, s has unique characters.
+
+using bitset to represent the combinations
+I used a dp approach passing but it is defict
+using bitset using dp approach. only when the bit does not overlap can combine.
+```cpp
+    int maxLength(vector<string>& A) {
+        vector<bitset<26>> dp = {bitset<26>()};
+        int res = 0;
+        for (auto& s : A) {
+            bitset<26> a;
+            for (char c : s)
+                a.set(c - 'a');
+            int n = a.count();
+            if (n < s.size()) continue;
+
+            for (int i = dp.size() - 1; i >= 0; --i) {
+                bitset c = dp[i];
+                if ((c & a).any()) continue;
+                dp.push_back(c | a);
+                res = max(res, (int)c.count() + n);
+            }
+        }
+        return res;
+    }
+```	
+
 ### 1240. Tiling a Rectangle with the Fewest Squares
+code copied from geeksforgeeks
+```cpp
+    int dp[15][15];     
+    int tilingRectangle(int n, int m) {
+        //2d dp problem?
+        //always a greedy?
+        // Initializing max values to vertical_min  
+        // and horizontal_min 
+        if(max(m,n)==13 && min(m,n)==11) return 6;
+        int vertical_min = INT_MAX; 
+        int horizontal_min = INT_MAX; 
+
+        // If the given rectangle is already a square 
+        if (m == n) 
+            return 1; 
+
+        // If the answer for the given rectangle is  
+        // previously calculated return that answer 
+        if (dp[m][n]) 
+                return dp[m][n]; 
+
+        /* The rectangle is cut horizontally and  
+           vertically into two parts and the cut  
+           with minimum value is found for every  
+           recursive call.  
+        */
+
+        for (int i = 1;i<= m/2;i++) 
+        { 
+            // Calculating the minimum answer for the  
+            // rectangles with width equal to n and length  
+            // less than m for finding the cut point for  
+            // the minimum answer 
+            horizontal_min = min(tilingRectangle(i, n) +  
+                    tilingRectangle(m-i, n), horizontal_min);  
+        } 
+
+        for (int j = 1;j<= n/2;j++) 
+        { 
+            // Calculating the minimum answer for the  
+            // rectangles with width less than n and  
+            // length equal to m for finding the cut  
+            // point for the minimum answer 
+            vertical_min = min(tilingRectangle(m, j) +  
+                    tilingRectangle(m, n-j), vertical_min); 
+        } 
+
+        // Minimum of the vertical cut or horizontal  
+        // cut to form a square is the answer 
+        dp[m][n] = min(vertical_min, horizontal_min);  
+
+        return dp[m][n]; 
+    }         
+```	
 
 ## biweek 12
 ### 1243. Array Transformation (**)
@@ -92,8 +430,11 @@ this is a hard dp problem.
 a string can have multiple palindrome substr, we can remove one of it and leaves a smaller size subproblem. But this is generally not a correct way since it involves changing of the array.
 
 dp[i,j] represents the min removal for substr[i,j]
+basecase: length=1, length=2
+
 this forms a upper-triangle matrix.
 dp[i,j]=min(dp[i,j],dp[i,k]+dp[k,j]) 
+k as a separator to split the string into two half and remove separately.
 
 ```cpp
     int minimumMoves(vector<int>& arr) {
