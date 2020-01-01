@@ -1,4 +1,14 @@
 # leetcode contest
+169: 242/5933 got 4/4
+bi16: 454/2788 got 4/4
+168: 807/5525 got 4/4
+167: 557/5475 got 4/4
+bi15: 661/2525 got 4/4
+166: 1036/5600 got 4/4
+165: 615/5500 got 4/4
+bi14: 323/2575 got 4/4
+164: 933/5925 got 4/4
+163: 199/5875 got 4/4
 
 ## contest 169.
 ### 1304. find n unique integers sum up to 0 (rate: *)
