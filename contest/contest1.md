@@ -6,6 +6,334 @@
 - 160:  218/6150 got 4/4
 - 159.:  424/6626 got 4/4
 - bi11:  258/3150 got 4/4
+- 158: 338/6639 got 4/4
+- 157:  1149/6651 got 4/4
+- bi10:  652/3600 got 4/4
+
+## biweek 10
+### 1213. Intersection of Three Sorted Arrays (***)
+Given three integer arrays arr1, arr2 and arr3 sorted in strictly increasing order, return a sorted array of only the integers that appeared in all three arrays.
+this can be expanded to a matrix.
+just like merge sort.
+```cpp
+    vector<int> arraysIntersection(vector<int>& arr1, vector<int>& arr2, vector<int>& arr3) {
+        int i=0,j=0,k=0;
+        vector<int> ans;
+        while(i<arr1.size()&&j<arr2.size()&&k<arr3.size()){
+            if(arr1[i]==arr2[j] && arr2[j]==arr3[k])
+                ans.push_back(arr1[i]),i++,j++,k++;
+            else if(arr1[i]<arr2[j]) i++;
+            else if(arr2[j]<arr3[k]) j++;
+            else k++;
+        }
+        return ans;
+    }
+```	
+### 1214. Two Sum BSTs (**)
+Given two binary search trees, return True if and only if there is a node in the first tree and a node in the second tree whose values sum up to a given integer target.
+traverse bst1 and store in hashset, and then traverse tree 2.
+
+### 1215. Stepping Numbers (***)
+A Stepping Number is an integer such that all of its adjacent digits have an absolute difference of exactly 1. For example, 321 is a Stepping Number while 421 is not.
+
+Given two integers low and high, find and return a sorted list of all the Stepping Numbers in the range [low, high] inclusive.
+
+typical backtracking:
+```cpp
+    vector<int> countSteppingNumbers(int low, int high) {
+        vector<int> res;
+        if(low == 0) res.push_back(0);
+        for(int i = 1; i < 10; i++){
+            helper(low, high, i, res);
+        }
+        sort(res.begin(), res.end());
+        return res;
+    }
+    /* We use long int so that we do not have to use overflow check for cur value*/
+    void helper(int low, int high, long int cur, vector<int> &res){
+        if(cur > high) return;
+        if(cur >= low) res.push_back(cur);
+        
+        int last = cur%10;
+        long int next = cur*10+last+1;
+        long int prev = cur*10+last-1;
+        
+        if(last != 0) helper(low, high, prev, res);
+        if(last != 9) helper(low, high, next, res);
+    }
+```
+	
+### 1216. Valid Palindrome III
+Given a string s and an integer k, find out if the given string is a K-Palindrome or not.
+
+A string is K-Palindrome if it can be transformed into a palindrome by removing at most k characters from it.
+
+idea: equiv to longest common subsequence of s and reversed s. That's the critical point.
+
+```cpp
+    bool isValidPalindrome(string s, int k) {
+        //bfs? edit distance? dp?
+        //find longest palidrome subsequences, dp
+        string rs=s;
+        reverse(rs.begin(),rs.end());
+        int n=s.size();
+        vector<vector<int>> dp(n+1,vector<int>(n+1));
+         for(int i=1;i<=n;i++){
+            for(int j=1;j<=n;j++){
+                if(s[i-1]==rs[j-1])
+                    dp[i][j]=max(dp[i][j],dp[i-1][j-1]+1);
+                else
+                    dp[i][j]=max({dp[i][j],dp[i-1][j],dp[i][j-1]});
+            }
+        } 
+        return dp[n][n]+k>=n;
+    }
+```	
+## contest 157
+### 1217. Play with Chips (***)
+There are some chips, and the i-th chip is at position chips[i].
+
+You can perform any of the two following types of moves any number of times (possibly zero) on any chip:
+
+Move the i-th chip by 2 units to the left or to the right with a cost of 0.
+Move the i-th chip by 1 unit to the left or to the right with a cost of 1.
+There can be two or more chips at the same position initially.
+
+Return the minimum cost needed to move all the chips to the same position (any position).
+[1,2,3]: chip 0 at pos 1, chip 1 at pos 2, chip 2 at pos 3
+[2,2,2,3,3]: chip 0 at pos 2, chip 1 at pos 2, chip 2 at pos 2, chip 3 at pos 3, chip 4 at pos 3
+odd position add 1 becomes even, all odd can go to one position at no cost. all even position can go to even positon at no cost
+but move each type of chip from odd to even or from even to odd cost 1. n types cost n.
+understand the problem is critical
+
+```cpp
+    int minCostToMoveChips(vector<int>& chips) {
+        int odd=0,even=0;
+        for(int i: chips) {
+            if(i%2) odd++;
+            else even++;
+        }
+        //odd
+        return min(odd,even);
+    }
+```
+
+### 1218. Longest Arithmetic Subsequence of Given Difference (***)
+Given an integer array arr and an integer difference, return the length of the longest subsequence in arr which is an arithmetic sequence such that the difference between adjacent elements in the subsequence equals difference.
+dp with hashmap
+note: you cannot sort or alter the array.
+```cpp
+    int longestSubsequence(vector<int>& arr, int difference) 
+    {
+        unordered_map<int,int> lengths;
+        int result=1;
+        for(int &i:arr)
+            result=max(result,lengths[i]=1+lengths[i-difference]); //Length of AP ending with 'i' with difference of 'difference' will be 1 + length of AP ending with 'i-difference'. result stores Max at each end
+        return result;
+    }
+```
+	
+### 1219. Path with Maximum Gold (***)
+In a gold mine grid of size m * n, each cell in this mine has an integer representing the amount of gold in that cell, 0 if it is empty.
+
+Return the maximum amount of gold you can collect under the conditions:
+
+Every time you are located in a cell you will collect all the gold in that cell.
+From your position you can walk one step to the left, right, up or down.
+You can't visit the same cell more than once.
+Never visit a cell with 0 gold.
+You can start and stop collecting gold from any position in the grid that has some gold.
+
+so 0 is actually obstacle you cannot go. and you cannot visit the cell again
+[[0,6,0],
+ [5,8,7],
+ [0,9,0]]
+ 9-8-7 and stop.
+ brutal force: start at any position and try dfs and get the max.
+ ```cpp
+     int getMaximumGold(vector<vector<int>>& grid) {
+        int m=grid.size(),n=grid[0].size();
+        int ans=0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]) dfs(grid,i,j,0,ans);
+            }
+        }
+        return ans;
+    }
+    void dfs(vector<vector<int>>& g,int i,int j,int tsum,int& maxsum){
+        if(i<0||j<0||i>=g.size()||j>=g[0].size()||!g[i][j]) return;
+        int t=g[i][j];
+        maxsum=max(maxsum,tsum+t);
+        g[i][j]=0;
+        dfs(g,i-1,j,tsum+t,maxsum);
+        dfs(g,i+1,j,tsum+t,maxsum);
+        dfs(g,i,j-1,tsum+t,maxsum);
+        dfs(g,i,j+1,tsum+t,maxsum);
+        g[i][j]=t;
+    }
+```
+	
+
+### 1220. Count Vowels Permutation (****)
+Given an integer n, your task is to count how many strings of length n can be formed under the following rules:
+
+Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
+Each vowel 'a' may only be followed by an 'e'.
+Each vowel 'e' may only be followed by an 'a' or an 'i'.
+Each vowel 'i' may not be followed by another 'i'.
+Each vowel 'o' may only be followed by an 'i' or a 'u'.
+Each vowel 'u' may only be followed by an 'a'.
+Since the answer may be too large, return it modulo 10^9 + 7.
+
+this is similar to the phone number problem.
+a->e.
+e->a,i.
+i->aeou
+o->iu
+u->a.
+
+dp problem: dp is easier if we think it reverse, not follow but previous.
+```cpp
+    int countVowelPermutation(int n) {
+        int mod=1e9+7;
+        //dp: dp[c][i] represents the number of permutations ending with c, length i
+        vector<long> cur(5,1),prev(5);
+        //reversed thinking: see previous char (incoming edges)
+        //a: e, i, u
+        //e: a,i
+        //i: e,o
+        //o: i
+        //u: i,o
+        for(int i=1;i<n;i++){
+            prev=cur;
+            cur[0]=(prev[1]+prev[2]+prev[4])%mod;
+            cur[1]=(prev[0]+prev[2])%mod;
+            cur[2]=(prev[1]+prev[3])%mod;
+            cur[3]=prev[2];
+            cur[4]=(prev[2]+prev[3])%mod;
+        }
+        int t=0;
+        for(int i=0;i<5;i++) t+=cur[i],t%=mod;
+        return t;
+    }
+```
+	
+
+## contest 158
+### 1221. Split a String in Balanced Strings3 (**)
+Balanced strings are those who have equal quantity of 'L' and 'R' characters.
+
+Given a balanced string s split it in the maximum amount of balanced strings.
+
+Return the maximum amount of splitted balanced strings.
+
+using stack
+
+### 1222. Queens That Can Attack the King4
+On an 8x8 chessboard, there can be multiple Black Queens and one White King.
+
+Given an array of integer coordinates queens that represents the positions of the Black Queens, and a pair of coordinates king that represent the position of the White King, return the coordinates of all the queens (in any order) that can attack the King.
+idea: same row/col/diagonal/anti-diagonal and direct contect with the king
+brutal force is fine. find the king position and extend 8 directions.
+
+### 1223. Dice Roll Simulation
+A die simulator generates a random number from 1 to 6 for each roll. You introduced a constraint to the generator such that it cannot roll the number i more than rollMax[i] (1-indexed) consecutive times. 
+
+Given an array of integers rollMax and an integer n, return the number of distinct sequences that can be obtained with exact n rolls.
+
+Two sequences are considered different if at least one element differs from each other. Since the answer may be too large, return it modulo 10^9 + 7.
+
+typical dp problem:
+n = 2, rollMax = [1,1,2,2,2,3]
+two rolls, 1 roll 1 time, 2, 1 time, 3, 2 times, 4, 2 times, 5: 2 times, 6: 3 times
+cannot appear 11, 22 (two dices) so 6*6-2=34
+or:
+dice 1 roll 1, dice 2 5 options: 1x5
+dice 1 roll 2, dice 2 5 options: 1x5
+dice 1 roll 3, dice 2 6 options: 1x6
+dice 1 roll 4, dice 2 6 options: 1x6
+dice 1 roll 5, dice 2 6 options: 1x6
+dice 1 roll 6, dice 2 6 options: 1x6
+dp[n][k] n dices, roll number k, answer is the sum over k.
+
+base case: n=1, since max is [1,15] so dp[1][i]=1
+idea: first calculate the non-repeated cases, then add the constraints
+non-repeated: dp[i][j]+=dp[i-1][k], k=1 to 6 j!=k, there is analytical for this.
+repeated: dp[i][j]+=dp[i-rmax[j]][j] why?
+actually this is a 3d dp problem with repeat 1,2,3,4,....rmax. (rmax<n need processing)
+```cpp
+    int dieSimulator(int n, vector<int>& rollMax) {
+        int mod = 1e9 + 7;
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(6, vector<int>(16, 0)));
+        for(int i = 0; i < 6; ++i) {
+            dp[0][i][1] = 1;
+        }
+        for(int i = 1; i < n; ++i) {
+            for(int j = 0; j < 6; ++j) {
+                // calculate dp[i][j][1] = sum(dp[i - 1][except j][1 to rollMax[j]])
+                for(int k = 0; k < 6; ++k) {
+                    if(k == j) { continue; }
+                    for(int m = 1; m <= rollMax[k]; ++m) {
+                        dp[i][j][1] = (dp[i][j][1] + dp[i - 1][k][m]) % mod;
+                    }
+                }
+                
+                // calculate dp[i][j][2] to dp[i][j][rollMax[j]]
+                for(int m = 2; m <= rollMax[j]; ++m) {
+                    dp[i][j][m] = dp[i - 1][j][m - 1];
+                }
+            }
+        }
+        
+        int answer = 0;
+        for(int i = 0; i < 6; ++i) {
+            for(int j = 1; j <= rollMax[i]; ++j) {
+                answer = (answer + dp[n - 1][i][j]) % mod;
+            }
+        }
+        return answer;
+    }
+```
+	
+### 1224. Maximum Equal Frequency (***)
+Given an array nums of positive integers, return the longest possible length of an array prefix of nums, such that it is possible to remove exactly one element from this prefix so that every number that has appeared in it will have the same number of occurrences.
+
+If after removing one element there are no remaining elements, it's still considered that every appeared number has the same number of ocurrences (0).
+
+hashmap
+one by one to build the map and check if it is valid, if valid update the max len.
+a bit tricky checking valid: convert to hashset, it shall have two elements.
+- more than 2 elements, invalid
+- if a==1 and b>1 valid 
+- if b-a==1 valid (for example 3,4, we can remove 1 from 4)
+```cpp
+    int maxEqualFreq(vector<int>& nums) {
+        //remove one can be single or among multiple of them
+        //also need prefix
+        unordered_map<int,int> mp;
+        int ans=0;
+        for(int i=0;i<nums.size();i++){
+            mp[nums[i]]++;
+            if(checklen(mp)) 
+                ans=max(ans,i+1);
+        }
+        return ans;
+    }
+    int checklen(unordered_map<int,int>& mp){
+        unordered_set<int> ms;
+        for(auto t: mp)
+            ms.insert(t.second);
+        
+        if(ms.size()!=2) return 0;
+        int a=*ms.begin(),b=*(++ms.begin());
+        if(a>b) swap(a,b);
+        if(a==1 && b>1) return 1;
+        if(b-a==1) return 1;
+    }
+```
+this problem shall be rated as medium instead of hard.
+	
 
 ## biweek 11
 ### 1228. Missing Number In Arithmetic Progression (*)
@@ -63,6 +391,11 @@ this is so hard for me.
 dp[c][k] is the prob of tossing c first coins and get k faced up.
 dp[c][k] = dp[c - 1][k] * (1 - p) + dp[c - 1][k - 1] * p)
 where p is the prob for c-th coin.
+
+dp[c][k] represents the probability of c tosses with k up.
+for cth toss, it can be down, dp[c-1][k]*(1-p)
+for cth toss, it can be up: dp[c-1][k-1]*p
+
 ```cpp
     double probabilityOfHeads(vector<double>& prob, int target) {
         vector<double> dp(target + 1);
@@ -84,6 +417,8 @@ Being generous, you will eat the piece with the minimum total sweetness and give
 Find the maximum total sweetness of the piece you can get by cutting the chocolate bar optimally.
 
 again this is a binary search problem.
+note the input K is k cuts, number of pieces would be k+1.
+The binary search looks for the last true condition. so we need bias to the right (see the mid calculation and right goes to left and left stay?) 
 
 ```cpp
     int maximizeSweetness(vector<int>& sweetness, int K) {
@@ -115,6 +450,35 @@ again this is a binary search problem.
         return ans;
     }
 ```
+
+bias to left solution:
+```cpp
+    int maximizeSweetness(vector<int>& sweetness, int K) {
+        int sum = accumulate(sweetness.begin(), sweetness.end(), 0);
+        if(K==0) return sum;
+        int target = sum/K;
+        int l = 0, r = target; //minimum sweetness
+        while(l<=r) {
+            int m = l+((r-l)/2);
+            if(CanCut(sweetness, m, K)) {
+                l = m+1;
+            }
+            else {
+                r = m-1;
+            }
+        }
+        return r;        
+    }
+    bool CanCut(vector<int>& sweetness, int s, int K) {
+        int cur_sum = 0;
+        for(int i=0; i<sweetness.size()&&K>=0; i++) {
+            cur_sum += sweetness[i];
+            if(cur_sum>=s) {cur_sum = 0; K--;}
+        }
+        return K==-1;
+    }
+```	
+
 	
 
 
