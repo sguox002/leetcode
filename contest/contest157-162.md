@@ -95,7 +95,9 @@ idea: equiv to longest common subsequence of s and reversed s. That's the critic
 ```	
 ## contest 157
 ### 1217. Play with Chips (***)
-*There are some chips, and the i-th chip is at position chips[i].
+_Problem: 
+
+There are some chips, and the i-th chip is at position chips[i].
 
 You can perform any of the two following types of moves any number of times (possibly zero) on any chip:
 
@@ -103,9 +105,10 @@ Move the i-th chip by 2 units to the left or to the right with a cost of 0.
 Move the i-th chip by 1 unit to the left or to the right with a cost of 1.
 There can be two or more chips at the same position initially.
 
-Return the minimum cost needed to move all the chips to the same position (any position).*
+Return the minimum cost needed to move all the chips to the same position (any position)._
 
 Approach:
+
 [1,2,3]: chip 0 at pos 1, chip 1 at pos 2, chip 2 at pos 3</br>
 [2,2,2,3,3]: chip 0 at pos 2, chip 1 at pos 2, chip 2 at pos 2, chip 3 at pos 3, chip 4 at pos 3</br>
 odd position add 1 becomes even, all odd can go to one position at no cost. all even position can go to even positon at no cost
