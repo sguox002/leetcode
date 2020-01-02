@@ -14,6 +14,7 @@ difficulty level based on all contester's performance:
 ## biweek 10
 ### 1213. Intersection of Three Sorted Arrays (***)
 *Given three integer arrays arr1, arr2 and arr3 sorted in strictly increasing order, return a sorted array of only the integers that appeared in all three arrays.*
+
 idea: this can be expanded to a matrix. using k pointers. just like merge sort.
 ```cpp
     vector<int> arraysIntersection(vector<int>& arr1, vector<int>& arr2, vector<int>& arr3) {
@@ -31,6 +32,7 @@ idea: this can be expanded to a matrix. using k pointers. just like merge sort.
 ```	
 ### 1214. Two Sum BSTs (**)
 *Problem: Given two binary search trees, return True if and only if there is a node in the first tree and a node in the second tree whose values sum up to a given integer target.*
+
 idea: traverse bst1 and store in hashset, and then traverse tree 2 and do the find.
 
 ### 1215. Stepping Numbers (***)
@@ -93,7 +95,7 @@ idea: equiv to longest common subsequence of s and reversed s. That's the critic
 ```	
 ## contest 157
 ### 1217. Play with Chips (***)
-There are some chips, and the i-th chip is at position chips[i].
+*There are some chips, and the i-th chip is at position chips[i].
 
 You can perform any of the two following types of moves any number of times (possibly zero) on any chip:
 
@@ -101,12 +103,14 @@ Move the i-th chip by 2 units to the left or to the right with a cost of 0.
 Move the i-th chip by 1 unit to the left or to the right with a cost of 1.
 There can be two or more chips at the same position initially.
 
-Return the minimum cost needed to move all the chips to the same position (any position).
-[1,2,3]: chip 0 at pos 1, chip 1 at pos 2, chip 2 at pos 3
-[2,2,2,3,3]: chip 0 at pos 2, chip 1 at pos 2, chip 2 at pos 2, chip 3 at pos 3, chip 4 at pos 3
+Return the minimum cost needed to move all the chips to the same position (any position).*
+
+Approach:
+[1,2,3]: chip 0 at pos 1, chip 1 at pos 2, chip 2 at pos 3</br>
+[2,2,2,3,3]: chip 0 at pos 2, chip 1 at pos 2, chip 2 at pos 2, chip 3 at pos 3, chip 4 at pos 3</br>
 odd position add 1 becomes even, all odd can go to one position at no cost. all even position can go to even positon at no cost
-but move each type of chip from odd to even or from even to odd cost 1. n types cost n.
-understand the problem is critical
+but move each type of chip from odd to even or from even to odd cost 1. n types cost n.</br>
+understand the problem is critical</br>
 
 ```cpp
     int minCostToMoveChips(vector<int>& chips) {
@@ -121,37 +125,39 @@ understand the problem is critical
 ```
 
 ### 1218. Longest Arithmetic Subsequence of Given Difference (***)
-Given an integer array arr and an integer difference, return the length of the longest subsequence in arr which is an arithmetic sequence such that the difference between adjacent elements in the subsequence equals difference.
-dp with hashmap
-note: you cannot sort or alter the array.
+*Problem: Given an integer array arr and an integer difference, return the length of the longest subsequence in arr which is an arithmetic sequence such that the difference between adjacent elements in the subsequence equals difference.*
+
+idea: dp with hashmap. note: you cannot sort or alter the array.
 ```cpp
     int longestSubsequence(vector<int>& arr, int difference) 
     {
         unordered_map<int,int> lengths;
         int result=1;
         for(int &i:arr)
-            result=max(result,lengths[i]=1+lengths[i-difference]); //Length of AP ending with 'i' with difference of 'difference' will be 1 + length of AP ending with 'i-difference'. result stores Max at each end
+            result=max(result,lengths[i]=1+lengths[i-difference]); 
+	    //Length of AP ending with 'i' with difference of 'difference' will be 1 + length of AP ending with 'i-difference'. result stores Max at each end
         return result;
     }
 ```
 	
 ### 1219. Path with Maximum Gold (***)
-In a gold mine grid of size m * n, each cell in this mine has an integer representing the amount of gold in that cell, 0 if it is empty.
+*Problem: In a gold mine grid of size m * n, each cell in this mine has an integer representing the amount of gold in that cell, 0 if it is empty.
 
 Return the maximum amount of gold you can collect under the conditions:
 
 Every time you are located in a cell you will collect all the gold in that cell.
-From your position you can walk one step to the left, right, up or down.
-You can't visit the same cell more than once.
-Never visit a cell with 0 gold.
-You can start and stop collecting gold from any position in the grid that has some gold.
+- From your position you can walk one step to the left, right, up or down.
+- You can't visit the same cell more than once.
+- Never visit a cell with 0 gold.
+- You can start and stop collecting gold from any position in the grid that has some gold.*
 
+idea:
 so 0 is actually obstacle you cannot go. and you cannot visit the cell again
 [[0,6,0],
  [5,8,7],
  [0,9,0]]
  9-8-7 and stop.
- brutal force: start at any position and try dfs and get the max.
+ brutal force: start at any position and try dfs and get the max. Once a cell is visited, change it to 0 immediately. restore back after the dfs is done for next dfs with different start point.
  ```cpp
      int getMaximumGold(vector<vector<int>>& grid) {
         int m=grid.size(),n=grid[0].size();
