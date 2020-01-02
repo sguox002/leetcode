@@ -241,14 +241,14 @@ Return the maximum amount of splitted balanced strings.
 
 using stack
 
-### 1222. Queens That Can Attack the King4
+### 1222. Queens That Can Attack the King (**)
 On an 8x8 chessboard, there can be multiple Black Queens and one White King.
 
 Given an array of integer coordinates queens that represents the positions of the Black Queens, and a pair of coordinates king that represent the position of the White King, return the coordinates of all the queens (in any order) that can attack the King.
 idea: same row/col/diagonal/anti-diagonal and direct contect with the king
 brutal force is fine. find the king position and extend 8 directions.
 
-### 1223. Dice Roll Simulation
+### 1223. Dice Roll Simulation (****)
 A die simulator generates a random number from 1 to 6 for each roll. You introduced a constraint to the generator such that it cannot roll the number i more than rollMax[i] (1-indexed) consecutive times. 
 
 Given an array of integers rollMax and an integer n, return the number of distinct sequences that can be obtained with exact n rolls.
