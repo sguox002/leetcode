@@ -635,12 +635,22 @@ if we use dfs to traverse, using visited states, we are able to find if there is
 if there is one or more cycles, all those edges in the cycles need to be discarded.
 so we need find a way to mark edges in each cycle.
 we can mark our visit time:
-for example: 1->2->3->4->2
-1->2 time 1
-2->3 time 2
-3->4 time 3
-4->2 time 4
-2->3 time 5 it is larger than 2, so 2,3,4, are in the cycle.
+
+0 - 2
+ \  /
+  1 - 3
+visiting sequence:  
+0-2-1-3 done. node 3 is done, and pop 3. try node 1's other path.
+0-2-1-0 done, see the cycle. node 1 is done, pop 1. mark 0-2, 2-1, 1-0
+0-2, 2's other path is done. pop 2. try 0's other path.
+0-1 visited, done.
+
+0 2 1 3 
+0 (2)
+found: 0-2
+found: 1-0
+found: 2-1
+(1)
 
 ```cpp
 vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
@@ -687,6 +697,8 @@ vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections)
 - if min depth is smaller than current node's depth, this edge with neighbor is in some cycle, mark  it as non-critical connection
 - after visited, mark the rank as n. (some other path may be smaller and still get to the node).
 - tarjan algorithm for this problem. it is used to find strongly connected components in a graph in linear time.
+check the strongly connected graph text about this.
+
 
 ## contest 153
 ### 1184. Distance Between Bus Stops (**)
@@ -765,7 +777,19 @@ sort the arr2 to [1,3,4]
 replace 5 with 3, replace 3 with 4->[1,3,4,6,7]
 
 - strictly increasing, so duplicate in arr2 is useless, we can remove those duplicates. and no element can be assigned more than one time.
--
+- dp approach: 
+  - first sort arr2 and remove duplicates, now the number of replace is the same as index in arr2
+  - now think it is a variation of longest increasing subsequence, but now you can go to the other array
+  arr1 = [1,5,3,6,7], arr2 = [1,3,2,4]
+  first sort and remove duplicate of arr2=[1,2,3,4]
+  1 5 3 6 7
+    \  /
+  1 2 3 4
+  
+it is like: find the longest increasing subsequence from arr1: 1,3,6,7 and check if we can fill the missing elements from arr2. The problem is we may have many LIS and we need to check all these combinations.
+we can add INT_MIN to the head and INT_MAX to the tail of arr1 to make the base simpler.
+
+
 
 
 
