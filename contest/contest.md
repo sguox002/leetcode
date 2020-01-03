@@ -4,16 +4,20 @@
 ### contest 156
 
 ### 1207. Unique Number of Occurrences (*)
-problem: determine if the array value's occurrence is unique.
-idea: hashmap to get the count for each value and convert the count to hashmap. check if the size equals
+<em>problem: 
+determine if the array value's occurrence is unique.</em>
+
+idea: 
+
+hashmap to get the count for each value and convert the count to hashmap. check if the size equals
 
 ### 1208. Get Equal Substrings Within Budget (***)
-*problem: two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
-given a maxcost, and find the longest substring <=maxcost.*
+<em>problem: two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
+given a maxcost, and find the longest substring <=maxcost.</em>
 
-idea: get the cost at each position and find the longest range sum<=maxcost.
-using prefix sum and hashmap.
-or using sliding window using two pointer
+idea: 
+- get the cost at each position and find the longest range sum<=maxcost.
+- using prefix sum and hashmap.or using sliding window using two pointer
 
 ```cpp
     int equalSubstring(string s, string t, int maxCost) {
@@ -36,13 +40,15 @@ or using sliding window using two pointer
 ```	
 
 ### 1209. Remove All Adjacent Duplicates in String II (**)
-*Problem:
+<em>Problem:
 
-remove k repeated chars until we cannot. return the final string.*
+remove k repeated chars until we cannot. return the final string.</em>
 
 idea:
 
-using stack to remove the string. stack store the char and its repeat number.
+- using stack to remove the string. 
+- stack store the char and its repeat number.
+
 ```cpp
     string removeDuplicates(string s, int k) {
         //using stack
@@ -68,7 +74,7 @@ using stack to remove the string. stack store the char and its repeat number.
 ```	
 
 ### 1210. Minimum Moves to Reach Target with Rotations (****)
-*problem:
+<em>Problem:
 
 In an n*n grid, there is a snake that spans 2 cells and starts moving from the top left corner at (0, 0) and (0, 1). The grid has empty cells represented by zeros and blocked cells represented by ones. The snake wants to reach the lower right corner at (n-1, n-2) and (n-1, n-1).
 
@@ -81,12 +87,14 @@ In one move the snake can:
 
 Return the minimum number of moves to reach the target.
 
-If there is no way to reach the target, return -1.*
+If there is no way to reach the target, return -1.</em>
 
 idea:
+- typical bfs problem.
+- queue need store the snake's head and tail position.
+- try all 4 possible position.
+- using string hashset for visited.
 
-typical bfs problem.
-queue need store the snake's head and tail position.
 ```cpp
     int minimumMoves(vector<vector<int>>& grid) {
         int n=grid.size();
@@ -145,7 +153,7 @@ queue need store the snake's head and tail position.
 
 ## contest 155
 ### 1200. Minimum Absolute Difference (**)
-*Problem:
+<em>Problem:
 
 Given an array of distinct integers arr, find all pairs of elements with the minimum absolute difference of any two elements. 
 
@@ -153,12 +161,12 @@ Return a list of pairs in ascending order(with respect to pairs), each pair [a, 
 
 a, b are from arr
 a < b
-b - a equals to the minimum absolute difference of any two elements in arr*
+b - a equals to the minimum absolute difference of any two elements in arr</em>
 
 idea:
 
-sort the array and find the min diff. The neigboring pairs will have the min difference
-so only need check neighborings to get the answer.
+- sort the array and find the min diff. 
+- The neigboring pairs will have the min difference. so only need check neighborings to get the answer.
 
 ```cpp
     vector<vector<int>> minimumAbsDifference(vector<int>& arr) {
@@ -178,16 +186,18 @@ so only need check neighborings to get the answer.
 ```
 
 ### 1201. Ugly Number III (***)
-*Problem:
+<em>Problem:
 
 Write a program to find the n-th ugly number.
 
-Ugly numbers are positive integers which are divisible by a or b or c.*
+Ugly numbers are positive integers which are divisible by a or b or c.</em>
 
 Idea:
 - a,b,c could be the same. 
 - binary search to find how many numbers given a target:
+
 n/a+n/b+n/c-n/lcm(a,b)-n/lcm(b,c)-n/lcm(a,c)+n/lcm(a,b,c)
+
 ```cpp
    int nthUglyNumber(int k, int A, int B, int C) {
         int lo = 1, hi = 2 * (int) 1e9;
@@ -345,5 +355,137 @@ vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& bef
 ```
 - note: why we need to start from right to do topsort? because all nodes>n-1 are added nodes which are the source/dest nodes for the groups
 
+## biweek 9
+### 1196. How Many Apples Can You Put into the Basket (*)
+<em>Problem:
 
- 
+You have some apples, where arr[i] is the weight of the i-th apple.  You also have a basket that can carry up to 5000 units of weight.
+
+Return the maximum number of apples you can put in the basket.
+</em>
+idea:
+
+greedy, from light to heavy, prefix sum.
+
+### 1197. Minimum Knight Moves (****)
+<em>Problem:
+
+In an infinite chess board with coordinates from -infinity to +infinity, you have a knight at square [0, 0].
+
+A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.
+
+Return the minimum number of steps needed to move the knight to the square [x, y].  It is guaranteed the answer exists.
+|x|+|y|<300.
+</em>
+
+Approach:
+- intuition is bfs for shortest move.
+- any position can be limited in first quarter.
+- bfs will grow substantially if layer number is large.
+The critical point for this problem is limit the coordinate in 1st quarter.
+```cpp
+    int minKnightMoves(int tx, int ty)
+    {
+        tx = abs(tx), ty = abs(ty);
+        int n = 400;
+        vector<vector<int>> mat(n, vector<int>(n,-1));
+
+        int dx[] = {-2, -2, -1, -1,  1, 1,  2, 2};
+        int dy[] = {-1,  1, -2,  2, -2, 2, -1, 1};
+
+        int row = 0, col = 0, x, y;
+
+        queue<pair<int, int>> q;
+
+        mat[row][col] = 0;
+        q.push(make_pair(row,col));
+
+        while(!q.empty())
+        {
+            if(mat[tx][ty] != -1)
+                return mat[tx][ty];
+
+            row = q.front().first;
+            col = q.front().second;
+            q.pop();
+
+            for(int i = 0; i < 8; i++)
+            {
+                int x = abs(row + dx[i]);//limit it in 1st quarter.
+                int y = abs(col + dy[i]);
+
+                if(x >= 0 and y >= 0 and x < n and y < n and mat[x][y] == -1)
+                {
+                    mat[x][y] = 1 + mat[row][col];
+                    q.push(make_pair(x,y));
+                }
+            }
+        } 
+        return mat[tx][ty];
+    }
+```	
+
+### 1198. Find Smallest Common Element in All Rows (**)
+<em>Problem:
+
+Given a matrix mat where every row is sorted in increasing order, return the smallest common element in all rows.
+
+If there is no common element, return -1.
+</em>
+idea:
+
+- this is so similar to sorted list merge using k pointers with PQ. O(mn)
+- using first row number and binary search in other rows. O(mnlog(m))
+- count using hashmap.
+
+### 1199. Minimum Time to Build Blocks
+<em>Problem:
+
+You are given a list of blocks, where blocks[i] = t means that the i-th block needs t units of time to be built. A block can only be built by exactly one worker.
+
+A worker can either split into two workers (number of workers increases by one) or build a block then go home. Both decisions cost some time.
+
+The time cost of spliting one worker into two workers is given as an integer split. Note that if two workers split at the same time, they split in parallel so the cost would be split.
+
+Output the minimum time needed to build all blocks.
+
+Initially, there is only one worker.
+blocks = [1,2,3], split = 1
+Split 1 worker into 2, then assign the first worker to the last block and split the second worker into 2.
+Then, use the two unassigned workers to build the first two blocks.
+The cost is 1 + max(3, 1 + max(1, 2)) = 4.
+
+</em>
+Analysis:
+
+- n jobs need split n workers, and one worker can split into two workers.
+- parallel work: the time is the max.
+- assign worker to block matters to the total time.
+- apparently, worker split and assign the longest job, the other guy split and assign him the longest job. seems a greedy approach works. above observation is incorrect, each guy has option to do work or split again, this makes it a binary tree. The leaf node is the time. each branch is the time to finish the job. and the answer is the max of all the branches.
+- We can model this entire question as a binary tree that we need to construct with a minimum max depth cost. Each of the blocks is a leaf node, with a cost of its face value. And then each inner node will be of cost split. nodes that are sitting at the same level represent work that is done in parallel. We know there will be len(blocks) - 1 of these inner nodes, so the question now is how can we construct the tree such that it has the minimum depth.
+- Huffman is used to build a tree with minimum total weighted path. we can choose either split or not split. This is the same as choosing 0 or 1 in Huffman code. Initially, the optimal tree can be built by using a huffman coding way. Then combine the least two nodes. After that, rebuild the huffman tree.
+- thus we get the algorithm: build a min heap and pop the top 2 and add split to the larger one, and put it back until there is one left. This is called Huffman algorithm.
+- this is reverse thinking: look each num in blocks as leaf, and merge these leaves with cost "split" until get one root.
+for example [1,2,3] with split=1
+first leaf [1,2,3]
+the [1,2] merge with split, got max 3
+3 merge with 3 with split, got 4.
+
+```cpp
+    int minBuildTime(vector<int>& blocks, int split) {
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for(int num: blocks) {
+            pq.push(num);
+        }
+        while (pq.size() > 1) {
+            int a = pq.top(); pq.pop();
+            int b = pq.top(); pq.pop();
+            pq.push(b+split);
+        }
+        return pq.top();
+    }
+```
+	
+
+
+
