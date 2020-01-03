@@ -487,6 +487,291 @@ the [1,2] merge with split, got max 3
     }
 ```
 	
+## contest 154
+1189. Maximum Number of Balloons (**)
+<em>Problem:
+Given a string text, you want to use the characters of text to form as many instances of the word "balloon" as possible.
+
+You can use each character in text at most once. Return the maximum number of instances that can be formed.</em>
+
+idea: 
+
+using hashmap to record the occurrence of each char in balloon and then divide the cnt in balloon and get the gcd
+
+### 1190. Reverse Substrings Between Each Pair of Parentheses (***)
+<em>Problem:
+
+You are given a string s that consists of lower case English letters and brackets. 
+
+Reverse the strings in each pair of matching parentheses, starting from the innermost one.
+
+Your result should not contain any brackets.
+</em>
+idea: recursive stack.
+```cpp
+    string reverseParentheses(string s) {
+        string ans=parse(s);
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+        
+    string parse(string s) {
+        stack<string> st;
+        int i=0;
+        string t;
+        while(i<s.size()){
+            if(s[i]!='('){
+                t+=s[i];
+                i++;
+            }
+            else{
+                if(t.size()){
+                    st.push(t);
+                    t.clear();
+                }
+                int j=i+1,p=1;
+                while(p){
+                    if(s[j]=='(') p++;
+                    if(s[j]==')') p--;
+                    j++;
+                }
+                j--;
+                string tp=parse(s.substr(i+1,j-i-1));//reversed
+                st.push(tp);
+                i=j+1;
+            }
+        }
+        
+        if(t.size()){
+            st.push(t);
+        } 
+        string ans;
+        while(st.size()){
+            string w=st.top();
+            st.pop();
+            reverse(w.begin(),w.end());
+            ans+=w;
+        }
+        return ans;//{ans.rbegin(),ans.rend()};
+        
+    }
+```	
+
+### 1191. K-Concatenation Maximum Sum (****)
+<em>Problem:
+
+Given an integer array arr and an integer k, modify the array by repeating it k times.
+
+For example, if arr = [1, 2] and k = 3 then the modified array will be [1, 2, 1, 2, 1, 2].
+
+Return the maximum sub-array sum in the modified array. Note that the length of the sub-array can be 0 and its sum in that case is 0.
+
+As the answer can be very large, return the answer modulo 10^9 + 7.</em>
+idea:
+
+- k=1:  find the max subarray sum in one array
+- k=2:  find the max subarray sum in circular array: find the max and min at the same time, or use rotation. 
+- k>2:  inside k-2 groups only count the sum of the array.
+so only consider k=1 and 2 case.
+
+```cpp
+int kConcatenationMaxSum(vector<int>& arr, int k) {
+    int n = arr.size(), sum = arr[0], mx = arr[0];
+    int64_t total = accumulate(arr.begin(), arr.end(), 0), mod = 1e9+7;
+    for (int i = 1; i < n * min(k, 2); i++) {
+        sum = max(arr[i % n], sum + arr[i % n]);
+        mx = max(mx, sum);
+    }
+    return max<int64_t>({0, mx, total * max(0, k - 2) + mx}) % mod;
+}
+```
+
+### 1192. Critical Connections in a Network (*****)
+<em>Problem:
+
+There are n servers numbered from 0 to n-1 connected by undirected server-to-server connections forming a network where connections[i] = [a, b] represents a connection between servers a and b. Any server can reach any other server directly or indirectly through the network.
+
+A critical connection is a connection that, if removed, will make some server unable to reach some other server.
+
+Return all critical connections in the network in any order.
+</em>
+
+idea:
+- brutal force: loop to union find the edge without current one to see if it combines one set.
+it surely get TLE since the number of edges up to 10^5, and union find is O(N) and the complexity would be O(N^2)
+without path suppresion, it is higher.
+```cpp
+    vector<int> parent;
+    int sz;
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<vector<int>> ans;
+        parent.resize(connections.size());
+        for(int i=0;i<connections.size();i++)
+            if(single_set(connections,i,n)) ans.push_back(connections[i]);
+        return ans;
+    }
+    bool single_set(vector<vector<int>>& conn,int rm,int num_node){
+        parent.clear();
+        int sz=num_node;
+        for(int i=0;i<sz;i++) parent[i]=i;
+        for(int i=0;i<conn.size();i++){
+            if(i==rm) continue;
+            int pi=findp(conn[i][0]),pj=findp(conn[i][1]);
+            if(pi!=pj) {parent[pi]=pj;sz--;}
+        }
+        //cout<<rm<<" "<<sz<<endl;
+        return sz!=1;
+    }
+    int findp(int i){
+        while(i!=parent[i]){
+			parent[i]=parent[parent[i]]; //path compression
+			i=parent[i];
+		}
+        return i;
+    }
+```	
+- efficient way: a critical edge is an edge not in a cycle. it is equivalent to find the bridge between two cycles.
+if we use dfs to traverse, using visited states, we are able to find if there is a cycle. If no cycle found, all the edges are critical edge.
+if there is one or more cycles, all those edges in the cycles need to be discarded.
+so we need find a way to mark edges in each cycle.
+we can mark our visit time:
+for example: 1->2->3->4->2
+1->2 time 1
+2->3 time 2
+3->4 time 3
+4->2 time 4
+2->3 time 5 it is larger than 2, so 2,3,4, are in the cycle.
+
+```cpp
+vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        unordered_map<int, unordered_set<int>> graph;
+        unordered_set<long> st;
+		for (auto& edge: connections){
+            //if (edge[0] > edge[1]) swap(edge[0], edge[1]); //
+            graph[edge[0]].insert(edge[1]);
+            graph[edge[1]].insert(edge[0]);
+			st.insert((long)edge[0]*n+edge[1]);
+        }
+        vector<int> rank(n, -2);
+        dfs(0, 0, n, st, rank, graph);
+        vector<vector<int>> ans;//
+        for(auto t: st){
+            ans.push_back({t/n,t%n});
+        }
+        return ans;
+    }
+    
+    int dfs(int node, int depth, int n, unordered_set<long>& st, vector<int>& rank, unordered_map<int, unordered_set<int>>& graph) {
+        if (rank[node] > 0) return rank[node];
+        rank[node] = depth;
+        int min_depth = n; //being visited mark the max n.
+
+        for(auto& neghbor: graph[node]) {
+            if (rank[neghbor] == depth - 1) continue; //the parent node just visited, avoid repeating.
+            int cur_depth = dfs(neghbor, depth + 1, n, st, rank, graph); //current dfs min depth.
+            if (cur_depth <= depth) {
+                st.erase((long)min(node, neghbor)*n+max(node, neghbor)); //make sure we use start<end.
+            }
+            min_depth = min(min_depth, cur_depth);
+        }
+        rank[node] = n; //this line is not necessary. but actually not. it will not pass the test if removed.
+        return min_depth;
+    }
+```	
+- first make the graph, (undirectional), to make the edge 1-0 0-1 the same, we make sure the start<end.
+- we use i*n+j to represent an edge.
+- mark all nodes to be -1 or -2 (unvisited)
+- mark a node being visited as n. ( or other value)
+- mark a node being visited a timestamp or depth, or rank.
+- dfs all its neighbors (prevent the parent again) and find the min_depth.
+- if min depth is smaller than current node's depth, this edge with neighbor is in some cycle, mark  it as non-critical connection
+- after visited, mark the rank as n. (some other path may be smaller and still get to the node).
+- tarjan algorithm for this problem. it is used to find strongly connected components in a graph in linear time.
+
+## contest 153
+### 1184. Distance Between Bus Stops (**)
+<em>Problem:
+
+A bus has n stops numbered from 0 to n - 1 that form a circle. We know the distance between all pairs of neighboring stops where distance[i] is the distance between the stops number i and (i + 1) % n.
+
+The bus goes along both directions i.e. clockwise and counterclockwise.
+
+Return the shortest distance between the given start and destination stops.
+</em>
+idea: it is a cycle, we just compare start-end distance and total-start,end distance, make sure start<end
+
+### 1185. Day of the week (**)
+- use built in date functions
+- known today's weekday and calculate how many days between given date and today. and %7. We need to know how to get the leap year.
+
+### 1186. Maximum Subarray Sum with One Deletion (****)
+<em>Problem:
+
+Given an array of integers, return the maximum sum for a non-empty subarray (contiguous elements) with at most one element deletion. In other words, you want to choose a subarray and optionally delete one element from it so that there is still at least one element left and the sum of the remaining elements is maximum possible.
+
+Note that the subarray needs to be non-empty after deleting one element.
+</em>
+
+idea:
+
+- if in the subarray, min>0, we do not remove anything. if <0, then we remove the min.
+- also remove the min helps to connect two subarrays
+- dp (the max subarray sum is also a dp problem) and we add an extra constraint making it a 2d dp problem:
+	- do not delete it: regular max subarray sum
+	- delete it: only for negative number.
+	- all negatives, return the max.
+	
+```cpp
+    int maximumSum(vector<int>& arr) {
+        vector<vector<int>> dp(arr.size(), vector<int>(2, 0)); //dp[i,0] no delete, dp[i,1] delete one element
+        dp[0][0]=arr[0]; 
+        int res=arr[0];
+        for(int i=1;i<arr.size();i++) { 
+            dp[i][0]=max(arr[i], dp[i-1][0]+arr[i]); //nodel
+            dp[i][1]=max(arr[i], max(dp[i-1][1]+arr[i], dp[i-1][0])); //delete i or not delete i.
+            res=max(res, max(dp[i][0], dp[i][1])); 
+        }
+        return res;
+    }
+```	
+to make it more clear:
+```cpp
+    int maximumSum(vector<int>& arr) {
+		int del=0,nodel=arr[0];
+        int res=arr[0];
+        for(int i=1;i<arr.size();i++) {
+            int v=arr[i];
+            del=max({v, del+v, nodel}); //delete i or not delete i: whether we shall connect to previous
+			nodel=max(v, nodel+v); //nodel: either we shall connect to previous
+            res=max({res, del, nodel}); 
+        }
+        return res;
+    }
+```
+
+### 1187. Make Array Strictly Increasing (*****)
+<em>Problem:
+
+Given two integer arrays arr1 and arr2, return the minimum number of operations (possibly zero) needed to make arr1 strictly increasing.
+
+In one operation, you can choose two indices 0 <= i < arr1.length and 0 <= j < arr2.length and do the assignment arr1[i] = arr2[j].
+
+If there is no way to make arr1 strictly increasing, return -1.
+</em>
+
+Idea:
+[1,5,3,6,7],[4,3,1]
+sort the arr2 to [1,3,4]
+replace 5 with 3, replace 3 with 4->[1,3,4,6,7]
+
+- strictly increasing, so duplicate in arr2 is useless, we can remove those duplicates. and no element can be assigned more than one time.
+-
+
+
+
+
+
+
 
 
 
