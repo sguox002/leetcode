@@ -4,8 +4,9 @@
 - 154: 385/6063
 - 153: 183/6214
 - bi8: 69/1725 4/4
-
-
+- 152:
+- 151:
+- bi7:
 ### contest 156
 
 ### 1207. Unique Number of Occurrences (*)
@@ -914,8 +915,489 @@ we sort it according to its number and fill them first.
 - we can also use a min heap to pop non-needed elements.
 see other O(1) solutions in discussion on the site.
 
+## contest 152
+### 1175. Prime Arrangement (***)
+<em>Problem:
+
+Return the number of permutations of 1 to n so that prime numbers are at prime indices (1-indexed.)
+
+(Recall that an integer is prime if and only if it is greater than 1, and cannot be written as a product of two positive integers both smaller than it.)
+
+Since the answer may be large, return the answer modulo 10^9 + 7.
+</em>
+Idea:
+suppose we have m primes, it takes m slots, and other takes (n-m) slots
+m!*(n-m)!
+- count prime numbers.
+```cpp
+    int mod=1e9+7;
+    int numPrimeArrangements(int n) {
+        int num_primes=getnum_primes(n);        
+        return factor(num_primes)*factor(n-num_primes)%mod;
+    }
+    int getnum_primes(int n){
+        vector<int> primes(n+1,1);
+        primes[0]=primes[1]=0;
+        for(int i=2;i<=sqrt(n);i++){
+            for(long j=(long)i*i;j<=n;j+=i)
+                primes[j]=0;
+        }
+        return accumulate(primes.begin(),primes.end(),0);
+    }
+    long factor(int n){
+        long res=1;
+        for(int i=1;i<=n;i++)
+            res*=i,res%=mod;
+        return res%mod;
+	}
+```
+
+### 1176. Diet Plan Performance(*)
+<em>Problem:
+
+A dieter consumes calories[i] calories on the i-th day. 
+
+Given an integer k, for every consecutive sequence of k days (calories[i], calories[i+1], ..., calories[i+k-1] for all 0 <= i <= n-k), they look at T, the total calories consumed during that sequence of k days (calories[i] + calories[i+1] + ... + calories[i+k-1]):
+
+If T < lower, they performed poorly on their diet and lose 1 point; 
+If T > upper, they performed well on their diet and gain 1 point;
+Otherwise, they performed normally and there is no change in points.
+Initially, the dieter has zero points. Return the total number of points the dieter has after dieting for calories.length days.
+
+Note that the total points can be negative.	
+</em>
+Idea: sliding window at a fixed win size.
+		
+### 1177. Can Make Palindrome from Substring (***)
+<em>Problem:
+
+Given a string s, we make queries on substrings of s.
+
+For each query queries[i] = [left, right, k], we may rearrange the substring s[left], ..., s[right], and then choose up to k of them to replace with any lowercase English letter. 
+
+If the substring is possible to be a palindrome string after the operations above, the result of the query is true. Otherwise, the result is false.
+
+Return an array answer[], where answer[i] is the result of the i-th query queries[i].
+
+Note that: Each letter is counted individually for replacement so if for example s[left..right] = "aaa", and k = 2, we can only replace two of the letters.  (Also, note that the initial string s is never modified by any query.)
+</em>
+
+Idea:
+
+- a palindrome string has zero or one char with odd occurrences, so just check if it is possible to reach this using k replace.
+- a range count can be obtained using prefix sum. using 26 prefix sum.
+```cpp
+    vector<bool> canMakePaliQueries(string s, vector<vector<int>>& queries) {
+        //count the prefix sum for each number
+        vector<vector<int>> cnt(26);
+        for(int i=0;i<s.size();i++) cnt[s[i]-'a'].push_back(i);
+        int n=queries.size();
+        vector<bool> ans(n);
+        for(int i=0;i<queries.size();i++){
+            ans[i]=valid(cnt,queries[i]);
+        }
+        return ans;
+    }
+    bool valid(vector<vector<int>>& cnt,vector<int>& q){
+        int l=q[0],r=q[1],k=q[2];
+        if(l>r) return 0;
+        if(l==r) return 1;
+        vector<int> tmp(26);
+        int num_rep=0;
+        for(int i=0;i<26;i++){
+            if(cnt[i].empty()) continue;
+            auto it1=lower_bound(cnt[i].begin(),cnt[i].end(),l);
+            auto it2=upper_bound(cnt[i].begin(),cnt[i].end(),r);
+            tmp[i]=it2-it1;
+            if(tmp[i]%2) num_rep++;
+        }
+        return num_rep/2<=k; //we can only keep 1 odd, and need 
+    }
+```	
+
+### 1178. Number of Valid Words for Each Puzzle (****)
+<em>Problem:
+
+With respect to a given puzzle string, a word is valid if both the following conditions are satisfied:
+word contains the first letter of puzzle.
+For each letter in word, that letter is in puzzle.
+For example, if the puzzle is "abcdefg", then valid words are "faced", "cabbage", and "baggage"; while invalid words are "beefed" (doesn't include "a") and "based" (includes "s" which isn't in the puzzle).
+Return an array answer, where answer[i] is the number of words in the given word list words that are valid with respect to the puzzle puzzles[i].
+</em>
+
+Approach:
+
+- get the hist for each puzzle and also get hist for word, word must be a subset of puzzle O(m*n)
+up to 10^9 which is too high complexity.
+- trie: trie is generally a good choice for many string vs many string. but how?
+	- build puzzle or word? for word
+	- word need remove duplicates and sorted
+	- word may have duplicates after preprocessing, need save count and hashset.
+	```cpp
+	    struct TrieNode{
+        TrieNode* child[26];
+        int count;
+        set<char> ms;
+        TrieNode(){count=0;memset(child,0,26*sizeof(TrieNode*));}
+    };
+    TrieNode* root;
+	```
+	- add words into trie:
+	```cpp
+	void addWord(string s){
+        set<char> ms(s.begin(),s.end());
+        //cout<<res<<endl;
+        TrieNode* p=root;
+        for(char c: ms){
+            if(p->child[c-'a']==0)
+                p->child[c-'a']=new TrieNode;
+            p=p->child[c-'a'];
+        }
+        p->count++;
+        p->ms=ms;
+    }
+	```
+	- find match the puzzle with constraint: first letter in puzzle must in it.
+		- sort the puzzle word (since trie is sorted)
+		- dfs
+		```cpp
+	int find_word(string& s,bool match,int start,char first,TrieNode* p){
+        //if(match && !p->child[first-'a']) return 0;
+        if(start==s.size()) return 0;
+        int ans=0;
+        char c=s[start];
+        if(!p->ms.empty() && p->ms.count(first))
+            ans+=p->count;
+        //cout<<c;
+        for(int i=0;i<26;i++){
+            if(p->child[i]==0) continue;
+            char t='a'+i;
+            int st=start;
+            while(st<s.size() && s[st]!=t) st++;
+            //bool mat=match||(t==first);
+            ans+=find_word(s,match||(t==first),st,first,p->child[i]);
+        }
+       
+        return ans;        
+    }
+	```
+
+## contest 151
+### 1169. Invalid Transactions
+<em>Problem:
+
+A transaction is possibly invalid if:
+
+the amount exceeds $1000, or;
+if it occurs within (and including) 60 minutes of another transaction with the same name in a different city.
+Each transaction string transactions[i] consists of comma separated values representing the name, time (in minutes), amount, and city of the transaction.
+
+Given a list of transactions, return a list of transactions that are possibly invalid.  You may return the answer in any order.
+</em>
+note:
+- if A and B occurs in 60mins in different city with same name, A and B are both invalid.
+- single invalid: >1000
+- first we need to convert the string to data structure: name,time,amount,place
+- we can sort the transactions by time (hidden). different person are not related. 
+name: time, amount, place
+- using same person hashmap and check against previous transaction.
+```cpp
+    vector<string> invalidTransactions(vector<string>& transactions) {
+        unordered_set<string> res;
+        unordered_map<string,vector<vector<string>>> m;
+        for(auto& t:transactions){
+            istringstream ss(t);
+            vector<string> s(4,"");
+            int i=0;
+            while(getline(ss,s[i++],','));
+            if(stoi(s[2])>1000) res.insert(t);
+            for(vector<string> j:m[s[0]])
+                if((j[3]!=s[3])&&abs(stoi(j[1])-stoi(s[1]))<=60){
+                    res.insert(j[0]+","+j[1]+","+j[2]+","+j[3]);
+                    //cout<<"remove: "<<t<<endl;
+                    if(!res.count(t)) res.insert(t);
+                }
+            m[s[0]].push_back({s[0],s[1],s[2],s[3]});
+        }
+        vector<string> ans;
+        for(auto& k:res) ans.push_back(k);
+        return ans;
+    }
+```
+It is not easy to get it right.
+
+### 1170. Compare Strings by Frequency of the Smallest Character (**)
+<em>Problem:
+
+Let's define a function f(s) over a non-empty string s, which calculates the frequency of the smallest character in s. For example, if s = "dcce" then f(s) = 2 because the smallest character is "c" and its frequency is 2.
+
+Now, given string arrays queries and words, return an integer array answer, where each answer[i] is the number of words such that f(queries[i]) < f(W), where W is a word in words.
+
+ 
+
+Example 1:
+
+Input: queries = ["cbd"], words = ["zaaaz"]
+Output: [1]
+Explanation: On the first query we have f("cbd") = 1, f("zaaaz") = 3 so f("cbd") < f("zaaaz").
+</em>
+
+approach: straightforward, just implement f(s) and count.
 
 
+### 1171. Remove Zero Sum Consecutive Nodes from Linked List (****)
+<em>Problem:
 
+Given the head of a linked list, we repeatedly delete consecutive sequences of nodes that sum to 0 until there are no such sequences.
 
+After doing so, return the head of the final linked list.  You may return any such answer.
 
+ 
+
+(Note that in the examples below, all sequences are serializations of ListNode objects.)
+
+Example 1:
+
+Input: head = [1,2,-3,3,1]
+Output: [3,1]
+Note: The answer [1,2,1] would also be accepted.
+</em>
+Approach:
+we need to find the prefix sum the same, and remove them, we can use stack.
+it involves linkedlist and array operations.
+```cpp
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        vector<pair<ListNode*,int>> vnode;
+        int prefix=0;
+        unordered_map<int,ListNode*> mp;
+        mp[0]=0; //insert 0
+        ListNode* p=head;
+        while(p){
+            prefix+=p->val;
+            //cout<<p->val<<endl;
+            if(mp.count(prefix)){
+                while(vnode.size()&&vnode.back().first!=mp[prefix]){
+                    //cout<<"remove: "<<vnode.back()->val<<endl;
+                    mp.erase(vnode.back().second);
+                    vnode.pop_back();
+                }
+            }
+            else {
+                mp[prefix]=p;
+                vnode.push_back({p,prefix});
+            }
+            
+            p=p->next;
+        }
+        //cout<<vnode.size();
+        ListNode* tail=0;
+        while(vnode.size()){
+            vnode.back().first->next=tail;
+            tail=vnode.back().first;
+            vnode.pop_back();
+        }
+        return tail;
+    }
+```
+	
+
+### 1172. Dinner Plate Stacks
+<em>Problem:
+You have an infinite number of stacks arranged in a row and numbered (left to right) from 0, each of the stacks has the same maximum capacity.
+
+Implement the DinnerPlates class:
+
+DinnerPlates(int capacity) Initializes the object with the maximum capacity of the stacks.
+void push(int val) pushes the given positive integer val into the leftmost stack with size less than capacity.
+int pop() returns the value at the top of the rightmost non-empty stack and removes it from that stack, and returns -1 if all stacks are empty.
+int popAtStack(int index) returns the value at the top of the stack with the given index and removes it from that stack, and returns -1 if the stack with that given index is empty.
+</em>
+Approach:
+- push from the left (smaller) and pop from the right (the bigger)
+- map<int,vector<int>> the stack index vs the stack using vector.
+- set<int> avail maintains all non-empty stack.
+
+```cpp
+    //that is similar to a growing matrix
+    //to quick find the stack, we need get O(1)
+    //use a map for non-empty stack and a map for empty
+    int c;
+    map<int, vector<int>> m;
+    set<int> available;
+
+    DinnerPlates(int capacity) {
+        c = capacity;
+    }
+
+    void push(int val) {
+        if (!available.size())
+            available.insert(m.size());
+        m[*available.begin()].push_back(val);
+        if (m[*available.begin()].size() == c)
+            available.erase(available.begin());
+    }
+
+    int pop() {
+        if (m.size() == 0)
+            return -1;
+        return popAtStack(m.rbegin()->first);
+    }
+
+    int popAtStack(int index) {
+        if (m[index].size() == 0)
+            return -1;
+        int val = m[index].back();
+        m[index].pop_back();
+        available.insert(index);
+        if (m[index].size() == 0)
+            m.erase(index);
+        return val;
+    }
+```	
+
+## biweek 7
+### 1165. Single-Row Keyboard
+<em>Problem:
+
+There is a special keyboard with all keys in a single row.
+
+Given a string keyboard of length 26 indicating the layout of the keyboard (indexed from 0 to 25), initially your finger is at index 0. To type a character, you have to move your finger to the index of the desired character. The time taken to move your finger from index i to index j is |i - j|.
+
+You want to type a string word. Write a function to calculate how much time it takes to type it with one finger.
+
+Example 1:
+
+Input: keyboard = "abcdefghijklmnopqrstuvwxyz", word = "cba"
+Output: 4
+Explanation: The index moves from 0 to 2 to write 'c' then to 1 to write 'b' then to 0 again to write 'a'.
+Total time = 2 + 1 + 1 = 4. </em>
+idea: straightforward.
+
+### 1166. Design File System
+<em>Problem:
+
+You are asked to design a file system which provides two functions:
+
+createPath(path, value): Creates a new path and associates a value to it if possible and returns True. Returns False if the path already exists or its parent path doesn't exist.
+get(path): Returns the value associated with a path or returns -1 if the path doesn't exist.
+The format of a path is one or more concatenated strings of the form: / followed by one or more lowercase English letters. For example, /leetcode and /leetcode/problems are valid paths while an empty string and / are not.
+
+Implement the two functions.
+
+Please refer to the examples for clarifications.</em>
+Idea:
+
+File system is tree structure, we can use hashmap for it.
+```cpp
+    unordered_map<string,int> mp;
+    FileSystem() {
+        
+    }
+    
+    bool create(string path, int value) {
+        if(mp.count(path)) return 0;
+        int ind=1,next;
+        while((next=path.find_first_of('/',ind))!=string::npos){
+            if(mp.count(path.substr(0,next))==0) return 0;
+            ind=next+1;
+        }
+        mp[path]=value;
+        return 1;
+    }
+    
+    int get(string path) {
+        if(mp.count(path)) return mp[path];
+        return -1;
+    }
+```
+
+### 1167. Minimum Cost to Connect Sticks
+<em>
+You have some sticks with positive integer lengths.
+
+You can connect any two sticks of lengths X and Y into one stick by paying a cost of X + Y.  You perform this action until there is one stick remaining.
+
+Return the minimum cost of connecting all the given sticks into one stick in this way.
+
+Example 1:
+
+Input: sticks = [2,4,3]
+Output: 14	
+</em>
+
+this problem is very similar to huffman algorithm the worker split problem.
+the idea: sort the input and arrange as the tree leaf, and combine to a parent (x+y) and parent combine with next leaf.
+[1,8,3,5]==>[1,3,5,8]--> 4+9+17=30
+
+     17
+     /\
+    9  \
+   /\   \
+  4  \   \
+ /\   \   \
+1  3   5   8
+```cpp
+    int connectSticks(vector<int>& sticks) {
+        //previous is added again into sum
+        //greedy: always add the two min
+        priority_queue<int,vector<int>,greater<int>> pq(sticks.begin(),sticks.end());
+        int ans=0;
+        while(pq.size()>1){
+            int i=pq.top();
+            pq.pop();
+            int j=pq.top();
+            pq.pop();
+            pq.push(i+j);
+            ans+=i+j;
+        }
+        return ans;
+    }
+```
+
+### 1168. Optimize Water Distribution in a Village
+<em>Problem:
+
+There are n houses in a village. We want to supply water for all the houses by building wells and laying pipes.
+
+For each house i, we can either build a well inside it directly with cost wells[i], or pipe in water from another well to it. The costs to lay pipes between houses are given by the array pipes, where each pipes[i] = [house1, house2, cost] represents the cost to connect house1 and house2 together using a pipe. Connections are bidirectional.
+
+Find the minimum total cost to supply water to all houses.	
+</em>
+Idea: consider drilling wells a cost to a common node. and then problem is simplified.
+from the edges find the connected graph--> minimum spanning tree.
+we can use union-find and greedy to get the MST.
+greedy: try the shortest edge first.
+```cpp
+    vector<int> parent;
+    struct comp{
+        bool operator()(vector<int>& a,vector<int>& b){
+            return a[2]<b[2];
+        }
+    };
+    int minCostToSupplyWater(int n, vector<int>& wells, vector<vector<int>>& pipes) {
+        //union find
+        parent.resize(n+1);
+        for(int i=0;i<=n;i++) parent[i]=i;
+        for(int i=0;i<n;i++) pipes.push_back({0,i+1,wells[i]});
+        sort(pipes.begin(),pipes.end(),comp()); //sort by cost
+        //now the problem is to get the min sum visiting all nodes
+        //greedy: use the smallest pipe to connect two unions
+        int ans=0;
+        for(int i=0;n>0;i++){
+            int pi=find_parent(pipes[i][0]),pj=find_parent(pipes[i][1]);
+            if(pi!=pj) //two different set
+            {
+                ans+=pipes[i][2];
+                if(pi<pj) parent[pj]=pi;
+                else parent[pi]=pj;
+                n--; //reduce 1 set;
+            }
+        }
+        return ans;
+    }
+    int find_parent(int i){
+        while(i!=parent[i]) i=parent[i];
+        return i;
+    }
+```
+	
