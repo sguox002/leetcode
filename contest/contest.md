@@ -1,5 +1,6 @@
 - 156: 526/6764 4/4
 - 155: 101/6581 4/4
+- bi9: 112/3075 4/4
 
 ### contest 156
 
@@ -9,7 +10,7 @@ determine if the array value's occurrence is unique.</em>
 
 idea: 
 
-hashmap to get the count for each value and convert the count to hashmap. check if the size equals
+hashmap to get the count for each value and convert the count to hashset. check if the size equals
 
 ### 1208. Get Equal Substrings Within Budget (***)
 <em>problem: two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
