@@ -88,6 +88,8 @@ the recursive backtracking itself is a loop over the letters. So do not loop ove
         return res==sum;
     }
 ```	
+-note above code will give wrong answer for some case since it did not check leading digit==0
+
 it is easy to understand, however it tries a lot of unnecessary combinations.</br>
 for example when we choose the definition for the LSB of each words, the result bit is determined.</br>
 but this approach still tries all the combination.</br>
