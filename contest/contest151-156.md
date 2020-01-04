@@ -228,7 +228,10 @@ n/a+n/b+n/c-n/lcm(a,b)-n/lcm(b,c)-n/lcm(a,c)+n/lcm(a,b,c)
         return lo;
     }
 ```
-	
+- the trick is how to get the lcm for 3 integers: for example 3,5,6,the lcm(3,5)=15, lcm(5,6)=30, lcm(15,30)=30
+- try to use long for the lcm calculation to avoid overflow.
+- lcm and gcd are cascadable. gcd(a,b,c)=gcd(a,gcd(b,c)), lcm is similar.
+
 ### 1202. Smallest String With Swaps (****)
 <em>
 Problem:
@@ -246,47 +249,46 @@ a pair of index can sort the two chars. if the pairs connected, we will be able 
 so, it seems it is a union-find problem. sort the chars in each set.
 
 ```cpp
-    vector<int> parent;
-    int sz;
+    unordered_map<int,int> parent;
+    unordered_map<int,set<int>> mp; //parent vs (char,index) sorted by char
     string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
-        //union-find
-        int n=s.size();
-        parent.resize(n);
-        for(int i=0;i<n;i++) parent[i]=i;
-        sz=n;
-        for(auto t: pairs){
-            int pi=find_parent(t[0]),pj=find_parent(t[1]);
-            if(pi==pj) continue;
-            if(pi<pj) parent[pj]=pi;
-            else parent[pi]=pj;
-            sz--;
-        }
-        //sort each group using lexi
-        unordered_map<int,pair<string,vector<int>>> mp;
-        //unordered_map<int,vector<int>> mp1;
-        for(int i=0;i<n;i++){
-            int pi=find_parent(i);
-            mp[pi].first+=s[i];
-            mp[pi].second.push_back(i);
-        }
-        
-        for(auto &t: mp)
-            sort(t.second.first.begin(),t.second.first.end());
-        //for(auto t: mp)
-            //cout<<t.first<<": "<<t.second.first<<endl;
-        string ans=s;
-        for(auto t: mp){
-            for(int i=0;i<t.second.first.size();i++){
-                ans[t.second.second[i]]=t.second.first[i];
+        //union find all the chars in each set and sort them and then assemble back
+        unordered_set<int> nodes;
+        for(auto p: pairs){
+            nodes.insert(p[0]);
+            nodes.insert(p[1]);
+            if(!parent.count(p[0])) parent[p[0]]=p[0];
+            if(!parent.count(p[1])) parent[p[1]]=p[1];
+            int pi=findp(p[0]),pj=findp(p[1]);
+            if(pi!=pj){
+                parent[pi]=pj;
             }
+        }
+        for(int p: nodes){
+            int pi=findp(p);
+            mp[pi].insert(p);
+            //mp[pi].insert(p[1]);
+        }
+        string ans=s;
+        //cout<<mp.size();
+        for(auto t: mp){
+            string vs;
+            for(auto i: t.second) vs+=s[i];
+            sort(vs.begin(),vs.end());
+            int start=0;
+            for(int i: t.second) ans[i]=vs[start++];
         }
         return ans;
     }
-    int find_parent(int i){
-        while(i!=parent[i]) i=parent[i];
+    int findp(int i){
+        while(i!=parent[i]){
+            parent[i]=parent[parent[i]];
+            i=parent[i];
+        }
         return i;
     }
 ```
+- test cases has been updated and without path compression you will get TLE in the last two cases. so path compression matters.
 
 ### 1203. Sort Items by Groups Respecting Dependencies	(*****)
 <em>Problem:
