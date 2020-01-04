@@ -1,12 +1,16 @@
+#Leetcode Contest
+Participant performance:
+
 - 156: 526/6764 4/4
 - 155: 101/6581 4/4
 - bi9: 112/3075 4/4
 - 154: 385/6063
 - 153: 183/6214
 - bi8: 69/1725 4/4
-- 152:
-- 151:
-- bi7:
+- 152: 218/5350
+- 151:  287/5261
+- bi7: 54/1340
+
 ### contest 156
 
 ### 1207. Unique Number of Occurrences (*)
@@ -1310,6 +1314,7 @@ File system is tree structure, we can use hashmap for it.
         return -1;
     }
 ```
+- note using stringstream to analyze the path need be careful. we need reconstruct the path.
 
 ### 1167. Minimum Cost to Connect Sticks
 <em>
