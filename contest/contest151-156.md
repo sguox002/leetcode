@@ -1,4 +1,4 @@
-#Leetcode Contest
+# Leetcode Contest
 Participant performance:
 
 - 156: 526/6764 4/4
