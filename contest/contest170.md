@@ -1,4 +1,6 @@
 ## contest 170
+Participant performance: 903/5186 got 4/4 right. (17.4%)
+
 ### 5303. Decrypt String from Alphabet to Integer Mapping (**)
 <em>Problem:
 Given a string s formed by digits ('0' - '9') and '#' . We want to map s to English lowercase characters as follows:
