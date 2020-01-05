@@ -1,0 +1,176 @@
+## contest 170
+### 5303. Decrypt String from Alphabet to Integer Mapping (**)
+<em>Problem:
+Given a string s formed by digits ('0' - '9') and '#' . We want to map s to English lowercase characters as follows:
+
+Characters ('a' to 'i') are represented by ('1' to '9') respectively.
+Characters ('j' to 'z') are represented by ('10#' to '26#') respectively. 
+Return the string formed after mapping.
+
+It's guaranteed that a unique mapping will always exist.
+
+ 
+
+Example 1:
+
+Input: s = "10#11#12"
+Output: "jkab"
+Explanation: "j" -> "10#" , "k" -> "11#" , "a" -> "1" , "b" -> "2".
+</em>
+
+idea:
+
+backward:
+```cpp
+    string freqAlphabets(string s) {
+        string ans;
+        //from backword;
+        int j=s.size()-1;
+        while(j>=0){
+            if(s[j]=='#'){
+                int t=s[j-1]-'0'+(s[j-2]-'0')*10;
+                ans+='j'+t-10;
+                j-=3;
+            }
+            else {
+                ans+='a'+s[j]-'1';
+                j--;
+            }
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+```	
+### 5304. XOR Queries of a Subarray (**)
+<em>Problem:
+
+Given the array arr of positive integers and the array queries where queries[i] = [Li, Ri], for each query i compute the XOR of elements from Li to Ri (that is, arr[Li] xor arr[Li+1] xor ... xor arr[Ri] ). Return an array containing the result for the given queries.
+ 
+
+Example 1:
+
+Input: arr = [1,3,4,8], queries = [[0,1],[1,2],[0,3],[3,3]]
+Output: [2,7,14,8] 
+Explanation: 
+The binary representation of the elements in the array are:
+1 = 0001 
+3 = 0011 
+4 = 0100 
+8 = 1000 
+The XOR values for queries are:
+[0,1] = 1 xor 3 = 2 
+[1,2] = 3 xor 4 = 7 
+[0,3] = 1 xor 3 xor 4 xor 8 = 14 
+[3,3] = 8
+Example 2:
+
+Input: arr = [4,8,2,10], queries = [[2,3],[1,3],[0,0],[0,3]]
+Output: [8,0,4,4]
+</em>
+
+Idea:
+math: prefix xor and range xor is prefix[j+1]^prefix[i]  for range [i,j]. xor is similar to sum.
+```cpp
+    vector<int> xorQueries(vector<int>& arr, vector<vector<int>>& queries) {
+        //xor
+        int n=arr.size();
+        vector<int> prefix(n+1);
+        for(int i=0;i<n;i++) prefix[i+1]=prefix[i]^arr[i];
+        vector<int> ans;
+        for(auto q: queries){
+            int t=prefix[q[1]+1]^prefix[q[0]];
+            ans.push_back(t);
+        }
+        return ans;
+    }
+```	
+
+### 5305. Get Watched Videos by Your Friends (***)
+<em>Problem:
+
+There are n people, each person has a unique id between 0 and n-1. Given the arrays watchedVideos and friends, where watchedVideos[i] and friends[i] contain the list of watched videos and the list of friends respectively for the person with id = i.
+
+Level 1 of videos are all watched videos by your friends, level 2 of videos are all watched videos by the friends of your friends and so on. In general, the level k of videos are all watched videos by people with the shortest path equal to k with you. Given your id and the level of videos, return the list of videos ordered by their frequencies (increasing). For videos with the same frequency order them alphabetically from least to greatest. 
+</em>
+
+idea:
+
+build a graph relation and do bfs to get the layer nodes, and then use pq to sort.
+```cpp
+     struct comp{
+        bool operator()(const pair<string,int>& a,const pair<string,int>& b) {
+            return a.second>b.second || (a.second==b.second && a.first>b.first);
+        }
+    };   
+    vector<string> watchedVideosByFriends(vector<vector<string>>& watchedVideos, vector<vector<int>>& friends, int id, int level) {
+        int n=friends.size();
+        unordered_map<int,unordered_set<int>> mp;
+        for(int i=0;i<n;i++){
+            for(int t: friends[i]) mp[i].insert(t);
+        }
+        unordered_map<string,int> video;
+        queue<int> q;
+        vector<bool> v(n);
+        q.push(id);v[id]=1;
+        int step=0;
+        while(q.size()){
+            int sz=q.size();
+            while(sz--){
+                int t=q.front();
+                q.pop();
+                for(int neig: mp[t]){
+                    if(v[neig]) continue;
+                    v[neig]=1;
+                    q.push(neig);
+                }
+            }
+            if(++step==level) break;
+        }
+        while(q.size()){
+            int t=q.front();
+            q.pop();
+            for(string v: watchedVideos[t]) video[v]++;
+        }
+        priority_queue<pair<string,int>,vector<pair<string,int>>,comp> pq(video.begin(),video.end());
+        vector<string> ans;
+        while(pq.size()) ans.push_back(pq.top().first),pq.pop();
+
+        return ans;
+    }
+```
+	
+### 5306. Minimum Insertion Steps to Make a String Palindrome(***)
+<em>Problem:
+
+Given a string s. In one step you can insert any character at any index of the string.
+
+Return the minimum number of steps to make s palindrome.
+
+A Palindrome String is one that reads the same backward as well as forward.
+
+Example 1:
+
+Input: s = "zzazz"
+Output: 0
+Explanation: The string "zzazz" is already palindrome we don't need any insertions.	
+</em>
+
+Idea: longest common subsequence equivalent.
+```cpp	
+	    int minInsertions(string s) {
+        //dp:
+			string rs(s.rbegin(),s.rend());
+			if(s==rs) return 0;
+			//only insertion allowed
+			int n=s.size();
+			vector<vector<int>> dp(n+1,vector<int>(n+1,0)); //longest common sequence
+			//for(int i=0;i<=n;i++) dp[0][i]=dp[i][0]=i; //empty vs non-empty
+			for(int i=1;i<=n;i++){
+				for(int j=1;j<=n;j++){
+					if(s[i-1]==rs[j-1]) dp[i][j]=dp[i-1][j-1]+1;//no insertion
+					else dp[i][j]=max(dp[i-1][j],dp[i][j-1]); //insert one char 
+				}
+			}
+			return n-dp[n][n];
+		}
+```		
