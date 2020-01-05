@@ -159,20 +159,20 @@ Explanation: The string "zzazz" is already palindrome we don't need any insertio
 
 Idea: longest common subsequence equivalent.
 ```cpp	
-	    int minInsertions(string s) {
-        //dp:
-			string rs(s.rbegin(),s.rend());
-			if(s==rs) return 0;
-			//only insertion allowed
-			int n=s.size();
-			vector<vector<int>> dp(n+1,vector<int>(n+1,0)); //longest common sequence
-			//for(int i=0;i<=n;i++) dp[0][i]=dp[i][0]=i; //empty vs non-empty
-			for(int i=1;i<=n;i++){
-				for(int j=1;j<=n;j++){
-					if(s[i-1]==rs[j-1]) dp[i][j]=dp[i-1][j-1]+1;//no insertion
-					else dp[i][j]=max(dp[i-1][j],dp[i][j-1]); //insert one char 
-				}
-			}
-			return n-dp[n][n];
+    int minInsertions(string s) {
+    //dp:
+	string rs(s.rbegin(),s.rend());
+	if(s==rs) return 0;
+	//only insertion allowed
+	int n=s.size();
+	vector<vector<int>> dp(n+1,vector<int>(n+1,0)); //longest common sequence
+	//for(int i=0;i<=n;i++) dp[0][i]=dp[i][0]=i; //empty vs non-empty
+	for(int i=1;i<=n;i++){
+		for(int j=1;j<=n;j++){
+			if(s[i-1]==rs[j-1]) dp[i][j]=dp[i-1][j-1]+1;//no insertion
+			else dp[i][j]=max(dp[i-1][j],dp[i][j-1]); //insert one char 
 		}
+	}
+	return n-dp[n][n];
+   }
 ```		
