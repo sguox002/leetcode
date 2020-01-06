@@ -140,7 +140,10 @@ build a graph relation and do bfs to get the layer nodes, and then use pq to sor
         return ans;
     }
 ```
-	
+Note:
+- no need build the tree using another structure again. The given input is always an adjacency matrix.
+- sort the list of pairs do not need pq, just using lambda function is fine.
+
 ### 5306. Minimum Insertion Steps to Make a String Palindrome(***)
 <em>Problem:
 
