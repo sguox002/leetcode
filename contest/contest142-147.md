@@ -778,3 +778,409 @@ example:
 		return ans;
     }
 ```	
+
+## contest 143
+### 1103. Distribute Candies to People (***)
+<em>Problem:
+
+We distribute some number of candies, to a row of n = num_people people in the following way:
+
+We then give 1 candy to the first person, 2 candies to the second person, and so on until we give n candies to the last person.
+
+Then, we go back to the start of the row, giving n + 1 candies to the first person, n + 2 candies to the second person, and so on until we give 2 * n candies to the last person.
+
+This process repeats (with us giving one more candy each time, and moving to the start of the row after we reach the end) until we run out of candies.  The last person will receive all of our remaining candies (not necessarily one more than the previous gift).
+
+Return an array (of length num_people and sum candies) that represents the final distribution of candies.
+</em>
+
+Idea:
+If we want to derive math equations for this, it would be pretty tricky. but if we treat it as a 2d matrix with roation, it is much simpler.
+
+```cpp
+    vector<int> distributeCandies(int candies, int n) {
+		vector<int> ans(n);
+		int cnt=1;
+		int i=0;
+		while(candies){
+			int m=min(candies,cnt);
+			ans[i%n]+=m;
+			candies-=m;
+		}
+		return ans;
+	}
+```
+
+### 1104. Path in zigzag labelled binary tree (***)
+<em>In an infinite binary tree where every node has two children, the nodes are labelled in row order.
+
+In the odd numbered rows (ie., the first, third, fifth,...), the labelling is left to right, while in the even numbered rows (second, fourth, sixth,...), the labelling is right to left.
+
+Given the label of a node in this tree, return the labels in the path from the root of the tree to the node with that label
+</em>
+
+Analysis:
+starting from layer 1.
+it is a full tree.
+given a node ->get the depth-> get the original id->id/2
+id->depth: the left is 1,2,4,8
+```cpp
+    vector<int> pathInZigZagTree(int label) {
+		vector<int> ans;
+		int d=log2(label)+1;
+		while(d){
+			ans.push_back(label);
+			int id=label2id(label,d);
+			label=id2label(id/2,--d);
+		}
+		reverse(ans.begin(),ans.end());
+		return ans;
+    }
+	int label2id(int l, int d){
+		if(d%2) return l;
+		return pow(2,d-1)+(pow(2,d)-1-l);
+	}
+	int id2label(int id,int d){
+		if(d%2) return id;
+		return pow(2,d)-1-(id-pow(2,d-1));
+	}
+```	
+### 1105. Filling bookcase shelves (****)
+<em>We have a sequence of books: the i-th book has thickness books[i][0] and height books[i][1].
+
+We want to place these books in order onto bookcase shelves that have total width shelf_width.
+
+We choose some of the books to place on this shelf (such that the sum of their thickness is <= shelf_width), then build another level of shelf of the bookcase so that the total height of the bookcase has increased by the maximum height of the books we just put down.  We repeat this process until there are no more books to place.
+
+Note again that at each step of the above process, the order of the books we place is the same order as the given sequence of books.  For example, if we have an ordered list of 5 books, we might place the first and second book onto the first shelf, the third book on the second shelf, and the fourth and fifth book on the last shelf.
+
+Return the minimum possible height that the total bookshelf can be after placing shelves in this manner.
+</em>
+
+Approach:
+- shelf is bound by width. and each book has w x h
+- book sequence is not to be changed.
+- dp: a book can be placed after previous book if width is allowed. or it can start a new layer.
+- subproblem shall be min height for n books. dp[i]
+-  recurrence: if a new layer: dp[i]=dp[i-1]+h[i]. if append to previous: it can attach to i-1, i-2...j 
+```cpp
+    int minHeightShelves(vector<vector<int>>& books, int shelf_width) {
+		int n=books.size();
+		vector<int> dp(n+1, INT_MAX); //min height for i books.
+		dp[0]=0; //no books
+		for(int i=0;i<n;i++){
+			dp[i+1]=dp[i]+books[i][1];
+			int width=0,maxh=0;
+			for(int j=i;j>=0;j--){
+				if(width+books[j][0]<=shelf_width){
+					maxh=max(maxh,books[j][1]);
+					width+=books[j][0];
+					dp[i+1]=min(dp[i+1],dp[j]+maxh);
+				}
+				else break; //this is essential otherwise it will not stop and gives wrong results.
+			}
+		}
+		return dp[n];
+    }
+```	
+
+
+### 1106. Parsing a boolean expression (*****)
+<em>
+Return the result of evaluating a given boolean expression, represented as a string.
+
+An expression can either be:
+
+"t", evaluating to True;
+"f", evaluating to False;
+"!(expr)", evaluating to the logical NOT of the inner expression expr;
+"&(expr1,expr2,...)", evaluating to the logical AND of 2 or more inner expressions expr1, expr2, ...;
+"|(expr1,expr2,...)", evaluating to the logical OR of 2 or more inner expressions expr1, expr2, ...
+</em>
+Intuition:
+
+- recursive stack for syntax analysis.
+- &: when any is false, return false, all true return true.
+- |: any is true return true, all 0 returns 0
+- !: toggle the bool value.
+- polish style
+
+need to skip.
+```cpp
+bool parseBoolExpr(string e) {
+  if (e.size() == 1) return e == "t" ? true : false;
+  if (e[0] == '!') return !parseBoolExpr(e.substr(2, e.size() - 3));
+  bool isAnd = e[0] == '&' ? true : false, res = isAnd;
+  for (auto i = 2, j = 2, cnt = 0; res == isAnd && i < e.size(); ++i) {
+    if (e[i] == '(') ++cnt;
+    if (e[i] == ')') --cnt;      
+    if (i == e.size() - 1 || (e[i] == ',' && cnt == 0)) {
+      if (isAnd) res &= parseBoolExpr(e.substr(j, i - j));
+      else res |= parseBoolExpr(e.substr(j, i - j));
+      j = i + 1;
+    }
+  }
+  return res;
+}
+```	
+the coding is pretty tricky.
+
+## biweek 3
+### 1099. Two sum less than K (***)
+<em>Given an array A of integers and integer K, return the maximum S such that there exists i < j with A[i] + A[j] = S and S < K. If no i, j exist satisfying this equation, return -1.</em>
+idea:
+
+using hashmap with binary search
+```cpp
+    int twoSumLessThanK(vector<int>& A, int K) {
+        set<int> ms;
+        
+        int ans=INT_MIN;
+        for(int i: A){
+            auto it=ms.lower_bound(K-i);
+            if(it!=ms.begin()) ans=max(ans,i+*(--it));
+            ms.insert(i);
+        }
+        return ans==INT_MIN?-1:ans;
+    }
+```	
+### 1100. Find k-length substrings with no repeated characters
+Given a string S, return the number of substrings of length K with no repeated characters.
+idea:
+
+sliding window with hashmap
+```cpp
+    int numKLenSubstrNoRepeats(string S, int K) {
+        //sliding window with hashmap
+        unordered_map<char,int> mp;
+        int ans=0;
+        for(int i=0;i<S.size();i++){
+            if(i<K) mp[S[i]]++;
+            else{
+                mp[S[i]]++;
+                mp[S[i-K]]--;
+                if(mp[S[i-K]]==0) mp.erase(S[i-K]);
+           }
+            if(mp.size()==K) ans++;
+        }
+        return ans;
+    }
+```
+
+
+### 1101. The earliest moment when everyone become friends (**)
+simple: union-find and get the time when the number of union is 1.
+
+### 1102. Path with max min value.
+<em>Given a matrix of integers A with R rows and C columns, find the maximum score of a path starting at [0,0] and ending at [R-1,C-1].
+
+The score of a path is the minimum value in that path.  For example, the value of the path 8 →  4 →  5 →  9 is 4.
+
+A path moves some number of times from one visited cell to any neighbouring unvisited cell in one of the 4 cardinal directions (north, east, west, south).</em>
+
+Idea:
+convert to binary search problem. set all <mid value to be non-passable and find the value (last connection).
+using bfs to check if connected.
+
+```cpp
+    int maximumMinimumPath(vector<vector<int>>& A) {
+        int mn=INT_MAX,mx=INT_MIN;
+        for(auto t: A){
+            for(int i: t) mn=min(i,mn),mx=max(mx,i);
+        }
+        //binary search to see if it connects
+        int l=mn,r=mx*2;
+        while(l+1<r){
+            int mid=l+(r-l)/2;
+            if(connected(A,mid)) l=mid;
+            else r=mid;
+            //cout<<l<<" "<<r<<endl;
+        }
+        return l;
+    }
+    bool connected(vector<vector<int>>& A,int v){
+        int m=A.size(),n=A[0].size();
+        if(v>min(A[0][0],A[m-1][n-1])) return 0;
+        queue<int> q;
+        vector<vector<bool>> visited(m,vector<bool>(n));
+        q.push(0);visited[0][0]=1;
+        int dir[][2]={{-1,0},{1,0},{0,-1},{0,1}};
+        while(q.size()){
+            int sz=q.size();
+            while(sz--){
+                int t=q.front();
+                q.pop();
+                int x=t/n,y=t%n;
+                if(x==m-1 && y==n-1) return 1;
+                for(int i=0;i<4;i++){
+                    int x0=x+dir[i][0],y0=y+dir[i][1];
+                    if(x0<0||y0<0||x0>=m||y0>=n||visited[x0][y0]||A[x0][y0]<v) continue;
+                    visited[x0][y0]=1;
+                    q.push(x0*n+y0);
+                }
+            }
+        }
+        return 0;
+    }
+```	
+
+
+## contest 142
+1093. Statistics from a Large Sample
+<em>We sampled integers between 0 and 255, and stored the results in an array count:  count[k] is the number of integers we sampled equal to k.
+
+Return the minimum, maximum, mean, median, and mode of the sample respectively, as an array of floating point numbers.  The mode is guaranteed to be unique.</em>
+
+min,max,mean
+median: odd/even
+mode: the most frequent element
+
+1094. car pooling
+often seen add/remove action, interval problem
+attention: for the same location, we need first unload passenger and then load
+
+```cpp
+    bool carPooling(vector<vector<int>>& trips, int capacity) {
+        map<int,int> mp;
+        for(auto t: trips){
+            mp[t[1]]+=t[0];
+            mp[t[2]]-=t[0];
+        }
+        //check prefix sum to see if over capacity
+        //print(mp);
+        int prefix=0;
+        for(auto t: mp){
+            prefix+=t.second;
+            if(prefix>capacity) return 0;
+        }
+        return 1;
+    }
+```	
+1095. find in mountain array
+two binary search problem.
+we can also find the peak first and then do 2 binary search.
+
+```cpp
+    int findInMountainArray(int target, MountainArray &mountainArr) {
+        //binary search in the peak
+        int left=find1side(target,mountainArr,1);
+        if(left==-1) return find1side(target,mountainArr,0);
+        return left;
+    }
+    int find1side(int target,MountainArray& mt,int side){
+        int l=0,r=mt.length()-1;
+        int n=mt.length();
+        while(l<r)
+        {
+            int mid=l+(r-l)/2;
+            int m=mt.get(mid);
+            if(side){ //search left
+                if((mid<n-1 && m>mt.get(mid+1))||(m==n-1 && m<mt.get(mid-1))) r=mid; //mid is on right side
+                else {
+                    if(m==target) return mid;
+                    if(m>target) r=mid-1;
+                    else l=mid+1;
+                    //cout<<m<<" "<<l<<" "<<r<<endl;
+                }
+            }
+            else //right side
+            {
+                if((mid<n-1 && m<mt.get(mid+1))||(mid==n-1 && m>mt.get(mid-1))) l=mid+1; //it is on the left side
+                else{
+                    if(m==target) return mid;
+                    if(m>target) l=mid+1;
+                    else r=mid;
+                    //cout<<m<<" "<<l<<" "<<r<<endl;
+                }
+            }
+        }
+        return mt.get(l)==target?l:-1;
+    }
+```	
+1096. Brace expansion II.
+again, recursive stack
+
+```cpp
+    vector<string> braceExpansionII(string expression){
+        unordered_set<string> res=parser(expression);
+        vector<string> ans(res.begin(),res.end());
+        sort(ans.begin(),ans.end());
+        return ans;
+    }
+	unordered_set<string> parser(string expression)
+	{
+		string s=expression;
+		stack<unordered_set<string>> st;
+		char presign=',';
+        //cout<<s<<": ";
+		for(int i=0;i<s.length();i++)
+		{
+			char c=s[i];
+			if(c=='{')
+			{
+				int j=i,p=1;
+				while(s[j]!='}' || p!=0 ) //find the paired }
+				{
+					j++;
+					if(s[j]=='{') p++;
+					if(s[j]=='}') p--;
+				}
+				unordered_set<string> vs=parser(s.substr(i+1,j-i-1));
+				if(presign=='*')
+				{
+					auto t=st.top();
+					st.pop();
+					st.push(merge(t,vs));
+				}
+				else st.push(vs);
+				i=j;
+				presign='*';
+			}
+			else if(isalpha(c))
+			{
+				unordered_set<string> vs;
+				string t;
+                while(isalpha(s[i])) t+=s[i++];
+                i--;
+                vs.insert(t);//not a single letter, it allows string
+                
+				if(presign=='*')
+				{
+					unordered_set<string> t=st.top();
+					st.pop();
+					st.push(merge(t,vs));
+				}
+                else st.push(vs);
+				presign='*';
+			}
+			if(c==',' || i==s.length()-1)
+			{
+				presign=',';
+			}
+		}
+        
+		unordered_set<string> ans;
+		while(st.size())
+		{
+            auto vt=st.top();
+			for(string t: vt)
+			{
+				ans.insert(t);
+			}
+			st.pop();
+		}
+        //copy(ans.begin(),ans.end(),ostream_iterator<string>(cout," "));cout<<endl;
+		//sort(ans.begin(),ans.end());
+		return ans;
+	}
+	
+	unordered_set<string> merge(unordered_set<string>& l1,unordered_set<string>& l2)
+	{
+		unordered_set<string> ans;
+		for(string s: l1)
+			for(string t: l2)
+				ans.insert(s+t);
+		return ans;
+	}
+```	
+
