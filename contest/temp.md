@@ -531,29 +531,33 @@ backtracking:
 
 dp approach:
 dp[1<<n,m+1]: note it needs the people combination instead min number of people.
+this is essentially bellman-ford algorithm.
 ```cpp
     vector<int> smallestSufficientTeam(vector<string>& req_skills, vector<vector<string>>& people) {
 		int n = req_skills.size();
         int m=people.size();
 		vector<vector<int>> dp(1<<n);  // using unordered_map, we improve on time
         unordered_map<string,int> skill_map;
-        for(int i=0;i< req_skills.size();i++)
+        for(int i=0;i<n;i++)
             skill_map[req_skills[i]]=i;
-        
-        for(int i=0;i<people.size();i++)
-        {
+        vector<int> skills(m);
+        for(int i=0;i<m;i++){
             int curr_skill = 0;
             for(int j=0;j<people[i].size();j++)
                 curr_skill |= 1<<skill_map[people[i][j]];
-            
+            skills[i]=curr_skill;
+        }
+        for(int i=0;i<m;i++)
+        {
             for(int j=0;j<(1<<n);j++)
             {
-                int k = j | curr_skill;
+                int k = (dp[j].empty()?0:j) | skills[i]; //this is critical to make k correct.
                 if(dp[k].size()==0 || dp[k].size()>1+dp[j].size()) 
                     //check if add this person can relax
                 {
                     dp[k]=dp[j]; //using its combination
                     dp[k].push_back(i);//add current person
+                    //cout<<i<<" "<<j<<" "<<k<<endl;
                 }       
             }
         }
@@ -561,3 +565,190 @@ dp[1<<n,m+1]: note it needs the people combination instead min number of people.
     }
 ```
 		
+## biweek 4
+### 1118. Number of Days in a Month (**)
+simply check if it is a lunar year
+
+a lunar year: divisible by 4, and if divisible by 100 and 400
+
+### 1119. Remove Vowels from a String (*)
+simple
+
+### 1120. Maximum Average Subtree (***)
+idea: the average of a subtree requires the sum and num of nodes. traversal and get the two, calculate the average and max average on the fly.
+```cpp
+    double maximumAverageSubtree(TreeNode* root) {
+        double ans=0;
+        int num=0;
+        dfs(root,num,ans);
+        return ans;
+    }
+    pair<int,int> dfs(TreeNode* root,int num,double& ans){
+        if(!root) return {0,0};
+        auto left=dfs(root->left,num,ans);
+        auto right=dfs(root->right,num,ans);
+        num=1+left.second+right.second;
+        int sum=(left.first+right.first+root->val);
+        double leftavg=left.first*1.0/left.second;
+        double rightavg=right.first*1.0/right.second;
+        double curr=sum*1.0/num;
+        ans=max({ans,leftavg,rightavg,curr});
+        return {sum,num};
+    }
+```	
+
+### 1121. Divide Array Into Increasing Sequences (***)
+<em>Problem: 
+
+Given a non-decreasing array of positive integers nums and an integer K, find out if this array can be divided into one or more disjoint increasing subsequences of length at least K.
+</em>
+Idea:
+
+hashmap to get the histogram. The most frequent one determines at least how many groups we will have.
+- maxfreq*K<n no solution
+- maxfreq=1 only one
+- greedy: we need use the max freq and reduce by 1, stop when all same maxfreq is reduced and cnt>=k.
+- using a pq to reduce the maxfreq by 1 and then put back
+```cpp
+    struct comp{
+        bool operator()(pair<int,int> a,pair<int,int> b){
+            return a.second<b.second || (a.second==b.second && a.first<b.first);
+        }
+    };
+    bool canDivideIntoSubsequences(vector<int>& nums, int K) {
+        int n=nums.size();
+        map<int,int> mp;
+        int maxdup=0;
+        for(int i: nums) {mp[i]++;maxdup=max(maxdup,mp[i]);}
+        if(maxdup*K>n) return 0;
+        if(maxdup==1) return 1;
+        //we need to divide the array into at least maxdup parts
+        //we first need to take one from the most frequent one until the top
+        priority_queue<pair<int,int>,vector<pair<int,int>>,comp> pq(mp.begin(),mp.end());
+        while(pq.size()){
+            auto p=pq.top();
+            int maxfreq=p.second;
+            int cnt=0;
+            vector<pair<int,int>> vp;
+            while(pq.size() && (cnt<K || pq.top().second==maxfreq)){ //same freq shall be used all
+                if(pq.top().second>1)
+                    vp.push_back({pq.top().first,pq.top().second-1});
+                //cout<<pq.top().first<<" ";
+                cnt++;
+                pq.pop();
+            }
+            if(cnt<K) return 0;
+            for(auto t: vp) pq.push(t);
+        }
+        return 1;
+    }
+```	
+
+## contest 144
+### 1108. Defanging an IP Address (*)
+simple
+
+### 1109. Corporate Flight Bookings  (***)
+<em>Problem:
+
+There are n flights, and they are labeled from 1 to n.
+
+We have a list of flight bookings.  The i-th booking bookings[i] = [i, j, k] means that we booked k seats from flights labeled i to j inclusive.
+
+Return an array answer of length n, representing the number of seats booked on each flight in order of their label.
+
+ 
+
+Example 1:
+
+Input: bookings = [[1,2,10],[2,3,20],[2,5,25]], n = 5
+Output: [10,55,45,25,25]
+</em>
+
+The description is very unclear. Actually ii,j,k means from flight i to j, there are k seats booking. (i,j) is a flight range not an edge defining a flight).
+so actually it is defining a list of intervals and get each number.
+typical interval problem
+
+```cpp
+    vector<int> corpFlightBookings(vector<vector<int>>& bookings, int n) {
+        vector<int> ans(n);
+        map<int,int> book;
+        for(auto t: bookings){
+            book[t[0]]+=t[2]; //add
+            book[t[1]+1]-=t[2]; //remove
+        }
+        int prefix=0;
+        for(int i=0;i<n;i++){
+            if(book.count(i+1)) {
+                prefix+=book[i+1];
+            }
+            ans[i]=prefix;
+        }
+        return ans;
+    }
+```	
+
+### 1110. Delete Nodes And Return Forest (***)
+atually post-order is better.
+
+```cpp
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        vector<TreeNode*> ans;
+        unordered_set<int> del(to_delete.begin(),to_delete.end());
+        if(delNodes(root,del,ans)) ans.push_back(root);
+        return ans;
+    }
+    TreeNode* delNodes(TreeNode* root,unordered_set<int>& del,vector<TreeNode*>& ans){
+        if(!root) return 0;
+        if(del.empty()) return root;
+        //preorder
+        if(del.count(root->val)){
+            del.erase(root->val);//root is deleted
+            TreeNode* left=delNodes(root->left,del,ans);
+            TreeNode* right=delNodes(root->right,del,ans);
+            if(left) ans.push_back(left);
+            if(right) ans.push_back(right);
+            return 0;
+        }
+
+        //its left and right will be modified.
+        root->left=delNodes(root->left,del,ans);
+        root->right=delNodes(root->right,del,ans);
+        return root;
+    }
+```
+### 1111. Maximum Nesting Depth of Two Valid Parentheses Strings	(***)
+<em>
+A string is a valid parentheses string (denoted VPS) if and only if it consists of "(" and ")" characters only, and:
+
+It is the empty string, or
+It can be written as AB (A concatenated with B), where A and B are VPS's, or
+It can be written as (A), where A is a VPS.
+We can similarly define the nesting depth depth(S) of any VPS S as follows:
+
+depth("") = 0
+depth(A + B) = max(depth(A), depth(B)), where A and B are VPS's
+depth("(" + A + ")") = 1 + depth(A), where A is a VPS.
+For example,  "", "()()", and "()(()())" are VPS's (with nesting depths 0, 1, and 2), and ")(" and "(()" are not VPS's.
+
+ 
+
+Given a VPS seq, split it into two disjoint subsequences A and B, such that A and B are VPS's (and A.length + B.length = seq.length).
+
+Now choose any such A and B such that max(depth(A), depth(B)) is the minimum possible value.
+
+Return an answer array (of length seq.length) that encodes such a choice of A and B:  answer[i] = 0 if seq[i] is part of A, else answer[i] = 1.  Note that even though multiple answers may exist, you may return any of them.
+
+ 
+
+Example 1:
+
+Input: seq = "(()())"
+Output: [0,1,1,1,1,0]
+Example 2:
+
+Input: seq = "()(())()"
+Output: [0,0,0,1,1,0,1,1]
+</em>
+
+
