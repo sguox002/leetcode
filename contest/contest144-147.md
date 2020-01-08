@@ -752,3 +752,29 @@ Output: [0,0,0,1,1,0,1,1]
 </em>
 
 
+Idea: 
+if the total depth is n, then break into A and B with n/2 and n-n/2, the difference will be minimized.
+so we shall choose depth alternatively.
+for parenthesis, we can use ++-- or stack.
+- calculate the depth and assign even depth to 0 and odd depth to 1.
+example:
+((()))
+123321
+010010
+```cpp
+    vector<int> maxDepthAfterSplit(string seq) {
+        vector<int> ans(seq.size()); //all assigned as 0
+		int sum=0;
+		for(int i=0;i<seq.size();i++){
+			if(seq[i]=='(') {
+				sum++;
+				if(sum%2) ans[i]=1;
+			}
+			else{
+				if(sum%2) ans[i]=1;
+				sum--;
+			}
+		}
+		return ans;
+    }
+```	
