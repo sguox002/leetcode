@@ -1,13 +1,29 @@
 ### 1317. Convert Integer to the Sum of Two No-Zero Integers
 
 approach: 
+
 just try from 1 to n and break into i and j and check if they contains 0.
 we can use string find to check 0.
+```cpp
+    vector<int> getNoZeroIntegers(int n) {
+        vector<int> ans;
+        for(int i=1;i<n;i++){
+            int j=n-i;
+            string s=to_string(i)+to_string(j);
+            if(s.find('0')!=string::npos) continue;
+            else return {i,j};
+        }
+        return {};
+    }
+```
 
 ### 1318. Minimum Flips to Make a OR b Equal to c
 approach: 
+
 convert the 3 integers to bitset and check if the ith bit c[i]!=a[i]||b[i] then:
+
 c[i]==0: ans+=a[i]+b[i]
+
 c[i]==1: ans++ (a[i] and b[i] must be 0)
 ```cpp
     int minFlips(int a, int b, int c) {
@@ -24,8 +40,10 @@ c[i]==1: ans++ (a[i] and b[i] must be 0)
 
 ### 1319. Number of Operations to Make Network Connected
 Approach:
+
 - a connected graph with n nodes needs at least n-1 edges.
 - equivalent to find number of disjoint set and connect each set needs only one edge.
+
 ```cpp
     vector<int> parent;
     int sz;
@@ -55,6 +73,7 @@ Approach:
 ```
 ### 1310. Minimum Distance to Type a Word Using Two Fingers
 Analysis:
+
 - it is a dp problem. Someone also solved it using bfs.
 - distance of two char can be calculated using manhantan distance easily.
 - it is not easy to find the relation, top down is more understandable.
