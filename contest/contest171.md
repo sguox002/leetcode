@@ -1,4 +1,4 @@
-### 1317. Convert Integer to the Sum of Two No-Zero Integers
+### 1317. Convert Integer to the Sum of Two No-Zero Integers (*)
 
 approach: 
 
@@ -21,7 +21,7 @@ I got stuck and wrong submission on this trying to get a greedy solution, which 
     }
 ```
 
-### 1318. Minimum Flips to Make a OR b Equal to c
+### 1318. Minimum Flips to Make a OR b Equal to c (**)
 approach: 
 
 convert the 3 integers to bitset and check if the ith bit c[i]!=a[i]||b[i] then:
@@ -42,7 +42,7 @@ c[i]==1: ans++ (a[i] and b[i] must be 0)
     }
 ```
 
-### 1319. Number of Operations to Make Network Connected
+### 1319. Number of Operations to Make Network Connected (***)
 Approach:
 
 - a connected graph with n nodes needs at least n-1 edges.
@@ -75,7 +75,8 @@ Approach:
         return i;
     }
 ```
-### 1310. Minimum Distance to Type a Word Using Two Fingers
+### 1310. Minimum Distance to Type a Word Using Two Fingers (*****)
+I think this problem is a 5-star problem.
 Analysis:
 
 - it is a dp problem. Someone also solved it using bfs.
