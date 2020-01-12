@@ -3,7 +3,11 @@
 approach: 
 
 just try from 1 to n and break into i and j and check if they contains 0.
+
 we can use string find to check 0.
+
+I got stuck and wrong submission on this trying to get a greedy solution, which is overkill for an easy problem.
+
 ```cpp
     vector<int> getNoZeroIntegers(int n) {
         vector<int> ans;
@@ -77,10 +81,12 @@ Analysis:
 - it is a dp problem. Someone also solved it using bfs.
 - distance of two char can be calculated using manhantan distance easily.
 - it is not easy to find the relation, top down is more understandable.
+- define the subproblem: finger1 at char f1, finger 2 at char f2, and next type char is ith char. and the min move.
 - state conversion for dp + top down is a better way to understand and find the solution
   * for this problem initial state (0,0,0), we start at char 0 and finger1 and finger 2 are undefined.
   * if we use finger 1 to word[i], then we get to new state (i+1,word[i],f2)
   * if we use finger 2 to word[i], then we get to new state (i+1,f1,word[i])
+- relation: cost(f1,word[i])+dp(i+1,word[i],f2),cost(f2,word[i])+dp(i+1,f1,word[i])
   
 ```cpp
     int memo[300][26][26];
