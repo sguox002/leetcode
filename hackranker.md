@@ -457,6 +457,158 @@ answer shall be 311823447
 
 - approach 1: prime factorization of each number and convert division to subtraction
 - approach 2: find all primes in range. and then calculate the number is easier.
+- approach 3: euclid extended algorithm
+
+A bit harder than expected. Not because of the code, but because of the math.
+
+In total, you need to take (n-1)+(m-1) steps in directions (down)+(right) how many ways are there to choose (n-1) places to move down out of (n+m-2) moves?
+
+C(n+m-2,n-1)=C(n+m-2,m-1)
+The formula for combinations involves factorials and grows two quickly for that reason, and the problem statement, you want to use modular arithmetic
+
+S mod p=(10**9 + 7)
+in modular arithmetic, multiplication behaves the same as the residues mod n, that is:
+
+(a*b)%n=(a%n*b%n)%n
+The formula also requires division (multiplicative inverse in modular arithmetic)
+
+(a*(a^-1)) = 1 mod p      which is math for       (a*(a^-1))%p = 1     
+a^-1 in modular arithmetic can be computed using Extended Euclidean Algorithm however in your case n=1000000007 is a prime number therefore we can use
+
+The extended Euclidean algorithm is the essential tool for computing multiplicative inverses in modular structures, typically the modular integers and the algebraic field extensions. A notable instance of the latter case are the finite fields of non-prime order.
+
+(a^(-1))=a^(p-2)%p
+finally, a^(n-2) can be computed more efficiently using your preferred method . I stole fastEXP from this guy
+```python
+p = 10**9+7
+
+def factorial(n):
+    result = 1                      # starting from 1 
+    while n >= 2:                   # multiply n, n-1, n-2, ..., 2 
+        result = ((result)*(n%p))%p # and don't forget to mod by p
+        n -= 1
+    return result
+
+def solve(x,y):    # combinations formula aCb=a!/b!(a-b)!  mod p
+    num = factorial(x+y-2)
+    denom = factorial(x-1)*factorial(y-1)
+    return ( (num%p) * ( fastEXP(denom,p-2,p) ) ) %p # p is prime so we can do this
+    
+def fastEXP(base, exp, modulus):
+    base %= modulus
+    result = 1
+    while exp > 0:
+        if exp & 1:
+            result = (result * base) % modulus
+        base = (base*base)%modulus
+        exp >>= 1
+    return result
+```
+	
+## Problem Solving
+
+### trivial
+- simple array sum, accumulate
+- compare the triplets, elementwise compare
+- a very big sum: using long for intermediate results
+- diagnonal difference: diag1 i==j, diag2 i+j==n-1
+- plus minus: count >0 ==0 <0 percentage.
+- staircase: start with n spaces and fill with #
+- minmax sum: sum without min/max
+- birthday cake candles: one loop find the max
+- time conversion: from AM/PM format to 24 hour format, note process 12
+- grading student: grade shall only go up.
+- apple and oranges: count apples and oranges on the house
+- kangaroo: solve for non-negative integer solution
+- breaking the record, keep the min and max.
+- birthday chocolate: sliding window sum
+- divisible sum pairs: unordered_map to keep the mod, pay attention to 0
+- migratory birds: using hashmap to count, and pq to sort
+- sock merchant: match the same color, using hashmap to count.
+- counting valleys: valleys shall has a down to below 0 and up 0. using prefix sum
+- repeated string: division and modulation.
+- Bon Appétit: 
+
+### between two sets
+numbers in array 1 shall be factors of the number
+numbers in array 2 shall be multiples of the number
+- get the lcm of the array 1, note lcm for an array is lcm=lcm(lcm,i)
+- get the gcd of the array 2, note gcd=gcd(gcd,i)
+- and then all multiples which gcd%i==0
+
+### forming a magic square
+note we have 8 instead of 4 permutations.
+start from one: rotate 90 degrees
+transpose the matrix and do the rotation again.
+
+### picking numbers
+find the longest numbers with diff<=1. count and store in different bins
+
+### jump on the clouds
+avoid the thunderheads which is 1, other safe clouds are 0. min number of jump to the final clouds
+typical bfs. each step is 1 or 2.
+
+### bigger is greater
+next greater word given a word.
+```cpp
+string biggerIsGreater(string w) {
+    if(next_permutation(w.begin(),w.end()))
+        return w;
+    return "no answer";
+}
+```
+
+### new year chaos
+each person can only switch with its front at most 2.
+return the min number of such switches.
+idea: number > its index, a switch happens.
+```cpp
+void minimumBribes(vector<int> q) {
+    int ans = 0;
+    for (int i = q.size() - 1; i >= 0; i--) {
+        if (q[i] - (i + 1) > 2) {
+            cout << "Too chaotic" << endl;
+            return;
+        }
+        for (int j = max(0, q[i] - 2); j < i; j++)
+            if (q[j] > q[i]) ans++;
+    }
+    cout << ans << endl;
+}
+```
+
+### day of the programmer
+it is a bit tricky.
+- the regular way to determine leap year
+- the russian way to determine leap year <1918
+- special for 1918 feb
+- stringstream to output formated string. Do not know why the format has to be specified again
+```cpp
+string dayOfProgrammer(int year) {
+    //256th day
+    bool leap=(year%4==0 && (year%100!=0 || year%400==0));
+    int days[]={31,28,31,30,31,30,31,31,30,31,30,31};
+    int sum=0;
+    int mon,day;
+    if(year==1918) days[1]=15;
+    if(year<1918) leap=year%4==0;
+    for(int i=0;i<12;i++){
+        int t=(i==1 && leap)+days[i];
+        if(sum+t<=256){
+            sum+=t;
+        }
+        else {mon=i+1,day=256-sum;break;}
+    }
+    //cout<<mon<<" "<<day<<endl;
+    //string s;
+    stringstream ss;//(s);
+    ss<<setfill('0')<<setw(2)<<day<<"."; //does not work if connected with the next one.
+    ss<<setfill('0')<<setw(2)<<mon<<"."<<year;
+    return ss.str();
+}
+```
+
+
 
 
  
