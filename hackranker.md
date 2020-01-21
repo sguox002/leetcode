@@ -528,6 +528,10 @@ def fastEXP(base, exp, modulus):
 - counting valleys: valleys shall has a down to below 0 and up 0. using prefix sum
 - repeated string: division and modulation.
 - Bon Appétit: 
+- cats and mouse: meaningless
+- hurdle race: initial max height, and each does add 1.
+- pdf viewer: maxh*length
+- angry professor: count person arriving before time.
 
 ### between two sets
 numbers in array 1 shall be factors of the number
@@ -607,6 +611,76 @@ string dayOfProgrammer(int year) {
     return ss.str();
 }
 ```
+
+### drawing book
+two page book: page 1 is always on the right, last page is awlays on the front page.
+that means from the beginning or from the end is the same.
+from left: 1, turn one and see 2,3, page k: k/2
+from right, n: turn one and see n-1 and n-2, page k: (n-k+1)/2
+misunderstand: the last page is printed at the end, with blank page inserted if necessary
+for example 6 pages, it shall be like this:
+B1,23,45,B6
+return min(p/2,n/2-p/2);
+
+### electronic shop
+buy two items with sum<=n the largest
+m,n<1000, so O(N^2) combination could be acceptable.
+
+### climbing the leaderboard
+- need eliminate duplicates
+- need find each number's position
+- array could be 1e5 and O(N^2) could be TLE
+```cpp
+vector<int> climbingLeaderboard(vector<int> scores, vector<int> alice) {
+    set<int> sc(scores.begin(),scores.end());
+    vector<int> ans;
+    for(int i: alice){
+        auto it=sc.lower_bound(i);
+        int ind=distance(it,sc.end());
+        if(it==sc.end() || *it>i)  ind++;
+        ans.push_back(ind);
+    }
+    return ans;
+}
+```
+distance for set is O(N), use array.
+```cpp
+vector<int> climbingLeaderboard(vector<int> scores, vector<int> alice) {
+    sort(scores.begin(),scores.end());
+    auto it=unique(scores.begin(),scores.end());
+    scores.resize(distance(scores.begin(),it));
+    vector<int> ans;
+    for(int i: alice){
+        auto it=lower_bound(scores.begin(),scores.end(),i);
+        int ind=distance(it,scores.end());
+        if(it==scores.end() || *it>i)  ind++;
+        ans.push_back(ind);
+    }
+    return ans;
+}
+```
+
+### utopian tree
+each year two cycles: spring double and summer +1
+n<60 we can use brutal force, trivial
+
+### non-divisible subsets
+given an array of numbers, create the longest array where any two number's sum is not divibible by k.
+- n up to 1e5, so cannot use brutal force
+- if we mod each number, we are not allowing a pair which adds to k or 0.
+- intuition is using dp: 
+for ith element with the value a[i]: 
+to include it, we need to exclude the value with k-a[i]
+not include it, we can keep the value with k-a[i]
+and we keep the max length.
+keep[i]=max(nokeep[k-i],
+ 
+
+
+
+
+
+
 
 
 
