@@ -532,6 +532,7 @@ def fastEXP(base, exp, modulus):
 - hurdle race: initial max height, and each does add 1.
 - pdf viewer: maxh*length
 - angry professor: count person arriving before time.
+- equalize the array: simple.
 
 ### between two sets
 numbers in array 1 shall be factors of the number
@@ -669,11 +670,25 @@ given an array of numbers, create the longest array where any two number's sum i
 - n up to 1e5, so cannot use brutal force
 - if we mod each number, we are not allowing a pair which adds to k or 0.
 - intuition is using dp: 
-for ith element with the value a[i]: 
-to include it, we need to exclude the value with k-a[i]
-not include it, we can keep the value with k-a[i]
-and we keep the max length.
-keep[i]=max(nokeep[k-i],
+- actually it is not a dp, it is a biparty problem
+```cpp
+int nonDivisibleSubset(int k, vector<int> s) {
+    //biparition 
+    vector<int> dp(k);
+    for(int i: s) dp[i%k]++;
+    int ans=0;
+    int i=1,j=k-1;
+    while(i<=j){
+        if(i!=j) ans+=max(dp[i],dp[k-i]);
+        else ans++; //can only keep one
+        i++,j--;
+    }
+    if(dp[0]) ans++;
+    return ans;
+}
+```
+- two special case: when i==j=k/2 and i=0
+
  
 
 
