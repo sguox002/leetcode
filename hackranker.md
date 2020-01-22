@@ -689,7 +689,273 @@ int nonDivisibleSubset(int k, vector<int> s) {
 ```
 - two special case: when i==j=k/2 and i=0
 
- 
+### queen attack
+cannot use brutal force since nxn with n up to 1e5.
+get the nearest obstacle in the 8 directions and calculate the distance.
+if there is no obstacle along the direction, we can add out of the boundary.
+
+but hard to get it right.
+
+### the grid search
+search a matrix pattern in a large matrix
+intuition: brutal force sliding window search.
+```cpp
+string gridSearch(vector<string> G, vector<string> P) {
+    for(int i=0;i<G.size()-P.size();i++){
+        for(int j=0;j<G[0].size()-P[0].size();j++){
+            bool term=0;
+            for(int k=0;k<P.size() && !term;k++){
+                for(int l=0;l<P[0].size();l++){
+                    if(G[i+k][j+l]!=P[k][l]) {term=1;break;}
+                }
+            }
+            if(!term) return "YES";
+        }
+    }
+    return "NO";
+}
+```
+however, this code fails 5 test cases.
+it is very easy to make mistake not check the last element
+we shall use <= for i loop and j loop instead of <.
+
+### absolute permutation
+permutation of 1..n, with |A[i]-i|=k for all i, 1 based index.
+return the lexi smallest permutation.
+so if the position-value difference is k.
+for the first: |a[1]-1|=k, a[1]>=1, so a[1]=k+1
+a[i]>i: a[i]=k+i. (i<=k), make sure i+k will not >n.
+a[i]<i: a[i]=i-k. (i>k)
+need to compare k+i,i-k which one is smaller.
+i-k may be coincident with previous used.
+```cpp
+vector<int> absolutePermutation(int n, int k) {
+    //i<=k i+k, i>k: i-k
+    vector<int> ans;
+    vector<bool> used(n+1);
+    for(int i=1;i<=n;i++){
+        if(i<=k) {
+            if(i+k>n) return {-1};
+            ans.push_back(i+k);
+            used[i+k]=1;
+        }
+        else {
+            if(!used[i-k]){
+                ans.push_back(i-k);
+                used[i-k]=1;
+            }
+            else{
+                if(i+k>n) return {-1};
+                ans.push_back(i+k);
+                used[i+k]=1;
+            }
+        }
+    }
+    return ans;
+}
+```
+
+### the bomberman game
+problem:
+0s: initial setup the bomber positions
+1s: does nothing
+2s: fill all other places with bombs
+3s: 3 seconds ago will detonate
+idea:
+initialize the matrix with 3.
+the fill other cells with 4 (or 5?)
+the using the time and clear its surrounding cells.
+seconds to simulate would be very large
+once we find no state changes, we stop.
+pay attention to simultaneously bomb, so if one bomb make its neighboring bomb disappear, it is illegal
+we shall let them all bomb!!!
+
+misunderstand: it will pant bombs after it bombs
+
+### almost sorted
+using only one operation of the two:
+- swap two elements
+- reverse one subsegment.
+
+n would be very large 1e5.
+intuition: sort the array and compare the first and last different.
+count the difference and check if reverse is sorted.
+
+### matrix layer rotation
+rotate a matrix layer by layer anti-clock for r steps.
+intuition: if we rebuild the matrix into several layers, then it is left rotation
+the layer number is the min(i,j).
+traverse shall follow the requirement.
+use l,r,t,b for the traverse (similar to spiral matrix in leetcode)
+```cpp
+void matrixRotation(vector<vector<int>> matrix, int s) {
+    vector<vector<int>> mat;
+    int m=matrix.size(),n=matrix[0].size();
+    int l=0,r=n-1,t=0,b=m-1;
+    int cnt=m*n,layer=0;
+    while(cnt){
+        mat.push_back({});
+        for(int i=l;i<=r;i++) mat[layer].push_back(matrix[t][i]),cnt--;
+        if(++t>b) break;
+        for(int i=t;i<=b;i++) mat[layer].push_back(matrix[i][r]),cnt--;
+        if(--r<l) break;
+        for(int i=r;i>=l;i--) mat[layer].push_back(matrix[b][i]),cnt--;
+        if(--b<t) break;
+        for(int i=b;i>=t;i--) mat[layer].push_back(matrix[i][l]),cnt--;
+        if(++l>r) break;
+        layer++;
+    }
+
+    for(int l=0;l<mat.size();l++){
+        auto& v=mat[l];
+        rotate(v.begin(),v.begin()+s%v.size(),v.end());
+    }
+    //restore back to original matrix
+    layer=0;
+    l=0,r=n-1,t=0,b=m-1;
+    for(int lay=0;lay<mat.size();lay++){
+        cnt=0;
+        auto v=mat[lay];
+        for(int i=l;i<=r;i++) matrix[lay][i]=v[cnt++];
+        if(++t>b) break;
+        for(int i=t;i<=b;i++) matrix[i][n-1-lay]=v[cnt++];
+        if(--r<l) break;
+        for(int i=r;i>=l;i--) matrix[m-1-lay][i]=v[cnt++];
+        if(--b<t) break;
+        for(int i=b;i>=t;i--) matrix[i][lay]=v[cnt++];
+        if(++l>r) break;
+        layer++;
+    }
+
+    for(auto v: matrix){
+        copy(v.begin(),v.end(),ostream_iterator<int>(cout," "));
+        cout<<endl;
+    }
+}
+```
+
+### count speical sub-cubes
+this is to find number of sub-cubes which has a max ==k, and the subcube size is kxkxk
+intuition: an extension of 2d matrix, sliding window to find the max.
+brutal force: (n-k)^3*k^3*n (since we need to solve all k from 1 to n.)
+```cpp
+int numsubs(vector<int>& cubes,int n,int s){
+    int ans=0;
+    for(int i=0;i<=n-s;i++){
+        for(int j=0;j<=n-s;j++){
+            for(int k=0;k<=n-s;k++){
+                int valid=1;
+                for(int a=0;a<s && valid;a++){
+                    for(int b=0;b<s && valid;b++){
+                        for(int c=0;c<s && valid;c++){
+                            int ind=(i+a)*n*n+(j+b)*n+(k+c);
+                            if(cubes[ind]>s) {valid=0;break;}
+                            if(cubes[ind]==s) {valid=2;}
+                        }
+                    }
+                }
+                ans+=valid==2;
+            }
+        }
+    }
+    return ans;
+}
+vector<int> specialSubCubes(vector<int> cube) {
+    vector<int> ans;
+    int n3=cube.size(); //limit 50: 
+    int n=cbrt(n3);
+    for(int i=1;i<=n;i++){
+        ans.push_back(numsubs(cube,n,i));
+    }
+    return ans;
+}
+
+```
+- cbrt is stl for calculate cube root of a number.
+- pay attention to using s as side length
+- for many cases it TLE. and we need optimizations.
+
+the key for optimization is:
+Any cube of side=k is composed of six smaller cubes of side=k-1.
+to understand this, we first use 2d matrix as an example
+if we want to calculate the max for the 3x3 matrix.
+1 2 3
+4 5 6
+7 8 9 
+we can get the 4 submatrix max (yes, they are overlapped):
+1 2
+4 5
+and
+2 3
+5 6
+and
+4 5
+7 8
+and
+5 6
+8 9
+So this approach saves the previous max and saves a lot of calculations.
+this is a dp approach.
+It is not so easy to get the 8 cubes correct for 3d cases.
+suppose we have a 2x2 cube: if we cut it into 1x1, it has 8 vertex, each vertex shall extends out one 
+```cpp
+int numsubs(int n,int s,vector<vector<vector<int>>>& dp){
+    int ans=0;
+    vector<vector<vector<int>>> prev=dp;
+    for(int i=0;i<=n-s;i++){
+        for(int j=0;j<=n-s;j++){
+            for(int k=0;k<=n-s;k++){
+                //8 s-1 smaller cubes located at the 8 vertexs.
+                dp[i][j][k]=max({prev[i][j][k],prev[i][j+1][k],
+                    prev[i][j][k+1],prev[i+1][j][k],
+                    prev[i][j+1][k+1],prev[i+1][j][k+1],prev[i+1][j+1][k],
+                    prev[i+1][j+1][k+1]
+                });
+                ans+=dp[i][j][k]==s;
+            }
+        }
+    }
+    return ans;
+}
+vector<int> specialSubCubes(vector<int> cube) {
+    vector<int> ans;
+    int n3=cube.size(); //limit 50: 
+    int n=cbrt(n3);
+    vector<vector<vector<int>>> dp(n,vector<vector<int>>(n,vector<int>(n)));
+    int cnt=0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            for(int k=0;k<n;k++){
+                int ind=i*n*n+j*n+k;
+                dp[i][j][k]=cube[ind];
+                if(cube[ind]==1) cnt++;
+            }
+        }
+    }
+    ans.push_back(cnt);
+    for(int i=2;i<=n;i++){
+        ans.push_back(numsubs(n,i,dp));
+    }
+    return ans;
+}
+```
+
+### interval selection
+similar to leetcode double booking 
+find the length of the longest chain.
+intuition: dp approach. only allows up to 2 overlapping intervals.
+if we sort by the ending time, dp subproblem will be the largest subset ending at Ti.
+this can be solved in O(nlogn) with greedy algo. Sort all the end points, then iterate through all the end points using a simple array of size 2 to keep track of the intervals that are still open(haven't met their closing point yet). Whenever the opening intervals reached 3, just remove the interval that spans the furtherst.
+
+
+
+
+
+
+
+
+
+
 
 
 
