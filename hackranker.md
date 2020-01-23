@@ -940,40 +940,45 @@ vector<int> specialSubCubes(vector<int> cube) {
 }
 ```
 
-### interval selection
+### interval selection (5 star)
 similar to leetcode double booking 
 find the length of the longest chain.
 intuition: dp approach. only allows up to 2 overlapping intervals.
 if we sort by the ending time, dp subproblem will be the largest subset ending at Ti.
 this can be solved in O(nlogn) with greedy algo. Sort all the end points, then iterate through all the end points using a simple array of size 2 to keep track of the intervals that are still open(haven't met their closing point yet). Whenever the opening intervals reached 3, just remove the interval that spans the furtherst.
+similar problem: leetcode 1326. Minimum Number of Taps to Open to Water a Garden
 
+```cpp
+int intervalSelection(vector<vector<int>> intervals) {
+    int ans=0;
+    sort(intervals.begin(),intervals.end(),[](vector<int>& a,vector<int>& b){
+        return a[1]<b[1];
+    });
+    int right0=0,right1=0;
+    for(int i=0;i<intervals.size();i++){
+        int start=intervals[i][0],end=intervals[i][1];
+        if(start>right1){ //current interval on the right of t1 (disjoint)
+            ans++;
+            right1=end;
+        }
+        else if(start>right0){ //current interval in the range (right0,right1)
+            ans++;
+            right0=end; //discard right0
+            if(right0>right1) swap(right0,right1); //keep right1>right0
+        }
+	else {} //invalid case, we have to discard it.
+    }
+    return ans;
+}
+```
+- actually we only need to keep two rights. right0<right1, which is more understandable.
+- valid case 1: current start>right1
+- valid case 2: current start in the range [right0,right1]. In this case, we need discard right0
+- invalid case: current start <=right0, and causes triple overlap. and it is the longest among the three.
 
+First, sort by the end time. That part is easy, and is intuitive from the 1 resource case. Since we are dealing with the 2 resource interval scheduling problem, our greedy method is more complicated than the simple "just keep grabbing the next compatible interval with the smallest end time" that we would use in the 1-resource problem. Instead, for every interval, we need to decide which resource to give it to. Here's the rule: we keep track the most recent interval placed in each of the two resources, and for a new interval, we replace the interval of the resource with the latest compatible end time (if any). Doing this allows the highest chance of some interval with a later end time being able to fit in the other resource, since that other resource has an earlier end time, so is strictly more likely to make accomodations for some interval we will encounter later. Hopefully this helps people, as I found most of the comments on this thread about the greedy solution utterly incomprehensible.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
- 
-
-
-
-
-
-
+The sorting is O(N lg N) and the rest is O(N).
 
 
 
