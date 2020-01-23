@@ -980,5 +980,50 @@ First, sort by the end time. That part is easy, and is intuitive from the 1 reso
 
 The sorting is O(N lg N) and the rest is O(N).
 
+### connected cells in a grid
+simple dfs.
+
+### the longest common subsequence
+dp with traceback
+```cpp
+vector<int> longestCommonSubsequence(vector<int> a, vector<int> b) {
+    int m=a.size(),n=b.size();
+    //dp: approach dp[i,j] the max length of the common subsequence
+    //also need to record the previous value
+    vector<vector<int>> dp(m+1,vector<int>(n+1));
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(a[i]==b[j]) dp[i+1][j+1]=dp[i][j]+1;
+            else dp[i+1][j+1]=max(dp[i][j+1],dp[i+1][j]);
+        }
+    }
+    //cout<<"maxlen="<<dp[m][n]<<endl;
+    int maxlen=dp[m][n];
+    vector<int> ans;
+    int i=m,j=n;
+    while(maxlen){
+        if(a[i-1]==b[j-1]){
+            ans.push_back(a[i-1]);
+            i--,j--;
+            maxlen--;
+        }
+        else{
+            if(dp[i-1][j]<dp[i][j-1]){ //we are choose advance i in the previous loop
+                j--;
+            }
+            else i--;
+        }
+    }
+    reverse(ans.begin(),ans.end());
+    return ans;
+}
+```
+A bit tricky when traceback, we need back j if we advance i in the previous loop
+### larry's array
+choose any consecuative subarray and do number of rotations and see if we can sort the array.
+idea: find 1 and rotate it to top, find 2 and rotate it to second....
+TBD
+
+
 
 
