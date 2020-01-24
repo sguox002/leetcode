@@ -1019,6 +1019,78 @@ vector<int> longestCommonSubsequence(vector<int> a, vector<int> b) {
 }
 ```
 A bit tricky when traceback, we need back j if we advance i in the previous loop
+
+### common child
+LCS using dp
+
+###Bear and Steady Gene
+find the smallest length substring and replace it with another string and make it equal occurrence.
+this is similar to leetcode 1234. Replace the Substring for Balanced String
+idea:
+- count and get each char's occurence
+- calculate the difference from the target n/4
+- sliding window to find the histogram same as the difference. (the window hist shall has >= number of chars so we can replace.
+
+```cpp
+bool valid(unordered_map<char,int>& mp1,unordered_map<char,int>& mp2){
+    for(auto t: mp2){
+        if(t.second>0 && mp1[t.first]<t.second) return 0;
+    }
+    return 1;
+}
+int steadyGene(string gene) {
+    int n=gene.size();
+    unordered_map<char,int> cnt={{'A',-n/4},{'C',-n/4},{'G',-n/4},{'T',-n/4}};
+    for(char c: gene) cnt[c]++;
+    //slding window to find the smallest substr to have the hashmap (ignore <=0)
+    if(!cnt['A'] && !cnt['C'] && !cnt['G']) return 0;
+    int i=0,j=0,ans=n;
+    unordered_map<char,int> mp;
+    while(j<n){
+        mp[gene[j]]++;
+        while(valid(mp,cnt)){
+            ans=min(ans,j-i+1);
+            mp[gene[i]]--;
+            i++;
+        }
+        j++;        
+    }
+    return ans;
+}
+```
+### Morgan and a string
+two strings combines to a smallest string.
+when there is a tie we need choose the smaller one.
+when the followed chars are all the same, 
+```cpp
+string morganAndString(string a, string b) {
+	int m=a.size(),n=b.size();
+	int i=0,j=0;
+	string ans;
+	while(i<m && j<n){
+		if(a[i]<b[j]) ans+=a[i++];
+		else if(a[i]>b[j]) ans+=b[j++];
+		else{
+			if(a.substr(i)<=b.substr(j)) ans+=a[i++];
+			else ans+=b[j++];
+		}
+	}
+    if(i<m) ans+=a.substr(i);
+    if(j<n) ans+=b.substr(j);	
+	return ans;
+}
+```
+this gives wrong answer for some test cases.
+for example BAB and BAC will give out BABBAC, but BABAC is smaller.
+the trick is to add a Z at the end to make the compare correct.
+another BAA, BA, after add Z, BAAZ and BAZ
+we get BAABA
+ ZZYZYYZZYYZYZZY
+YZZYZYYZZYYZYZZY
+YZZYZYYZZYYZYZZYZYYZZYYZYZZYZZY
+
+optimization: the tie case, compare substr a lot of times.
+
 ### larry's array
 choose any consecuative subarray and do number of rotations and see if we can sort the array.
 idea: find 1 and rotate it to top, find 2 and rotate it to second....
