@@ -1096,6 +1096,87 @@ choose any consecuative subarray and do number of rotations and see if we can so
 idea: find 1 and rotate it to top, find 2 and rotate it to second....
 TBD
 
+### append and delete
+allows add or delete at the end, also allows operation on empty string.
+```cpp
+string appendAndDelete(string s, string t, int k) {
+    //counting the common prefix
+    int m=s.size(),n=t.size();
+    int same=0;
+    for(int i=0;i<min(s.size(),t.size());i++){
+        if(s[i]!=t[i]) break;
+        same++;
+    }
+    //delete all trailing and add 
+    int minop=m+n-2*same;
+    if(minop>k) return "No"; //over limit
+    if(minop%2==k%2) return "Yes"; //
+    if(m+n-k<0) return "Yes"; 
+    return "No";
+}
+```
+- count the common prefix, m+n-w*comm is the min op required.
+- min operation shall have the same odd/even property. (You can always add add/delete pairs)
+- m+n<k. will be always yes.
+
+### extra long factorials
+string multiply see leetcode. 
+```cpp
+string multiply(string num1, string num2) {
+    reverse(num1.begin(),num1.end());
+    reverse(num2.begin(),num2.end());
+    int m=num1.size(),n=num2.size();
+    vector<int> res(m+n);
+    for(int i=0;i<m;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            res[i+j]+=(num1[i]-'0')*(num2[j]-'0');
+        }
+    }
+    int cf=0;
+    for(int i=0;i<m+n;i++){
+        int t=res[i]+cf;
+        res[i]=t%10;
+        cf=t/10;
+    }
+    
+    while(res.size() && res.back()==0) res.pop_back();
+    if(res.empty()) return "0";
+    string ans;
+    for(int i=res.size()-1;i>=0;i--) ans+=res[i]+'0';
+    return ans.empty()?0:ans;
+}
+void extraLongFactorials(int n) {
+    string res="1";
+    for(int i=2;i<=n;i++){
+        res=multiply(res,to_string(i));
+    }
+    cout<<res<<endl;
+}
+```
+
+### find digits
+find all the digits which is a factor of the original number
+trival.
+
+### save the prisoner
+simple math.
+we assume start from 1 and that means we have extra s-1 candies.
+(m-1+s-1)%n+1
+
+strange thing: TLE happened.
+
+### viral advertising
+initial 5 people, every day half will send to other 3. get the number at the ith day
+simple.
+
+### beautiful days at the movies
+given a range, find how many days: the number and reversed digit number difference %k==0
+brutal force is fine
+
+
+
 
 
 
