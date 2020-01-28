@@ -135,11 +135,64 @@ min(|b-a|+|d-c|)=min(max(b-a,a-b)+max(d-c,c-d))=min(max(b-a+d-c,b-a+c-d,a-b+d-c,
 reorganize to make them clearer:
 max(max(-a-b+c+d,-a+b+c-d,a+b-c-d,a-b-c+d))
 min(max(-a+b-c+d,-a+b+c-d,a-b-c+d,a-b+c-d))
-common items in both expression:
--a+b+c-d
-a-b-c+d
 
-
+if we want to do O(N) then we need group a and b together, and c and d together.
+there are only a+b, a-b two combinations.
+need get max(a+b),max(-a-b),max(-a+b),max(a-b), save them as previous max pairs.
+- there are 3 cases: reverse the prefix, reverse the suffix, reverse the mid subarray
+```cpp
+    int maxValueAfterReverse(vector<int>& num) {
+		int ans=0;//accumulate(num.begin(),num.end(),0);
+		int n=num.size();
+		int maxpre=INT_MIN,maxpost=INT_MIN,maxmid=INT_MIN,minmid=INT_MAX;
+		int mx0=INT_MIN,mx1=INT_MIN,mx2=INT_MIN,mx3=INT_MIN;
+		for(int i=0;i<n-1;i++){
+			int a=num[i],b=num[i+1];
+            ans+=abs(a-b);
+			maxpre=max(maxpre,abs(num[0] - b) - abs(a - b));
+			maxpost=max(maxpost,abs(num[n - 1] - a) - abs(a - b));
+			if(mx0>INT_MIN){
+                maxmid=max(maxmid,max({mx1+a+b,mx2+a-b,mx0-a-b,mx3-a+b}));
+			    minmid=min(minmid,max({mx2-a+b,mx2+a-b,mx3-a+b,mx3+a-b}));
+            }
+			mx0=max(mx0,a+b);
+			mx1=max(mx1,-a-b);
+			mx2=max(mx2,-a+b);
+			mx3=max(mx3,a-b);
+		}
+        cout<<maxpre<<" "<<maxpost<<" "<<maxmid<<" "<<minmid<<endl;
+		return ans+max({maxpre,maxpost,maxmid-minmid});
+	}
+```
+Above code gives wrong results.
+actually NO. You cannot separate them as min and max. we need to 		
+max(|c-a|+|d-b|-|b-a|-|d-c|)
+->max(c-a+d-b-|b-a|-|d-c|) equiv to (-a-b+c+d-|b-a|-|d-c|)
+->max(c-a+b-d-|b-a|-|d-c|) equiv to (-a+b+c-d-|b-a|-|d-c|)
+->max(a-c+d-b-|b-a|-|d-c|) equiv to (a-b-c+d-|b-a|-|d-c|)
+->max(a-c+b-d-|b-a|-|d-c|) equiv to (a+b-c+d-|b-a|-|d-c|)
+    int maxValueAfterReverse(vector<int>& num) {
+		int ans=0;//accumulate(num.begin(),num.end(),0);
+		int n=num.size();
+		int maxpre=INT_MIN,maxpost=INT_MIN,maxmid=INT_MIN,minmid=INT_MAX;
+		int mx0=INT_MIN,mx1=INT_MIN,mx2=INT_MIN,mx3=INT_MIN;
+		for(int i=0;i<n-1;i++){
+			int a=num[i],b=num[i+1];
+            ans+=abs(a-b);
+			maxpre=max(maxpre,abs(num[0] - b) - abs(a - b));
+			maxpost=max(maxpost,abs(num[n - 1] - a) - abs(a - b));
+			if(mx0>INT_MIN){
+                maxmid=max(maxmid,max({mx1+a+b,mx2+a-b,mx3-a+b,mx0-a+b}));
+			    minmid=min(minmid,diff+abs(a-b));
+            }
+			mx0=max(mx0,a+b);
+			mx1=max(mx1,-a-b);
+			mx2=max(mx2,-a+b);
+			mx3=max(mx3,a-b);
+		}
+        cout<<maxpre<<" "<<maxpost<<" "<<maxmid<<" "<<minmid<<endl;
+		return ans+max({maxpre,maxpost,maxmid-minmid});
+	}
 Lee's solution on this:
 
 total calculate the total sum of |A[i] - A[j]|.
