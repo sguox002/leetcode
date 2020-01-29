@@ -167,32 +167,50 @@ need get max(a+b),max(-a-b),max(-a+b),max(a-b), save them as previous max pairs.
 Above code gives wrong results.
 actually NO. You cannot separate them as min and max. we need to 		
 max(|c-a|+|d-b|-|b-a|-|d-c|)
-->max(c-a+d-b-|b-a|-|d-c|) equiv to (-a-b+c+d-|b-a|-|d-c|)
-->max(c-a+b-d-|b-a|-|d-c|) equiv to (-a+b+c-d-|b-a|-|d-c|)
-->max(a-c+d-b-|b-a|-|d-c|) equiv to (a-b-c+d-|b-a|-|d-c|)
-->max(a-c+b-d-|b-a|-|d-c|) equiv to (a+b-c+d-|b-a|-|d-c|)
+- max(c-a+d-b-|b-a|-|d-c|) equiv to (-a-b+c+d-|b-a|-|d-c|) for c>a and d>b
+- max(c-a+b-d-|b-a|-|d-c|) equiv to (-a+b+c-d-|b-a|-|d-c|) for c>a and d<b
+- max(a-c+d-b-|b-a|-|d-c|) equiv to (a-b-c+d-|b-a|-|d-c|) for c<a and d>b.
+- max(a-c+b-d-|b-a|-|d-c|) equiv to (a+b-c+d-|b-a|-|d-c|) for c<a and d<b.
+we separate (a,b) and (c,d)
+there are four cases:
+- max(-a-b-|b-a|+c+d-|d-c|)
+- max(-a+b-|b-a|+c-d-|d-c|)
+- max(a-b-|b-a|-c+d-|d-c|)
+- max(a+b-|b-a|-c-d-|d-c|)
+the key part is when we separate choosing the max, we cannot guarantee choosing same set.
+thus we may over count it.
+The following code passes the tests with O(N)
+
+```cpp
     int maxValueAfterReverse(vector<int>& num) {
 		int ans=0;//accumulate(num.begin(),num.end(),0);
 		int n=num.size();
-		int maxpre=INT_MIN,maxpost=INT_MIN,maxmid=INT_MIN,minmid=INT_MAX;
-		int mx0=INT_MIN,mx1=INT_MIN,mx2=INT_MIN,mx3=INT_MIN;
+		int maxpre,maxpost,maxmid;
+		int mx0,mx1,mx2,mx3;
+		maxpre=maxpost=maxmid=INT_MIN;
+		mx0=mx1=mx2=mx3=INT_MIN;
 		for(int i=0;i<n-1;i++){
 			int a=num[i],b=num[i+1];
-            ans+=abs(a-b);
-			maxpre=max(maxpre,abs(num[0] - b) - abs(a - b));
-			maxpost=max(maxpost,abs(num[n - 1] - a) - abs(a - b));
+			int diff=abs(a-b);
+            ans+=diff;
+			maxpre=max(maxpre,abs(num[0] - b) - diff);
+			maxpost=max(maxpost,abs(num[n - 1] - a) - diff);
 			if(mx0>INT_MIN){
-                maxmid=max(maxmid,max({mx1+a+b,mx2+a-b,mx3-a+b,mx0-a+b}));
-			    minmid=min(minmid,diff+abs(a-b));
+                maxmid=max(maxmid,max(
+				{mx3+a+b-diff,
+				mx2+a-b-diff,
+				mx1-a+b-diff,
+				mx0-a-b-diff}));
             }
-			mx0=max(mx0,a+b);
-			mx1=max(mx1,-a-b);
-			mx2=max(mx2,-a+b);
-			mx3=max(mx3,a-b);
+			mx0=max(mx0,a+b-diff);
+			mx1=max(mx1,a-b-diff);
+			mx2=max(mx2,-a+b-diff);
+			mx3=max(mx3,-a-b-diff);
 		}
-        cout<<maxpre<<" "<<maxpost<<" "<<maxmid<<" "<<minmid<<endl;
-		return ans+max({maxpre,maxpost,maxmid-minmid});
+		return ans+max({maxpre,maxpost,maxmid});
 	}
+```
+	
 Lee's solution on this:
 
 total calculate the total sum of |A[i] - A[j]|.
