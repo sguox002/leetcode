@@ -154,8 +154,11 @@ Given an array of integers jobDifficulty and an integer d. The difficulty of the
 
 Return the minimum difficulty of a job schedule. If you cannot find a schedule for the jobs return -1.
 </em>
+
 I first thought this is a binary search problem, but actually not, since each day may contain multiple tasks which is greater than our target difficulty.
+
 Realized this is a dp problem, then we can think top down recursive approach first to make it correct.
+
 for the first day we have option:</br>
 1 tasks, leaving n-1 </br>
 2 tasks, leaving n-2</br>
@@ -185,4 +188,4 @@ min(max(A[0..i])+sub(i+1,d-1))</br>
 	}
 ```
 
-Important: it is always a good method for dp to try recursive approach first.	
+Important: it is always a good method for dp to try recursive approach first if we are not clear about the recurrence relation.	
