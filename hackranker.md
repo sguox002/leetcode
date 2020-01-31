@@ -1165,7 +1165,7 @@ simple math.
 we assume start from 1 and that means we have extra s-1 candies.
 (m-1+s-1)%n+1
 
-strange thing: TLE happened.
+strange thing: TLE happened. write as (m+s-2)%n+1 passed.
 
 ### viral advertising
 initial 5 people, every day half will send to other 3. get the number at the ith day
@@ -1174,6 +1174,296 @@ simple.
 ### beautiful days at the movies
 given a range, find how many days: the number and reversed digit number difference %k==0
 brutal force is fine
+
+### minimum distance
+equal element distance in an array.
+hashmap store each element's indices and get the min distance
+
+### halloween sale
+using money and promotion, get the number of game to buy.
+simple
+```cpp
+int howManyGames(int p, int d, int m, int s) {
+    // Return the number of games you can buy
+    //p: initial price, d: discount, m: final, s: total money
+    int ans=0,cur=p;
+    while(s>=cur){
+        s-=cur;
+        cur-=d;
+        if(cur<=m) cur=m;
+        ans++;
+    }
+    return ans;
+}
+```
+
+### find the median
+simple, sort and get it.
+
+### cut the sticks
+subtract the array using the min, and discard the min.
+just simulate the process:
+```cpp
+vector<int> cutTheSticks(vector<int> arr) {
+    sort(arr.begin(),arr.end());
+    vector<int> ans;
+    int n=arr.size();
+    ans.push_back(n);
+    int i=0,curmin=arr[0];
+    while(i<n){
+        while(i<n && arr[i]==curmin) i++;
+        ans.push_back(n-i);
+        curmin=arr[i];
+    }
+    ans.pop_back();
+    return ans;
+}
+```
+### acm icpc team
+number of combinations having most skills
+bit or.
+
+### taum and b'day
+buy black and white. if not able to save, just buy directly, otherwise buy black all or white all.
+
+### Modified Kaprekar Numbers
+n^2 break into left and right, left+right=n.
+be sure to use long to pass the test.
+
+### chocolate feast
+buy some and get back some and repeatitively. similar to halloween sale.
+```cpp
+int chocolateFeast(int n, int c, int m) {
+    //n: money, c: cost, m: wrapper for candy
+    int k=n/c; //
+    int ans=k;
+    while(k>=m){
+        ans+=k/m; //
+        k=k/m+k%m; //remaining
+    }
+    return ans;
+}
+```
+
+### service lane
+equiv: find the min for each range query.
+brutal force instead of segment tree.
+
+### lisa's workbook
+a book with n chapters, each chapter has different questions, each page has k pages.
+find the page number == question number cases
+```cpp
+int workbook(int n, int k, vector<int> arr) {
+    //n: chapters, k: problems/page, arr: number of problems in chapter 
+    int ans=0;
+    int start_page=1;
+    for(int pr: arr){
+        int np=(pr+k-1)/k; //ceil
+        int end_page=start_page-1+np;
+        //in between [start,end] to see if we have numbers same?
+        //a stair case line cross with a straight line
+        int start=1;
+        for(int i=start_page;i<=end_page;i++){
+            if(start<=i && min(start+k-1,pr)>=i) ans++;
+            start+=k;
+        }
+        start_page=end_page+1;
+    }
+    return ans;
+}
+```
+### flatland space station
+find each city min distance to space station.
+left find and right find.
+```cpp
+int flatlandSpaceStations(int n, vector<int> c) {
+    //max of min
+    vector<int> dist(n,n);
+    for(int i: c) dist[i]=0;
+    //check its nearst left space station
+    int prev=-1;
+    for(int i=0;i<n;i++){
+        if(dist[i]==0){
+            prev=i;
+        }
+        else if(prev>=0){
+            dist[i]=i-prev;
+        }
+    }
+    prev=n;
+    int ans=0;
+    for(int i=n-1;i>=0;i--){
+        if(dist[i]==0){
+            prev=i;
+        }
+        else if(prev<n){
+            dist[i]=min(dist[i],prev-i);
+        }
+        ans=max(ans,dist[i]);//this shall be outside to avoid missing
+    }
+    return ans;
+}
+```
+
+### fair ration.
+change numbers to even, once you increase a number, you have to increase either its left or right.
+get the min number of increases.
+similarly, we first try left to right, make all odd's even.
+then we from right to left and make all odd's even.
+```cpp
+int fairRations(vector<int> B) {
+    //odd number needs be covered odd times, even number needs cover even times
+    //segment length=2 (for the head and tail) or 3
+    //always spread it to behind
+    vector<int> BB=B;
+    int left=0,right=0;
+    for(int i=0;i<B.size()-1;i++){
+        if(B[i]%2) B[i+1]++,left+=2;
+    }
+    
+    if(B.back()%2){
+        //left=-1;
+        B=BB;
+        for(int i=B.size()-1;i>0;i--){
+            if(B[i]%2) B[i-1]++,right+=2;
+        }
+        if(B[0]%2) return -1;
+        return right;
+    }
+    return left;
+}
+```
+### cavity map
+just loop over all elements in the matrix.
+'X' is bigger than 0 to 9 in ascii.
+
+### sherlock and square
+given a range find number of square numbers 
+simple.
+
+### library fine.
+first process year > < = and then month ><= and then day ><=
+
+### strange counter.
+3 to 1, then 6 to 1, then 12 to 1.....
+```cpp
+long strangeCounter(long t) {
+    //3,6,12,24,....3*2^n n from 0.
+    //sum=3*(1+2+4+....2^k)=3*(2^(k+1)-1)
+    int k=log(t/3+1)/log(2);
+    long rem=t-3*((1l<<k)-1); //find the number in the group
+    if(rem==0) return 1;
+    return 3*(1l<<k)-rem+1;
+}
+```
+### 3d surface area
+similar to leetcode
+just loop and subtract the overlap from top left.
+
+### happy ladybug
+to check if we can arrange same color together.
+- if there is no space, we cannot move, they shall be valid now
+- if there is space, we can always move, only if they contain >1 same color
+```cpp
+string happyLadybugs(string b) {
+    //check 1. if already happy, 2, even number 3. with at least one vacancy
+    //even number conclusion is incorrect.
+    int vacancy=0;
+    vector<int> cnt(26);
+    for(char c: b){
+        if(c=='_') vacancy++;
+        else cnt[c-'A']++;
+    }
+    if(vacancy){
+        for(int i: cnt) if(i==1) return "NO";
+        return "YES";
+    }
+    else{ //check if they are already valid
+        int count=0;
+        for(int i=0;i<b.size();i++){
+            if(!count) count++;
+            else if(b[i]==b[i-1]) count++;
+            else {if(count<2) return "NO";count=1;}
+        }
+        if(count>1) return "YES"; //last char is not processed in the loop
+        return "NO";
+    }
+}
+```
+
+### two characters
+remove all same chars from string, check if we can form an alternative string.
+- count each char.
+- only count differ <=1 can form alternative string.
+- their indices shall form alternative.
+```cpp
+bool valid(vector<int> a,vector<int> b){
+    if(a[0]>b[0]) swap(a,b);
+    vector<int> c(a.size()+b.size());
+    for(int i=0;i<a.size();i++) c[2*i]=a[i];
+    for(int i=0;i<b.size();i++) c[2*i+1]=b[i];
+    return is_sorted(c.begin(),c.end());
+    
+}
+int alternate(string s) {
+    //first the two char occurrence shall differ by 0 or 1
+    //second they shall arrange no adjacent. their indices shall form a zig zag form
+    vector<vector<int>> cnt(26);
+    for(int i=0;i<s.size();i++) cnt[s[i]-'a'].push_back(i);
+    int ans=0;
+    for(int i=0;i<26;i++){
+        if(cnt[i].size()==0) continue;
+        for(int j=i+1;j<26;j++){
+            if(cnt[j].size()==0) continue;
+            if(abs((int)cnt[i].size()-(int)cnt[j].size())>1) continue;
+            if(valid(cnt[i],cnt[j])) ans=max(ans,(int)cnt[i].size()+(int)cnt[j].size());
+        }
+    }
+    return ans;
+}
+```
+
+### caesar cipher
+only rotate the letters. rotate can calculate using mod.
+### mars exploration
+SOS string compare
+### hackerrank in a string
+two pointer compare.
+```cpp
+string hackerrankInString(string s) {
+    string t="hackerrank";
+    int i=0,j=0;
+    int m=s.size(),n=t.size();
+    if(m<n) return "NO";
+    while(i<s.size() && j<t.size()){
+        while(i+1<s.size() && s[i]!=t[j]) i++;
+        if(s[i]==t[j]) j++;
+        i++;
+    }
+    bool res=i<=(int)s.size() && j==(int)t.size();
+    if(res) return "YES";
+    return "NO";
+}
+```
+
+### pangrams
+only count letters and convert to hashset.
+### beautiful triplets
+b-a=d, c-b=d and a,b,c is a subsequence in the array.
+using hashmap and check if a-d,a-2d exist and the number is the product
+```cpp
+int beautifulTriplets(int d, vector<int> arr) {
+    unordered_map<int,int> mp;
+    int ans=0;
+    for(int i: arr) {
+        mp[i]++;
+        if(mp.count(i-d) && mp.count(i-2*d))
+            ans+=mp[i-d]*mp[i-2*d];
+    }
+    return ans;
+}
+```
+
 
 
 
