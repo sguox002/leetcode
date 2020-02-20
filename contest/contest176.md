@@ -210,5 +210,6 @@ what to put into memory:
 - get the max from all its combination and store it.
 
 
-- dp: row by row.
+- dp: row by row. bottom up approach.
+
 
