@@ -1,6 +1,6 @@
 ## contest 180
 
-1374. Generate a String With Characters That Have Odd Counts
+### 1374. Generate a String With Characters That Have Odd Counts
 <em>
 Given an integer n, return a string with n characters such that each character in such string occurs an odd number of times.
 
@@ -23,7 +23,7 @@ if it is even, then put n-1 'a' and 1 'b'
     }
 ```
 
-1375. Bulb Switcher III
+### 1375. Bulb Switcher III
 <em>
 There is a room with n bulbs, numbered from 1 to n, arranged in a row from left to right. Initially, all the bulbs are turned off.
 
@@ -47,7 +47,7 @@ use prefix sum. O(N)
     }
 ```	
 
-1376. Time Needed to Inform All Employees
+### 1376. Time Needed to Inform All Employees
 <em>
 A company has n employees with a unique ID for each employee from 0 to n - 1. The head of the company has is the one with headID.
 
@@ -85,7 +85,8 @@ approach:
         return ans;
     }
 ```
-1377. Frog Position After T Seconds
+
+### 1377. Frog Position After T Seconds
 <em>
 Given an undirected tree consisting of n vertices numbered from 1 to n. A frog starts jumping from the vertex 1. In one second, the frog jumps from its current vertex to another unvisited vertex if they are directly connected. The frog can not jump back to a visited vertex. In case the frog can jump to several vertices it jumps randomly to one of them with the same probability, otherwise, when the frog can not jump to any unvisited vertex it jumps forever on the same vertex. 
 
@@ -120,28 +121,24 @@ public:
     }
     double dfs(vector<vector<int>>& tree,int root,int t,int target,int n,
                vector<bool>& v){
-        int ans=0.0;
-        cout<<root+1<<": "<<t<<endl;
-        if(root==target){
-            if(t==0) return 1.0;
-            else return 0;
-        }
-        if(t==0) return root==target;
+        double ans=0.0;
+        //cout<<root+1<<": "<<t<<endl;
+        if(t==0) return root==target?1:0;
         if(t<0) return 0;
         v[root]=1;
         int nchild=tree[root].size()-1;
         if(!root) nchild++;
-        //if(nchild==0) return 0;//it is a leaf node
+        if(nchild==0) return t>=0 && target==root?1:0;//it is a leaf node, nowhere to go.
         for(int child: tree[root]){
             if(v[child]==0){
                 double tt=dfs(tree,child,t-1,target,n,v)/nchild;
                 ans+=tt;
             }
         }
-        cout<<"Prob: "<<root+1<<" "<<ans<<endl;
+        //cout<<"Prob: "<<root+1<<" "<<ans<<endl;
         return ans;
-        
     }
-
 };
 ```
+- note: when the target is a leaf node, and t>=0, then shall return 1.0
+
