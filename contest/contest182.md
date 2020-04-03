@@ -1,0 +1,146 @@
+## contest 182
+
+### 1394. Find Lucky Integer in an Array
+<em>
+Given an array of integers arr, a lucky integer is an integer which has a frequency in the array equal to its value.
+
+Return a lucky integer in the array. If there are multiple lucky integers return the largest of them. If there is no lucky integer return -1.
+</em>
+
+- using hashmap (or map)
+
+```cpp
+    int findLucky(vector<int>& arr) {
+        map<int,int> mp;
+        for(int i: arr) mp[i]++;
+        for(auto it=mp.rbegin();it!=mp.rend();it++){
+            if(it->first==it->second) return it->first;
+        }
+        return -1;
+    }
+```
+
+### 1395. Count Number of Teams
+<em>
+There are n soldiers standing in a line. Each soldier is assigned a unique rating value.
+
+You have to form a team of 3 soldiers amongst them under the following rules:
+
+Choose 3 soldiers with index (i, j, k) with rating (rating[i], rating[j], rating[k]).
+A team is valid if:  (rating[i] < rating[j] < rating[k]) or (rating[i] > rating[j] > rating[k]) where (0 <= i < j < k < n).
+Return the number of teams you can form given the conditions. (soldiers can be part of multiple teams)
+</em>
+
+- brutal force: just count its left and right
+- I used set, although searching is log(n) but get the distance is still O(N)
+
+```cpp
+    int numTeams(vector<int>& rating) {
+        //for each number check number of smaller than it and number of larger in right
+        int ans=0;
+        set<int> left,right;
+        left.insert(rating[0]);
+        for(int i=1;i<rating.size();i++) right.insert(rating[i]);
+        for(int i=1;i<rating.size();i++){
+            right.erase(rating[i]);
+            auto pit=left.equal_range(rating[i]); //>
+            auto pit1=right.equal_range(rating[i]);//>
+            int t0=distance(left.begin(),pit.first);
+            int t1=distance(pit1.second,right.end());
+            int t2=distance(pit.second,left.end());
+            int t3=distance(right.begin(),pit1.first);
+            ans+=t0*t1+t2*t3;
+            left.insert(rating[i]);
+        }
+        return ans;
+    }
+```
+
+### 1396. Design Underground System
+<em>
+Implement the class UndergroundSystem that supports three methods:
+
+1. checkIn(int id, string stationName, int t)
+
+A customer with id card equal to id, gets in the station stationName at time t.
+A customer can only be checked into one place at a time.
+2. checkOut(int id, string stationName, int t)
+
+A customer with id card equal to id, gets out from the station stationName at time t.
+3. getAverageTime(string startStation, string endStation) 
+
+Returns the average time to travel between the startStation and the endStation.
+The average time is computed from all the previous traveling from startStation to endStation that happened directly.
+Call to getAverageTime is always valid.
+You can assume all calls to checkIn and checkOut methods are consistent. That is, if a customer gets in at time t1 at some station, then it gets out at time t2 with t2 > t1. All events happen in chronological order.
+</em>
+
+- using two hashmap in and out.
+- note the submitted solution cannot deal with the same id, multiple times.
+
+```cpp
+    unordered_map<string,unordered_map<int,int>> in,out;
+    UndergroundSystem() {
+        
+    }
+    
+    void checkIn(int id, string stationName, int t) {
+        in[stationName][id]+=t;
+    }
+    
+    void checkOut(int id, string stationName, int t) {
+        out[stationName][id]+=t;
+    }
+    
+    double getAverageTime(string startStation, string endStation) {
+        double ans=0;
+        int n=0;
+        for(auto t: in[startStation]){
+            int id=t.first;
+            if(out[endStation].count(id)) {
+                ans+=out[endStation][id]-in[startStation][id];
+                n++;
+            }
+        }
+        return ans/n;
+    }
+```
+
+better approach:
+
+```cpp
+    unordered_map<string, pair<int, int>> checkoutMap; // Route - {TotalTime, Count}
+    unordered_map<int, pair<string, int>> checkInMap; // Uid - {StationName, Time}
+    
+    UndergroundSystem() {}
+    
+    void checkIn(int id, string stationName, int t) {
+        checkInMap[id] = {stationName, t};
+    }
+    
+    void checkOut(int id, string stationName, int t) {
+        auto& checkIn = checkInMap[id];
+        string route = checkIn.first + "_" + stationName;
+        checkoutMap[route].first += t - checkIn.second;
+        checkoutMap[route].second += 1;
+    }
+    
+    double getAverageTime(string startStation, string endStation) {
+        string route = startStation + "_" + endStation;
+        auto& checkout = checkoutMap[route];
+        return (double) checkout.first / checkout.second;
+    }
+```
+
+### 1397. Find All Good Strings
+<em>
+Given the strings s1 and s2 of size n, and the string evil. Return the number of good strings.
+
+A good string has size n, it is alphabetically greater than or equal to s1, it is alphabetically smaller than or equal to s2, and it does not contain the string evil as a substring. Since the answer can be a huge number, return this modulo 10^9 + 7.
+</em>
+
+This is a dp problem, but I cannot get it correct yet.
+
+
+	
+	
