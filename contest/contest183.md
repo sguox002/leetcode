@@ -68,6 +68,9 @@ brutal force: string operations.
 ```
 
 smart way: do not have to simulate, but use a cf:
+- if last bit is 0, discard it
+- if last bit is 1, discard it but cf=1 to bring forward
+- this optimize to O(N)
 
 ```cpp
 int numSteps(string &s) {
@@ -132,6 +135,21 @@ otherwise we use one of it ( to make sure we have longest string and no violatio
         }
         return s;
     }
+```
+
+without using pq:
+```cpp
+string longestDiverseString(int a, int b, int c, char aa = 'a', char bb = 'b', char cc = 'c') {
+    if (a < b)
+        return longestDiverseString(b, a, c, bb, aa, cc);
+    if (b < c)
+        return longestDiverseString(a, c, b, aa, cc, bb);
+    if (b == 0)
+        return string(min(2, a), aa);
+    auto use_a = min(2, a), use_b = a - use_a >= b ? 1 : 0; 
+    return string(use_a, aa) +  string(use_b, bb) + 
+		longestDiverseString(a - use_a, b - use_b, c, aa, bb, cc);
+}
 ```
 
 ### 1406. Stone Game III
