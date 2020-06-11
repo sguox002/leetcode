@@ -220,8 +220,7 @@ what to put into memory:
             int t=0;
 			for(int j=0;j<n;j++) if(seats[i][j]=='.') t|=1<<j;
 			mask[i+1]=t;
-		}
-		
+		}	
         vector<vector<int>> dp(m+1,vector<int>(k));
 		for(int i=1;i<=m;i++){
 			for(int j=0;j<k;j++){ //status.
@@ -247,6 +246,5 @@ what to put into memory:
 	bool checkmask(int s,int mask){ //only set bit in mask can be 1.
 		return (s&(~mask))==0;
 	}
-    
 ```	
 
