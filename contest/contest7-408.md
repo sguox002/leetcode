@@ -1,0 +1,165 @@
+## contest 7
+
+### 408. valid word abbreviation (***)
+two pointer approach
+when we find a digit, we get the whole number and advance the other pointer by this number
+and then match
+at the end, both string shall be exhausted.
+```cpp
+    bool validWordAbbreviation(string word, string abbr) {
+        int i=0,j=0;
+        int num=0;
+        while(i<word.size()&&j<abbr.size()){
+            if(isdigit(abbr[j])){
+                if(abbr[j]=='0') return 0; //leading zero not allowed
+                num=0;
+                while(j<abbr.size() && isdigit(abbr[j])) {num=num*10+abbr[j]-'0';j++;}
+                i+=num;
+            }
+            else {
+                if(word[i]!=abbr[j]) return 0;
+                i++,j++;
+            }
+        }
+        return i==word.size() && j==abbr.size();
+    }
+```
+corner case: number of 0 or leading 0
+
+### 409. longest palindrome (**)
+greedy: palindrome will have 0 or 1 char with odd occurrence.
+
+### 410. split array largest sum (****)
+split the array into m subarray and minimize the maxsum of the subarrays
+convert to binary search problem: given target max sum and to see the number of parts
+```cpp
+    int splitArray(vector<int>& nums, int m) {
+        //binary search
+        long tsum=accumulate(nums.begin(),nums.end(),0ll);
+        long max0=*max_element(nums.begin(),nums.end());
+        long l=max0,r=tsum;
+        while(l<r){
+            long mid=l+(r-l)/2;
+            int num=split(nums,mid);
+            if(num<=m) r=mid;
+            else l=mid+1;
+        }
+        return l;
+    }
+    int split(vector<int>& nums,long target){
+        int ans=0;
+        long sum=0;
+        for(int t: nums){
+            if(t+sum>target){
+                ans++;
+                sum=0;
+            }
+            sum+=t;
+        }
+        ans+=(sum!=0);
+        cout<<ans<<endl;
+        return ans;
+    }
+```	
+
+### 411. min unique word abbreviation (*****)
+similar see: 408. validate abbreviation
+320. generate all abbreviation
+
+given a list of dictionary words and a word, find the min length abbreviation which is not conflict with abbr forms of the dictionary words
+approach:
+to not conflict with dictionary words, we need find a char which is different from the dict chars
+bitset approach:
+- generate the bits using each dict word (set bit if the char is different)
+- we may need to keep 1 or more bits in the candidate
+trie approach:
+- build the trie using dictionary word's abbreviation form (may need backtracking to generate all abbrs)
+- build the word's abbreviation form and check the first one not in the trie. (can use binary search)
+- backtracking: keep 1,2,...n chars 
+
+see the reference: https://leetcode.com/problems/minimum-unique-word-abbreviation/discuss/89920/6-ms-C%2B%2B-solution-based-on-modified-320's-generateAbbreviations-(DFS-backtracking)-and-408's-validWordAbbreviation
+By applying following optimizations to reduce computations.
+
+filter words in dictionary with length different than target's;
+when generating abbreviations of target, stops when "length" of abbreviation is going to exceed the length of current best abbreviation;
+when generating abbreviations of target, starts with larger number first, then small number, then letter.
+
+```cpp
+class Solution {
+public:
+    bool validWordAbbreviation(string &word, string &abbr) {
+        int i = 0, j = 0, m = word.length(), n = abbr.length();
+        while (i < m && j < n) {
+            if (word[i] == abbr[j])
+                ++i, ++j;
+            else if (abbr[j] == '0')
+                return false;
+            else if (isdigit(abbr[j])) {
+                int len = 0;
+                while (j < n && isdigit(abbr[j]))
+                    len = len * 10 + abbr[j++] - '0';
+                i += len;
+            }
+            else
+                return false;
+        }
+        return i == m && j == n;
+    }
+    
+    void helper(vector<string> &dict, string &ans, int &ansLen, string &s, int len, string &word, int i) {
+        if (i == word.length()) {
+            if (len < ansLen) {
+                int valid = false;
+                for (string w : dict) {
+                    if (validWordAbbreviation(w, s)) {
+                        valid = true;
+                        break;
+                    }
+                }
+                
+                if (!valid) {
+                    ansLen = len;
+                    ans = s;
+                }
+            }
+            return;
+        }
+        
+        if (len == ansLen)
+            return;
+        
+        if (s.empty() || !isdigit(s.back())) {
+            for (int j = word.length() - 1; j >= i; --j) {
+                int pos = s.length();
+                s += to_string(j - i + 1);
+                ++len;
+                helper(dict, ans, ansLen, s, len, word, j + 1);
+                --len;
+                s.erase(pos);
+            }
+        }
+        
+        s.push_back(word[i]);
+        ++len;
+        helper(dict, ans, ansLen, s, len, word, i + 1);
+        --len;
+        s.pop_back();
+    }
+
+    string minAbbreviation(string target, vector<string>& dictionary) {
+        if (target.empty())
+            return "";
+        
+        vector<string> dict;
+        for (string word : dictionary) {
+            if (word.length() == target.length())
+                dict.push_back(word);
+        }
+        
+        string s, ans = target;
+        int ansLen = target.length();
+        helper(dict, ans, ansLen, s, 0, target, 0);
+        return ans;
+    }
+};
+```

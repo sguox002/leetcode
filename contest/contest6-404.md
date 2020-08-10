@@ -1,0 +1,61 @@
+## contest 6
+### 404. sum of left leaves (**)
+traversal
+### 405. convert a number to hex (**)
+with negatives
+### 406. queue reconstruction (**)
+greedy, arrange the height according to height first in descendant and index ascending order
+corner case: input is empty
+
+### 407. Trapping rain water II (*****)
+BFS with priority-queue. 
+need to observe the following facts:
+- inside is bound by outside ring. the amount of water is determined by the lowest bar in outside
+- taller bar can also form a enclosed area with water. (not in the same level)
+- approach: put the outside cells into min heap (pq)
+- start from the min and add its neighbors into pq
+- if cell is lower than maxh, add water.
+- if cell is higher than maxh, update maxh.
+queue store the h and x y so that we can extend to neighbors
+do not forget when we add elements to queue, mark them as visited.
+
+```cpp
+    int trapRainWater(vector<vector<int>>& hm) {
+        if(hm.empty()) return 0;
+        int m=hm.size(),n=hm[0].size();
+        priority_queue<vector<int>,vector<vector<int>>,greater<vector<int>>> pq;
+        //add the outside ring into pq
+        vector<vector<bool>> v(m,vector<bool>(n));
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(i==0 || i==m-1 || j==0 || j==n-1) {
+                    pq.push({hm[i][j],i,j});
+                    v[i][j]=1;
+                }
+            }
+        }
+        int ans=0;
+        int dir[][2]={{-1,0},{1,0},{0,-1},{0,1}};
+        
+        int maxh=0;
+        while(pq.size()){
+            auto t=pq.top();
+            pq.pop();
+            int h=t[0],x0=t[1],y0=t[2];
+            maxh=max(h,maxh);
+            for(auto d: dir){
+                int x=x0+d[0],y=y0+d[1];
+                if(x<0||x>=m||y<0||y>=n||v[x][y]) continue;
+                v[x][y]=1;
+                int h=hm[x][y];
+                ans+=max(0,maxh-h);
+                pq.push({h,x,y});
+            }
+        }
+        return ans;
+    }
+```
+就是四面都是围墙，从最低的往里走；
+如果里面有更低的，当然就可以蓄水，蓄水的量就是围墙最低 减去 此处的高度；
+如果里面的比当前围墙高，那这个方向的围墙高度就增加了。
+然后永远围墙最低的地方开始搜，最后就能把整个水池搜一遍。
