@@ -1,0 +1,98 @@
+## biweek 3
+### 1099. Two sum less than K (***)
+<em>Given an array A of integers and integer K, return the maximum S such that there exists i < j with A[i] + A[j] = S and S < K. If no i, j exist satisfying this equation, return -1.</em>
+idea:
+
+using hashmap with binary search
+```cpp
+    int twoSumLessThanK(vector<int>& A, int K) {
+        set<int> ms;
+        
+        int ans=INT_MIN;
+        for(int i: A){
+            auto it=ms.lower_bound(K-i);
+            if(it!=ms.begin()) ans=max(ans,i+*(--it));
+            ms.insert(i);
+        }
+        return ans==INT_MIN?-1:ans;
+    }
+```	
+### 1100. Find k-length substrings with no repeated characters
+Given a string S, return the number of substrings of length K with no repeated characters.
+idea:
+
+sliding window with hashmap
+```cpp
+    int numKLenSubstrNoRepeats(string S, int K) {
+        //sliding window with hashmap
+        unordered_map<char,int> mp;
+        int ans=0;
+        for(int i=0;i<S.size();i++){
+            if(i<K) mp[S[i]]++;
+            else{
+                mp[S[i]]++;
+                mp[S[i-K]]--;
+                if(mp[S[i-K]]==0) mp.erase(S[i-K]);
+           }
+            if(mp.size()==K) ans++;
+        }
+        return ans;
+    }
+```
+
+
+### 1101. The earliest moment when everyone become friends (**)
+simple: union-find and get the time when the number of union is 1.
+
+### 1102. Path with max min value.
+<em>Given a matrix of integers A with R rows and C columns, find the maximum score of a path starting at [0,0] and ending at [R-1,C-1].
+
+The score of a path is the minimum value in that path.  For example, the value of the path 8 →  4 →  5 →  9 is 4.
+
+A path moves some number of times from one visited cell to any neighbouring unvisited cell in one of the 4 cardinal directions (north, east, west, south).</em>
+
+Idea:
+convert to binary search problem. set all <mid value to be non-passable and find the value (last connection).
+using bfs to check if connected.
+
+```cpp
+    int maximumMinimumPath(vector<vector<int>>& A) {
+        int mn=INT_MAX,mx=INT_MIN;
+        for(auto t: A){
+            for(int i: t) mn=min(i,mn),mx=max(mx,i);
+        }
+        //binary search to see if it connects
+        int l=mn,r=mx*2;
+        while(l+1<r){
+            int mid=l+(r-l)/2;
+            if(connected(A,mid)) l=mid;
+            else r=mid;
+            //cout<<l<<" "<<r<<endl;
+        }
+        return l;
+    }
+    bool connected(vector<vector<int>>& A,int v){
+        int m=A.size(),n=A[0].size();
+        if(v>min(A[0][0],A[m-1][n-1])) return 0;
+        queue<int> q;
+        vector<vector<bool>> visited(m,vector<bool>(n));
+        q.push(0);visited[0][0]=1;
+        int dir[][2]={{-1,0},{1,0},{0,-1},{0,1}};
+        while(q.size()){
+            int sz=q.size();
+            while(sz--){
+                int t=q.front();
+                q.pop();
+                int x=t/n,y=t%n;
+                if(x==m-1 && y==n-1) return 1;
+                for(int i=0;i<4;i++){
+                    int x0=x+dir[i][0],y0=y+dir[i][1];
+                    if(x0<0||y0<0||x0>=m||y0>=n||visited[x0][y0]||A[x0][y0]<v) continue;
+                    visited[x0][y0]=1;
+                    q.push(x0*n+y0);
+                }
+            }
+        }
+        return 0;
+    }
+```	
