@@ -170,4 +170,25 @@ max and min using stack. ****
 prioriy_queue, dijkstra similar, *****
 
 
+## contest 186
+
+1422. Maximum Score After Splitting a String
+left 0s and right 1s, two pointer. **
+
+1423. Maximum Points You Can Obtain from Cards	
+equiv sliding window minimum. ***
+
+1424. Diagonal Traverse II
+hashmap sort by r+c. ***
+bfs: layer=r+c.
+
+1425. Constrained Subsequence Sum
+heap + dp, (sliding window max) ****
+
+
+
+
+
+
+
 
