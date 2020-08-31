@@ -1,4 +1,43 @@
 leetcode contest contents
+## contest 204
+1566. Detect Pattern of Length M Repeated K or More Times
+one pass using two pointer
+
+1567. Maximum Length of Subarray With Positive Product
+using prefix xor and hashmap similar count.
+
+1568. Minimum Number of Days to Disconnect Island
+find the critical cell or the bottom right cell (0,1,2)
+
+1569. Number of Ways to Reorder Array to Get Same BST
+combinations and dfs. large combination using pascal triangle.
+
+## contest 203
+
+1560. Most visited sector in a circular track
+middle rounds has no effect
+
+1561. Max number of coins you can get
+you can only choose the 2nd max piles, sort and greedy.
+
+1562. Find latest group of size Max
+union-find and hashmap.
+
+1563. Stone game V
+dp
+
+## biweek 33
+1556. Thousands separater
+simple, check remaining
+
+1557. Minimum Number of Vertices to Reach All Nodes
+source nodes count
+
+1558. Minimum Numbers of Function Calls to Make Target Array
+equivalent to reduce n to 1, odd -1, even /2
+
+1559. Detect Cycles in 2D Grid
+dfs avoid go back to parent.
 
 ## contest 202
 Three Consecutive Odds (array, *)
