@@ -89,13 +89,13 @@ common practice:
 
 leetcode heap related practice questions
 
-1642. Furthest Building You Can Reach
+1642. Furthest Building You Can Reach ***
 using bricks or ladders, prefer ladders for larger jump and bricks for smaller jump.
 - binary search using greedy. (using heap is less efficient than sort, so heap will TLE).
 - approach 1: max heap, use bricks first, then replace ladder with the largest bricks jump.
 - approach 2: min heap, when ladders are used up, pop the smallest jump for bricks.
 
-1439. Find the Kth Smallest Sum of a Matrix With Sorted Rows
+1439. Find the Kth Smallest Sum of a Matrix With Sorted Rows ****
 rows are sorted. choose one element from each row and get the kth smallest sum.
 - the first column is the smallest (0,0)...(m-1,0)
 - add all its neighboring elements into heap
@@ -106,7 +106,7 @@ or use set to store the vector for the visited.
 
 this is so similar to bfs or dijkstra
 
-1631. Path With Minimum Effort
+1631. Path With Minimum Effort ****
 get the minmimum max absolute difference from top left to bottom right.
 dijkstra: using pq and tries the smallest difference first. record all difference,
 - for x,y, add its neighborings into pq, and update the effort
@@ -176,7 +176,51 @@ binary search + dfs fastest. (less memory and faster). the worst case will try a
 binary search + union find (check if two nodes are connected).
 
 
+1054.distant barcode ***
+arrange so neighboring is different. --several other similar questions
+greedy: arrange most frequent first.
 
+1046. Last Stone Weight *
+straightforward max heap.
+
+973. K Closest Points to Origin **
+using pq to keep only k points, pop those largest.
+
+882. Reachable Nodes In Subdivided Graph
+
+871. Minimum Number of Refueling Stops *****
+a list of stations with positions and amount of gases. check if we can drive to target with given initial fuel.
+- we need to be able to reach the station to use its gas.
+- bfs: is not quite right since we only use one station (which has the most gas), but in order to reach target, we can use more than one in the range.
+ie we have more choices. if n stations in the range, we can choose 1,2...n stations.
+
+- heap: using max heap. adding those reachable stations into pq, choose the max if there are stations in the pq.
+heap approach is more understandable.
+```cpp
+	int minRefuelStops(int target, int startFuel, const std::vector<std::vector<int>>& stations) {
+        int gas = startFuel;
+        int stops = 0;
+        int last_reachable = 0; // Index of last reachable station - 1. 
+    
+        priority_queue<int> pq;
+    
+        while(gas < target){
+            // Visit reachable stations.
+            while(last_reachable<stations.size() && gas>=stations[last_reachable][0]){
+                pq.push(stations[last_reachable++][1]);
+            }
+            if(pq.empty()) return -1;
+            
+            gas += pq.top(); //pick the best
+            pq.pop();
+            ++stops;
+        }
+        
+        return stops;
+    }
+```	
+- dp approach: dp[t] the largest distance using t stations for refuel. 
+then dp[t+1]=max(dp[t+1],dp[t]+s[i][1])
 
 
 
