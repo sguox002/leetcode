@@ -222,6 +222,15 @@ heap approach is more understandable.
 - dp approach: dp[t] the largest distance using t stations for refuel. 
 then dp[t+1]=max(dp[t+1],dp[t]+s[i][1])
 
+864. Shortest path to get all keys
+given a 2d grid with keys and locks pair, and a start position. You have to carry the key to open the corresponding lock. Afte unlock, we can walk over it.
+find the min number of moves to acquire all keys.
+idea: assume we have a set of keys, we are looking for the min moves to get other remaining keys. 
+The next step we may have a set of keys reachable, which one to pick?
+We may use greedy to choose the closest one.
+this one shall mark as bfs problem + bitset for the state.
+
+
 
 
 
