@@ -1487,8 +1487,18 @@ Similar problem: 398
 <<-256	Paint House    		52.7%	Medium	->>
 <<-255	Verify Preorder Sequence in Binary Search Tree    		45.9%	Medium	->>
 <<-254	Factor Combinations    		47.0%	Medium	->>
-<<-253	Meeting Rooms II    		46.3%	Medium	->>
-<<-252	Meeting Rooms    		55.1%	Easy	->>
+<<-253	Meeting Rooms II    		46.3%	Medium	
+problem: given a list of intervals, find the min required room.
+idea: overlapped intervals need separate room. so to find max overlapped intervals.
+approach: intervals, using map to mark start and ending of an event. prefix sum
+
+->>
+<<-252	Meeting Rooms    		55.1%	Easy	
+check if intervals have overlaps.
+approach: intervals, sort with begin and check begin with previous end.
+O(N)
+level: 2
+->>
 <<-251	Flatten 2D Vector    		46.0%	Medium	->>
 <<-250	Count Univalue Subtrees    		52.7%	Medium	->>
 <<-249	Group Shifted Strings    		56.9%	Medium	->>
