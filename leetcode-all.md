@@ -17,8 +17,42 @@ single keyword:
 <<-((?!->>).|[\r\n])?(keyw1)(.|[\r\n])?->>
 two keywords:
 <<-((?!->>).|[\r\n])?(keyw1|keyw2)((?!->>).|[\r\n])?(keyw1|keyw2)(.|[\r\n])?->>
+demo using the search pattern:
+<<-((?!->>).|[\r\n])*?(dp|greedy)((?!->>).|[\r\n])*?(dp|greedy)(.|[\r\n])*?->>
+
+<<-0111. problem
+subject: dp with greedy.
+level: 1
+->>
 
 ### Problems
+<<-1675. Minimize Deviation in Array
+odd number can *2, even number can /2. return the min value of max-min.
+since odd can change to even only once, we can change all to even, and then only divide is allowed.
+Greedy: reduce the max even by half and evaluate the difference. Since we need both the max and the min, sorting or set is more suitable than priority_queue.
+if the max is odd, we stop. You cannot make it smaller.
+subject: greedy, heap.
+level: 4
+->>
+
+<<-1674. Min moves to make array complimentary
+problem: A[i]+A[n-1-i] are all the same. using [1,limit] to replace any number, and find the number of replace. (note all elements <=limit and >=1, this is a critical information), very hard question!
+Analysis: from brutal force (we need do each pair for all the targets, and then we can use optimization using difference array to reduce O(n) to O(1) (the curve is always 2s,1s,0s,1s,2s, using difference we only need to record 5 changing point). also binary search can also do it with less memory requirement.
+subject: difference array and prefix sum.
+level: 5
+->>
+
+<<-1673. Find the most competitive subsequence
+problem: find the min subsequence with length = k.
+approach: greedy approach: use the first n-k minimum for the first element and then discard the elements till the min (including). using priority_queue O(nlogn) or monotonic deque O(n) or monotonic stack. deque is easier.
+subject: deque or stack, monotonic
+level: 4
+->>
+
+<<-1672. Richest customer wealth
+trivial
+level: 1
+->>
 
 <<-1671. Minimum Number of Removals to Make Mountain Array
 approach: check each index and get the LIS and then back from right to get the LIS.
@@ -49,7 +83,7 @@ level: 1
 ->>
 
 <<-1666 Change the root of a binary tree
-problem: node has left,right,parent. go up from leaf, if cur has a left, it becomes right child. Its parant becomes left child.
+problem: node has left,right,parent. go up from leaf, if cur has a left, it becomes right child. Its parent becomes left child.
 subject: binary tree, very confusing.
 level: 4
 ->>
@@ -74,8 +108,8 @@ level: 3
 
 <<-1662	Check if two string arrays are equivalent
 problem: concat and check if correct
-approach: brutal force, or using two pointer
-level: 1
+approach: brutal force, or using two pointer O(1) two pointer for the word counter, two pointer for the char counter in each word, which word is finished first, increase the word counter.
+level: 2
 ->>
 
 <<-1660	Correct a Binary Tree    83.2%	Medium	
@@ -84,7 +118,14 @@ approach: dfs with hashmap.
 level: 3
 ->>
 
-<<-1659	Maximize Grid Happiness    		29.1%	Hard	->>
+<<-1659	Maximize Grid Happiness    		29.1%	Hard	
+problem: given a grid, and number of introvert and number of extrovert. introvert starts with 120 and lose 30 for each neighbor and extrovert starts with 40 and gain 20 for each neighbor. find the max happiniess.
+The critical part is to realize that the current choice only depends on previous n placements. 
+using dp with bitmask. top down is easier.
+dp state is defined by current position, intro used, extro used, previous n cells intromask, previous n cells extromask. 5d dp.
+level: 5
+->>
+
 <<-1658	Minimum Operations to Reduce X to Zero    		29.3%	Medium	->>
 <<-1657	Determine if Two Strings Are Close    		50.0%	Medium	->>
 <<-1656	Design an Ordered Stream    		80.0%	Easy	->>
@@ -1018,7 +1059,6 @@ this leads to a binary search approach.
 To check if the array can get more or less than target average:
 - Sum(Ai-target) can be achieved using prefix sum.
 - we keep the 0 to i-k minimum sum and prefix sum. If prefix sum>min sum, then we know we can get average > target.
-
 ->>
 <<-643	Maximum Average Subarray I    		41.7%	Easy	->>
 <<-642	Design Search Autocomplete System    		45.5%	Hard	->>
@@ -1270,7 +1310,9 @@ To check if the array can get more or less than target average:
 <<-401	Binary Watch    		48.1%	Easy	->>
 <<-400	Nth Digit    		32.3%	Medium	->>
 <<-399	Evaluate Division    		53.5%	Medium	->>
-<<-398	Random Pick Index    		57.1%	Medium	->>
+<<-398	Random Pick Index    		57.1%	Medium	
+reservoir sampling
+->>
 <<-397	Integer Replacement    		33.2%	Medium	->>
 <<-396	Rotate Function    		36.5%	Medium	->>
 <<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	->>
@@ -1287,6 +1329,33 @@ To check if the array can get more or less than target average:
 <<-384	Shuffle an Array    		53.5%	Medium	->>
 <<-383	Ransom Note    		53.2%	Easy	->>
 <<-382	Linked List Random Node    		52.4%	Medium	->>
+reservoir sampling:
+Choose k entries from n numbers. Make sure each number is selected with the probability of k/n
+Basic idea:
+Choose 1, 2, 3, ..., k first and put them into the reservoir.
+For k+1, pick it with a probability of k/(k+1), and randomly replace a number in the reservoir.
+For k+i, pick it with a probability of k/(k+i), and randomly replace a number in the reservoir.
+Repeat until k+i reaches n
+Proof:
+For k+i, the probability that it is selected and will replace a number in the reservoir is k/(k+i)
+For a number in the reservoir before (let's say X), the probability that it keeps staying in the reservoir is
+P(X was in the reservoir last time) × P(X is not replaced by k+i)
+= P(X was in the reservoir last time) × (1 - P(k+i is selected and replaces X))
+= k/(k+i-1) × （1 - k/(k+i) × 1/k）
+= k/(k+i)
+When k+i reaches n, the probability of each number staying in the reservoir is k/n
+Example
+Choose 3 numbers from [111, 222, 333, 444]. Make sure each number is selected with a probability of 3/4
+First, choose [111, 222, 333] as the initial reservior
+Then choose 444 with a probability of 3/4
+For 111, it stays with a probability of
+P(444 is not selected) + P(444 is selected but it replaces 222 or 333)
+= 1/4 + 3/4*2/3
+= 3/4
+The same case with 222 and 333
+Now all the numbers have the probability of 3/4 to be picked
+Similar problem: 398
+
 <<-381	Insert Delete GetRandom O(1) - Duplicates allowed    		34.6%	Hard	->>
 <<-380	Insert Delete GetRandom O(1)    		48.2%	Medium	->>
 <<-379	Design Phone Directory    		47.4%	Medium	->>
@@ -1426,9 +1495,20 @@ To check if the array can get more or less than target average:
 <<-248	Strobogrammatic Number III    		39.9%	Hard	->>
 <<-247	Strobogrammatic Number II    		48.1%	Medium	->>
 <<-246	Strobogrammatic Number    		45.4%	Easy	->>
-<<-245	Shortest Word Distance III    		55.6%	Medium	->>
-<<-244	Shortest Word Distance II    		53.0%	Medium	->>
-<<-243	Shortest Word Distance    		61.4%	Easy	->>
+<<-245	Shortest Word Distance III    		55.6%	Medium	
+similar to 244, but the input words could be the same and represent different positions.
+using hashmap to store indices for each word, but need check two cases.
+->>
+<<-244	Shortest Word Distance II    		53.0%	Medium	
+similar to 243, but will be called many times with different parameters
+using hashmap to record the indices for each word.
+->>
+<<-243	Shortest Word Distance    		61.4%	Easy	
+given two words find the distance (shortest)
+one pass: keep updating two indices and find the difference.
+O(N) if we do not consider string compare.
+->>
+
 <<-242	Valid Anagram    		57.6%	Easy	->>
 <<-241	Different Ways to Add Parentheses    		56.5%	Medium	->>
 <<-240	Search a 2D Matrix II    		43.6%	Medium	->>
@@ -2051,13 +2131,13 @@ tag: sliding window, fixed
 rating: 2 star
 ->>
 
-<<-835. Image Overlap ****->>
+<<-835. Image Overlap ****
 using 2d sliding window
 - x and y has 2N positions,-->O(N^4)
 - fill A in a large matrix and move B mask in the big array, still O(N^4)
 - those 0's does not contribute. compress it to 1d array.
-- convolution..->>
-<<-1d approach:
+- convolution..
+1d approach:
 - compress, save the 1's index from A to LA, B to LB
 - sliding: each index in A can overlap with another index in B, provide the offset is i-j.
 - so we accumulate each index difference and the max is the answer.
@@ -2200,8 +2280,8 @@ replace at most k characters to other chars in the range [L,R].
 - replace one char from odd group will eliminate two odd groups. (greedy)
 ->>
 
-<<-1386. cinema seat allocation. **->>
-<<-10 seats, left and right will not consider. left 3, mid 4, right 3. faimily of 4 shall sit in the mid.
+<<-1386. cinema seat allocation. **
+10 seats, left and right will not consider. left 3, mid 4, right 3. faimily of 4 shall sit in the mid.
 left 2+mid left 2, mid 4, mid right 2+ right 2.
 - one row mostly 2 families. 2*n.
 - check if the row only contains one faimly -1, zero family -2.
@@ -2561,8 +2641,8 @@ rating: **
 - second we add to target and get one group
 - when number of groups>=3 it means we can do it (why >= > is for target=0)
 ->>
-<<-717. 1-bit and 2-bit Characters ***->>
-<<-0 is represented as 0, 1 represented as 10 or 11.
+<<-717. 1-bit and 2-bit Characters ***
+0 is represented as 0, 1 represented as 10 or 11.
 starting from the back:
 - 1110, odd number of 1s, must company with a 0
 - count 0 and 1, when seen 1 and then meet a 0, stop.
@@ -3110,10 +3190,10 @@ dictionary order.
 ->>
 <<-1016. Binary String With Substrings Representing 1 To N **
 - brutal force, from 1 to N get each binary string. O(nlogn).
-- we can easily build binary string using the range 0,1-3,4-7,8-15,16-31...->>
-<<-0,1->>
-<<-10,11->>
-<<-100,101,110,111
+- we can easily build binary string using the range 0,1-3,4-7,8-15,16-31...
+0,1
+10,11
+100,101,110,111
 ....
 everytime we add 1 to the MSB to all previous result.
 - greedy: we only need check the longer one since all smaller one are substring of longer one.
@@ -3271,8 +3351,8 @@ greedy:
 - to get min, replace the first seen digit>1 to 0. If the first seen number>1, replace it to 1.
 ->>
 <<-1513. Number of Substrings With Only 1s **
-- count consecutive 1s. for example 111, 1+2+3=6->>
-<<-0110111-->1+2+1+2+3=9
+- count consecutive 1s. for example 111, 1+2+3=6
+0110111-->1+2+1+2+3=9
 ->>
 <<-1541. Minimum Insertions to Balance a Parentheses Strings ***
 ( 2 points, ) 1 point.
@@ -3317,8 +3397,8 @@ unix style directory.
 .. for previous
 - using stack.
 ->>
-<<-556. Next Greater Element III ****->>
-<<-32bit integer with the same digits. find the next greater element.
+<<-556. Next Greater Element III ****
+32bit integer with the same digits. find the next greater element.
 - all digits descending order, impossible
 - all digits ascending order, reverse the last pair.
 - other cases: from right. 534976, the first sorted pair is 49.
@@ -3755,11 +3835,12 @@ how could we reduce the complexity to O(nlogn) or O(N)?
 monotonic stack could be a good candidate.
 - maintain a decreasing stack, when we see a big number, we keep popping out and get the max.
 [6,0,8,2,1,5]
-stack store [6,0] ->>
-<<-5 to 0, pop 0->>
-<<-1 to 6->>
-<<-2 to 2->>
-<<-8 to 6->>
+stack store [6,0] 
+5 to 0, pop 0
+1 to 6
+2 to 2
+8 to 6
+->>
 <<-907. sum of subarray minimum
 each element can be min, we need to find left greater and right greater.
 using monotnic stack to find them in O(N).->>
@@ -3767,12 +3848,12 @@ using monotnic stack to find them in O(N).->>
 <<-84. largest rectangle in histogram->>
 <<-85. maximal rectangle
 - stack: using max histogram approach.
-
- 1249. min remove to make valid parentheses ***
+->>
+<<- 1249. min remove to make valid parentheses ***
 using stack to mark invalid left and right parentheses.
  
 
 heap:->>
 <<-1499. Max Value of Equation
 coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
-<<-767. reorganize string ***
+<<-767. reorganize string ***->>
