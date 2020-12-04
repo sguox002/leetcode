@@ -26,6 +26,12 @@ level: 1
 ->>
 
 ### Problems
+<<-1676. Lowest Common Ancestor of a Binary Tree IV
+now given a list of nodes, find their LCA
+approach 1: using 2 node's lca and reduce by half. O(mnlogm)
+approach 2: traversal and mark each found nodes using postorder traversal.
+it is better to use two states: the answer and the counting. (Note the dfs or postorder, we need assign the answer only the first time).
+->>
 <<-1675. Minimize Deviation in Array
 odd number can *2, even number can /2. return the min value of max-min.
 since odd can change to even only once, we can change all to even, and then only divide is allowed.
@@ -791,7 +797,14 @@ level: 5
 <<-900	RLE Iterator    		54.8%	Medium	->>
 <<-899	Orderly Queue    		52.8%	Hard	->>
 <<-898	Bitwise ORs of Subarrays    		34.0%	Medium	->>
-<<-897	Increasing Order Search Tree    		72.5%	Easy	->>
+<<-897	Increasing Order Search Tree    		72.5%	Easy	
+change tree to a in-order order tree.
+using reverse inorder traversal.
+root->right=process(root->right,prev)
+...
+return process(root->left,prev);
+level: 3
+->>
 <<-896	Monotonic Array    		58.0%	Easy	->>
 <<-895	Maximum Frequency Stack    		61.9%	Hard	->>
 <<-894	All Possible Full Binary Trees    		76.5%	Medium	->>
