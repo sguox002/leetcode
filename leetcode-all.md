@@ -195,7 +195,11 @@ level: 5
 <<-1590	Make Sum Divisible by P    		27.2%	Medium	->>
 <<-1589	Maximum Sum Obtained of Any Permutation    		34.5%	Medium	->>
 <<-1588	Sum of All Odd Length Subarrays    		81.1%	Easy	->>
-<<-1586	Binary Search Tree Iterator II    		65.6%	Medium	->>
+<<-1586	Binary Search Tree Iterator II    		65.6%	Medium	
+this we need add prev and hasPrev.
+- inorder traversal and put into vector, trivial
+- iterative: only maintain the visited nodes using stack.
+->>
 <<-1585	Check If String Is Transformable With Substring Sort Operations    		48.0%	Hard	->>
 <<-1584	Min Cost to Connect All Points    		49.0%	Medium	->>
 <<-1583	Count Unhappy Friends    		52.6%	Medium	->>
@@ -1602,7 +1606,10 @@ O(N) if we do not consider string compare.
 <<-176	Second Highest Salary    		32.6%	Easy	->>
 <<-175	Combine Two Tables    		62.6%	Easy	->>
 <<-174	Dungeon Game    		32.9%	Hard	->>
-<<-173	Binary Search Tree Iterator    		58.2%	Medium	->>
+<<-173	Binary Search Tree Iterator    		58.2%	Medium	
+binary tree inorder traversal iterative approach using stack.
+add all left into stack, pop and add all right into stack.
+->>
 <<-172	Factorial Trailing Zeroes    		38.1%	Easy	->>
 <<-171	Excel Sheet Column Number    		56.5%	Easy	->>
 <<-170	Two Sum III - Data structure design    		34.5%	Easy	->>
