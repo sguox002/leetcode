@@ -24,13 +24,17 @@ demo using the search pattern:
 subject: dp with greedy.
 level: 1
 ->>
+problems are classified according to the most important classification. we focused on the idea.
 
-### Problems
+## algorithm focused Problems
+
 ### dp: edit distance, longest common subsequence et al.
+
 <<-1682. Longest palindromic subsequence II
 problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
 dp[i,j,k] using 26 chars.
 ->>
+
 <<-516	Longest Palindromic Subsequence    		54.4%	Medium	
 equivalent to:
 - longest common subsequence (LCS) (s and reversed s).
@@ -39,11 +43,13 @@ equivalent to:
 s[i]==s[j] dp[i,j]=dp[i+1,j-1]+2
 else dp[i,j]=max(dp[i+1,j],dp[i,j-1])
 ->>
+
 <<-5. Longest Palindromic Substring
 for substring, 
 - dp: dp[i,j] s[i]==s[j] and inner side s[i+1..j-1] must also be a pal-string.
 - non-dp: for all possible position, expand and update max size.
 ->>
+
 <<-647. Palindromic Substrings
 problem: count number of palindromic substring.
 - non-dp: for all possible position, expand and get the count
@@ -63,6 +69,7 @@ derive the relation from [i,j-1] and [i+1,j] and [i+1,j-1]
  since we need all dp[i,j,c] c from 0 to 3, the loop shall be inside.
 rating: 5
 ->>
+
 <<-1143. longest common subsequence
 two strings.
 very typical dp problem. 
@@ -70,6 +77,12 @@ very typical dp problem.
 - edit distance.
 there are quite a few variation of this problem.
 ->>
+
+<<-1035. Uncrossed lines
+find the max number of connected lines (connecting two same number in two lines)
+longest common subsequence problem
+->>
+
 <<-72. Edit Distance
 min operation to convert string 1 to string 2 using ins,del,replace.
 dp[i,j] represent the min operations converting s1 length i to s2 with length j.
@@ -79,13 +92,6 @@ replace: dp[i-1,j-1]+1
 insert: dp[i,j-1]+1
 delete: dp[i-1,j]+1
 ->>
-<<-161. One Edit Distance
-insert exactly one char into s and get t.
-del exactly one char from s and get t.
-replace one char in s and get t.
-- the length shall differ <=1.
-- swap s and t if s is shorter than t. (no dp)
-->>
 
 <<-583. Delete operation for two strings
 min deletions to make two strings equal. You can delete either strings.
@@ -94,65 +100,13 @@ if s[i]!=t[j]: you have two options:
 delete s[i]: dp[i,j-1]+1
 delete t[j]: dp[i-1,j]+1
 ->>
+
 <<-712. Minimum ASCII delete sum for two strings
 find the lowest ascii sum of deleted chars to make two strings equal.
 edit distance variation
 ->>
-<<-1035. Uncrossed lines
-find the max number of connected lines (connecting two same number in two lines)
-longest common subsequence problem
-->>
 
-<<-1681. Minimum Incompatibility
-problem: divide into k sets, each set cannot contain duplicate number, incompatibility=max-min for each set. find the min sum of incompatibility.
-- backtracking: but it will find all permutations. using set to avoid revisit.
-a very tricky backtracking problem.
-->>
-<<-1680. Concatneation of consecutive binary numbers
-left shift and add.
-->>
-<<-1679. Max number of k-sum pairs
-sort and then use two pointer to match.
-->>
-
-<<-1678. goal parser interpetation
-(al) ->al. and () change to 'o'
-simple, using string as stack
-->>
-
-<<-1676. Lowest Common Ancestor of a Binary Tree IV
-now given a list of nodes, find their LCA
-approach 1: using 2 node's lca and reduce by half. O(mnlogm)
-approach 2: traversal and mark each found nodes using postorder traversal.
-it is better to use two states: the answer and the counting. (Note the dfs or postorder, we need assign the answer only the first time).
-->>
-<<-1675. Minimize Deviation in Array
-odd number can *2, even number can /2. return the min value of max-min.
-since odd can change to even only once, we can change all to even, and then only divide is allowed.
-Greedy: reduce the max even by half and evaluate the difference. Since we need both the max and the min, sorting or set is more suitable than priority_queue.
-if the max is odd, we stop. You cannot make it smaller.
-subject: greedy, heap.
-level: 4
-->>
-
-<<-1674. Min moves to make array complimentary
-problem: A[i]+A[n-1-i] are all the same. using [1,limit] to replace any number, and find the number of replace. (note all elements <=limit and >=1, this is a critical information), very hard question!
-Analysis: from brutal force (we need do each pair for all the targets, and then we can use optimization using difference array to reduce O(n) to O(1) (the curve is always 2s,1s,0s,1s,2s, using difference we only need to record 5 changing point). also binary search can also do it with less memory requirement.
-subject: difference array and prefix sum.
-level: 5
-->>
-
-<<-1673. Find the most competitive subsequence
-problem: find the min subsequence with length = k.
-approach: greedy approach: use the first n-k minimum for the first element and then discard the elements till the min (including). using priority_queue O(nlogn) or monotonic deque O(n) or monotonic stack. deque is easier.
-subject: deque or stack, monotonic
-level: 4
-->>
-
-<<-1672. Richest customer wealth
-trivial
-level: 1
-->>
+### longest increasing sequence
 
 <<-1671. Minimum Number of Removals to Make Mountain Array
 approach: check each index and get the LIS and then back from right to get the LIS.
@@ -160,63 +114,8 @@ subject: dp,longest increasing subsequence O（N^2) or O(nlogn)
 level: 3
 ->>
 
-<<-1670. Design Front Middle Back Queue
-problem: push/pop_back,push/pop_front,push/pop_middle
-subject: array or deque.
-approach: 
-- using vector O(N). 
-- using two deque O(1)
-level: 2
-->>
-
-<<-1669 Merge in between linked list
-problem: remove a range of nodes from list1 and replace with list2
-subject: linked list
-approach: get the head and tail of list2 and get the start and end node of list1 and connect
-level: 2
-->>
-
-<<-1668 maximum repeating substring
-problem: repeat string and get the max repeat, so that it is a substr of another word.
-subject: string
-level: 1
-->>
-
-<<-1666 Change the root of a binary tree
-problem: node has left,right,parent. go up from leaf, if cur has a left, it becomes right child. Its parent becomes left child.
-subject: binary tree, very confusing.
-level: 4
-->>
-
-<<-1665	Minimum Initial Energy to finish tasks
-problem: each task with required and minimam energy. find the total minimum energy
-approach: greedy, sort using min-req and then add all. (we complete the more saved energy task first)
-level: 4
-->>
-
-<<-1664	ways to make a fair array
-problem: remove an element and make odd index sum =even index sum and get number of indices.
-approach: array using two directions, prefix and postfix sum.
-level: 3
-->>
-
-<<-1663	Smallest string with a given numeric value
-problem: a-z represent 1-26, the sum of all chars is the numeric value. given k (value) and n (length), return the smallest string
-approach: greedy, based on all 'a' and replace from right as much as 'z'to 'a'
-level: 3
-->>
-
-<<-1662	Check if two string arrays are equivalent
-problem: concat and check if correct
-approach: brutal force, or using two pointer O(1) two pointer for the word counter, two pointer for the char counter in each word, which word is finished first, increase the word counter.
-level: 2
-->>
-
-<<-1660	Correct a Binary Tree    83.2%	Medium	
-a node's right point to a node in its right on the same level
-approach: dfs with hashmap.
-level: 3
-->>
+### bitmask dp
+bitmask dp: typical usage the number of elements is very limited and 2^n can fit in a integer.
 
 <<-1659	Maximize Grid Happiness    		29.1%	Hard	
 problem: given a grid, and number of introvert and number of extrovert. introvert starts with 120 and lose 30 for each neighbor and extrovert starts with 40 and gain 20 for each neighbor. find the max happiniess.
@@ -226,19 +125,180 @@ dp state is defined by current position, intro used, extro used, previous n cell
 level: 5
 ->>
 
-<<-1658	Minimum Operations to Reduce X to Zero    		29.3%	Medium	->>
-<<-1657	Determine if Two Strings Are Close    		50.0%	Medium	->>
-<<-1656	Design an Ordered Stream    		80.0%	Easy	->>
-<<-1655	Distribute Repeating Integers    		40.0%	Hard	->>
-<<-1654	Minimum Jumps to Reach Home    		28.0%	Medium	->>
-<<-1653	Minimum Deletions to Make String Balanced    		46.5%	Medium	->>
-<<-1652	Defuse the Bomb    		69.3%	Easy	->>
-<<-1650	Lowest Common Ancestor of a Binary Tree III    78.0%	Medium	->>
-<<-1649	Create Sorted Array through Instructions    		42.0%	Hard	->>
+
+
+### greedy
+
+<<-1675. Minimize Deviation in Array
+odd number can *2, even number can /2. return the min value of max-min.
+since odd can change to even only once, we can change all to even, and then only divide is allowed.
+Greedy: reduce the max even by half and evaluate the difference. Since we need both the max and the min, sorting or set is more suitable than priority_queue.
+if the max is odd, we stop. You cannot make it smaller.
+subject: greedy, heap.
+level: 4
+->>
+
+<<-1673. Find the most competitive subsequence
+problem: find the min subsequence with length = k.
+approach: greedy approach: use the first n-k minimum for the first element and then discard the elements till the min (including). using priority_queue O(nlogn) or monotonic deque O(n) or monotonic stack. deque is easier.
+subject: deque or stack, monotonic
+level: 4
+->>
+
+<<-1665	Minimum Initial Energy to finish tasks
+problem: each task with required and minimam energy. find the total minimum energy
+approach: greedy, sort using min-req and then add all. (we complete the more saved energy task first)
+level: 4
+->>
+
+<<-1663	Smallest string with a given numeric value
+problem: a-z represent 1-26, the sum of all chars is the numeric value. given k (value) and n (length), return the smallest string
+approach: greedy, based on all 'a' and replace from right as much as 'z'to 'a'
+level: 3
+->>
+
+### binary search
+<<-1674. Min moves to make array complimentary
+problem: A[i]+A[n-1-i] are all the same. using [1,limit] to replace any number, and find the number of replace. (note all elements <=limit and >=1, this is a critical information), very hard question!
+Analysis: from brutal force (we need do each pair for all the targets, and then we can use optimization using difference array to reduce O(n) to O(1) (the curve is always 2s,1s,0s,1s,2s, using difference we only need to record 5 changing point). also binary search can also do it with less memory requirement.
+subject: difference array and prefix sum.
+level: 5
+->>
+
+### backtracking
+<<-1655	Distribute Repeating Integers    		40.0%	Hard	
+problem: given an array of integer and m customer orders, each order is number of integers. Each order shall give the same integer.
+check if it is possible to fulfill the order.
+important: try order from largest to smallest. (sort the array is useless since it keeps changing). If the highest order is not able fulfill, then it is done (prune)
+->>
+
+<<-1681. Minimum Incompatibility
+problem: divide into k sets, each set cannot contain duplicate number, incompatibility=max-min for each set. find the min sum of incompatibility.
+- backtracking: but it will find all permutations. using set to avoid revisit.
+a very tricky backtracking problem.
+also a bitmask dp problem.
+->>
+
+### dfs
+
+### bfs
+<<-1654	Minimum Jumps to Reach Home    		28.0%	Medium	
+a line with forbidden position. given a and b. you can jump forward by a, or jump backward with b. You cannot jump backward twice in a row. cannot jump to forbidden position.
+given position x, return the min number of jumps to home (at position 0)
+bfs: with two status. either from right or from left.
+need store position and direction also, the visited array.
+->>
+### union-find
+
+
+## data structure focused problems
+
+### stack
+
+### queue & deque
+
+### priority-queue, set, map
+
+### hashset, hashmap
+
+### tree
+
+<<-1660	Correct a Binary Tree    83.2%	Medium	
+a node's right point to a node in its right on the same level
+approach: dfs with hashmap.
+level: 3
+->>
+<<-235. Lowest Common Ancestor of a Binary Search Tree
+use the BST property and determine which branch to go.
+->>
+
+<<-236. Lowest Common Ancestor of a Binary Tree
+the typical dfs approach.
+->>
+
+<<-1644	Lowest Common Ancestor of a Binary Tree II    		59.7%	Medium	
+p or q may not exist in the tree.
+while searching, return node and return bool.
+->>
+<<-1650. Lowest Common Ancestor of a Binary Tree III
+Problem: node has left,right,parent. The tree is not given.
+- approach 1: we can go up to find the root first and then is the same with lca.
+- approach 2: go up from p and q, find the first common node.
+- approach 3: equivalent to find the intersection node of two linked list. (brilliant)
+->>
+
+<<-1676. Lowest Common Ancestor of a Binary Tree IV
+now given a list of nodes, find their LCA
+approach 1: using 2 node's lca and reduce by half. O(mnlogm)
+approach 2: traversal and mark each found nodes using postorder traversal.
+it is better to use two states: the answer and the counting. (Note the dfs or postorder, we need assign the answer only the first time).
+->>
+
+<<-1666 Change the root of a binary tree
+problem: node has left,right,parent. go up from leaf, if cur has a left, it becomes right child. Its parent becomes left child.
+subject: binary tree, very confusing.
+level: 4
+->>
+
+### segment tree or binary index tree
+
+<<-1649	Create Sorted Array through Instructions    		42.0%	Hard	
+segment tree 
+->>
+
+### linked list
+<<-1669 Merge in between linked list
+problem: remove a range of nodes from list1 and replace with list2
+subject: linked list
+approach: get the head and tail of list2 and get the start and end node of list1 and connect
+level: 2
+->>
+
+### array & string
+<<-1652. Defuse the bomb.
+circular array: k>0 replace the ith element with the sum of the next k numbers
+k==0, replace the ith element with 0
+k<0, replace the ith element with the sum of previous k number.
+approach: circular array using % using sliding window.
+->>
+
+<<-1653	Minimum Deletions to Make String Balanced    		46.5%	Medium	
+string with only 'a' and 'b'. balanced if sorted. return the min number of deletion.
+- longest increasing subsequence using O(N^2) or O(nlogn)
+- count left remove b and right remove a and get the min (array)
+similar to 01 and we can count the total and left b.
+->>
+
+<<-1664	ways to make a fair array
+problem: remove an element and make odd index sum =even index sum and get number of indices.
+approach: array using two directions, prefix and postfix sum.
+level: 3
+->>
+
+<<-1662	Check if two string arrays are equivalent
+problem: concat and check if correct
+approach: brutal force, or using two pointer O(1) two pointer for the word counter, two pointer for the char counter in each word, which word is finished first, increase the word counter.
+level: 2
+->>
+
+<<-1658	Minimum Operations to Reduce X to Zero    		29.3%	Medium	
+problem: remove either end and subtract it from x. return the min number of operation.
+- no need dp.
+- at the last it will remove some elements from both ends. So it is equivalent to find the longest window sum=tsum-x.
+this can be done using sliding window or hashmap.
+->>
+
+<<-1657	Determine if Two Strings Are Close    		50.0%	Medium	
+op1: swap any two chars.
+op2: transform all char a to b and all char b to a.
+check if they are close.
+equivalent: sort the hashmap and check if they are equal.
+->>
+
 <<-1648	Sell Diminishing-Valued Colored Balls    		30.4%	Medium	->>
 <<-1647	Minimum Deletions to Make Character Frequencies Unique    		53.0%	Medium	->>
 <<-1646	Get Maximum in Generated Array    		48.2%	Easy	->>
-<<-1644	Lowest Common Ancestor of a Binary Tree II    		59.7%	Medium	->>
+
 <<-1643	Kth Smallest Instructions    		41.7%	Hard	->>
 <<-1642	Furthest Building You Can Reach    		54.7%	Medium	->>
 <<-1641	Count Sorted Vowel Strings    		76.9%	Medium	->>
@@ -3981,3 +4041,43 @@ heap:->>
 <<-1499. Max Value of Equation
 coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
+
+### trivials
+<<-1680. Concatneation of consecutive binary numbers
+left shift and add.
+->>
+<<-1679. Max number of k-sum pairs
+sort and then use two pointer to match.
+->>
+
+<<-1678. goal parser interpetation
+(al) ->al. and () change to 'o'
+simple, using string as stack
+->>
+
+<<-161. One Edit Distance
+insert exactly one char into s and get t.
+del exactly one char from s and get t.
+replace one char in s and get t.
+- the length shall differ <=1.
+- swap s and t if s is shorter than t. (no dp)
+->>
+<<-1672. Richest customer wealth
+trivial
+level: 1
+->>
+<<-1670. Design Front Middle Back Queue
+problem: push/pop_back,push/pop_front,push/pop_middle
+subject: array or deque.
+approach: 
+- using vector O(N). 
+- using two deque O(1)
+level: 2
+->>
+
+<<-1668 maximum repeating substring
+problem: repeat string and get the max repeat, so that it is a substr of another word.
+subject: string
+level: 1
+->>
+<<-1656	Design an Ordered Stream    		80.0%	Easy	->>
