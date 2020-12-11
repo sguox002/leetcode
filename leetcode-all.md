@@ -26,6 +26,60 @@ level: 1
 ->>
 
 ### Problems
+<<-1682. Longest palindromic subsequence II
+problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
+dp[i,j,k] using 26 chars.
+->>
+<<-516	Longest Palindromic Subsequence    		54.4%	Medium	
+equivalent to:
+- longest common subsequence (LCS) (s and reversed s).
+- min deletion edit distance (s and reversed s).
+- dp[i,j] represent to max length for substr(i...j). 
+s[i]==s[j] dp[i,j]=dp[i+1,j-1]+2
+else dp[i,j]=max(dp[i+1,j],dp[i,j-1])
+->>
+<<-5. Longest Palindromic Substring
+for substring, 
+- dp: dp[i,j] s[i]==s[j] and inner side s[i+1..j-1] must also be a pal-string.
+- non-dp: for all possible position, expand and update max size.
+->>
+<<-647. Palindromic Substrings
+problem: count number of palindromic substring.
+- non-dp: for all possible position, expand and get the count
+- dp: dp[i,j] number of pal-string inside. then dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
+->>
+
+<<-730. Count Different Palindromic Subsequences
+number of unique palindromic subsequence.
+needs unique, add one dimension, ending with char x. (only a,b,c,d are in the string).
+dp[i,j,c] represent the number of unique pal-subsequence in the range [i,j].
+derive the relation from [i,j-1] and [i+1,j] and [i+1,j-1]
+- i>j dp[i,j,x]=0
+- i==j, dp[i,j,x]=1 s[i]=x, otherwise 0.
+- i<j
+  s[i]!=s[j] dp[i,j,x]=dp[i,j-1,x]+dp[i+1,j,x]-dp[i+1,j-1,x]
+  s[i]==s[j]=x, dp[i,j,x]=sum(dp[i+1,j-1,c])+2 //we add x and xx.
+rating: 5
+
+->>
+
+<<-1681. Minimum Incompatibility
+problem: divide into k sets, each set cannot contain duplicate number, incompatibility=max-min for each set. find the min sum of incompatibility.
+- backtracking: but it will find all permutations. using set to avoid revisit.
+a very tricky backtracking problem.
+->>
+<<-1680. Concatneation of consecutive binary numbers
+left shift and add.
+->>
+<<-1679. Max number of k-sum pairs
+sort and then use two pointer to match.
+->>
+
+<<-1678. goal parser interpetation
+(al) ->al. and () change to 'o'
+simple, using string as stack
+->>
+
 <<-1676. Lowest Common Ancestor of a Binary Tree IV
 now given a list of nodes, find their LCA
 approach 1: using 2 node's lca and reduce by half. O(mnlogm)
@@ -1206,7 +1260,7 @@ To check if the array can get more or less than target average:
 <<-519	Random Flip Matrix    		37.4%	Medium	->>
 <<-518	Coin Change 2    		51.0%	Medium	->>
 <<-517	Super Washing Machines    		38.4%	Hard	->>
-<<-516	Longest Palindromic Subsequence    		54.4%	Medium	->>
+
 <<-515	Find Largest Value in Each Tree Row    		61.7%	Medium	->>
 <<-514	Freedom Trail    		44.6%	Hard	->>
 <<-513	Find Bottom Left Tree Value    		62.0%	Medium	->>
