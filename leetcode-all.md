@@ -26,6 +26,7 @@ level: 1
 ->>
 
 ### Problems
+### dp: edit distance, longest common subsequence et al.
 <<-1682. Longest palindromic subsequence II
 problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
 dp[i,j,k] using 26 chars.
@@ -59,8 +60,47 @@ derive the relation from [i,j-1] and [i+1,j] and [i+1,j-1]
 - i<j
   s[i]!=s[j] dp[i,j,x]=dp[i,j-1,x]+dp[i+1,j,x]-dp[i+1,j-1,x]
   s[i]==s[j]=x, dp[i,j,x]=sum(dp[i+1,j-1,c])+2 //we add x and xx.
+ since we need all dp[i,j,c] c from 0 to 3, the loop shall be inside.
 rating: 5
+->>
+<<-1143. longest common subsequence
+two strings.
+very typical dp problem. 
+- lcs
+- edit distance.
+there are quite a few variation of this problem.
+->>
+<<-72. Edit Distance
+min operation to convert string 1 to string 2 using ins,del,replace.
+dp[i,j] represent the min operations converting s1 length i to s2 with length j.
+s[i]==s[j], dp[i,j]=dp[i-1,j-1]
+s[i]!=s[j]: 
+replace: dp[i-1,j-1]+1
+insert: dp[i,j-1]+1
+delete: dp[i-1,j]+1
+->>
+<<-161. One Edit Distance
+insert exactly one char into s and get t.
+del exactly one char from s and get t.
+replace one char in s and get t.
+- the length shall differ <=1.
+- swap s and t if s is shorter than t. (no dp)
+->>
 
+<<-583. Delete operation for two strings
+min deletions to make two strings equal. You can delete either strings.
+dp[i,j].
+if s[i]!=t[j]: you have two options:
+delete s[i]: dp[i,j-1]+1
+delete t[j]: dp[i-1,j]+1
+->>
+<<-712. Minimum ASCII delete sum for two strings
+find the lowest ascii sum of deleted chars to make two strings equal.
+edit distance variation
+->>
+<<-1035. Uncrossed lines
+find the max number of connected lines (connecting two same number in two lines)
+longest common subsequence problem
 ->>
 
 <<-1681. Minimum Incompatibility
