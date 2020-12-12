@@ -114,6 +114,21 @@ subject: dp,longest increasing subsequence O（N^2) or O(nlogn)
 level: 3
 ->>
 
+### build from previous solution.
+<<- 1641 Count Sorted Vowel Strings 
+given length n.
+- dp[i,j] represents number of sorted vowel string ending with char j. the previous char shall be <=curr char. dp[i,j]+=dp[i-1,k] k<=j.
+- backtracking
+->>
+
+<<-1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
+a list of dictionary words, and a target string. You can choose a char from kth column, if you used it, then all left side cannot be used.
+return number of ways to form the target.
+for each column, find the hashmap (histogram)
+then apply dp: dp[i,j] we used length i for target and j columns in dictionary
+two options: use j column or not use it.
+->>
+
 ### bitmask dp
 bitmask dp: typical usage the number of elements is very limited and 2^n can fit in a integer.
 
@@ -128,6 +143,10 @@ level: 5
 
 
 ### greedy
+<<-1647. Minimum Deletions to Make Character Frequencies Unique
+get the occurrence for each char and count each number's frequency in map.
+then choose the largest and delete a char to make it single.
+->>
 
 <<-1675. Minimize Deviation in Array
 odd number can *2, even number can /2. return the min value of max-min.
@@ -158,6 +177,18 @@ level: 3
 ->>
 
 ### binary search
+<<-1631. Path with minimum effort
+given a height grid. from top left to bottom right. find a route with min effort.
+effort for a route is the max absolute difference between two consecutive steps.
+- binary search + bfs/dfs/union-find..
+- dijkstra (greedy + heap)
+->>
+
+<<-1648	Sell Diminishing-Valued Colored Balls    		30.4%	Medium	
+sell prices=number of balls in same color.
+so greedy approach we shall sell the highest volume ball first.
+binary search the ball volume until we flatten all high volume ball.
+->>
 <<-1674. Min moves to make array complimentary
 problem: A[i]+A[n-1-i] are all the same. using [1,limit] to replace any number, and find the number of replace. (note all elements <=limit and >=1, this is a critical information), very hard question!
 Analysis: from brutal force (we need do each pair for all the targets, and then we can use optimization using difference array to reduce O(n) to O(1) (the curve is always 2s,1s,0s,1s,2s, using difference we only need to record 5 changing point). also binary search can also do it with less memory requirement.
@@ -189,7 +220,11 @@ bfs: with two status. either from right or from left.
 need store position and direction also, the visited array.
 ->>
 ### union-find
-
+<<-1632. Rank transform of a matrix
+mxn matrix. rank matrix: smallest element in its row and column shall be 1. smaller value smaller rank. rank shall be as small as possible.
+greedy approach: 
+- start from smallest element, there could be multiples.
+- 
 
 ## data structure focused problems
 
@@ -197,7 +232,13 @@ need store position and direction also, the visited array.
 
 ### queue & deque
 
-### priority-queue, set, map
+### heap: priority-queue, set, map
+<<-162. furthest building you can reach
+problem: using ladder and stones to climb ladders.
+approach:
+- binary search
+- heap: try using stones or ladders first, when one is used up, replace the max stone for a ladder or a ladder for min stones.
+->>
 
 ### hashset, hashmap
 
@@ -253,8 +294,35 @@ subject: linked list
 approach: get the head and tail of list2 and get the start and end node of list1 and connect
 level: 2
 ->>
+<<-1634. Add Two Polynomials Represented as Linked Lists
+node has coefficient and power.
+two pointer merge.
+->>
 
 ### array & string
+<<-1630. Arithmetic subarrays
+given an array, and left and right boundary. Determine if the subarray can be rearranged into arithmetic sequence.
+brutal force->subarray sort.
+->>
+
+<<-1637. Widest Vertical Area Between Two Points Containing No Points
+sort by x and then get the max difference
+->>
+<<-1636. Sort Array by Increasing Frequency
+sort array using lambda function with hashmap
+->>
+
+<<-1638. Count Substrings That Differ by One Character
+- brutal force: O(N^4), find all combinations
+- (i,j) and tries all different length. O(N^3), if more than 1 miss, we can stop
+- dp: for (i,j) count the number of same char on left and right. O(N^2)
+->>
+
+<<-43. Kth Smallest Instructions
+grid, from (0,0) to destination using H and V. find the kth instruction.
+approach: (m+n)! combinations. each time reduce k.
+this is deterministic.
+->>
 <<-1652. Defuse the bomb.
 circular array: k>0 replace the ith element with the sum of the next k numbers
 k==0, replace the ith element with 0
@@ -295,7 +363,7 @@ check if they are close.
 equivalent: sort the hashmap and check if they are equal.
 ->>
 
-<<-1648	Sell Diminishing-Valued Colored Balls    		30.4%	Medium	->>
+
 <<-1647	Minimum Deletions to Make Character Frequencies Unique    		53.0%	Medium	->>
 <<-1646	Get Maximum in Generated Array    		48.2%	Easy	->>
 
@@ -303,7 +371,7 @@ equivalent: sort the hashmap and check if they are equal.
 <<-1642	Furthest Building You Can Reach    		54.7%	Medium	->>
 <<-1641	Count Sorted Vowel Strings    		76.9%	Medium	->>
 <<-1640	Check Array Formation Through Concatenation    		77.3%	Easy	->>
-<<-1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	->>
+
 <<-1638	Count Substrings That Differ by One Character    		68.5%	Medium	->>
 <<-1637	Widest Vertical Area Between Two Points Containing No Points    		85.3%	Medium	->>
 <<-1636	Sort Array by Increasing Frequency    		66.4%	Easy	->>
@@ -4081,3 +4149,11 @@ subject: string
 level: 1
 ->>
 <<-1656	Design an Ordered Stream    		80.0%	Easy	->>
+<<-1646 Get Maximum in Generated Array->>
+<<-1640 check array formation from pieces 
+using the piece first number as the key in hashmap->>
+
+<<-1629. Slowest Key
+given a string and each key's release time. find the char with longest duration
+find the max diff and the char.
+->>
