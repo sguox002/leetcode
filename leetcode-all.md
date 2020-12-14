@@ -114,7 +114,47 @@ subject: dp,longest increasing subsequence O（N^2) or O(nlogn)
 level: 3
 ->>
 
+<<-1691. Maximum Height by stacking cuboids
+stack cuboids: width<=prev width, length<=prev width, height<=prev height
+return the max height.
+- each cuboid has 3 orientations
+- sort the cube individually, making the height the biggest
+- sort the cubes according to width (smallest)
+- apply LIS dp 
+->>
+
+### strategy game
+
+<<-1690. Stone game VII
+each turn remove the left or rightmost stone, and the score is the sum of the remaining.
+minimize the difference.
+approach: maximize the score for a and b. applying prefix sum and get the scores easily and choose left or right and solve two smaller subproblem.
+->>
+
+### reverse thinking
+<<-312. Burst Balloons
+burst a balloon, and get the score: product of left and right and the balloon.
+idea: choose i as the last balloon to burst and its left and right are virtual balloon with value 1. And then balloon i becomes the right and left for two subproblem.
+- top down: is more straightforward.
+- bottom up: loop over all left and right will not work, but we need to do one balloon, 2...until n balloons. (base case is one balloon left)
+->>
+ 
 ### build from previous solution.
+<<-1687. Delivering boxes from storage to ports
+problem: 
+- boxes are given in array with weight and destination port.
+- ship limited by max number of boxes and max weight.
+- order shall be the given order.
+- must return to storage at the end.
+- even on the ship and the deliver shall be made in order.
+Intuition: dp, since you have a lot of options, and each options will affect the later options.
+using some greedy approach: 
+- neighboring same port order will only have one trip.
+- load as many as possible boxes on ship with the restrictions
+- add ith item, and pop out oldest to satisfy restrictions (greedy)
+- if the popped one is the same with our oldest, keep popping (greedy)
+->>
+
 <<- 1641 Count Sorted Vowel Strings 
 given length n.
 - dp[i,j] represents number of sorted vowel string ending with char j. the previous char shall be <=curr char. dp[i,j]+=dp[i-1,k] k<=j.
@@ -143,6 +183,16 @@ level: 5
 
 
 ### greedy
+<<-1686. Stone game IV
+problem: stone are valued differently, A will take first. Who will win.
+greedy approach: suppose we have two stones (a,b),(c,d).
+if A take a, then B take d. difference a-d
+if A take c, then B take b. difference c-b
+which A shall take? we shall maximize difference a-d>c-b->a+b>c+d.
+so we sort by a+b.
+->>
+
+
 <<-1647. Minimum Deletions to Make Character Frequencies Unique
 get the occurrence for each char and count each number's frequency in map.
 then choose the largest and delete a char to make it single.
@@ -300,6 +350,12 @@ two pointer merge.
 ->>
 
 ### array & string
+<<-1685. Sum of absolute differences in a sorted array
+B[i]=sum(|Aj-Ai|)
+since the array is sorted. B[i]=sum(Ai-Aj)+sum(Ak-Ai) j=[0,i],k=[i,n-1]
+prefix sum on the difference and simple math
+->>
+ 
 <<-1630. Arithmetic subarrays
 given an array, and left and right boundary. Determine if the subarray can be rearranged into arithmetic sequence.
 brutal force->subarray sort.
@@ -4157,3 +4213,4 @@ using the piece first number as the key in hashmap->>
 given a string and each key's release time. find the char with longest duration
 find the max diff and the char.
 ->>
+<<-1684. Count the number of consistent strings->>
