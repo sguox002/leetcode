@@ -123,14 +123,6 @@ return the max height.
 - apply LIS dp 
 ->>
 
-### strategy game
-
-<<-1690. Stone game VII
-each turn remove the left or rightmost stone, and the score is the sum of the remaining.
-minimize the difference.
-approach: maximize the score for a and b. applying prefix sum and get the scores easily and choose left or right and solve two smaller subproblem.
-->>
-
 ### reverse thinking
 <<-312. Burst Balloons
 burst a balloon, and get the score: product of left and right and the balloon.
@@ -140,21 +132,6 @@ idea: choose i as the last balloon to burst and its left and right are virtual b
 ->>
  
 ### build from previous solution.
-<<-1687. Delivering boxes from storage to ports
-problem: 
-- boxes are given in array with weight and destination port.
-- ship limited by max number of boxes and max weight.
-- order shall be the given order.
-- must return to storage at the end.
-- even on the ship and the deliver shall be made in order.
-Intuition: dp, since you have a lot of options, and each options will affect the later options.
-using some greedy approach: 
-- neighboring same port order will only have one trip.
-- load as many as possible boxes on ship with the restrictions
-- add ith item, and pop out oldest to satisfy restrictions (greedy)
-- if the popped one is the same with our oldest, keep popping (greedy)
-->>
-
 <<- 1641 Count Sorted Vowel Strings 
 given length n.
 - dp[i,j] represents number of sorted vowel string ending with char j. the previous char shall be <=curr char. dp[i,j]+=dp[i-1,k] k<=j.
@@ -183,19 +160,12 @@ level: 5
 
 
 ### greedy
-<<-1686. Stone game IV
-problem: stone are valued differently, A will take first. Who will win.
-greedy approach: suppose we have two stones (a,b),(c,d).
-if A take a, then B take d. difference a-d
-if A take c, then B take b. difference c-b
-which A shall take? we shall maximize difference a-d>c-b->a+b>c+d.
-so we sort by a+b.
-->>
-
+greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
+Take a greedy step and reduce to a smaller problem. Generally need some insights.
 
 <<-1647. Minimum Deletions to Make Character Frequencies Unique
 get the occurrence for each char and count each number's frequency in map.
-then choose the largest and delete a char to make it single.
+then choose the largest and delete a char to make it single. pushing from higher frequency to lower frequency.
 ->>
 
 <<-1675. Minimize Deviation in Array
@@ -208,7 +178,7 @@ level: 4
 ->>
 
 <<-1673. Find the most competitive subsequence
-problem: find the min subsequence with length = k.
+problem: find the min lexi subsequence with length = k.
 approach: greedy approach: use the first n-k minimum for the first element and then discard the elements till the min (including). using priority_queue O(nlogn) or monotonic deque O(n) or monotonic stack. deque is easier.
 subject: deque or stack, monotonic
 level: 4
@@ -239,6 +209,7 @@ sell prices=number of balls in same color.
 so greedy approach we shall sell the highest volume ball first.
 binary search the ball volume until we flatten all high volume ball.
 ->>
+
 <<-1674. Min moves to make array complimentary
 problem: A[i]+A[n-1-i] are all the same. using [1,limit] to replace any number, and find the number of replace. (note all elements <=limit and >=1, this is a critical information), very hard question!
 Analysis: from brutal force (we need do each pair for all the targets, and then we can use optimization using difference array to reduce O(n) to O(1) (the curve is always 2s,1s,0s,1s,2s, using difference we only need to record 5 changing point). also binary search can also do it with less memory requirement.
@@ -247,9 +218,12 @@ level: 5
 ->>
 
 ### backtracking
+backtracking problem generally finds all sets required. It can also be used for counting.
+generally some prune is needed to avoid invalid search.
+backtracking is similar to dfs, but it generally include put in and take out.
 <<-131. Palindrome Partitioning
 return all poosible palindrome partitioning.
-typical backtracking
+typical backtracking, from left to right.
 ->>
 
 <<-1655	Distribute Repeating Integers    		40.0%	Hard	
@@ -261,7 +235,7 @@ important: try order from largest to smallest. (sort the array is useless since 
 <<-1681. Minimum Incompatibility
 problem: divide into k sets, each set cannot contain duplicate number, incompatibility=max-min for each set. find the min sum of incompatibility.
 - backtracking: but it will find all permutations. using set to avoid revisit.
-a very tricky backtracking problem.
+a very tricky backtracking problem. I still have problem with it.
 also a bitmask dp problem.
 ->>
 
@@ -274,12 +248,19 @@ given position x, return the min number of jumps to home (at position 0)
 bfs: with two status. either from right or from left.
 need store position and direction also, the visited array.
 ->>
+
 ### union-find
+
 <<-1632. Rank transform of a matrix
-mxn matrix. rank matrix: smallest element in its row and column shall be 1. smaller value smaller rank. rank shall be as small as possible.
-greedy approach: 
-- start from smallest element, there could be multiples.
-- 
+mxn matrix. rank matrix: smallest element in its row and column shall be 1. smaller value smaller rank. rank shall be as small as possible. same value on the row and col shall have the same rank.
+
+- greedy: process in sorted order.
+- using map to store element vs positions
+- using union find to group the same value elements into groups and process each group separately
+- maintain row and column current max.
+- each group same value elements are assigned the group max +1
+->>
+
 
 ## data structure focused problems
 
@@ -316,6 +297,7 @@ the typical dfs approach.
 p or q may not exist in the tree.
 while searching, return node and return bool.
 ->>
+
 <<-1650. Lowest Common Ancestor of a Binary Tree III
 Problem: node has left,right,parent. The tree is not given.
 - approach 1: we can go up to find the root first and then is the same with lca.
@@ -326,7 +308,7 @@ Problem: node has left,right,parent. The tree is not given.
 <<-1676. Lowest Common Ancestor of a Binary Tree IV
 now given a list of nodes, find their LCA
 approach 1: using 2 node's lca and reduce by half. O(mnlogm)
-approach 2: traversal and mark each found nodes using postorder traversal.
+approach 2: traversal and mark each found nodes using postorder traversal. The first visited node when all nodes are seen is the LCA.
 it is better to use two states: the answer and the counting. (Note the dfs or postorder, we need assign the answer only the first time).
 ->>
 
@@ -377,6 +359,7 @@ sort array using lambda function with hashmap
 - brutal force: O(N^4), find all combinations
 - (i,j) and tries all different length. O(N^3), if more than 1 miss, we can stop
 - dp: for (i,j) count the number of same char on left and right. O(N^2)
+- a very good example how to optimize an algorithm.
 ->>
 
 <<-43. Kth Smallest Instructions
@@ -424,19 +407,12 @@ check if they are close.
 equivalent: sort the hashmap and check if they are equal.
 ->>
 
+<<-1643	Kth Smallest Instructions    		41.7%	Hard	
+given a mxn grid, from (0,0) to bottom right, and integer k. find the kth smallest path using HV
+combination, and reduce k each step. math.
+calculate combination using pascal triangle or direct calculation.
+->>
 
-<<-1647	Minimum Deletions to Make Character Frequencies Unique    		53.0%	Medium	->>
-<<-1646	Get Maximum in Generated Array    		48.2%	Easy	->>
-
-<<-1643	Kth Smallest Instructions    		41.7%	Hard	->>
-<<-1642	Furthest Building You Can Reach    		54.7%	Medium	->>
-<<-1641	Count Sorted Vowel Strings    		76.9%	Medium	->>
-<<-1640	Check Array Formation Through Concatenation    		77.3%	Easy	->>
-
-<<-1638	Count Substrings That Differ by One Character    		68.5%	Medium	->>
-<<-1637	Widest Vertical Area Between Two Points Containing No Points    		85.3%	Medium	->>
-<<-1636	Sort Array by Increasing Frequency    		66.4%	Easy	->>
-<<-1634	Add Two Polynomials Represented as Linked Lists    		58.0%	Medium	->>
 <<-1632	Rank Transform of a Matrix    		29.3%	Hard	->>
 <<-1631	Path With Minimum Effort    		40.1%	Medium	->>
 <<-1630	Arithmetic Subarrays    		78.8%	Medium	->>
@@ -4172,9 +4148,12 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1646	Get Maximum in Generated Array    		48.2%	Easy	->>
+
 <<-1680. Concatneation of consecutive binary numbers
 left shift and add.
 ->>
+
 <<-1679. Max number of k-sum pairs
 sort and then use two pointer to match.
 ->>
@@ -4230,12 +4209,14 @@ NP-hard: non-deterministic polynomial time hardness.
 some games especially zero-sum game
 
 
-679	24 Game    		47.0%	Hard	
+<<-679	24 Game    		47.0%	Hard	
 we have 4 digits, using +-*/() to get value of 24.
 stack problem.
+->>
 
-1510 Stone Game IV    		58.6%	Hard	
+<<-1510 Stone Game IV    		58.6%	Hard	
 competitive: take any square number, who can not make a move, lose. DP
+dp: if other side lose, then we win. dp[i]=!dp[i-j*j].
 ```
     bool winnerSquareGame(int n) {
         //dp[n]-- dp[n-j*j], check if any will give win result
@@ -4255,47 +4236,63 @@ competitive: take any square number, who can not make a move, lose. DP
         
     }
 ```	
-1025 Divisor Game    		66.1%	Easy	
+->>
+
+<<-1025 Divisor Game    		66.1%	Easy	
 competitive: choose any factor x (not include N itself) of N, and perform N-x, who cannot make a move, lose.
 greedy: 1 will lose, 2 will win. if N is even, we can always make it odd for the other by minus 1. If it is odd, its factor are all odd, and leave even for other, always lose.
+->>
 
-837	New 21 Game    		35.3%	Medium	
+<<-837	New 21 Game    		35.3%	Medium	
 actually not a game, but a dp with sliding window problem.
+->>
 
-877	Stone Game    		66.1%	Medium	
+<<-877	Stone Game    		66.1%	Medium	
 even piles, total sum is odd. take stone from either side. who takes more win.
 greedy: odd index sum !=even index sum. take the odd/even index stones.
+->>
 
-1563 Stone Game V    		40.1%	Hard
+<<-1563 Stone Game V    		40.1%	Hard
 A will divide into 2 parts, throw away the part with larger sum and the remaing sum is the points. If two parts are the same, we can choose which one to throw away. Return the max points we can get.
 straightforward dp
+->>
 
-1686 Stone Game VI    		45.9%	Medium	
-a list of stones, which A and B values differently, return who will win.
-equivalent to maximize the points in competitive game. One's game is other's loss.
-greedy: consider the other side our loss.
+<<-1686. Stone game IV
+problem: stone are valued differently, A will take first. Who will win.
+greedy approach: suppose we have two stones (a,b),(c,d).
+if A take a, then B take d. difference a-d
+if A take c, then B take b. difference c-b
+which A shall take? we shall maximize difference a-d>c-b->a+b>c+d.
+so we sort by a+b.
+->>
 
-682	Baseball Game    		65.6%	Easy	
+<<-682	Baseball Game    		65.6%	Easy	
 simple stack problem, not a game
+->>
 
-293	Flip Game    		61.1%	Easy	
+<<-293	Flip Game    		61.1%	Easy	
 convert ++ to --, generate all possible next state string.
+->>
 
-294	Flip Game II    		50.5%	Medium	
+<<-294	Flip Game II    		50.5%	Medium	
 convert ++ to -- by turn, if you cannot make a move, you lose. Return who is the winner.
 backtracking and memoization dp approach.
+->>
 
-292	Nim Game    		54.9%	Easy	
+<<-292	Nim Game    		54.9%	Easy	
 by turn take 1-3 stones, who take the last stone win. Decide who is the winner.
 greedy or math: if n%4==0, it will leave 4n+1,4n+2,4n+3 for the other player, and the other player will always leave 4n to us, then we will lose. n%=4!=0 we can always leave 4n to the other player.
+->>
 
-1140	Stone Game II    		64.8%	Medium	
+<<-1140	Stone Game II    		64.8%	Medium	
 a list of stone, M=1, each time the player can take x=[1,2M] piles and then set M=max(M,x). Return the max stone the first player can take.
 dp: prefix sum or suffix sum to get the range sum. memoization.
+->>
 
-488	Zuma Game    		38.8%	Hard	
+<<-488	Zuma Game    		38.8%	Hard	
 a row of balls with color RYBGW and you have some balls in hand. Each time you can insert one ball into the row and remove groups of same color balls with n>=3. Return the min balls needed or return -1 if you cannot do it.
 backtracking: try all possible positions.
+->>
 
 <<-55 jump game
 position at 0, each element is the max step you can jump. all positive.
@@ -4341,8 +4338,9 @@ snake moves using a deque to represent the snake.
 ->>
 
 <<-1690. Stone game VII
-remove either the left or right stones, return the max difference.
-competition game: same as who is the winner.
+each turn remove the left or rightmost stone, and the score is the sum of the remaining.
+minimize the difference.
+approach: maximize the score for a and b. applying prefix sum and get the scores easily and choose left or right and solve two smaller subproblem.
 ->>
 
 <<-1406. Stone game III
@@ -4412,4 +4410,29 @@ who will win.
 bitmask dp: record the win and lost status.
 ->>
 
+
+## subject: linear programming 线性规划
+linear programming is to get max or min under some inequality restrictions.
+
+<<-1687. Delivering boxes from storage to ports
+problem: 
+- boxes are given in array with weight and destination port.
+- ship limited by max number of boxes and max weight.
+- order shall be the given order.
+- must return to storage at the end.
+- even on the ship and the deliver shall be made in order.
+Intuition: dp, since you have a lot of options, and each options will affect the later options.
+using some greedy approach: 
+- neighboring same port order will only have one trip.
+- load as many as possible boxes on ship with the restrictions
+- add ith item, and pop out oldest to satisfy restrictions (greedy)
+- if the popped one is the same with our oldest, keep popping (greedy)
+->>
+
+<<-1642	Furthest Building You Can Reach    		54.7%	Medium	
+Given an array of building heights, and some bricks and ladders. Find the furthest building you can reach.
+- binary search using greedy.
+- use brick first, when brick is not enough, replace the one using most bricks with a ladder.
+- use ladder first, when ladder is used up, replace a ladder with min bricks needed.
+->>
 
