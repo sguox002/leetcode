@@ -107,6 +107,13 @@ edit distance variation
 ->>
 
 ### longest increasing sequence
+<<-1626	Best Team With No Conflicts    		36.7%	Medium	
+conflict: younger player has higher score, not allowed. same age is not conflict.
+target: maximize the score with no conflict.
+- greedy: sort by score descending order, choose the higher score first
+- then use dp, if current age is smaller, then he can be added with no conflicts.
+- equivalent: longest increasing sequence problem LIS, also linear programming.
+->>
 
 <<-1671. Minimum Number of Removals to Make Mountain Array
 approach: check each index and get the LIS and then back from right to get the LIS.
@@ -250,6 +257,12 @@ need store position and direction also, the visited array.
 ->>
 
 ### union-find
+<<-1627	Graph Connectivity With Threshold    		36.9%	Hard	
+n cities from 1 to n. Two cities are directly connected if they share a common divisor >threshold.
+given two cities, check if they are connected.
+union-find: a-b b-c then a and c is connected.
+use sieve method to avoid TLE.
+->>
 
 <<-1632. Rank transform of a matrix
 mxn matrix. rank matrix: smallest element in its row and column shall be 1. smaller value smaller rank. rank shall be as small as possible. same value on the row and col shall have the same rank.
@@ -265,6 +278,14 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 ## data structure focused problems
 
 ### stack
+<<-1628	Design an Expression Tree With Evaluate Function    		86.0%	Medium	
+given an virtual class interface and postfix string, build the tree and evaluate it.
+class design and oop and tree evaluations
+- build the tree: [4,5,7,2,+,-,*] it is stack form 4*(5-(7+2))
+- use a stack to store the generated treenode.
+- inherit a class from the virtual class.
+subject: tree, stack, OOP, polymorphism
+->>
 
 ### queue & deque
 
@@ -413,15 +434,19 @@ combination, and reduce k each step. math.
 calculate combination using pascal triangle or direct calculation.
 ->>
 
-<<-1632	Rank Transform of a Matrix    		29.3%	Hard	->>
-<<-1631	Path With Minimum Effort    		40.1%	Medium	->>
-<<-1630	Arithmetic Subarrays    		78.8%	Medium	->>
-<<-1629	Slowest Key    		60.7%	Easy	->>
-<<-1628	Design an Expression Tree With Evaluate Function    		86.0%	Medium	->>
-<<-1627	Graph Connectivity With Threshold    		36.9%	Hard	->>
-<<-1626	Best Team With No Conflicts    		36.7%	Medium	->>
-<<-1625	Lexicographically Smallest String After Applying Operations    		62.6%	Medium	->>
-<<-1624	Largest Substring Between Two Equal Characters    		59.4%	Easy	->>
+<<-1625	Lexicographically Smallest String After Applying Operations    		62.6%	Medium	
+given a digit string and a, b.
+operation 1: add a to all odd index digits. if past 9, cycle back to 0. (digit+a)%10
+operation 2: rotate right by b positions.
+return the min string, you can apply any number of operations.
+bfs: for each candidate, rotate to get all possible strings (unvisited) and then apply add a.
+->>
+
+<<-1624	Largest Substring Between Two Equal Characters    		59.4%	Easy	
+save the first index for each char seen. then find the max length.
+hashmap or array.
+->>
+
 <<-1622	Fancy Sequence    		15.8%	Hard	->>
 <<-1621	Number of Sets of K Non-Overlapping Line Segments    		41.3%	Medium	->>
 <<-1620	Coordinate With Maximum Network Quality    		37.7%	Medium	->>
