@@ -4214,3 +4214,101 @@ given a string and each key's release time. find the char with longest duration
 find the max diff and the char.
 ->>
 <<-1684. Count the number of consistent strings->>
+
+## subject: strategy game
+zero sum game:
+, a zero-sum game is a mathematical representation of a situation in which each participant's gain or loss of utility is exactly balanced by the losses or gains of the utility of the other participants. If the total gains of the participants are added up and the total losses are subtracted, they will sum to zero
+In contrast, non-zero-sum describes a situation in which the interacting parties' aggregate gains and losses can be less than or more than zero. A zero-sum game is also called a strictly competitive game while non-zero-sum games can be either competitive or non-competitive. Zero-sum games are most often solved with the minimax theorem which is closely related to linear programming duality,[1] or with Nash equilibrium.
+linear programming
+NP-hard: non-deterministic polynomial time hardness.
+
+some games especially zero-sum game
+
+
+679	24 Game    		47.0%	Hard	
+we have 4 digits, using +-*/() to get value of 24.
+stack problem.
+
+1510 Stone Game IV    		58.6%	Hard	
+competitive: take any square number, who can not make a move, lose. DP
+```
+    bool winnerSquareGame(int n) {
+        //dp[n]-- dp[n-j*j], check if any will give win result
+        vector<bool> dp(n+1);
+        if(n<2) return 1;
+        dp[1]=1;//leave 1 stone for other play, we will lose
+        
+        for(int i=2;i<=n;i++){
+            for(int j=1;j*j<=i;j++){
+                if(dp[i-j*j]==0){ //otherside lose, we win.
+                    dp[i]=1;
+                    break;
+                }
+            }
+        }
+        return dp[n];
+        
+    }
+```	
+1025 Divisor Game    		66.1%	Easy	
+competitive: choose any factor x (not include N itself) of N, and perform N-x, who cannot make a move, lose.
+greedy: 1 will lose, 2 will win. if N is even, we can always make it odd for the other by minus 1. If it is odd, its factor are all odd, and leave even for other, always lose.
+
+837	New 21 Game    		35.3%	Medium	
+actually not a game, but a dp with sliding window problem.
+
+877	Stone Game    		66.1%	Medium	
+even piles, total sum is odd. take stone from either side. who takes more win.
+greedy: odd index sum !=even index sum. take the odd/even index stones.
+
+1563 Stone Game V    		40.1%	Hard
+A will divide into 2 parts, throw away the part with larger sum and the remaing sum is the points. If two parts are the same, we can choose which one to throw away. Return the max points we can get.
+straightforward dp
+
+1686 Stone Game VI    		45.9%	Medium	
+a list of stones, which A and B values differently, return who will win.
+equivalent to maximize the points in competitive game. One's game is other's loss.
+greedy: consider the other side our loss.
+
+682	Baseball Game    		65.6%	Easy	
+simple stack problem, not a game
+
+293	Flip Game    		61.1%	Easy	
+convert ++ to --, generate all possible next state string.
+
+294	Flip Game II    		50.5%	Medium	
+convert ++ to -- by turn, if you cannot make a move, you lose. Return who is the winner.
+backtracking and memoization dp approach.
+
+292	Nim Game    		54.9%	Easy	
+by turn take 1-3 stones, who take the last stone win. Decide who is the winner.
+greedy or math: if n%4==0, it will leave 4n+1,4n+2,4n+3 for the other player, and the other player will always leave 4n to us, then we will lose. n%=4!=0 we can always leave 4n to the other player.
+
+1140	Stone Game II    		64.8%	Medium	
+a list of stone, M=1, each time the player can take x=[1,2M] piles and then set M=max(M,x). Return the max stone the first player can take.
+dp: prefix sum or suffix sum to get the range sum. memoization.
+
+488	Zuma Game    		38.8%	Hard	
+a row of balls with color RYBGW and you have some balls in hand. Each time you can insert one ball into the row and remove groups of same color balls with n>=3. Return the min balls needed or return -1 if you cannot do it.
+backtracking: try all possible positions.
+45	Jump Game II    		31.2%	Hard	
+55	Jump Game    		35.0%	Medium	
+174	Dungeon Game    		33.0%	Hard	
+289	Game of Life    		56.3%	Medium	
+390	Elimination Game    		44.8%	Medium	
+1345 Jump Game IV    		40.2%	Hard	
+1340 Jump Game V    		58.6%	Hard	
+353	Design Snake Game    		35.0%	Medium	
+1690 Stone Game VII    		42.1%	Medium	
+1406 Stone Game III    		56.9%	Hard	
+810	Chalkboard XOR Game    		49.3%	Hard	
+822	Card Flipping Game    		43.5%	Medium	
+1306 Jump Game III    		62.6%	Medium	
+1145 Binary Tree Coloring Game    		51.5%	Medium	
+1535 Find the Winner of an Array Game    		47.0%	Medium	
+1275 Find Winner on a Tic Tac Toe Game    		53.0%	Easy	
+1040 Moving Stones Until Consecutive II    		53.5%	Medium	
+375	Guess Number Higher or Lower II    		41.6%	Medium	
+913	Cat and Mouse    		33.8%	Hard	
+374	Guess Number Higher or Lower    		44.2%	Easy	
+464	Can I Win    		29.5%	Medium	
