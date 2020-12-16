@@ -247,6 +247,11 @@ level: 5
 ->>
 
 ### backtracking
+<<-131. Palindrome Partitioning
+return all poosible palindrome partitioning.
+typical backtracking
+->>
+
 <<-1655	Distribute Repeating Integers    		40.0%	Hard	
 problem: given an array of integer and m customer orders, each order is number of integers. Each order shall give the same integer.
 check if it is possible to fulfill the order.
@@ -4291,24 +4296,120 @@ dp: prefix sum or suffix sum to get the range sum. memoization.
 488	Zuma Game    		38.8%	Hard	
 a row of balls with color RYBGW and you have some balls in hand. Each time you can insert one ball into the row and remove groups of same color balls with n>=3. Return the min balls needed or return -1 if you cannot do it.
 backtracking: try all possible positions.
-45	Jump Game II    		31.2%	Hard	
-55	Jump Game    		35.0%	Medium	
-174	Dungeon Game    		33.0%	Hard	
-289	Game of Life    		56.3%	Medium	
-390	Elimination Game    		44.8%	Medium	
-1345 Jump Game IV    		40.2%	Hard	
-1340 Jump Game V    		58.6%	Hard	
-353	Design Snake Game    		35.0%	Medium	
-1690 Stone Game VII    		42.1%	Medium	
-1406 Stone Game III    		56.9%	Hard	
-810	Chalkboard XOR Game    		49.3%	Hard	
-822	Card Flipping Game    		43.5%	Medium	
-1306 Jump Game III    		62.6%	Medium	
-1145 Binary Tree Coloring Game    		51.5%	Medium	
-1535 Find the Winner of an Array Game    		47.0%	Medium	
-1275 Find Winner on a Tic Tac Toe Game    		53.0%	Easy	
-1040 Moving Stones Until Consecutive II    		53.5%	Medium	
-375	Guess Number Higher or Lower II    		41.6%	Medium	
-913	Cat and Mouse    		33.8%	Hard	
-374	Guess Number Higher or Lower    		44.2%	Easy	
-464	Can I Win    		29.5%	Medium	
+
+<<-55 jump game
+position at 0, each element is the max step you can jump. all positive.
+idea: bfs, you have to be able to reach the index to use it.
+->>
+
+<<-45. Jump game II.
+position at 0, each element is the max step you can jump. min step to reach the last index.
+idea: bfs and get each layer. but no need of queue.
+->>
+
+<<-174. Dungeon Game
+dp: 2d grid. reverse
+->>
+
+<<-289. Game of life
+inplace using high-byte.
+->>
+
+<<-390. Elimination game
+sorted integer from 1 to n. remove the first number and every other number until the end, and then from the other side. find the last number left.
+we do not need to actually delete them.
+each round the left elements is n/2
+if odd, then we need advance the pointer by step.
+each round the step*2, dir^=1
+->>
+
+<<-1345. Jump Game IV
+array of integer. position at first index. you can jump to i+1 or i-1 (no over the array boundary) or jump to j if arr[j]==arr[i].
+return the min steps to reach the last index.
+using hashmap to record same values indices.
+->>
+
+<<-1340. Jump Game V.
+given an array of integer, and integer d. each time you can jump back or forward [1,d] steps. You can only jump to smaller values and all values in between are smaller than arr[i].
+greedy+dp: sort with index and jump from lowest.
+->>
+
+<<-353. design snake game
+screen size wxh. snake is positioned at (0,0) with length=1.
+You are given a list of food positions. When snake eats the food, its length and score increases by 1. Each food will appear one by one. Next will appear only after the previous food is eaten.
+snake moves using a deque to represent the snake. 
+->>
+
+<<-1690. Stone game VII
+remove either the left or right stones, return the max difference.
+competition game: same as who is the winner.
+->>
+
+<<-1406. Stone game III
+given a list of stones, each player can take 1,2 or 3 piles from the first. return who is the winner.
+typical competition game: other side's score is negative using dp.
+->>
+
+<<-810. Chalkboard XOR game.
+given a list of non-negative numbers. take turn to erase one number. If he causes the xor of all remaining elements to be 0, he loses. If starts with 0, he wins. return who is the winner.
+bit operations: 
+- if xor=0, then first player wins.
+- otherwise, erase a number which is different from current xor, leaving a nonzero xor to the other side. Odd length will leave a non-zero to the other side.
+greedy approach.
+->>
+
+<<-822. Card flipping game
+N cards with a number on card back and front.
+we choose a card, and flip it. If the number is not on the front, it is good.
+return the smallest number which is good.
+- cards with same number are not valid
+- find the min of all front and back numbers if they are not in the duplicate set.
+->>
+
+<<-1306. Jump Game III
+given an array of non-negative integers. You are positioned at index start. You can jump to i+arr[i] or i-arr[i]. check if you can reach any index with value 0.
+dp: or recursive dfs with visited.
+->>
+
+<<-1145. Binary tree coloring game
+binary tree with n nodes, n is odd, and each node has unique value from 1 to n.
+two players by turn color nodes in different color. You can only color the child or parent of your colored nodes. If one cannot color, pass the turn. If either cannot make a move, game ends. You are the 2nd player, decide if you can win.
+you only have 3 options: parent, left or right child. and count the nodes.
+->>
+
+<<-1535. Find he winner of an array game
+a array of unique integer and k. compare the first two elements, leave the larger one and move the smaller to the end. game ends when an integer wins k consecutive times.
+do not need to move the end, but move the larger one to current position and count its winning times.
+->>
+
+<<-1275. Find winner on a tic tac toe game
+A place x and B place o. row, col, or diagonal the same wins. 
+A: ++, B: --, and keep counting.
+->>
+
+<<-1040. Moving Stones Until Consecutive II
+array of stones at different positions. Move either end stone to unoccupied position so that it is not end point.  min number and max number of moves.
+greedy: min move: find the window with min unfilled slots with length=n.
+max move: move all stones to leftmost or rightmost (keep one end not changed)
+choose the max of the two options.
+->>
+
+<<-375. guess number higher or lower II
+number from 1 to n. You guess a number if correct, you win. otherwise, you guess x and pay x. return the min money to guarantee win.
+min of the max money for the choice. ie. assume each time you guess wrong.
+->>
+
+<<-374. Guess number higher or lower
+each guess will get: lower, greater or equal.
+return the number.
+binary search
+->>
+
+<<-464. Can I win
+two players take turn to add to total, given max choosable number n. The player first causing total>=target wins.
+the number cannot be reused.
+who will win.
+bitmask dp: record the win and lost status.
+->>
+
+
