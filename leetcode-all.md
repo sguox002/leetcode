@@ -4322,6 +4322,7 @@ choose the max of the two options.
 <<-375. guess number higher or lower II
 number from 1 to n. You guess a number if correct, you win. otherwise, you guess x and pay x. return the min money to guarantee win.
 min of the max money for the choice. ie. assume each time you guess wrong.
+minmax problem.
 ->>
 
 <<-374. Guess number higher or lower
