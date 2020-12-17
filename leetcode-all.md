@@ -2974,6 +2974,14 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 
 <<-1606	Find Servers That Handled Most Number of Requests    		36.0%	Hard	
+k servers from 0 to k-1. each server handles one task at a time.
+ith task arrives, if all server is busy the task is dropped.
+if(i%k)th server is available, assign the task to it.
+otherwise, assign the task to next available server. (wrap around)
+each task has a computation time and an arrival time. arrival time is strictly increasing.
+find the busiest server.
+brutal force: each task we need search k servers, thus O(nk)
+optimization: using an ordered map to maintain server's next available time. Once the server is busy we add k to it.
 
 ->>
 <<-1605	Find Valid Matrix Given Row and Column Sums    		76.9%	Medium	->>
