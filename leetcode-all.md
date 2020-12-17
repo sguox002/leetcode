@@ -29,6 +29,28 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1611	Minimum One Bit Operations to Make Integers Zero    		56.6%	Hard	
+given a number n, you can
+- change 0th bit
+- change ith bit if (i-1)th bit is 1 and (i-2)th to 0th bit are all 0.
+return min number operations to reduce n to 0.
+bfs will expand exponentially and will TLE.
+consider case 2^k and try to find the relation:
+001->0, 1 ops
+010->011->001->000, 3 ops
+100->101->111->110->010->011->001->000, 7 ops
+2^k, need 2^(k+1)-1 ops.
+1xxxx->....->11000->10000->....->0 The number is decreasing.
+1xxxx to 11000 needs subprob(1xxxx^11000):
+if it is 11xxx, then it is same to convert xxx to 000
+if it is 10xxx, then it is same to convert 0xxx to 1000 and the op needed is subprob(1000)+subprob(xxx). 1000 to 0 is same as from 0 to 1000.
+
+Now suppose we want to know the number of operations for 1110 to become 0. We know it takes 15 operations for 0 to become 1000, and it takes 4 operations for 1000 to become 1110. We get the solution by 15 - 4.
+Note that 4 here is the number of operations from 1000 to become 1110, which is the same as the number of operations from 000 to 110 (ignoring the most significant bit), and it can be computed recursively. The observation gives us: minimumOneBitOperations(1110) + minimumOneBitOperations(0110) = minimumOneBitOperations(1000).
+
+->>
+
+
 <<-1621	Number of Sets of K Non-Overlapping Line Segments    		41.3%	Medium	
 give a list of positions on a line and number k. number of ways to draw k non-overlapping segments, each segment at least has two points.
 dp approach: dp[k,i]: number of points<2 all 0. k=1, C(n,2)
@@ -37,6 +59,23 @@ append: dp[k,i]=dp[k,i-1]
 new segment: dp[k,i]+=dp[k-1][j-x]
 use prefix sum for dp[k-1][j-x] to reduce complexity.
 ->>
+
+### count number of ways
+<<-1692. Count ways to distribute candies
+n candies from 1 to n, distribute into k bags, each bag number of candies>=1.
+bag order and candy order does not matter.
+return the number of ways to distribute
+- base case: k=1, dp[i,k]=1
+- from i-1 candies to i candies, we have one more candy to place into k bags, k*dp[i-1,k]
+- ith candy put into kth bag, dp[i-1,k-1]
+dp[i,k]=k*dp[i-1,k]+dp[i-1,k-1]
+
+another approach:
+k=2: we can put 1 to n-1 candies into first bag, thus C(n,1)+C(n,2)+...+C(n,n-1), redundant /2.
+need some math to derive to above solution.
+
+->>
+
 
 
 ### dp: edit distance, longest common subsequence et al.
@@ -317,6 +356,16 @@ approach:
 ### hashset, hashmap
 
 ### tree
+<<-1609	Even Odd Tree    		54.0%	Medium	
+root is level 0, child at level 1. odd indexed level all even, and even index level all odd.
+and in strictly increasing order.
+dfs and save to a list only the previous node. and check against its index.
+->>
+
+<<-1612	Check If Two Expression Trees are Equivalent    		71.0%	Medium	
+expression tree: leaf are values a-z, operation + only.
+just connect the leaf nodes and sort to check if two are equal.
+->>
 
 <<-1660	Correct a Binary Tree    83.2%	Medium	
 a node's right point to a node in its right on the same level
@@ -375,6 +424,22 @@ two pointer merge.
 ->>
 
 ### array & string
+<<-1608	Special Array With X Elements Greater Than or Equal X    		62.4%	Easy	
+check if there exisit a number that there are exactly x number >=x. x is not necessary an element in the array.
+counting sort: since elements value<=1000 and array length <=100.
+x is limited <=100, so bin can be limited to 100, values >100 are put in the same bin.
+then postfix sum and check sum == index. O(n) 2 passes.
+- sort and binary search O(nlogn)
+->>
+
+
+<<-1610	Maximum Number of Visible Points    		27.3%	Hard	
+a list of points in 2d plane, an angle and your location in the plane. You can rotate.
+return the max number of points you can see.
+sliding window with angle in circular array. using atan2 to calculate the angle to our position. unwrap the angles.
+
+->>
+
 <<-1614	Maximum Nesting Depth of the Parentheses    		84.4%	Easy	
 depth(A,B)=max(depth(A),depth(B))
 depth("("+A+")")=1+depth(A)
@@ -2906,12 +2971,11 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 ## leetcode problem list
 
-<<-1612	Check If Two Expression Trees are Equivalent    		71.0%	Medium	->>
-<<-1611	Minimum One Bit Operations to Make Integers Zero    		56.6%	Hard	->>
-<<-1610	Maximum Number of Visible Points    		27.3%	Hard	->>
-<<-1609	Even Odd Tree    		54.0%	Medium	->>
-<<-1608	Special Array With X Elements Greater Than or Equal X    		62.4%	Easy	->>
-<<-1606	Find Servers That Handled Most Number of Requests    		36.0%	Hard	->>
+
+
+<<-1606	Find Servers That Handled Most Number of Requests    		36.0%	Hard	
+
+->>
 <<-1605	Find Valid Matrix Given Row and Column Sums    		76.9%	Medium	->>
 <<-1604	Alert Using Same Key-Card Three or More Times in a One Hour Period    		41.4%	Medium	->>
 <<-1603	Design Parking System    		86.1%	Easy	->>
@@ -4530,3 +4594,11 @@ add all left into stack, pop and add all right into stack.
 <<-3	Longest Substring Without Repeating Characters    		30.9%	Medium	->>
 <<-2	Add Two Numbers    		34.6%	Medium	->>
 <<-1	Two Sum    		45.8%	Easy	->>
+
+modular inverse
+Fermat little thereom:
+for prime p, a^p-a is a multiple of p. 
+a*(a^(p-1)-1) is a multipe of p.
+thus a^(p-1)=1 (mod m)
+or a^(p-2)=a^(-1) (mod m)
+using a^(p-2) (binary power in log(p) time) to get the modular.
