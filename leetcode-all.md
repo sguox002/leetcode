@@ -477,6 +477,10 @@ append, addAll, multAll, getIndex
 lazy evaluation.
 modular for division
 math, lazy evaluation.
+modular inverse: Fermat Little Theorem
+if p is a prime, for any integer a^p-a is a multiple of p.
+a^(p-1)-1 is a multiple of p. or a^(p-1)=1 (mod p)
+
 ->>
 <<-1620	Coordinate With Maximum Network Quality    		37.7%	Medium	
 given a list of signal tower on plane (x,y,q).each tower has a radius. The signal q/(1+d), d is the distance from the tower. find the grid having the max signal.
@@ -2905,6 +2909,15 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## leetcode problem list
+<<-1692. Count ways to distribute candies
+n candies from 1 to n. distribute into k bags. number of different way of distribution, each bag has at least one candy.
+bag order and candy order in bag does no matter. 1<=k<=n.
+k=1, only one way C(n,n)
+k=2, [C(n,1)+C(n,2)+....+C(n,n-1)]/2
+any k>2: choose one bag, we can put 1, 2 ...n-(k-1) candies.
+if we put i candies, leaving a subproblem with (n-i,k-1)
+dp[i,k]+=C(i,i-j)*dp[i-j,k-1]
+dp[i,k]/=2; (redundant)
 
 <<-1612	Check If Two Expression Trees are Equivalent    		71.0%	Medium	->>
 <<-1611	Minimum One Bit Operations to Make Integers Zero    		56.6%	Hard	->>
