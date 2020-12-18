@@ -29,6 +29,13 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1594	Maximum Non Negative Product in a Matrix    		31.9%	Medium	
+given a grid, from top left to bottom right, only right and down movement.
+return the max product among all the paths.
+idea: keep the min and max product for each grid. positive using max, negative using min.
+dp: top element or left element.
+->>
+
 <<-1611	Minimum One Bit Operations to Make Integers Zero    		56.6%	Hard	
 given a number n, you can
 - change 0th bit
@@ -206,6 +213,19 @@ two options: use j column or not use it.
 ### bitmask dp
 bitmask dp: typical usage the number of elements is very limited and 2^n can fit in a integer.
 
+<<-1595	Minimum Cost to Connect Two Groups of Points    		41.9%	Hard	
+two groups of points with size m and n, m>=n. m<=12.
+connecting to i,j costs cost[i,j]
+each point in one group must be connected to one or more points in other group.
+return the min cost.
+bitmask dp: for each point in group A, it has a bitmask to indicate nodes to connect in B.
+idea: 
+a. first connect A to B using the total min cost (does not consider all B nodes shall be connected).
+b. After done, connect unconnected B nodes to cheapest A nodes.
+solving a using bitmask dp. dp[i,mask] represent ith node in A using bitmask in B and get the min cost.
+dp[i,mask]=min(cost[i,j]+dp[i+1,mask|(1<<j)])
+->>
+
 <<-1659	Maximize Grid Happiness    		29.1%	Hard	
 problem: given a grid, and number of introvert and number of extrovert. introvert starts with 120 and lose 30 for each neighbor and extrovert starts with 40 and gain 20 for each neighbor. find the max happiniess.
 The critical part is to realize that the current choice only depends on previous n placements. 
@@ -219,6 +239,39 @@ level: 5
 ### greedy
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
+
+<<-1589	Maximum Sum Obtained of Any Permutation    		34.5%	Medium	
+an array of integers. a query [l,r] will return the sum A[l] to A[r].
+the total sum is the sum of all requests.
+return max total sum among all permutation of the array.
+idea: event begin and start using hashmap and greedy assign the most frequent one with the largest value.
+greedy, hashmap, intevals
+->>
+
+<<-1591	Strange Printer II    		55.1%	Hard	
+each time the printer will print a rect with same color.
+each color can only be used once.
+given a matrix of colors, check if we can print it.
+idea: hashmap for each color we find its rect. loop and find if the rect contains only the color and 0. Once it is valid, we change all to 0.
+greedy.
+->>
+
+<<-1599	Maximum Profit of Operating a Centennial Wheel    		43.2%	Medium	
+wheel has 4 gondolas, each gondolas can hold 4 people.
+wheel rotate clockwise. rotate until next gondonla picking up customer with fixed cost. Boarding ticket price is given.
+given an array, A[i] is the number of people coming at the ith rotation.
+if you decide stopping picking up customers, all subsequent rotation is free (no cost).
+return min number of rotation to max the profit.
+- if more than 4 at ith rotation, push to remaining people to next.
+- record the profit and number of rotation.
+greedy, pickup and reduce problem size.
+->>
+
+<<-1605	Find Valid Matrix Given Row and Column Sums    		76.9%	Medium	
+given each row sum and each col's sum. return a valid matrix. (all elements >=0).
+greedy: A[i,j] is bound by min(rsum[i],csum[j]). 
+greedy choose the min as A[i,j], then update the rsum and csum.
+->>
 
 <<-1647. Minimum Deletions to Make Character Frequencies Unique
 get the occurrence for each char and count each number's frequency in map.
@@ -284,6 +337,19 @@ level: 5
 backtracking problem generally finds all sets required. It can also be used for counting.
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
+<<-1593	Split a String Into the Max Number of Unique Substrings    		46.7%	Medium	
+backtracking using hashset.
+take from one char to the whole string and leave a subproblem.
+->>
+
+<<-1601	Maximum Number of Achievable Transfer Requests    		47.2%	Hard	
+n buildings from 0 to n-1. Given a list of requests transfering from src to dest. All building is full, so net change shall be 0.
+return the max number of achievable requests.
+n<=20, requests<=16.
+backtracking: each request can be used or not used. 2^R.
+valid requests: all building is net 0.
+->>
+
 <<-131. Palindrome Partitioning
 return all poosible palindrome partitioning.
 typical backtracking, from left to right.
@@ -303,6 +369,15 @@ also a bitmask dp problem.
 ->>
 
 ### dfs
+
+<<-1600	Throne Inheritance    		58.8%	Medium	
+inheritance in the order of dfs. first child is the first inheritance.
+birth: a new baby
+death: a death of a family member.
+using hashmap to represent the family structure.
+person vs a list of direct children, with live or death.
+dfs, hashmap
+->>
 
 ### bfs
 <<-1654	Minimum Jumps to Reach Home    		28.0%	Medium	
@@ -334,6 +409,13 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 ## data structure focused problems
 
 ### stack
+<<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	
+expression tree: leaf nodes are numbers, inner nodes are +-*/.
+infix expression: in order traversal of the binary tree
+given an input string with (), produce a expression tree with equal infix (omitting the ())
+typical syntax analysis using stack.
+->>
+
 <<-1628	Design an Expression Tree With Evaluate Function    		86.0%	Medium	
 given an virtual class interface and postfix string, build the tree and evaluate it.
 class design and oop and tree evaluations
@@ -354,8 +436,32 @@ approach:
 ->>
 
 ### hashset, hashmap
+<<-1590	Make Sum Divisible by P    		27.2%	Medium	
+remove the min length subarray to make the sum divisible by p.
+hashmap using prefix sum. we record the prefix sum with index, and same prefix value.
+tsum%p=x, then the subarray sum shall have sum%p=x.
+looking for prefix-x.
+->>
+
+
+<<-1604	Alert Using Same Key-Card Three or More Times in a One Hour Period    		41.4%	Medium	
+entry using keycard, entry will record name and time.
+return list of name entry 3 or more times in one hour in a single day.
+idea: hashmap to record entry time for each person. Then for each person we check one hour period entry times. (this can be approached using deque)
+->>
 
 ### tree
+
+<<-1586	Binary Search Tree Iterator II    		65.6%	Medium	
+this we need add prev and hasPrev.
+- inorder traversal and put into vector, trivial
+- iterative: only maintain the visited nodes using stack.
+->>
+
+<<-1602	Find Nearest Right Node in Binary Tree    		75.0%	Medium	
+given a node u, find its nearest right node. using dfs and store the previous node.
+->>
+
 <<-1609	Even Odd Tree    		54.0%	Medium	
 root is level 0, child at level 1. odd indexed level all even, and even index level all odd.
 and in strictly increasing order.
@@ -424,6 +530,29 @@ two pointer merge.
 ->>
 
 ### array & string
+<<-1588	Sum of All Odd Length Subarrays    		81.1%	Easy	
+brutal force is easy.
+O(N): subarry with odd length containing A[i], calculate the times.
+left we can choose 0,1,...i elements
+right we can choose 0,1,2 to n-i. remove those even length (half)
+->>
+
+<<-1592	Rearrange Spaces Between Words    		43.8%	Easy	
+string operation: read the words, count the spaces and rearrange the spaces
+->>
+<<-1606	Find Servers That Handled Most Number of Requests    		36.0%	Hard	
+k servers from 0 to k-1. each server handles one task at a time.
+ith task arrives, if all server is busy the task is dropped.
+if(i%k)th server is available, assign the task to it.
+otherwise, assign the task to next available server. (wrap around)
+each task has a computation time and an arrival time. arrival time is strictly increasing.
+find the busiest server.
+brutal force: each task we need search k servers, thus O(nk)
+optimization: using an ordered map to maintain server's next available time. Once the server is busy we add k to it.
+maintain a set for free servers, and a pq for busy servers. When arrival times, update busy servers into free servers. always add two i and i+k into it.
+circular array, heap.
+->>
+
 <<-1608	Special Array With X Elements Greater Than or Equal X    		62.4%	Easy	
 check if there exisit a number that there are exactly x number >=x. x is not necessary an element in the array.
 counting sort: since elements value<=1000 and array length <=100.
@@ -2656,6 +2785,11 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1598	Crawler Log Folder    		64.4%	Easy	
+simple stack op.
+->>
+<<-1603	Design Parking System    		86.1%	Easy	->>
+
 <<-1619	Mean of Array After Removing Some Elements    		66.3%	Easy	
 remove the top and bottom 5% and get the remaing mean value
 sort and sum the middle parts.
@@ -2974,53 +3108,15 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## leetcode problem list
-<<-1692. Count ways to distribute candies
-n candies from 1 to n. distribute into k bags. number of different way of distribution, each bag has at least one candy.
-bag order and candy order in bag does no matter. 1<=k<=n.
-k=1, only one way C(n,n)
-k=2, [C(n,1)+C(n,2)+....+C(n,n-1)]/2
-any k>2: choose one bag, we can put 1, 2 ...n-(k-1) candies.
-if we put i candies, leaving a subproblem with (n-i,k-1)
-dp[i,k]+=C(i,i-j)*dp[i-j,k-1]
-dp[i,k]/=2; (redundant)
 
-
-
-<<-1606	Find Servers That Handled Most Number of Requests    		36.0%	Hard	
-k servers from 0 to k-1. each server handles one task at a time.
-ith task arrives, if all server is busy the task is dropped.
-if(i%k)th server is available, assign the task to it.
-otherwise, assign the task to next available server. (wrap around)
-each task has a computation time and an arrival time. arrival time is strictly increasing.
-find the busiest server.
-brutal force: each task we need search k servers, thus O(nk)
-optimization: using an ordered map to maintain server's next available time. Once the server is busy we add k to it.
-
+<<-1585	Check If String Is Transformable With Substring Sort Operations    		48.0%	Hard	
+tranform s to t. given operation: choose a substring and sort in-place.
+- t<=s since sort will make it smaller.
+- sort will make smaller goes to left and bigger goes to right.
+- shall have the same histogram.
+- we need to check if we can move the digit to desired position. If we hit smaller one, we shall stop there.
+for example: 0231->0213->0123
 ->>
-<<-1605	Find Valid Matrix Given Row and Column Sums    		76.9%	Medium	->>
-<<-1604	Alert Using Same Key-Card Three or More Times in a One Hour Period    		41.4%	Medium	->>
-<<-1603	Design Parking System    		86.1%	Easy	->>
-<<-1602	Find Nearest Right Node in Binary Tree    		75.0%	Medium	->>
-<<-1601	Maximum Number of Achievable Transfer Requests    		47.2%	Hard	->>
-<<-1600	Throne Inheritance    		58.8%	Medium	->>
-<<-1599	Maximum Profit of Operating a Centennial Wheel    		43.2%	Medium	->>
-<<-1598	Crawler Log Folder    		64.4%	Easy	->>
-<<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	->>
-
-<<-1595	Minimum Cost to Connect Two Groups of Points    		41.9%	Hard	->>
-<<-1594	Maximum Non Negative Product in a Matrix    		31.9%	Medium	->>
-<<-1593	Split a String Into the Max Number of Unique Substrings    		46.7%	Medium	->>
-<<-1592	Rearrange Spaces Between Words    		43.8%	Easy	->>
-<<-1591	Strange Printer II    		55.1%	Hard	->>
-<<-1590	Make Sum Divisible by P    		27.2%	Medium	->>
-<<-1589	Maximum Sum Obtained of Any Permutation    		34.5%	Medium	->>
-<<-1588	Sum of All Odd Length Subarrays    		81.1%	Easy	->>
-<<-1586	Binary Search Tree Iterator II    		65.6%	Medium	
-this we need add prev and hasPrev.
-- inorder traversal and put into vector, trivial
-- iterative: only maintain the visited nodes using stack.
-->>
-<<-1585	Check If String Is Transformable With Substring Sort Operations    		48.0%	Hard	->>
 <<-1584	Min Cost to Connect All Points    		49.0%	Medium	->>
 <<-1583	Count Unhappy Friends    		52.6%	Medium	->>
 <<-1582	Special Positions in a Binary Matrix    		64.3%	Easy	->>
@@ -4623,3 +4719,10 @@ a*(a^(p-1)-1) is a multipe of p.
 thus a^(p-1)=1 (mod m)
 or a^(p-2)=a^(-1) (mod m)
 using a^(p-2) (binary power in log(p) time) to get the modular.
+```cpp
+    long modinv(int a,int n,int p){ //calculate a^-1%p -->a^(p-2)%p
+        if(n==0) return 1;
+        if(n%2) return a*modinv((long)a*a%p,n/2,p)%p;
+        return modinv((long)a*a%p,n/2,p)%p;
+    }
+```	
