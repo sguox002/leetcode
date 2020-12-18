@@ -29,6 +29,16 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	
+given array a permutation of 1 to n. Insert the elements in order to BST. find the number of different ways to reorder nums so that we get the same BST as nums.
+Key information: BST.
+- use the first element as the root, and smaller one as the left, bigger ones as the right, both as a subproblem.
+- can choose left first or right first.
+- for left first, assuming we have m nodes in left, and n nodes in right, then it is equivalent to interleave the left array into right array. C(m+n,n)
+nleft*nright*comb(n-1,left)
+recursive, combination, modular inverse, pascal triangle (using dp to get combination)
+->>
+
 <<-1594	Maximum Non Negative Product in a Matrix    		31.9%	Medium	
 given a grid, from top left to bottom right, only right and down movement.
 return the max product among all the paths.
@@ -369,6 +379,14 @@ also a bitmask dp problem.
 ->>
 
 ### dfs
+<<-1568	Minimum Number of Days to Disconnect Island    		51.1%	Hard	
+given a 01 matrix, 0 is water, 1 is island. You can change one island to water in one day. return min number of days to disconnect the island.
+greedy: 
+- if we have >1 islands, we need do nothing
+- critical edge: 1 day
+- otherwise disconnect the top left or bottom right cell using 2 days.
+using dfs or union find to determine if it is one island.
+->>
 
 <<-1600	Throne Inheritance    		58.8%	Medium	
 inheritance in the order of dfs. first child is the first inheritance.
@@ -436,6 +454,12 @@ approach:
 ->>
 
 ### hashset, hashmap
+<<-1567	Maximum Length of Subarray With Positive Product    		36.0%	Medium	
+- using hashmap
+- see 0 we stop old one and start new one
+- keep track of odd/even status of negative (to keep positive, it shall be the same). we only need keep the first 0/1 position
+->>
+
 <<-1590	Make Sum Divisible by P    		27.2%	Medium	
 remove the min length subarray to make the sum divisible by p.
 hashmap using prefix sum. we record the prefix sum with index, and same prefix value.
@@ -2785,6 +2809,8 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1570	Dot Product of Two Sparse Vectors    		91.5%	Medium	->>
+
 <<-1598	Crawler Log Folder    		64.4%	Easy	
 simple stack op.
 ->>
@@ -3109,30 +3135,7 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 ## leetcode problem list
 
-<<-1585	Check If String Is Transformable With Substring Sort Operations    		48.0%	Hard	
-tranform s to t. given operation: choose a substring and sort in-place.
-- t<=s since sort will make it smaller.
-- sort will make smaller goes to left and bigger goes to right.
-- shall have the same histogram.
-- we need to check if we can move the digit to desired position. If we hit smaller one, we shall stop there.
-for example: 0231->0213->0123
-->>
-<<-1584	Min Cost to Connect All Points    		49.0%	Medium	->>
-<<-1583	Count Unhappy Friends    		52.6%	Medium	->>
-<<-1582	Special Positions in a Binary Matrix    		64.3%	Easy	->>
-<<-1580	Put Boxes Into the Warehouse II    		63.0%	Medium	->>
-<<-1579	Remove Max Number of Edges to Keep Graph Fully Traversable    		45.5%	Hard	->>
-<<-1578	Minimum Deletion Cost to Avoid Repeating Letters    		60.1%	Medium	->>
-<<-1577	Number of Ways Where Square of Number Is Equal to Product of Two Numbers    		37.0%	Medium	->>
-<<-1576	Replace All ?'s to Avoid Consecutive Repeating Characters    		48.0%	Easy	->>
-<<-1575	Count All Possible Routes    		58.4%	Hard	->>
-<<-1574	Shortest Subarray to be Removed to Make Array Sorted    		31.9%	Medium	->>
-<<-1573	Number of Ways to Split a String    		30.4%	Medium	->>
-<<-1572	Matrix Diagonal Sum    		78.3%	Easy	->>
-<<-1570	Dot Product of Two Sparse Vectors    		91.5%	Medium	->>
-<<-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	->>
-<<-1568	Minimum Number of Days to Disconnect Island    		51.1%	Hard	->>
-<<-1567	Maximum Length of Subarray With Positive Product    		36.0%	Medium	->>
+
 <<-1566	Detect Pattern of Length M Repeated K or More Times    		42.0%	Easy	->>
 <<-1564	Put Boxes Into the Warehouse I    		66.2%	Medium	->>
 <<-1563	Stone Game V    		40.2%	Hard	->>
