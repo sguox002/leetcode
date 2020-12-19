@@ -29,10 +29,20 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+
 <<-1575	Count All Possible Routes    		58.4%	Hard	
 array represent the location of cities. given start and end city and fuel. fuel is reduced by the distance. return the number of possible routes.
 idea: dp, choose any city as the first; dp[i,fuel] number of routes start at city i with fuel to dest. destination is fixed but start for subproblem is changing.
 dp[i,f]+=dp[k,f-dist(i,k)]
+->>
+<<-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	
+given array a permutation of 1 to n. Insert the elements in order to BST. find the number of different ways to reorder nums so that we get the same BST as nums.
+Key information: BST.
+- use the first element as the root, and smaller one as the left, bigger ones as the right, both as a subproblem.
+- can choose left first or right first.
+- for left first, assuming we have m nodes in left, and n nodes in right, then it is equivalent to interleave the left array into right array. C(m+n,n)
+nleft*nright*comb(n-1,left)
+recursive, combination, modular inverse, pascal triangle (using dp to get combination)
 ->>
 
 <<-1594	Maximum Non Negative Product in a Matrix    		31.9%	Medium	
@@ -459,6 +469,14 @@ also a bitmask dp problem.
 ->>
 
 ### dfs
+<<-1568	Minimum Number of Days to Disconnect Island    		51.1%	Hard	
+given a 01 matrix, 0 is water, 1 is island. You can change one island to water in one day. return min number of days to disconnect the island.
+greedy: 
+- if we have >1 islands, we need do nothing
+- critical edge: 1 day
+- otherwise disconnect the top left or bottom right cell using 2 days.
+using dfs or union find to determine if it is one island.
+->>
 
 <<-1600	Throne Inheritance    		58.8%	Medium	
 inheritance in the order of dfs. first child is the first inheritance.
@@ -527,12 +545,19 @@ approach:
 
 ### hashset, hashmap
 
+
 <<-1577	Number of Ways Where Square of Number Is Equal to Product of Two Numbers    		37.0%	Medium	
 given two integer arrays nums1,nums2. return number of triplets if:
 nums1[i]^2==nums2[j]*nums2[k] or nums2[i]^2=nums1[j]*nums1[k].
 - two similar problem, solve one
 - using hashmap to store nums2 occurence.
 - i*j=t^2 i==j and i!=j two cases.
+->>
+
+<<-1567	Maximum Length of Subarray With Positive Product    		36.0%	Medium	
+- using hashmap
+- see 0 we stop old one and start new one
+- keep track of odd/even status of negative (to keep positive, it shall be the same). we only need keep the first 0/1 position
 ->>
 
 <<-1590	Make Sum Divisible by P    		27.2%	Medium	
@@ -2903,6 +2928,11 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1566	Detect Pattern of Length M Repeated K or More Times    		42.0%	Easy	
+just check A[i]==A[i+j*M] j from 1 to k.
+->>
+<<-1570	Dot Product of Two Sparse Vectors    		91.5%	Medium	->>
+
 <<-1598	Crawler Log Folder    		64.4%	Easy	
 simple stack op.
 ->>
@@ -3235,19 +3265,39 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 ## leetcode problem list
 
+<<-1564	Put Boxes Into the Warehouse I    		66.2%	Medium	
+push box from left to right only. You can reorder the box.
+return the max number of boxes can be pushed in.
+greedy: 
+- from left to right, get the min height minh[i] minh is monotonically decreasing.
+- sort box.
+- from right to left, push the smallest box to the right. 
+->>
 
-
-<<-1570	Dot Product of Two Sparse Vectors    		91.5%	Medium	->>
-<<-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	->>
-<<-1568	Minimum Number of Days to Disconnect Island    		51.1%	Hard	->>
-<<-1567	Maximum Length of Subarray With Positive Product    		36.0%	Medium	->>
-<<-1566	Detect Pattern of Length M Repeated K or More Times    		42.0%	Easy	->>
-<<-1564	Put Boxes Into the Warehouse I    		66.2%	Medium	->>
-<<-1563	Stone Game V    		40.2%	Hard	->>
-<<-1562	Find Latest Group of Size M    		39.0%	Medium	->>
-<<-1561	Maximum Number of Coins You Can Get    		78.9%	Medium	->>
-<<-1560	Most Visited Sector in a Circular Track    		56.9%	Easy	->>
-<<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	->>
+<<-1562	Find Latest Group of Size M    		39.0%	Medium	
+given array of permutation of 1 to n. a binary string of length n. each element means change bit[i] to 1. 
+return the latest step at which there exists a groups of ones of length exactly m. if no such group return -1.
+- number of 1s keep increasing.
+- ask for latest, i.e the last step producing a M-segment.
+ interval merge? union-find.
+ maintain two hashmap:
+ parent vs node count
+ node count vs number of sets.
+ ->>
+<<-1561	Maximum Number of Coins You Can Get    		78.9%	Medium	
+given 3n piles of coins, three players.
+You choose any 3 piles, and A takes the max, then you choose, B takes the last.
+return the max coins you can get.
+greedy: sort and start from the max, choose the max 2 and the min.
+->>
+<<-1560	Most Visited Sector in a Circular Track    		56.9%	Easy	
+Note the whole tracks can be omitted so simplified. Greedy.
+->>
+<<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	
+given a matrix, find if there exists a cycle, a cycle is connected path with same value.
+dfs with parent position, we cannot go back to immediate parent. If we found we back to a visited node, we found a cycle.
+very easy to make mistakes.
+->>
 <<-1558	Minimum Numbers of Function Calls to Make Target Array    		62.4%	Medium	->>
 <<-1557	Minimum Number of Vertices to Reach All Nodes    		74.3%	Medium	->>
 <<-1556	Thousand Separator    		58.8%	Easy	->>
