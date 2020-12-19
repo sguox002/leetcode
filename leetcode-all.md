@@ -29,6 +29,12 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1575	Count All Possible Routes    		58.4%	Hard	
+array represent the location of cities. given start and end city and fuel. fuel is reduced by the distance. return the number of possible routes.
+idea: dp, choose any city as the first; dp[i,fuel] number of routes start at city i with fuel to dest. destination is fixed but start for subproblem is changing.
+dp[i,f]+=dp[k,f-dist(i,k)]
+->>
+
 <<-1594	Maximum Non Negative Product in a Matrix    		31.9%	Medium	
 given a grid, from top left to bottom right, only right and down movement.
 return the max product among all the paths.
@@ -240,6 +246,84 @@ level: 5
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
 
+<<-1576	Replace All ?'s to Avoid Consecutive Repeating Characters    		48.0%	Easy	
+greedy: try each ? from 'a' to 'z' so that it is not the same as left and right.
+->>
+
+<<-1578	Minimum Deletion Cost to Avoid Repeating Letters    		60.1%	Medium	
+given a string, and array of cost for deleting s[i]. return the min cost so that no same character is together.
+idea: when there is a group of same chars, the min removing cost is sum(cost)-max(cost), greedy.
+->>
+
+<<-1579	Remove Max Number of Edges to Keep Graph Fully Traversable    		45.5%	Hard	
+undirected graph: type 1, A can go, type 2: B can go, type 3: both A and B can go.
+given a list of edges. find the max edges you can remove so that both A and B can traverse the graph.
+greedy: similar to MST, choose type 3 first. Then based on 3, add unconnected 1. based on 3 add type 2 using union find.
+->>
+
+<<-1580	Put Boxes Into the Warehouse II    		63.0%	Medium
+given a list of boxes with heights, and a list of warehouses with height from left to right.
+- you can push from left or right.
+- you can change box order.
+return max number of boxes you can push into the warehouse.
+greedy: higher box is hard to arrange, so try higher first.
+using two pointer, if highest box can get through left, all remaining can pass, advance left.
+if highest box can get through right, all remaining can pass, right--
+Note this is not the actual pushing order, we can always find a way to push them in if we can find a position for the box.
+similar to trap raining water. 
+
+```cpp
+    int maxBoxesInWarehouse(vector<int>& boxes, vector<int>& warehouse) {
+        sort(boxes.begin(), boxes.end());
+        int cnt = 0, left = 0, right = warehouse.size() - 1;
+        for(int i = boxes.size() - 1; i >= 0 && left <= right; --i){
+            if(boxes[i] <= warehouse[left]){
+                ++left; ++cnt;
+            } else if(boxes[i] <= warehouse[right]){
+                --right; ++cnt;
+            }
+        }
+        return cnt;
+    }
+```
+->>
+
+<<-1585	Check If String Is Transformable With Substring Sort Operations    		48.0%	Hard	
+tranform s to t. given operation: choose a substring and sort in-place.
+- t<=s since sort will make it smaller.
+- sort will make smaller goes to left and bigger goes to right.
+- shall have the same histogram.
+- we need to check if we can move the digit to desired position. If we hit smaller one, we shall stop there.
+for example: 0231->0213->0123
+greedy approach: start from smallest digit. for example '0' its index can only shift to left. compare its indices in s and t. indx1[i]>=indx2[i] must be satisfied.
+then we erase all 0's from both s and t. 
+(inplace erasing the digit: move the digit to the front using two pointer)
+```
+	bool isTransformable(string s,string t){
+		if(s.size()!=t.size()) return 0;
+		
+		for(char d='0';d<='9';d++){
+			vector<int> idx0,idx1;
+			string ss,tt;
+			for(int i=0;i<s.size();i++){
+				if(s[i]==d) idx0.push_back(i);else ss+=s[i];
+				if(t[i]==d) idx1.push_back(i);else tt+=t[i];
+			}
+			if(idx0.size()!=idx1.size()) return 0;
+			for(int i=0;i<idx0.size();i++){
+				if(idx0[i]<idx1[i]) return 0;
+			}
+			s=ss,t=tt;
+		}
+		return 1;
+	}
+	
+```
+starting from '9' does not work:
+for example 891 vs 198. 9 satisfy the condition, after removing 9, 8 satisfy the condition, but actually not since 8 cannot go beyond 9.
+but start from 1: 1 goes to left, ok. then check 89 vs 98, 8 goes to right, not ok.
+->>
+
 <<-1589	Maximum Sum Obtained of Any Permutation    		34.5%	Medium	
 an array of integers. a query [l,r] will return the sum A[l] to A[r].
 the total sum is the sum of all requests.
@@ -307,6 +391,12 @@ level: 3
 ->>
 
 ### binary search
+
+<<-1574	Shortest Subarray to be Removed to Make Array Sorted    		31.9%	Medium	
+binary search: check if we can remove a subarray of length k and make the array sorted.
+using sliding window, lmax<=rmin
+>>
+
 <<-1618	Maximum Font to Fit a Sentence in a Screen    		57.5%	Medium	
 screen w x h and display a text. and given a list of font size. A font size has different height and width. (height is same for the same font size, width is depending on the char).
 return the max font size you can use. if not possible return -1.
@@ -436,6 +526,15 @@ approach:
 ->>
 
 ### hashset, hashmap
+
+<<-1577	Number of Ways Where Square of Number Is Equal to Product of Two Numbers    		37.0%	Medium	
+given two integer arrays nums1,nums2. return number of triplets if:
+nums1[i]^2==nums2[j]*nums2[k] or nums2[i]^2=nums1[j]*nums1[k].
+- two similar problem, solve one
+- using hashmap to store nums2 occurence.
+- i*j=t^2 i==j and i!=j two cases.
+->>
+
 <<-1590	Make Sum Divisible by P    		27.2%	Medium	
 remove the min length subarray to make the sum divisible by p.
 hashmap using prefix sum. we record the prefix sum with index, and same prefix value.
@@ -451,7 +550,7 @@ idea: hashmap to record entry time for each person. Then for each person we chec
 ->>
 
 ### tree
-
+<<-1572	Matrix Diagonal Sum    		78.3%	Easy	->>
 <<-1586	Binary Search Tree Iterator II    		65.6%	Medium	
 this we need add prev and hasPrev.
 - inorder traversal and put into vector, trivial
@@ -530,6 +629,25 @@ two pointer merge.
 ->>
 
 ### array & string
+<<-1573	Number of Ways to Split a String    		30.4%	Medium	
+given a 01 string, divide into 3 subarrays so that number of 1s is the same among s1,s2 and s3.
+find the mid string s2 and check number of 0 on its left and right.
+
+->>
+
+<<-1582	Special Positions in a Binary Matrix    		64.3%	Easy	
+given a 01 matrix. position (i,j) is special if all other elements in row and col are 0.
+two passes: get row sum and col sum. and then A[i,j]==row[i]==co[j]
+->>
+
+<<-1583	Count Unhappy Friends    		52.6%	Medium	
+n people. preference n x n-1. ith row is ith person's preference over friends. They are divided into pairs. a pair [x,y] is not happy if there is a pair (u,v):
+x prefer u over y and u prefers x over v. 
+- convert matrix to 2d hashmap so that we can get preference in O(1)
+- for all pairs, check if they are not happy.
+
+->>
+
 <<-1588	Sum of All Odd Length Subarrays    		81.1%	Easy	
 brutal force is easy.
 O(N): subarry with odd length containing A[i], calculate the times.
@@ -3090,6 +3208,14 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 - use ladder first, when ladder is used up, replace a ladder with min bricks needed.
 ->>
 ## graph
+
+<<-1584	Min Cost to Connect All Points    		49.0%	Medium	
+a list of 2d points with integer coordinates, the cost of connecting two points is the manhattan distance |x1-x2|+|y1-y2|. return the min cost to make all points connected.
+greedy: connect shortest distance first, and then use union-find. Minimum Spanning Tree.
+there are N^2 edges. using heap will be faster here since we do not use all the edges.
+dijkstra: using pq to try smallest edge first. Use the fact that we only need n-1 edges.
+->>
+
 <<-1615	Maximal Network Rank    		51.3%	Medium	
 n cities from 1 to n. given a list of edges, indicating there is a bidirectional road between two cities.
 network rank of two cities: the total incoming edges of two cities. If there is direct connection, it is only counted once.
@@ -3109,26 +3235,8 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 ## leetcode problem list
 
-<<-1585	Check If String Is Transformable With Substring Sort Operations    		48.0%	Hard	
-tranform s to t. given operation: choose a substring and sort in-place.
-- t<=s since sort will make it smaller.
-- sort will make smaller goes to left and bigger goes to right.
-- shall have the same histogram.
-- we need to check if we can move the digit to desired position. If we hit smaller one, we shall stop there.
-for example: 0231->0213->0123
-->>
-<<-1584	Min Cost to Connect All Points    		49.0%	Medium	->>
-<<-1583	Count Unhappy Friends    		52.6%	Medium	->>
-<<-1582	Special Positions in a Binary Matrix    		64.3%	Easy	->>
-<<-1580	Put Boxes Into the Warehouse II    		63.0%	Medium	->>
-<<-1579	Remove Max Number of Edges to Keep Graph Fully Traversable    		45.5%	Hard	->>
-<<-1578	Minimum Deletion Cost to Avoid Repeating Letters    		60.1%	Medium	->>
-<<-1577	Number of Ways Where Square of Number Is Equal to Product of Two Numbers    		37.0%	Medium	->>
-<<-1576	Replace All ?'s to Avoid Consecutive Repeating Characters    		48.0%	Easy	->>
-<<-1575	Count All Possible Routes    		58.4%	Hard	->>
-<<-1574	Shortest Subarray to be Removed to Make Array Sorted    		31.9%	Medium	->>
-<<-1573	Number of Ways to Split a String    		30.4%	Medium	->>
-<<-1572	Matrix Diagonal Sum    		78.3%	Easy	->>
+
+
 <<-1570	Dot Product of Two Sparse Vectors    		91.5%	Medium	->>
 <<-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	->>
 <<-1568	Minimum Number of Days to Disconnect Island    		51.1%	Hard	->>
