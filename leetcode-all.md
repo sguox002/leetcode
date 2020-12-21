@@ -29,6 +29,20 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1463	Cherry Pickup II    		66.2%	Hard	
+two robots on the top left and top right and each time goes down, leftdiag rightdiag or down. return the max cherrys can pick.
+dp: the two robot status is defined as dp[i,j1,j2] is the layer and j1 and j2 are the column index for robot 1 and robot 2. choose the max from previous layer 9 possible combinations. do not go over board.
+->>
+
+<<-1553	Minimum Number of Days to Eat N Oranges    		28.6%	Hard	
+n oranges, you can:
+- eat one 
+- if n is even you can eat n/2
+- if n/3==0, you can eat 2*n/3
+approach 1: bfs it will reach to 0 soon
+approach 2: dp, the problem is -1, which needs to solve all subproblems. but we only need solve a very small portion. n%2+dp[n/2],n%3+dp[n/3]
+using hashmap for dp table.
+->>
 
 <<-1575	Count All Possible Routes    		58.4%	Hard	
 array represent the location of cities. given start and end city and fuel. fuel is reduced by the distance. return the number of possible routes.
@@ -256,6 +270,35 @@ level: 5
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
 
+<<-1551	Minimum Operations to Make Array Equal    		77.8%	Medium	
+given array with a[i]=2*i+1. each time you can choose a pair of index and add 1 to one and -1 to the other. return the min operations to make the array all the same
+greedy: sorted array, and min operation to make the arry go to median.
+->>
+
+<<-1558	Minimum Numbers of Function Calls to Make Target Array    		62.4%	Medium	
+from all 0 to target array by:
+- add 1 to an element
+- *2 for all element
+equivalent to: minus 1 if odd, /2 if even from target array to all zero.
+
+->>
+
+<<-1561	Maximum Number of Coins You Can Get    		78.9%	Medium	
+given 3n piles of coins, three players.
+You choose any 3 piles, and A takes the max, then you choose, B takes the last.
+return the max coins you can get.
+greedy: sort and start from the max, choose the max 2 and the min.
+->>
+
+<<-1564	Put Boxes Into the Warehouse I    		66.2%	Medium	
+push box from left to right only. You can reorder the box.
+return the max number of boxes can be pushed in.
+greedy: 
+- from left to right, get the min height minh[i] minh is monotonically decreasing.
+- sort box.
+- from right to left, push the smallest box to the right. 
+->>
+
 <<-1576	Replace All ?'s to Avoid Consecutive Repeating Characters    		48.0%	Easy	
 greedy: try each ? from 'a' to 'z' so that it is not the same as left and right.
 ->>
@@ -402,6 +445,11 @@ level: 3
 
 ### binary search
 
+<<-1552	Magnetic Force Between Two Balls    		48.2%	Medium	
+n baskets at different positions on a line. magnetic force is |p0-p1|. given m balls, return the max of the min magnetic force.
+binary search: given a d, and see if we can place m balls.
+->>
+
 <<-1574	Shortest Subarray to be Removed to Make Array Sorted    		31.9%	Medium	
 binary search: check if we can remove a subarray of length k and make the array sorted.
 using sliding window, lmax<=rmin
@@ -469,6 +517,12 @@ also a bitmask dp problem.
 ->>
 
 ### dfs
+<<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	
+given a matrix, find if there exists a cycle, a cycle is connected path with same value.
+dfs with parent position, we cannot go back to immediate parent. If we found we back to a visited node, we found a cycle.
+very easy to make mistakes.
+->>
+
 <<-1568	Minimum Number of Days to Disconnect Island    		51.1%	Hard	
 given a 01 matrix, 0 is water, 1 is island. You can change one island to water in one day. return min number of days to disconnect the island.
 greedy: 
@@ -496,6 +550,19 @@ need store position and direction also, the visited array.
 ->>
 
 ### union-find
+
+<<-1562	Find Latest Group of Size M    		39.0%	Medium	
+given array of permutation of 1 to n. a binary string of length n. each element means change bit[i] to 1. 
+return the latest step at which there exists a groups of ones of length exactly m. if no such group return -1.
+- number of 1s keep increasing.
+- ask for latest, i.e the last step producing a M-segment.
+ interval merge? union-find.
+ maintain two hashmap:
+ parent vs node count
+ node count vs number of sets.
+ ->>
+
+
 <<-1627	Graph Connectivity With Threshold    		36.9%	Hard	
 n cities from 1 to n. Two cities are directly connected if they share a common divisor >threshold.
 given two cities, check if they are connected.
@@ -654,6 +721,15 @@ two pointer merge.
 ->>
 
 ### array & string
+<<-1554	Strings Differ by One Character    		63.1%	Medium	
+a list of words with same length, return if there are two strings differ by 1 char at the same index. need O(nm).
+rolling hash: for each column, we ignore the column and calculate the hash value and store in hashmap, if we see it then we found one. rolling hash is faster than string.
+->>
+
+<<-1560	Most Visited Sector in a Circular Track    		56.9%	Easy	
+Note the whole tracks can be omitted so simplified. Greedy.
+->>
+
 <<-1573	Number of Ways to Split a String    		30.4%	Medium	
 given a 01 string, divide into 3 subarrays so that number of 1s is the same among s1,s2 and s3.
 find the mid string s2 and check number of 0 on its left and right.
@@ -2928,6 +3004,12 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1550	Three Consecutive Odds    		65.9%	Easy	->>
+
+<<-1556	Thousand Separator    		58.8%	Easy	
+add a . every thousand.
+->>
+
 <<-1566	Detect Pattern of Length M Repeated K or More Times    		42.0%	Easy	
 just check A[i]==A[i+j*M] j from 1 to k.
 ->>
@@ -3238,6 +3320,9 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 - use ladder first, when ladder is used up, replace a ladder with min bricks needed.
 ->>
 ## graph
+<<-1557	Minimum Number of Vertices to Reach All Nodes    		74.3%	Medium	
+greedy: only source nodes are not reachable
+->>
 
 <<-1584	Min Cost to Connect All Points    		49.0%	Medium	
 a list of 2d points with integer coordinates, the cost of connecting two points is the manhattan distance |x1-x2|+|y1-y2|. return the min cost to make all points connected.
@@ -3265,48 +3350,18 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 ## leetcode problem list
 
-<<-1564	Put Boxes Into the Warehouse I    		66.2%	Medium	
-push box from left to right only. You can reorder the box.
-return the max number of boxes can be pushed in.
-greedy: 
-- from left to right, get the min height minh[i] minh is monotonically decreasing.
-- sort box.
-- from right to left, push the smallest box to the right. 
-->>
 
-<<-1562	Find Latest Group of Size M    		39.0%	Medium	
-given array of permutation of 1 to n. a binary string of length n. each element means change bit[i] to 1. 
-return the latest step at which there exists a groups of ones of length exactly m. if no such group return -1.
-- number of 1s keep increasing.
-- ask for latest, i.e the last step producing a M-segment.
- interval merge? union-find.
- maintain two hashmap:
- parent vs node count
- node count vs number of sets.
- ->>
-<<-1561	Maximum Number of Coins You Can Get    		78.9%	Medium	
-given 3n piles of coins, three players.
-You choose any 3 piles, and A takes the max, then you choose, B takes the last.
-return the max coins you can get.
-greedy: sort and start from the max, choose the max 2 and the min.
+<<-1548	The Most Similar Path in a Graph    		55.3%	Hard	
+n cities and m bidirectional roads. each city has a name with 3 chars. It is a connected graph, ie. from city x you can go to any city y.
+given a target path, find a path of the same length with the min edit distance (number of different chars between two strings). if multiple paths exist, return any of it.
+naive approach: try each node as the start and do dfs for n nodes and compare the edit distance. using memoization
+- backtracking
+- optimize using memoization dp[start][i][j] the min edit distance using the airport start as the ith city. j is dependent on i j=m-1-i, so we only need 2d. But our answer shall be the path.
+use dp[i,j] for the min edit distance and save the min vector path.
+- dijkstra: shortest path problem. use the edit distance as the edge weight.
+
+
 ->>
-<<-1560	Most Visited Sector in a Circular Track    		56.9%	Easy	
-Note the whole tracks can be omitted so simplified. Greedy.
-->>
-<<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	
-given a matrix, find if there exists a cycle, a cycle is connected path with same value.
-dfs with parent position, we cannot go back to immediate parent. If we found we back to a visited node, we found a cycle.
-very easy to make mistakes.
-->>
-<<-1558	Minimum Numbers of Function Calls to Make Target Array    		62.4%	Medium	->>
-<<-1557	Minimum Number of Vertices to Reach All Nodes    		74.3%	Medium	->>
-<<-1556	Thousand Separator    		58.8%	Easy	->>
-<<-1554	Strings Differ by One Character    		63.1%	Medium	->>
-<<-1553	Minimum Number of Days to Eat N Oranges    		28.6%	Hard	->>
-<<-1552	Magnetic Force Between Two Balls    		48.2%	Medium	->>
-<<-1551	Minimum Operations to Make Array Equal    		77.8%	Medium	->>
-<<-1550	Three Consecutive Odds    		65.9%	Easy	->>
-<<-1548	The Most Similar Path in a Graph    		55.3%	Hard	->>
 <<-1547	Minimum Cost to Cut a Stick    		51.2%	Hard	->>
 <<-1546	Maximum Number of Non-Overlapping Subarrays With Sum Equals Target    		43.5%	Medium	->>
 <<-1545	Find Kth Bit in Nth Binary String    		57.0%	Medium	->>
@@ -3381,7 +3436,6 @@ very easy to make mistakes.
 <<-1466	Reorder Routes to Make All Paths Lead to the City Zero    		61.5%	Medium	->>
 <<-1465	Maximum Area of a Piece of Cake After Horizontal and Vertical Cuts    		31.3%	Medium	->>
 <<-1464	Maximum Product of Two Elements in an Array    		77.0%	Easy	->>
-<<-1463	Cherry Pickup II    		66.2%	Hard	->>
 <<-1462	Course Schedule IV    		43.9%	Medium	->>
 <<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	->>
 <<-1460	Make Two Arrays Equal by Reversing Sub-arrays    		72.5%	Easy	->>
