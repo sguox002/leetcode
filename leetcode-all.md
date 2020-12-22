@@ -29,6 +29,14 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1696. Jump Game Vi.
+given a list of numbers, you are located at element 0. Each time you can jump 1 to k steps. return the max sum you can get from 0 to n-1 element.
+dp[i]=max(dp[i-1]...dp[i-k+1])
+using priority_queue 
+using monotonic deque.
+greedy does not work!!
+->>
+
 <<-1463	Cherry Pickup II    		66.2%	Hard	
 two robots on the top left and top right and each time goes down, leftdiag rightdiag or down. return the max cherrys can pick.
 dp: the two robot status is defined as dp[i,j1,j2] is the layer and j1 and j2 are the column index for robot 1 and robot 2. choose the max from previous layer 9 possible combinations. do not go over board.
@@ -269,6 +277,17 @@ level: 5
 ### greedy
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
+
+<<-908. Smallest range I.
+add x in [-k,k] to each element, find the smallest max-min.
+the max difference is max-min-2*k, when less<0, difference is 0
+->>
+
+<<-910. Smallest Range II
+each element shall add k or -k.
+greedy: left+k and right-k, we need loop over all i. One pass.
+math, greedy
+->>
 
 <<-1551	Minimum Operations to Make Array Equal    		77.8%	Medium	
 given array with a[i]=2*i+1. each time you can choose a pair of index and add 1 to one and -1 to the other. return the min operations to make the array all the same
@@ -550,6 +569,12 @@ need store position and direction also, the visited array.
 ->>
 
 ### union-find
+<<-1697. Checking existence of edge length limited paths
+given a graph with n nodes from 0 to n-1, and a list of edges with length. given a list of query of node i,j and limit distance, check if they are connected using edge <limit.
+sort the edge using length
+sort the query using length
+union find by the limit length in increasing order
+->>
 
 <<-1562	Find Latest Group of Size M    		39.0%	Medium	
 given array of permutation of 1 to n. a binary string of length n. each element means change bit[i] to 1. 
@@ -718,6 +743,13 @@ level: 2
 <<-1634. Add Two Polynomials Represented as Linked Lists
 node has coefficient and power.
 two pointer merge.
+->>
+## sliding window
+sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+
+<<-1695. Maximum Erasure value.
+given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the subarray.
+using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
 ->>
 
 ### array & string
@@ -3004,6 +3036,10 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1694. Reformat phone number.
+get rid of non-digits and then rearrange.
+->>
+
 <<-1550	Three Consecutive Odds    		65.9%	Easy	->>
 
 <<-1556	Thousand Separator    		58.8%	Easy	
