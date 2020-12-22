@@ -29,6 +29,57 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1548	The Most Similar Path in a Graph    		55.3%	Hard	
+n cities and m bidirectional roads. each city has a name with 3 chars. It is a connected graph, ie. from city x you can go to any city y.
+given a target path, find a path of the same length with the min edit distance (number of different chars between two strings). if multiple paths exist, return any of it.
+naive approach: try each node as the start and do dfs for n nodes and compare the edit distance. using memoization
+- backtracking
+- optimize using memoization dp[start][i][j] the min edit distance using the airport start as the ith city. j is dependent on i j=m-1-i, so we only need 2d. But our answer shall be the path.
+use dp[i,j] for the min edit distance using city i as the index j in the target path.
+dp[i,j]=min(dp[k,j-1]+diff) k is the node which i connects.
+note the cost of two path is the number of city which is different name, not the characters!!!
+using prev matrix to record each node's previous index to recover the path.
+- dijkstra: shortest path problem. use the edit distance as the edge weight.
+use forward update.
+add the base dp into pq (min heap)
+add all its child into heap (if can reduce the distance)
+->>
+
+<<-1547	Minimum Cost to Cut a Stick    		51.2%	Hard	
+a wood log labeled 0 to n with n units. 
+given a array of cut positions, you should perform the cut in order, you can change the order of cuts.
+the cost of one cut is the length of the wood. The total cost is the sum of all cut costs.
+n<=10^6, cuts<=100.
+return the min total cost.
+cut at i wood length n, and has two subproblems, one is length i, other is n-i.
+length i and cut positions <i.
+length n-i and cut positions >i.
+pr-pl+dp[pl,cuts[i],l,i]+dp[cuts[i],pr,i,r]
+memoization: 4d dp the memory is too large. but actually we only need pl and pr.
+since the cut will be spearated using this two parameters. still too large.
+- we can add 0 and n to the cut positions so that pl and pr can be directly represented by cut.
+- thus we define dp[i,j] to be: wood from cut[i] to cut[j], cut positions are from i to j.
+note the left and right end cannot serve as a cut position.
+```cpp
+    int minCost(int n, vector<int>& cuts) {
+        cuts.push_back(0);
+        cuts.push_back(n);
+        sort(begin(cuts),end(cuts));
+        int m=cuts.size();
+        vector<vector<int>> dp(m,vector<int>(m,INT_MAX));
+        return helper(0,m-1,cuts,dp);
+    }
+    int helper(int l,int r,vector<int>& cuts,vector<vector<int>>& dp){
+        if(l+1>=r) return 0;
+        if(dp[l][r]<INT_MAX) return dp[l][r];
+        int ans=INT_MAX;
+        for(int i=l+1;i<r;i++){ //cut at cuts[i]
+            ans=min(ans,cuts[r]-cuts[l]+helper(l,i,cuts,dp)+helper(i,r,cuts,dp));
+        }
+        return dp[l][r]=ans;
+    }
+```	
+->>
 <<-1696. Jump Game Vi.
 given a list of numbers, you are located at element 0. Each time you can jump 1 to k steps. return the max sum you can get from 0 to n-1 element.
 dp[i]=max(dp[i-1]...dp[i-k+1])
@@ -3036,6 +3087,9 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1544	Make The String Great    		54.8%	Easy	
+simple stack.
+->>
 <<-1694. Reformat phone number.
 get rid of non-digits and then rearrange.
 ->>
@@ -3384,24 +3438,24 @@ idea: calculate any two pair distance using dp or bellman
 try all combination states (using bitmask) and calculate the distance in the subset (you must use the nodes in the subset). Make sure judge if it is a valid subset (nnode=nedge+1)
 ->>
 
+## intervals
+<<-1546	Maximum Number of Non-Overlapping Subarrays With Sum Equals Target    		43.5%	Medium	
+two problems here:
+- find all subarrays with sum==target, this can be done using hashmap.
+- find the longest non-overlapping intervals. sort by end and connect.
+->>
+
 ## leetcode problem list
 
-
-<<-1548	The Most Similar Path in a Graph    		55.3%	Hard	
-n cities and m bidirectional roads. each city has a name with 3 chars. It is a connected graph, ie. from city x you can go to any city y.
-given a target path, find a path of the same length with the min edit distance (number of different chars between two strings). if multiple paths exist, return any of it.
-naive approach: try each node as the start and do dfs for n nodes and compare the edit distance. using memoization
-- backtracking
-- optimize using memoization dp[start][i][j] the min edit distance using the airport start as the ith city. j is dependent on i j=m-1-i, so we only need 2d. But our answer shall be the path.
-use dp[i,j] for the min edit distance and save the min vector path.
-- dijkstra: shortest path problem. use the edit distance as the edge weight.
-
+<<-1545	Find Kth Bit in Nth Binary String    		57.0%	Medium	
+S1="0"
+Si=Si-1+"1"+reverse(invert(Si-1)) for i>1. 
+find the kth bit in Nth binary string.
+- derive the length: len(i)=2*len(i-1)+1: 1,3,7,15,... 2^(n-1)
+- if it is the mid, left or right, then two subproblem
+recursive approach.
 
 ->>
-<<-1547	Minimum Cost to Cut a Stick    		51.2%	Hard	->>
-<<-1546	Maximum Number of Non-Overlapping Subarrays With Sum Equals Target    		43.5%	Medium	->>
-<<-1545	Find Kth Bit in Nth Binary String    		57.0%	Medium	->>
-<<-1544	Make The String Great    		54.8%	Easy	->>
 <<-1542	Find Longest Awesome Substring    		36.0%	Hard	->>
 <<-1541	Minimum Insertions to Balance a Parentheses String    		41.9%	Medium	->>
 <<-1540	Can Convert String in K Moves    		29.6%	Medium	->>
