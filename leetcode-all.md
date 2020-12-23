@@ -29,6 +29,11 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1504	Count Submatrices With All Ones    		61.5%	Medium	
+dp approach: first round count the number of contiguous 1s along row
+second round, goes up row by row and count the submatrix
+->>
+
 <<-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	
 return %10^9+7.
 
@@ -328,6 +333,18 @@ two options: use j column or not use it.
 ### bitmask dp
 bitmask dp: typical usage the number of elements is very limited and 2^n can fit in a integer.
 
+<<-1494	Parallel Courses II    		31.0%	Hard	
+n courses from 1 to n. given a list of dependency [x,y] means x must be taken before y. You can take at most k courses per semester. 
+return the min number of semesters to taken all courses.
+- one choice may affect further choices, dp + directed graph.
+- source nodes first, after source node is processed, remove them.
+- multiple sources taken k (combination..)
+- next step depends on course taken: bitmask dp.
+dp[status]: min number of semesters for courses taken by status.
+- once a course is taken, all pre shall be cleared already.
+- dp[state|j]=min(dp[state|j],dp[state]+1)
+->>
+
 <<-1595	Minimum Cost to Connect Two Groups of Points    		41.9%	Hard	
 two groups of points with size m and n, m>=n. m<=12.
 connecting to i,j costs cost[i,j]
@@ -354,6 +371,11 @@ level: 5
 ### greedy
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
+
+<<-1503	Last Moment Before All Ants Fall Out of a Plank    		52.6%	Medium	
+ants on different positions, and some goes left and some goes right. Once two ants meet, they change direction. Get the last moment all fell out of the array
+greedy: it is equivalent that they do not change direction. So it is simple to just find the rightmost left direction and leftmost right direction time.
+->>
 
 <<-1509	Minimum Difference Between Largest and Smallest Value in Three Moves    		51.6%	Medium	
 choose most 3 numbers and change to any value. return the smallest difference.
@@ -716,6 +738,16 @@ need store position and direction also, the visited array.
 ->>
 
 ### union-find
+<<-1489	Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree    		52.2%	Hard	
+given a undirected graph with n nodes from 0 to n-1. The graph is given by a list of weighted edges [i,j,w]
+a MST is the connected graph with min total edge weight.
+critical edge: if deleted the MST weight will increase.
+pseudo critical edge: if added no weight changed.
+- calculate the MST weight
+- loop to check remove edge or add edge into MST weight change.
+- union find to construct the MST, greedy choose the edges (sort)
+->>
+
 <<-1697. Checking existence of edge length limited paths
 given a graph with n nodes from 0 to n-1, and a list of edges with length. given a list of query of node i,j and limit distance, check if they are connected using edge <limit.
 sort the edge using length
@@ -775,6 +807,14 @@ subject: tree, stack, OOP, polymorphism
 ### queue & deque
 
 ### heap: priority-queue, set, map
+
+<<-1499	Max Value of Equation    		44.9%	Hard	
+given a list of points on 2d plane, sorted by x. 
+given an integer k, find the max value of yi+yj+|xi-xj| where |xi-xj|<=k.
+- sorted using x, i<j, then yi+yj+xj-xi or xj+yj+yi-xi
+using priority_queue to store y-x and x, pop all those out of k range data.
+->>
+
 <<-162. furthest building you can reach
 problem: using ladder and stones to climb ladders.
 approach:
@@ -783,6 +823,25 @@ approach:
 ->>
 
 ### hashset, hashmap
+<<-1496	Path Crossing    		55.7%	Easy	
+given a string of NSEW,N north, S: south, E: east, W: west. Check if it cross itself. initial at (0,0)
+hashset: each location store as string.
+->>
+
+<<-1500	Design a File Sharing System    		45.1%	Medium	
+file sharing a large file with chunks from 1 to m. 
+when user join the system, a unique id is assigned. when the user leaves, the id can be reused.
+when user request a chunk id, the system shall return a list of user who own the chunk. If user get a non-empty list of users, he is granted the chunk.
+FileSharing(int m)
+join(vector<int> ownedChunk)
+leave(int userID)
+request(userID,chunkID)
+hashmap problem: 
+- userID management: need to delete, add, sorted array find first missing integer. or use used, free. free can use pq or set.
+- chunk vs user ownedChunk, and chunk vs user.
+- note when user request id, then he owns it, we shall update the two hashmaps
+->>
+
 <<-1512	Number of Good Pairs    		88.0%	Easy	
 find pair a[i]==a[j]. classical hashmap.
 ->>
@@ -823,6 +882,23 @@ idea: hashmap to record entry time for each person. Then for each person we chec
 ->>
 
 ### tree
+<<-1485	Clone Binary Tree With Random Pointer    		80.1%	Medium	
+same as graph clone using hashmap + traverse.
+with random pointer. store node vs node in hashmap and then change all pointer's random pointer using the map.
+pay attention to null random pointer (they are not in the map).
+random pointer may forms a cycle, but this way we have no problem.
+->>
+
+<<-1490	Clone N-ary Tree    		83.7%	Medium	
+same as deep copy of graph. dfs
+->>
+
+<<-1506	Find Root of N-Ary Tree    		80.5%	Medium	
+given a list nodes (Node*) find the root.
+using xor: root only appears once, but all other nodes have parents
+using dfs and xor.
+->>
+
 <<-1516	Move Sub-Tree of N-Ary Tree    		62.1%	Hard	
 all nodes have unique values, given two nodes p and q. 
 move p subtree to become a direct child and the last child of node q.
@@ -928,12 +1004,25 @@ two pointer merge.
 ## sliding window
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
+sliding window with at most one 0 inside. record previous 0 position.
+->>
+
 <<-1695. Maximum Erasure value.
 given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the subarray.
 using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
 ->>
 
 ### array & string
+
+<<-1498	Number of Subsequences That Satisfy the Given Sum Condition    		37.9%	Medium	
+given an array of integer, find the number of subsequences such that the min+max<=target.
+- the order does not matter, sort it.
+- each element can be min or max for some subsequences
+- two pointer to get rid of too large elements
+- if left has L elements, then 2^L subsequences using current number as max.
+->>
+
 <<-1508	Range Sum of Sorted Subarray Sums    		63.0%	Medium	
 all subarray's sum and sort in order, give a [l,r] and get the range sum.
 - brutal force using prefix sum. O(N^2)
@@ -1114,6 +1203,11 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-1497	Check If Array Pairs Are Divisible by k    		40.3%	Medium	
+length of the array is even, divide into pairs, so each pair sum is divisible by k.
+hashmap: count remainder's histogram. then use two pointer to check
+->>
+
 <<-1622	Fancy Sequence    		15.8%	Hard	
 append, addAll, multAll, getIndex
 lazy evaluation.
@@ -3233,6 +3327,10 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1491	Average Salary Excluding the Minimum and Maximum Salary    		68.9%	Easy	->>
+
+<<-1502	Can Make Arithmetic Progression From Sequence    		71.2%	Easy	->>
+
 <<-1518	Water Bottles    		61.3%	Easy	
 numExchange of empty bottles for one bottle of water.
 keep track of empty bottles and drink bottles.
@@ -3663,31 +3761,24 @@ reduce the step size by half each iteration.
 math, numerical analysis
 ->>
 
+<<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	
+a string of digits, you are allowed to swap two adjacent digits, at most k operations are allowed. return the min string you can obtain.
+greedy: bubble sort, k>n*(n+1)/2 it is sort. 
+from 0 to 9, find its first index and try to move to top (less equal to k) and leave a subproblem. TLE
+segment tree or binary index tree to reduce to O(nlogn)
+->>
+
+<<-1492	The kth Factor of n    		65.9%	Medium	
+brutal force: save all factors in array
+optimization: counting only, d and n/d two loops, first go up, second go down.
+->>
 
 
 
-
-<<-1507	Reformat Date    		60.1%	Easy	->>
-<<-1506	Find Root of N-Ary Tree    		80.5%	Medium	->>
-<<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	->>
-<<-1504	Count Submatrices With All Ones    		61.5%	Medium	->>
-<<-1503	Last Moment Before All Ants Fall Out of a Plank    		52.6%	Medium	->>
-<<-1502	Can Make Arithmetic Progression From Sequence    		71.2%	Easy	->>
-<<-1500	Design a File Sharing System    		45.1%	Medium	->>
-<<-1499	Max Value of Equation    		44.9%	Hard	->>
-<<-1498	Number of Subsequences That Satisfy the Given Sum Condition    		37.9%	Medium	->>
-<<-1497	Check If Array Pairs Are Divisible by k    		40.3%	Medium	->>
-<<-1496	Path Crossing    		55.7%	Easy	->>
-<<-1494	Parallel Courses II    		31.0%	Hard	->>
-<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	->>
-<<-1492	The kth Factor of n    		65.9%	Medium	->>
-<<-1491	Average Salary Excluding the Minimum and Maximum Salary    		68.9%	Easy	->>
-<<-1490	Clone N-ary Tree    		83.7%	Medium	->>
-<<-1489	Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree    		52.2%	Hard	->>
 <<-1488	Avoid Flood in The City    		24.9%	Medium	->>
 <<-1487	Making File Names Unique    		30.0%	Medium	->>
 <<-1486	XOR Operation in an Array    		84.0%	Easy	->>
-<<-1485	Clone Binary Tree With Random Pointer    		80.1%	Medium	->>
+
 <<-1483	Kth Ancestor of a Tree Node    		29.5%	Hard	->>
 <<-1482	Minimum Number of Days to Make m Bouquets    		48.8%	Medium	->>
 <<-1481	Least Number of Unique Integers after K Removals    		55.2%	Medium	->>
