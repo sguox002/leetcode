@@ -3514,7 +3514,6 @@ using merge sort with two pointer. wait until we see identical number. choose th
 
 ## leetcode problem list
 
-
 <<-1534	Count Good Triplets    		79.9%	Easy	
 i<j<k and |A[i]-A[j]|<=a, |A[j]-A[k]|<=b and |A[i]-A[k]|<=c
 brutal force, with some optimizations to reduce loops. each loop satisfy one condition.
