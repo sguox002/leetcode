@@ -29,6 +29,14 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1542	Find Longest Awesome Substring    		36.0%	Hard	
+find longest subarray which can swap to a palindrome.
+we only need to know the number of even and odd. a palindrome only allows <=1 odd chars. using bitmask xor, even will get 0, odd will get 1.
+- all even, i-dp[mask]
+- one odd: i-dp[mask^(1<<j)]
+hashmap, odd even xor, dp
+->>
+
 <<-1548	The Most Similar Path in a Graph    		55.3%	Hard	
 n cities and m bidirectional roads. each city has a name with 3 chars. It is a connected graph, ie. from city x you can go to any city y.
 given a target path, find a path of the same length with the min edit distance (number of different chars between two strings). if multiple paths exist, return any of it.
@@ -328,7 +336,43 @@ level: 5
 ### greedy
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
+<<-1536	Minimum Swaps to Arrange a Binary Grid    		42.8%	Medium	
+given a nxn matrix, swap rows to make the cells above main diagonal cells to be all 0. return the min swaps (only neighboring rows can swap), or -1 if not possible.
+count trailing zeros for each row, and reduce to 1d problem, bubble sort.
+greedy: move the FIRST row satisfying to current top row.
+->>
+<<-1538	Guess the Majority in a Hidden Array    		61.3%	Medium	
+given 01 array without direct access.
+a=query(a,b,c,d) 4 different indices, and:
+a=4: all the elements are the same
+a=2: three elements are the same
+a=0: two elements are the same.
+return any index of the most frequency value in the array.  tie, return -1.
+at most 2*len calls can be made.
+greedy: cnt0,cnt1 or cnt1,cnt0, then we conclude which is the majority.
+[0,0,1,0,1,1,1,1]
+first query(0,1,2,3)=2
+second query(4,5,6,7)=4
+The idea is we do not need to know 0 or 1, but classified into two cnt0 and cnt1. 
+q(0,1,2,3)=3
+q(0,1,2,4)=0 ->remove 3 and add 4 causing cnt0-- and cnt1++, which means bit[3]!=bit[4] using this we can classified 3 to n-1 into two baskets.
+to determine 0,1,2,3 we query 0,2,3,4,[0,1,3,4],[1,2,3,4]
+->>
 
+<<-1541	Minimum Insertions to Balance a Parentheses String    		41.9%	Medium	
+one left parenthesis with two right parenthesis calls balance.
+just a variation of normal balance using counting.
+- left +2, right -1
+- prefix >=0
+- see a left, the prefix shall be even.
+greedy.
+->>
+<<-1540	Can Convert String in K Moves    		29.6%	Medium	
+convert s to t using [1,k] moves, the ith move:
+- choose any index not used before, shift the char by i times (circular)
+check if it is possible.
+greedy: compare when char is not the same, we need shift to t[i]. if used before we need add 26 to it and check if it is >k.
+->>
 <<-908. Smallest range I.
 add x in [-k,k] to each element, find the smallest max-min.
 the max difference is max-min-2*k, when less<0, difference is 0
@@ -514,6 +558,10 @@ level: 3
 ->>
 
 ### binary search
+<<-1539	Kth Missing Positive Number    		53.4%	Easy	
+positive array in strictly increasing order. find the kth missing integer.
+binary search: using arr[i]-i+1, right biased.
+->>
 
 <<-1552	Magnetic Force Between Two Balls    		48.2%	Medium	
 n baskets at different positions on a line. magnetic force is |p0-p1|. given m balls, return the max of the min magnetic force.
@@ -3347,7 +3395,7 @@ two players by turn color nodes in different color. You can only color the child
 you only have 3 options: parent, left or right child. and count the nodes.
 ->>
 
-<<-1535. Find he winner of an array game
+<<-1535. Find the winner of an array game
 a array of unique integer and k. compare the first two elements, leave the larger one and move the smaller to the end. game ends when an integer wins k consecutive times.
 do not need to move the end, but move the larger one to current position and count its winning times.
 ->>
@@ -3445,8 +3493,7 @@ two problems here:
 - find the longest non-overlapping intervals. sort by end and connect.
 ->>
 
-## leetcode problem list
-
+## recursive
 <<-1545	Find Kth Bit in Nth Binary String    		57.0%	Medium	
 S1="0"
 Si=Si-1+"1"+reverse(invert(Si-1)) for i>1. 
@@ -3454,17 +3501,24 @@ find the kth bit in Nth binary string.
 - derive the length: len(i)=2*len(i-1)+1: 1,3,7,15,... 2^(n-1)
 - if it is the mid, left or right, then two subproblem
 recursive approach.
-
 ->>
-<<-1542	Find Longest Awesome Substring    		36.0%	Hard	->>
-<<-1541	Minimum Insertions to Balance a Parentheses String    		41.9%	Medium	->>
-<<-1540	Can Convert String in K Moves    		29.6%	Medium	->>
-<<-1539	Kth Missing Positive Number    		53.4%	Easy	->>
-<<-1538	Guess the Majority in a Hidden Array    		61.3%	Medium	->>
-<<-1537	Get the Maximum Score    		36.1%	Hard	->>
-<<-1536	Minimum Swaps to Arrange a Binary Grid    		42.8%	Medium	->>
-<<-1535	Find the Winner of an Array Game    		46.9%	Medium	->>
-<<-1534	Count Good Triplets    		79.9%	Easy	->>
+
+## two pointer
+<<-1537	Get the Maximum Score    		36.1%	Hard	
+two sorted array, a valid path (at the same value you can switch to the other array) return the max path sum.
+- path can begin from nums1 or nums2, end at nums1 or nums2.
+- choose the max sum branch.
+- need to find the common segments.
+using merge sort with two pointer. wait until we see identical number. choose the previous max.
+->>
+
+## leetcode problem list
+
+
+<<-1534	Count Good Triplets    		79.9%	Easy	
+i<j<k and |A[i]-A[j]|<=a, |A[j]-A[k]|<=b and |A[i]-A[k]|<=c
+brutal force, with some optimizations to reduce loops. each loop satisfy one condition.
+->>
 <<-1533	Find the Index of the Large Integer    		55.1%	Medium	->>
 <<-1531	String Compression II    		32.2%	Hard	->>
 <<-1530	Number of Good Leaf Nodes Pairs    		55.2%	Medium	->>
