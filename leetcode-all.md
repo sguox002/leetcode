@@ -29,6 +29,24 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	
+return %10^9+7.
+
+dp: 
+if current number is odd, then odd[i]=1+even[i-1], even[i]=odd[i-1]
+if current number is even then even[i]=1+even[i-1], odd[i]=odd[i-1]
+odd[i]: number of subarrays ending with element A[i]
+even[i]: number of subarrays ending with element A[i]
+->>
+
+<<-1531	String Compression II    		32.2%	Hard	
+running length compression.
+given string s and number k, you need delete at most k characters such that run length compression is minimized.
+- we shall build the RLE string on the fly. keeping the original string unchanged.
+- greedy: we keep the most frequent char in range [start,n-1] and delete all other chars. ie. making a range the same chars.
+- dp[start,k] subproblem: from start to j (j from start to n) only keep the most frequent chars.
+->>
+
 <<-1542	Find Longest Awesome Substring    		36.0%	Hard	
 find longest subarray which can swap to a palindrome.
 we only need to know the number of even and odd. a palindrome only allows <=1 odd chars. using bitmask xor, even will get 0, odd will get 1.
@@ -336,6 +354,29 @@ level: 5
 ### greedy
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
+
+<<-1509	Minimum Difference Between Largest and Smallest Value in Three Moves    		51.6%	Medium	
+choose most 3 numbers and change to any value. return the smallest difference.
+greedy: 1. similar to 1423, max point from cards. change the left or right side
+greedy 2: using sliding window with window size=n-3 and find the min.
+->>
+<<-1526	Minimum Number of Increments on Subarrays to Form a Target Array    		59.3%	Hard	
+intial all zero, you can choose any subarray and increase each element in it by one. 
+return the min steps to reach target array.
+A[0]>A[1] for example [3,2]->[2,2]->[1,1]->[0,0]
+A[0]<A[1] for example [3,4]->[2,3]->[1,2]->[0,1]->[0,0]
+bring A[0] down and its right smaller can be reused.
+its right bigger, we need add the difference.
+greedy or segment tree.
+->>
+
+<<-1529	Bulb Switcher IV    		70.7%	Medium	
+flip[i] will flip all lights from i to end. To reach a given target status, return min number of flips.
+Initial all off.
+from left to right, if A[i] is 0, then we know it is even, else it is odd. （偶消奇不消）
+greedy: from left to right, if A[i]=0, and the prefix sum is odd, we need add one here. If A[i]=1 and prefix sum is even we need add one.
+->>
+
 <<-1536	Minimum Swaps to Arrange a Binary Grid    		42.8%	Medium	
 given a nxn matrix, swap rows to make the cells above main diagonal cells to be all 0. return the min swaps (only neighboring rows can swap), or -1 if not possible.
 count trailing zeros for each row, and reduce to 1d problem, bubble sort.
@@ -558,6 +599,13 @@ level: 3
 ->>
 
 ### binary search
+
+<<-1533	Find the Index of the Large Integer    		55.1%	Medium	
+array has only one number larger than the rest, the other are equal, no direct access to the array
+compare(l,r,x,y) will compare the sum for [l,r] and [x,y]. find the index.
+binary search: make sure the two range has equal length. odd length, even length
+->>
+
 <<-1539	Kth Missing Positive Number    		53.4%	Easy	
 positive array in strictly increasing order. find the kth missing integer.
 binary search: using arr[i]-i+1, right biased.
@@ -735,7 +783,16 @@ approach:
 ->>
 
 ### hashset, hashmap
+<<-1512	Number of Good Pairs    		88.0%	Easy	
+find pair a[i]==a[j]. classical hashmap.
+->>
 
+<<-1525	Number of Good Ways to Split a String    		67.2%	Medium	
+split is good if the two parts have the same number of distinct letters
+return the number of good splits.
+know the number of unique letters, and counting left side unique letters and derive if it is good.
+hashmap.
+->>
 
 <<-1577	Number of Ways Where Square of Number Is Equal to Product of Two Numbers    		37.0%	Medium	
 given two integer arrays nums1,nums2. return number of triplets if:
@@ -766,6 +823,31 @@ idea: hashmap to record entry time for each person. Then for each person we chec
 ->>
 
 ### tree
+<<-1516	Move Sub-Tree of N-Ary Tree    		62.1%	Hard	
+all nodes have unique values, given two nodes p and q. 
+move p subtree to become a direct child and the last child of node q.
+???
+->>
+
+<<-1519	Number of Nodes in the Sub-Tree With the Same Label    		36.2%	Medium	
+a tree with n nodes from 0 to n-1, 0 as the root. each node has a char label.
+The tree is given by list of edges.
+return number of nodes with the same label as node i in the subtree of node i.
+- adjacency matrix
+- postorder (n-ary tree) return the hashmap （using vector of 26)
+->>
+
+<<-1522	Diameter of N-Ary Tree    		68.5%	Medium	
+diameter: longest path among any two nodes.
+postorder traversal: get the child max depth and 2nd max depth, add them and compare with global diameter
+->>
+
+<<-1530	Number of Good Leaf Nodes Pairs    		55.2%	Medium	
+given a tree and a distance limit. A good pair leaf their distance <=limit.
+leaf distance: must through the root (recursively). so get the left leaf depth and right leaf depth
+and find combinations
+->>
+
 <<-1572	Matrix Diagonal Sum    		78.3%	Easy	->>
 <<-1586	Binary Search Tree Iterator II    		65.6%	Medium	
 this we need add prev and hasPrev.
@@ -852,6 +934,22 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 ->>
 
 ### array & string
+<<-1508	Range Sum of Sorted Subarray Sums    		63.0%	Medium	
+all subarray's sum and sort in order, give a [l,r] and get the range sum.
+- brutal force using prefix sum. O(N^2)
+- min heap: 
+for example [1,2,3] we can get 3 arrays:
+[1],[1,2],[1,2,3]-->[1,3,6]
+[2],[2,3]->[2,5]
+[3]->[3]
+then use k-list merge sort.
+->>
+
+<<-1513	Number of Substrings With Only 1s    		40.9%	Medium	
+given a binary string, return the number of substrings of all 1s.
+count the number of subarrays ending with current 1. 1+2+3+4+...+len.
+->>
+
 <<-1554	Strings Differ by One Character    		63.1%	Medium	
 a list of words with same length, return if there are two strings differ by 1 char at the same index. need O(nm).
 rolling hash: for each column, we ignore the column and calculate the hash value and store in hashmap, if we see it then we found one. rolling hash is faster than string.
@@ -3135,6 +3233,15 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1518	Water Bottles    		61.3%	Easy	
+numExchange of empty bottles for one bottle of water.
+keep track of empty bottles and drink bottles.
+
+->>
+<<-1523	Count Odd Numbers in an Interval Range    		55.3%	Easy	->>
+
+<<-1528	Shuffle String    		85.8%	Easy	->>
+
 <<-1544	Make The String Great    		54.8%	Easy	
 simple stack.
 ->>
@@ -3228,6 +3335,10 @@ NP-hard: non-deterministic polynomial time hardness.
 
 some games especially zero-sum game
 
+<<-1510	Stone Game IV    		58.5%	Hard	
+A and B by turn take a nonzero square number of stones, if one cannot make a move, lose.
+dp: dp[i]=1 if dp[i-j*j]=0
+->>
 
 <<-679	24 Game    		47.0%	Hard	
 we have 4 digits, using +-*/() to get value of 24.
@@ -3458,6 +3569,14 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 - use ladder first, when ladder is used up, replace a ladder with min bricks needed.
 ->>
 ## graph
+
+<<-1514	Path with Maximum Probability    		38.5%	Medium	
+given an undirected weighted graph of n nodes from 0 to n-1. The graph is given by a list of edges, edge weight is the probability. Given two nodes start and end, find the path with max probability.
+Bellman-ford will TLE
+dijkstra: pq store the possibility and start node, choose the max node and check all its neighbors:
+if the neighbor used can increase its probability, then we update and add this node into pq.
+->>
+
 <<-1557	Minimum Number of Vertices to Reach All Nodes    		74.3%	Medium	
 greedy: only source nodes are not reachable
 ->>
@@ -3487,6 +3606,15 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-1520	Maximum Number of Non-Overlapping Substrings    		34.8%	Hard	
+if the substring contains c, it must contain all occurences of c.
+if there are multiple answers, return the one with min total length.
+- find each char's first and last index.
+- extend range using inside chars.
+- sort intervals and get the max non-overlapping substrings. always uses smaller segment first.
+Very hard.
+->>
+
 <<-1546	Maximum Number of Non-Overlapping Subarrays With Sum Equals Target    		43.5%	Medium	
 two problems here:
 - find all subarrays with sum==target, this can be done using hashmap.
@@ -3512,34 +3640,33 @@ two sorted array, a valid path (at the same value you can switch to the other ar
 using merge sort with two pointer. wait until we see identical number. choose the previous max.
 ->>
 
+## bit manipulation
+<<-1521	Find a Value of a Mysterious Function Closest to Target    		43.7%	Hard	
+func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to target.
+- bit and will get decreased result, never goes up.
+- AND_VAL[i,j]=A[i] & AND_VAL(i+1,j-1] starting at ith element with length j.
+- do it from right to left.
+- limited number of AND_VAL using hashset to eliminate duplicates.
+->>
+
 ## leetcode problem list
 
 <<-1534	Count Good Triplets    		79.9%	Easy	
 i<j<k and |A[i]-A[j]|<=a, |A[j]-A[k]|<=b and |A[i]-A[k]|<=c
 brutal force, with some optimizations to reduce loops. each loop satisfy one condition.
 ->>
-<<-1533	Find the Index of the Large Integer    		55.1%	Medium	->>
-<<-1531	String Compression II    		32.2%	Hard	->>
-<<-1530	Number of Good Leaf Nodes Pairs    		55.2%	Medium	->>
-<<-1529	Bulb Switcher IV    		70.7%	Medium	->>
-<<-1528	Shuffle String    		85.8%	Easy	->>
-<<-1526	Minimum Number of Increments on Subarrays to Form a Target Array    		59.3%	Hard	->>
-<<-1525	Number of Good Ways to Split a String    		67.2%	Medium	->>
-<<-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	->>
-<<-1523	Count Odd Numbers in an Interval Range    		55.3%	Easy	->>
-<<-1522	Diameter of N-Ary Tree    		68.5%	Medium	->>
-<<-1521	Find a Value of a Mysterious Function Closest to Target    		43.7%	Hard	->>
-<<-1520	Maximum Number of Non-Overlapping Substrings    		34.8%	Hard	->>
-<<-1519	Number of Nodes in the Sub-Tree With the Same Label    		36.2%	Medium	->>
-<<-1518	Water Bottles    		61.3%	Easy	->>
-<<-1516	Move Sub-Tree of N-Ary Tree    		62.1%	Hard	->>
-<<-1515	Best Position for a Service Centre    		36.5%	Hard	->>
-<<-1514	Path with Maximum Probability    		38.5%	Medium	->>
-<<-1513	Number of Substrings With Only 1s    		40.9%	Medium	->>
-<<-1512	Number of Good Pairs    		88.0%	Easy	->>
-<<-1510	Stone Game IV    		58.5%	Hard	->>
-<<-1509	Minimum Difference Between Largest and Smallest Value in Three Moves    		51.6%	Medium	->>
-<<-1508	Range Sum of Sorted Subarray Sums    		63.0%	Medium	->>
+
+<<-1515	Best Position for a Service Centre    		36.5%	Hard	
+given a list of points on 2d grids, find the location so that the sum of distance to these points is minimzed.
+start with an initial location and dx,dy, try to go the 4 direction and see which direction to go.
+reduce the step size by half each iteration.
+math, numerical analysis
+->>
+
+
+
+
+
 <<-1507	Reformat Date    		60.1%	Easy	->>
 <<-1506	Find Root of N-Ary Tree    		80.5%	Medium	->>
 <<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	->>
