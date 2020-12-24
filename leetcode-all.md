@@ -827,6 +827,20 @@ approach:
 given a string of NSEW,N north, S: south, E: east, W: west. Check if it cross itself. initial at (0,0)
 hashset: each location store as string.
 ->>
+<<-1487	Making File Names Unique    		30.0%	Medium	
+create file, if the file name is seen add suffix (i) i the smallest positive integer not used.
+hashmap: record the file name and its suffix number. if it is 0, there is no suffix. maintain a list
+->>
+<<-1488	Avoid Flood in The City    		24.9%	Medium	
+rains[i] means it will rain on ith lake. if the lake is empty, it will full. otherwise it will flood.
+rains[i]=0 means no rain, >0 mean there is rain.
+when rain[i]==0 you can choose to dry a lake. ans[i] is the lake you choose to dry.
+rain[i]>0 then ans[i]=-1. You cannot do anything.
+if impossible to avoid flood, return empty array.
+greedy approach: [1,2,0,0,2,1] you need to dry 2 and 1 in the two sunny days. we record the full lakes in hashmap, and when we see a rain again on the lake, we check if there is a sunny day after it.
+- using hashmap to record lakes to be rained and non-rainned lake
+- using binary search to find the last index >= rainny day.
+->>
 
 <<-1500	Design a File Sharing System    		45.1%	Medium	
 file sharing a large file with chunks from 1 to m. 
@@ -3739,6 +3753,12 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+<<-1486	XOR Operation in an Array    		84.0%	Easy	
+bums[i]=start+2*i, return xor of the array.
+- brutal force O(n)
+- optimization O(1): forget the start, if the length is even, the LSB is 0 otherwise, LSB is 1 and then we right shift one bit. (start+2*i)^(start+2*i+2)
+->>
+
 <<-1521	Find a Value of a Mysterious Function Closest to Target    		43.7%	Hard	
 func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to target.
 - bit and will get decreased result, never goes up.
@@ -3773,13 +3793,12 @@ brutal force: save all factors in array
 optimization: counting only, d and n/d two loops, first go up, second go down.
 ->>
 
+<<-1483	Kth Ancestor of a Tree Node    		29.5%	Hard	
+a tree wit n nodes from 0 to n-1. Each node is given the parent node. root is 0.
+query the node's kth ancestor.
+- dfs will TLE.
 
-
-<<-1488	Avoid Flood in The City    		24.9%	Medium	->>
-<<-1487	Making File Names Unique    		30.0%	Medium	->>
-<<-1486	XOR Operation in an Array    		84.0%	Easy	->>
-
-<<-1483	Kth Ancestor of a Tree Node    		29.5%	Hard	->>
+->>
 <<-1482	Minimum Number of Days to Make m Bouquets    		48.8%	Medium	->>
 <<-1481	Least Number of Unique Integers after K Removals    		55.2%	Medium	->>
 <<-1480	Running Sum of 1d Array    		89.7%	Easy	->>
