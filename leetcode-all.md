@@ -29,6 +29,42 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1473	Paint House III    		48.7%	Hard	
+given m houses and to be colored with n colors from 1 to n. If the house is already colored, then you cannot paint again.
+house[i]=0 not colored, >0 is the color.
+cost[m,n] the matrix for color house i using color j+1
+given a target, return the min cost to paint the houses into target neighboring groups (neighboring groups are same colored neighbors).
+dp, top down is easier:
+dp[m,n,target] represent the min cost to paint m houses n colors with target groups.
+if current colored, we update the group number
+if not colored, we try all different color, and solve the subproblem
+->>
+
+<<-1478	Allocate Mailboxes    		55.1%	Hard	
+n houses on a street, place k mailboxes. return the min total distance.
+base case: 
+- 1 mailbox, two houses, anywhere between.
+- 1 mailbox, multiple houses, median position.
+dp[i,k]: i houses, k mailboxes.
+- if k==n, then each house has one mailbox, total distance is 0
+- ith house can belong to previous group dp[j,k] or start a new group dp[i-1,k-1]
+- calculate group total distance would be two pointer two end distance.
+->>
+
+<<-1483	Kth Ancestor of a Tree Node    		29.5%	Hard	
+a tree wit n nodes from 0 to n-1. Each node is given the parent node. root is 0.
+query the node's kth ancestor.
+- dfs will TLE.
+just similar to super power, we need use some trick called binary lifting.
+The idea is:
+dp[i][node]=dp[i-1][dp[i-1][node]], node's 2^i parent = node's 2^(i-1) parent of node's 2^(i-1) parent. 2^i=2^(i-1)*2^(i-1), kind of binary representation.
+dp[i,node] represents the 2^i parent of node.
+we store the parent for each node's parent 2^0 parent->2^1 parent->2^2 parent->..... up to log2（N）
+
+when search for kth parent:
+for example k=5 (0b101), we first get 2^0's parent, and then get parent's 2^2 parent and that is it!
+->>
+
 <<-1504	Count Submatrices With All Ones    		61.5%	Medium	
 dp approach: first round count the number of contiguous 1s along row
 second round, goes up row by row and count the submatrix
@@ -372,6 +408,10 @@ level: 5
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
 
+<<-1481	Least Number of Unique Integers after K Removals    		55.2%	Medium	
+greedy: using hashmap to record the histogram. and the sort according to the count, remove those smallest first.
+->>
+
 <<-1503	Last Moment Before All Ants Fall Out of a Plank    		52.6%	Medium	
 ants on different positions, and some goes left and some goes right. Once two ants meet, they change direction. Get the last moment all fell out of the array
 greedy: it is equivalent that they do not change direction. So it is simple to just find the rightmost left direction and leftmost right direction time.
@@ -621,6 +661,10 @@ level: 3
 ->>
 
 ### binary search
+<<-1482	Minimum Number of Days to Make m Bouquets    		48.8%	Medium	
+n flowers and given bloomday, to make one bouquests, you need k adjacent flowers. we need make m bounquest, find the earliest day
+-binary search.
+->>
 
 <<-1533	Find the Index of the Large Integer    		55.1%	Medium	
 array has only one number larger than the rest, the other are equal, no direct access to the array
@@ -673,6 +717,17 @@ level: 5
 backtracking problem generally finds all sets required. It can also be used for counting.
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
+
+<<-1467	Probability of a Two Boxes Having The Same Number of Distinct Balls    		61.3%	Hard	
+given 2n balls with k colors. two boxes, each box put n balls. Two boxes are consider different. The balls are shuffled uniformly. calculate the probability that the two boxes has the same number of distinct balls.
+This is a permutation problem.
+- before that we need to know the permutation with duplicates n!/(A1!*....*An!)
+- then we only need to count the number of permutation with equal distinct color, which can be obtained using backtracking.
+- backtracking is combination approach, after we get a valid combination we need to get the permutation
+- backtracking for length n array would be (A+1)^n.
+- use double for factorial.
+->>
+
 <<-1593	Split a String Into the Max Number of Unique Substrings    		46.7%	Medium	
 backtracking using hashset.
 take from one char to the whole string and leave a subproblem.
@@ -788,6 +843,13 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 ## data structure focused problems
 
 ### stack
+<<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	
+if you buy prices[i] you can get discount at price[j] where j>i and prices[j]<prices[i], j shall be minimized.
+
+stack: find next smaller.
+
+->>
+
 <<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	
 expression tree: leaf nodes are numbers, inner nodes are +-*/.
 infix expression: in order traversal of the binary tree
@@ -823,6 +885,15 @@ approach:
 ->>
 
 ### hashset, hashmap
+
+<<-1477	Find Two Non-overlapping Sub-arrays Each With Target Sum    		33.4%	Medium	
+minimze the sum of two subarray length.
+- how to find subarray with sum==target, using hashmap.
+- get the intervals, and find the min total sum of two non-overlapped region
+or we don't need to save the intervals, but keep the current index in the hashmap.
+use prefix and suffix to find the region from left and right and then get the  min
+->>
+
 <<-1496	Path Crossing    		55.7%	Easy	
 given a string of NSEW,N north, S: south, E: east, W: west. Check if it cross itself. initial at (0,0)
 hashset: each location store as string.
@@ -896,6 +967,10 @@ idea: hashmap to record entry time for each person. Then for each person we chec
 ->>
 
 ### tree
+<<-1469	Find All The Lonely Nodes    		80.8%	Easy	
+parent has only one child, the child is lonely node, dfs.
+->>
+
 <<-1485	Clone Binary Tree With Random Pointer    		80.1%	Medium	
 same as graph clone using hashmap + traverse.
 with random pointer. store node vs node in hashmap and then change all pointer's random pointer using the map.
@@ -1005,6 +1080,8 @@ segment tree
 ->>
 
 ### linked list
+<<-1474	Delete N Nodes After M Nodes of a Linked List    		74.4%	Easy	->>
+
 <<-1669 Merge in between linked list
 problem: remove a range of nodes from list1 and replace with list2
 subject: linked list
@@ -1027,7 +1104,18 @@ given an array of positive numbers, erase a subarray containing unique elements.
 using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
 ->>
 
+
+
+### sort
+<<-1471	The k Strongest Values in an Array    		58.3%	Medium	
+sort using lambda function with a parameter or customized compare function
+->>
+
 ### array & string
+
+<<-1472	Design Browser History    		68.8%	Medium	
+easy array problem.
+->>
 
 <<-1498	Number of Subsequences That Satisfy the Given Sum Condition    		37.9%	Medium	
 given an array of integer, find the number of subsequences such that the min+max<=target.
@@ -1217,6 +1305,11 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+
+<<-1465	Maximum Area of a Piece of Cake After Horizontal and Vertical Cuts    		31.3%	Medium	
+simple math, find the minw and minh and get the product.
+->>
+
 <<-1497	Check If Array Pairs Are Divisible by k    		40.3%	Medium	
 length of the array is even, divide into pairs, so each pair sum is divisible by k.
 hashmap: count remainder's histogram. then use two pointer to check
@@ -3341,6 +3434,10 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1470	Shuffle the Array    		88.5%	Easy	->>
+<<-1476	Subrectangle Queries    		89.0%	Medium	->>
+<<-1480	Running Sum of 1d Array    		89.7%	Easy	->>
+
 <<-1491	Average Salary Excluding the Minimum and Maximum Salary    		68.9%	Easy	->>
 
 <<-1502	Can Make Arithmetic Progression From Sequence    		71.2%	Easy	->>
@@ -3682,6 +3779,14 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 ## graph
 
+<<-1466	Reorder Routes to Make All Paths Lead to the City Zero    		61.5%	Medium	
+given n cities from 0 to n-1 forming a tree with root 0. 
+and the tree is given by a list of directional edges. 
+Now we want to reorient the edges and so that each city can go to city 0.
+return the min number of edges to be changed.
+adjacency matrix record the edge information. and then do a dfs on incoming edge from root. record the missing edges.
+->>
+
 <<-1514	Path with Maximum Probability    		38.5%	Medium	
 given an undirected weighted graph of n nodes from 0 to n-1. The graph is given by a list of edges, edge weight is the probability. Given two nodes start and end, find the path with max probability.
 Bellman-ford will TLE
@@ -3793,28 +3898,7 @@ brutal force: save all factors in array
 optimization: counting only, d and n/d two loops, first go up, second go down.
 ->>
 
-<<-1483	Kth Ancestor of a Tree Node    		29.5%	Hard	
-a tree wit n nodes from 0 to n-1. Each node is given the parent node. root is 0.
-query the node's kth ancestor.
-- dfs will TLE.
 
-->>
-<<-1482	Minimum Number of Days to Make m Bouquets    		48.8%	Medium	->>
-<<-1481	Least Number of Unique Integers after K Removals    		55.2%	Medium	->>
-<<-1480	Running Sum of 1d Array    		89.7%	Easy	->>
-<<-1478	Allocate Mailboxes    		55.1%	Hard	->>
-<<-1477	Find Two Non-overlapping Sub-arrays Each With Target Sum    		33.4%	Medium	->>
-<<-1476	Subrectangle Queries    		89.0%	Medium	->>
-<<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	->>
-<<-1474	Delete N Nodes After M Nodes of a Linked List    		74.4%	Easy	->>
-<<-1473	Paint House III    		48.7%	Hard	->>
-<<-1472	Design Browser History    		68.8%	Medium	->>
-<<-1471	The k Strongest Values in an Array    		58.3%	Medium	->>
-<<-1470	Shuffle the Array    		88.5%	Easy	->>
-<<-1469	Find All The Lonely Nodes    		80.8%	Easy	->>
-<<-1467	Probability of a Two Boxes Having The Same Number of Distinct Balls    		61.3%	Hard	->>
-<<-1466	Reorder Routes to Make All Paths Lead to the City Zero    		61.5%	Medium	->>
-<<-1465	Maximum Area of a Piece of Cake After Horizontal and Vertical Cuts    		31.3%	Medium	->>
 <<-1464	Maximum Product of Two Elements in an Array    		77.0%	Easy	->>
 <<-1462	Course Schedule IV    		43.9%	Medium	->>
 <<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	->>

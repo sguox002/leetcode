@@ -3796,11 +3796,11 @@ finally the correct code:
 	
 ## biweek 28-1475
 ### 1475. Final Prices With a Special Discount in a Shop
-
+<em>
 Given the array prices where prices[i] is the price of the ith item in a shop. There is a special discount for items in the shop, if you buy the ith item, then you will receive a discount equivalent to prices[j] where j is the minimum index such that j > i and prices[j] <= prices[i], otherwise, you will not receive any discount at all.
 
 Return an array where the ith element is the final price you will pay for the ith item of the shop considering the special discount.
-
+</em>
 - brutal force O(N^2)
 - stack: find next smaller- O(N)
 
@@ -3821,8 +3821,8 @@ Return an array where the ith element is the final price you will pay for the it
 	```
 	
 ### 1476. Subrectangle Queries
-
-mplement the class SubrectangleQueries which receives a rows x cols rectangle as a matrix of integers in the constructor and supports two methods:
+<em>
+Implement the class SubrectangleQueries which receives a rows x cols rectangle as a matrix of integers in the constructor and supports two methods:
 
 1. updateSubrectangle(int row1, int col1, int row2, int col2, int newValue)
 
@@ -3830,6 +3830,7 @@ Updates all values with newValue in the subrectangle whose upper left coordinate
 2. getValue(int row, int col)
 
 Returns the current value of the coordinate (row,col) from the rectangle
+</em>
 
 - brutal force:
 ```cpp
@@ -3852,12 +3853,13 @@ Returns the current value of the coordinate (row,col) from the rectangle
 or we can record the updates and then start from newest to oldest updates and see what region is in.
 
 ### 1477. Find Two Non-overlapping Sub-arrays Each With Target Sum
-
+<em>
 Given an array of integers arr and an integer target.
 
 You have to find two non-overlapping sub-arrays of arr each with sum equal target. There can be multiple answers so you have to find an answer where the sum of the lengths of the two sub-arrays is minimum.
 
 Return the minimum sum of the lengths of the two required sub-arrays, or return -1 if you cannot find such two sub-arrays
+</em>
 
 this is two subproblem: find subarray sum=target sum and two non-overlapped region with sum of length minimized.
 
@@ -3903,12 +3905,13 @@ a little bit similar to dp.
 
 
 ### 1478. Allocate Mailboxes
-
+<em>
 Given the array houses and an integer k. where houses[i] is the location of the ith house along a street, your task is to allocate k mailboxes in the street.
 
 Return the minimum total distance between each house and its nearest mailbox.
 
 The answer is guaranteed to fit in a 32-bit signed integer.	
+</em>
 
 dp: dp[i,k] for i houses with k mailboxes
 k=1 is the base case
