@@ -29,6 +29,45 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+<<-1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	
+a rect with m x n. 'A' indicates an apple. '.' means empty. given a integer k, you can cut it into k pieces using k-1 cuts.
+each cut you can choose horizontal or vertical. If you choose vertical, give the left part to a person. if you cut horizontally, give the upper part to a person. return the number of ways such that each piece contains at least one apple.
+- dp, each step we have two options.
+- ith cut we shall make sure the left has at least one apple, and remaining k-i apples. for vertical similar.
+- dp[k,i,j] kth cut and cut at i,j. using simple dp to get the postfix sum at each position.
+- then backtracking with two options using memoization.
+->>
+
+<<-1449	Form Largest Integer With Digits That Add up to Target    		43.1%	Hard	
+cost to paint 1 to 9 are given. Return the largest number given the target cost. (exact cost)
+if there is no way, return "0".
+- number of digits prefer the digit. (longer length larger number)
+- after length is fixed, find number of each digit.
+- knapsack with repetition, the number never changes, but the target gets smaller when we make a choice. 1d knapsack.
+```cpp
+string dp[5001] = {};
+string largestNumber(vector<int>& cost, int t) {
+    if (t <= 0)
+        return t == 0 ? "" : "0";
+    if (dp[t].empty()) {
+        dp[t] = "0";
+        for (int n = 1; n <= 9; ++n) {
+            auto res = largestNumber(cost, t - cost[n - 1]);
+            if (res != "0" && res.size() + 1 >= dp[t].size())
+                dp[t] = to_string(n) + res;
+        }
+    }
+    return dp[t];
+}
+```
+loop from 1 to 9 we prefer larger number with same size.
+->>
+
+<<-1458	Max Dot Product of Two Subsequences    		42.5%	Hard	
+dp[i,j] represent the max dot product of A with length i and B with length j.
+dp[i,j]=max(dp[i-1,j],dp[i,j-1],A[i-1]*B[j-1]+dp[i-1,j-1])
+->>
+
 <<-1473	Paint House III    		48.7%	Hard	
 given m houses and to be colored with n colors from 1 to n. If the house is already colored, then you cannot paint again.
 house[i]=0 not colored, >0 is the color.
@@ -147,6 +186,15 @@ note the left and right end cannot serve as a cut position.
     }
 ```	
 ->>
+
+<<-1425	Constrained Subsequence Sum    		44.6%	Hard	
+given a integer array nums, and k. find the max sum of a non-empty subsequence such that the neighboring elements in the sequence satisfy i<j and j-i<=k.
+- dp with sliding window max. since in the window k, we have to choose one element.
+each element we can choose or discard.
+we define dp[i] as the max sum ending with A[i], then:
+dp[i]=max(dp[j]...dp[i-1])+A[i], sliding window max using pq or deque.
+->>
+
 <<-1696. Jump Game Vi.
 given a list of numbers, you are located at element 0. Each time you can jump 1 to k steps. return the max sum you can get from 0 to n-1 element.
 dp[i]=max(dp[i-1]...dp[i-k+1])
@@ -367,7 +415,17 @@ two options: use j column or not use it.
 ->>
 
 ### bitmask dp
+
 bitmask dp: typical usage the number of elements is very limited and 2^n can fit in a integer.
+
+<<-1434	Number of Ways to Wear Different Hats to Each Other    		38.9%	Hard	
+given n people and 40 types of hats from 1 to 40. n<=10.
+given a list of preference for each people.
+return the number of ways that n people wear different hats from each other. 
+- dp problem, ith person choose j, then it will affect the later subproblem.
+- bitmask. but if we use hats, 2^40 would be too large. so we need convert hats to person.
+dp[i,mask] ith hat with mask of people. 
+->>
 
 <<-1494	Parallel Courses II    		31.0%	Hard	
 n courses from 1 to n. given a list of dependency [x,y] means x must be taken before y. You can take at most k courses per semester. 
@@ -407,6 +465,19 @@ level: 5
 ### greedy
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
+<<-1432	Max Difference You Can Get From Changing an Integer    		42.9%	Medium	
+pick a digit x and digit y, replace all x in the number to y.
+You can apply the operation two times, return the max difference between the two operations.
+first time to get the min number and 2nd time we get the max number.
+to get the max: replace the first seen <9 digit to 9
+to get the min: replace the first seen >1 digit to 0
+->>
+
+<<-1433	Check If a String Can Break Another String    		66.9%	Medium	
+string a break b, if a[i]>=b[i]. you can permutate a.
+greedy: just check histogram and from larger to smaller, add the extra larger one to smaller one by one. O(n)
+or just sort them and compare one by one. O(nlogn)
+->>
 
 <<-1481	Least Number of Unique Integers after K Removals    		55.2%	Medium	
 greedy: using hashmap to record the histogram. and the sort according to the count, remove those smallest first.
@@ -760,6 +831,13 @@ also a bitmask dp problem.
 ->>
 
 ### dfs
+<<-1462	Course Schedule IV    		43.9%	Medium	
+given n course from 0 to n-1 and a list of prerquisitites. given a list of queries (a,b) need to return if a is b's prerequisites.
+- the graph will form several connected graphs.
+- post order traversal to get the parent child relations.
+
+->>
+
 <<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	
 given a matrix, find if there exists a cycle, a cycle is connected path with same value.
 dfs with parent position, we cannot go back to immediate parent. If we found we back to a visited node, we found a cycle.
@@ -843,6 +921,9 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 ## data structure focused problems
 
 ### stack
+<<-1441	Build an Array With Stack Operations    		69.3%	Easy	
+simulate stack.
+->>
 <<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	
 if you buy prices[i] you can get discount at price[j] where j>i and prices[j]<prices[i], j shall be minimized.
 
@@ -869,6 +950,16 @@ subject: tree, stack, OOP, polymorphism
 ### queue & deque
 
 ### heap: priority-queue, set, map
+<<-1438	Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit    		43.5%	Medium	
+equivalent to find the max and min difference <=limit. 
+using deque to find min and max.
+->>
+
+<<-1439	Find the Kth Smallest Sum of a Matrix With Sorted Rows    		60.0%	Hard	
+choose one element from each row and get the kth smallest sum.
+- approach 1: priority_queue, push neighboring elements if not seen, try smallest first.
+- binary search: we know the min is the first col, max is the last column. given a mid, we count the number of combinations <=mid.
+->>
 
 <<-1499	Max Value of Equation    		44.9%	Hard	
 given a list of points on 2d plane, sorted by x. 
@@ -885,6 +976,21 @@ approach:
 ->>
 
 ### hashset, hashmap
+<<-1426	Counting Elements    		58.9%	Easy	
+find all x if x+1 appears.
+using hashmap find x+1 or x-1.
+->>
+
+<<-1429	First Unique Number    		48.4%	Medium	
+a queue keep growing
+maintain a unique set and seen set and a vector to represent the queue.
+->>
+
+<<-1460	Make Two Arrays Equal by Reversing Sub-arrays    		72.5%	Easy	
+You can do many times.
+this is check if we can sort to other array.
+their hashmap shall be the same.
+->>
 
 <<-1477	Find Two Non-overlapping Sub-arrays Each With Target Sum    		33.4%	Medium	
 minimze the sum of two subarray length.
@@ -967,6 +1073,28 @@ idea: hashmap to record entry time for each person. Then for each person we chec
 ->>
 
 ### tree
+<<-1430	Check If a String Is a Valid Sequence from Root to Leaves Path in a Binary Tree    		45.0%	Medium	
+check if the vector is a valid path.
+make sure we check if it is a leaf and have the same length. using dfs with depth.
+->>
+
+<<-1443	Minimum Time to Collect All Apples in a Tree    		54.6%	Medium	
+given a tree of n nodes from 0 to n-1. You spend 1s to walk an edge. There are some apples on some vertices. Start from 0 return the min time to collect all apples and return to 0.
+- build the adjacency matrix
+- postorder traversal
+->>
+
+<<-1448	Count Good Nodes in Binary Tree    		70.2%	Medium	
+a node is good if all path from root to it has no nodes with a value > it.
+dfs and pass the previous max.
+->>
+
+<<-1457	Pseudo-Palindromic Paths in a Binary Tree    		67.9%	Medium	
+a tree node value are from 1 to 9. return the number of pseuso-palindrome path from root to leaf. pseudo palindrome: permutation of the path is palindrome.
+- dfs
+- record the digit's even odd. A path is valid if it has at most one odd.
+->>
+
 <<-1469	Find All The Lonely Nodes    		80.8%	Easy	
 parent has only one child, the child is lonely node, dfs.
 ->>
@@ -1093,7 +1221,22 @@ node has coefficient and power.
 two pointer merge.
 ->>
 ## sliding window
+
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+<<-1423	Maximum Points You Can Obtain from Cards    		45.1%	Medium	
+take cards from either end, return the max points taking k cards.
+equivalent: sliding window to get min sum using n-k.
+->>
+
+<<-1456	Maximum Number of Vowels in a Substring of Given Length    		53.5%	Medium	
+a substring of length k, return the max number of vowels.
+sliding window with size k.
+->>
+
+<<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	
+k=2，00，01，10，11.
+so using sliding window to get the number and set the flag.
+->>
 
 <<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
 sliding window with at most one 0 inside. record previous 0 position.
@@ -1107,11 +1250,49 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 
 
 ### sort
+
+<<-1451	Rearrange Words in a Sentence    		58.4%	Medium	
+rearrange by length, if tie, keep original order.
+using stable_sort.
+->>
+
 <<-1471	The k Strongest Values in an Array    		58.3%	Medium	
 sort using lambda function with a parameter or customized compare function
 ->>
 
 ### array & string
+<<-1424	Diagonal Traverse II    		44.6%	Medium	
+2d array but not a matrix. traverse diagonal all go up right.
+approach 1: save to 1d with i,j and sort using i+j. O(nlogn) n is the total element number.
+approach 2: using hashmap with key=i+j, and then reverse. O(n)
+->>
+
+<<-1534	Count Good Triplets    		79.9%	Easy	
+i<j<k and |A[i]-A[j]|<=a, |A[j]-A[k]|<=b and |A[i]-A[k]|<=c
+brutal force, with some optimizations to reduce loops. each loop satisfy one condition.
+->>
+
+<<-1428	Leftmost Column with at Least a One    		48.2%	Medium	
+interactive, row in sorted order. each row we find a 1 we push left the index.
+->>
+
+<<-1427	Perform String Shifts    		53.3%	Easy	
+using rotate and assemble left and right all together, note rotate is left shift.
+->>
+
+<<-1437	Check If All 1's Are at Least Length K Places Away    		61.9%	Medium	
+find the distance of 1 to previous 1.
+->>
+
+<<-1446	Consecutive Characters    		61.8%	Easy	
+max length of consecutive chars
+->>
+
+<<-1455	Check If a Word Occurs As a Prefix of Any Word in a Sentence    		65.0%	Easy	->>
+
+<<-1464	Maximum Product of Two Elements in an Array    		77.0%	Easy	
+find the max and 2nd max in O(n).
+->>
 
 <<-1472	Design Browser History    		68.8%	Medium	
 easy array problem.
@@ -1305,6 +1486,31 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-1422	Maximum Score After Splitting a String    		55.9%	Easy	
+binary string, split into two strings, your score is left0+right1.
+simple math.
+->>
+
+<<-1492	The kth Factor of n    		65.9%	Medium	
+brutal force: save all factors in array
+optimization: counting only, d and n/d two loops, first go up, second go down.
+->>
+
+<<-1515	Best Position for a Service Centre    		36.5%	Hard	
+given a list of points on 2d grids, find the location so that the sum of distance to these points is minimzed.
+start with an initial location and dx,dy, try to go the 4 direction and see which direction to go.
+reduce the step size by half each iteration.
+math, numerical analysis
+->>
+
+<<-1447	Simplified Fractions    		61.6%	Medium	
+gcd.
+->>
+<<-1453	Maximum Number of Darts Inside of a Circular Dartboard    		34.7%	Hard	
+given a list of points on 2d plane, return the max number of points inside a circle of radius r.
+- any pair of points can establish two circles (clockwise or counter-clockwise)
+- then check number of points inside.
+->>
 
 <<-1465	Maximum Area of a Piece of Cake After Horizontal and Vertical Cuts    		31.3%	Medium	
 simple math, find the minw and minh and get the product.
@@ -3434,6 +3640,7 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials
+<<-1431	Kids With the Greatest Number of Candies    		88.6%	Easy	->>
 <<-1470	Shuffle the Array    		88.5%	Easy	->>
 <<-1476	Subrectangle Queries    		89.0%	Medium	->>
 <<-1480	Running Sum of 1d Array    		89.7%	Easy	->>
@@ -3778,6 +3985,9 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 - use ladder first, when ladder is used up, replace a ladder with min bricks needed.
 ->>
 ## graph
+<<-1436	Destination City    		77.2%	Easy	
+destination has no outcoming edge.
+->>
 
 <<-1466	Reorder Routes to Make All Paths Lead to the City Zero    		61.5%	Medium	
 given n cities from 0 to n-1 forming a tree with root 0. 
@@ -3823,6 +4033,12 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+
+<<-1450	Number of Students Doing Homework at a Given Time    		77.1%	Easy	
+- brutal force checking all intervals
+- map and using event start, exit and prefix sum.
+->>
+
 <<-1520	Maximum Number of Non-Overlapping Substrings    		34.8%	Hard	
 if the substring contains c, it must contain all occurences of c.
 if there are multiple answers, return the one with min total length.
@@ -3858,6 +4074,18 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+
+<<-1442	Count Triplets That Can Form Two Arrays of Equal XOR    		70.5%	Medium	
+find i,j,k, such that A[i]^..A[j-1]==A[j]^...A[k]
+prefix xor.
+it is equivalent to A[i]^...A[k]=0, and j=i+1 to k-1 with k-i-1 combinations.
+using prefix and hashmap, this is to find same xor with region>=3.
+->>
+
+<<-1452	People Whose List of Favorite Companies Is Not a Subset of Another List    		54.3%	Medium	
+the key is to collect all company and convert company to bit and then each person's list converts to a int or a bit vector.
+->>
+
 <<-1486	XOR Operation in an Array    		84.0%	Easy	
 bums[i]=start+2*i, return xor of the array.
 - brutal force O(n)
@@ -3874,18 +4102,6 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 
 ## leetcode problem list
 
-<<-1534	Count Good Triplets    		79.9%	Easy	
-i<j<k and |A[i]-A[j]|<=a, |A[j]-A[k]|<=b and |A[i]-A[k]|<=c
-brutal force, with some optimizations to reduce loops. each loop satisfy one condition.
-->>
-
-<<-1515	Best Position for a Service Centre    		36.5%	Hard	
-given a list of points on 2d grids, find the location so that the sum of distance to these points is minimzed.
-start with an initial location and dx,dy, try to go the 4 direction and see which direction to go.
-reduce the step size by half each iteration.
-math, numerical analysis
-->>
-
 <<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	
 a string of digits, you are allowed to swap two adjacent digits, at most k operations are allowed. return the min string you can obtain.
 greedy: bubble sort, k>n*(n+1)/2 it is sort. 
@@ -3893,49 +4109,7 @@ from 0 to 9, find its first index and try to move to top (less equal to k) and l
 segment tree or binary index tree to reduce to O(nlogn)
 ->>
 
-<<-1492	The kth Factor of n    		65.9%	Medium	
-brutal force: save all factors in array
-optimization: counting only, d and n/d two loops, first go up, second go down.
-->>
 
-
-<<-1464	Maximum Product of Two Elements in an Array    		77.0%	Easy	->>
-<<-1462	Course Schedule IV    		43.9%	Medium	->>
-<<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	->>
-<<-1460	Make Two Arrays Equal by Reversing Sub-arrays    		72.5%	Easy	->>
-<<-1458	Max Dot Product of Two Subsequences    		42.5%	Hard	->>
-<<-1457	Pseudo-Palindromic Paths in a Binary Tree    		67.9%	Medium	->>
-<<-1456	Maximum Number of Vowels in a Substring of Given Length    		53.5%	Medium	->>
-<<-1455	Check If a Word Occurs As a Prefix of Any Word in a Sentence    		65.0%	Easy	->>
-<<-1453	Maximum Number of Darts Inside of a Circular Dartboard    		34.7%	Hard	->>
-<<-1452	People Whose List of Favorite Companies Is Not a Subset of Another List    		54.3%	Medium	->>
-<<-1451	Rearrange Words in a Sentence    		58.4%	Medium	->>
-<<-1450	Number of Students Doing Homework at a Given Time    		77.1%	Easy	->>
-<<-1449	Form Largest Integer With Digits That Add up to Target    		43.1%	Hard	->>
-<<-1448	Count Good Nodes in Binary Tree    		70.2%	Medium	->>
-<<-1447	Simplified Fractions    		61.6%	Medium	->>
-<<-1446	Consecutive Characters    		61.8%	Easy	->>
-<<-1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	->>
-<<-1443	Minimum Time to Collect All Apples in a Tree    		54.6%	Medium	->>
-<<-1442	Count Triplets That Can Form Two Arrays of Equal XOR    		70.5%	Medium	->>
-<<-1441	Build an Array With Stack Operations    		69.3%	Easy	->>
-<<-1439	Find the Kth Smallest Sum of a Matrix With Sorted Rows    		60.0%	Hard	->>
-<<-1438	Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit    		43.5%	Medium	->>
-<<-1437	Check If All 1's Are at Least Length K Places Away    		61.9%	Medium	->>
-<<-1436	Destination City    		77.2%	Easy	->>
-<<-1434	Number of Ways to Wear Different Hats to Each Other    		38.9%	Hard	->>
-<<-1433	Check If a String Can Break Another String    		66.9%	Medium	->>
-<<-1432	Max Difference You Can Get From Changing an Integer    		42.9%	Medium	->>
-<<-1431	Kids With the Greatest Number of Candies    		88.6%	Easy	->>
-<<-1430	Check If a String Is a Valid Sequence from Root to Leaves Path in a Binary Tree    		45.0%	Medium	->>
-<<-1429	First Unique Number    		48.4%	Medium	->>
-<<-1428	Leftmost Column with at Least a One    		48.2%	Medium	->>
-<<-1427	Perform String Shifts    		53.3%	Easy	->>
-<<-1426	Counting Elements    		58.9%	Easy	->>
-<<-1425	Constrained Subsequence Sum    		44.6%	Hard	->>
-<<-1424	Diagonal Traverse II    		44.6%	Medium	->>
-<<-1423	Maximum Points You Can Obtain from Cards    		45.1%	Medium	->>
-<<-1422	Maximum Score After Splitting a String    		55.9%	Easy	->>
 <<-1420	Build Array Where You Can Find The Maximum Exactly K Comparisons    		64.4%	Hard	->>
 <<-1419	Minimum Number of Frogs Croaking    		46.9%	Medium	->>
 <<-1418	Display Table of Food Orders in a Restaurant    		67.6%	Medium	->>

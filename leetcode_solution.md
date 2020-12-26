@@ -400,10 +400,10 @@ max and min using stack. ****
 prioriy_queue, dijkstra similar, *****
 
 ## biweek 25
-Kids With the Greatest Number of Candies3
-Max Difference You Can Get From Changing an Integer4
-Check If a String Can Break Another String5
-Number of Ways to Wear Different Hats to Each Other
+1431. Kids With the Greatest Number of Candies3
+1432. Max Difference You Can Get From Changing an Integer4
+1433. Check If a String Can Break Another String5
+1434. Number of Ways to Wear Different Hats to Each Other
 
 ## contest 186
 
@@ -3519,7 +3519,7 @@ In one step, you can select any non-empty sub-array of arr and reverse it. You a
 
 Return True if you can make arr equal to target, or False otherwise.
 </em>
-- brtual force
+- brutal force
 loop from left to right, find the element in the other array and reverse to the correct position.
 
 - hashmap: the other array need to be a permutation of the array
@@ -3571,7 +3571,7 @@ You should answer for each queries[i] whether the course queries[i][0] is a prer
 Return a list of boolean, the answers to the given queries.
 
 Please note that if course a is a prerequisite of course b and course b is a prerequisite of course c, then, course a is a prerequisite of course c.
-</em>
+</em>- 
 
 - do dfs to check if we can from a to b, but it will takes too long.
 - post order traversal on each node and save the parent-relation in a hashmap, query can be performed on the hashmap
@@ -18811,7 +18811,7 @@ Return the number of ways of cutting the pizza such that each piece contains at 
 
 Intuition:
 
-clearly this is a dp problem. Every step we have two option: cut horizontally or vertically
+clearly this is a dp pr- oblem. Every step we have two option: cut horizontally or vertically
 every time we need to know: 
 cut horizontally, the top piece and remaining piece shall both have apples
 cut vertically, the left piece and remaining piece shall both have apples
