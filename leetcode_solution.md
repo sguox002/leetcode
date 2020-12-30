@@ -14844,6 +14844,12 @@ idea: greedy using stack to pair and mark those parenthese to remove.
     }
 ```
 ### 1250. Check If It Is a Good Array	(gcd of multiple numbers) (***)
+<em>
+Given an array nums of positive integers. Your task is to select some subset of nums, multiply each element by an integer and add all these numbers. The array is said to be good if you can obtain a sum of 1 from the array by any possible subset and multiplicand.
+
+Return True if the array is good otherwise return False.
+</em>
+
 extended euclid algorithm.
 key point: math problem, ax+by+...=1, the coefficient must be coprime.
 
@@ -14860,9 +14866,28 @@ key point: math problem, ax+by+...=1, the coefficient must be coprime.
 
 
 ## contest 162
+
 ### 1252. Cells with Odd Values in a Matrix (*)
+give (i,j) you increase the row i and col j all by 1.
 simple, use + or xor
+
 ### 1253. Reconstruct a 2-Row Binary Matrix (**)
+<em>
+Given the following details of a matrix with n columns and 2 rows :
+
+The matrix is a binary matrix, which means each element in the matrix can be 0 or 1.
+The sum of elements of the 0-th(upper) row is given as upper.
+The sum of elements of the 1-st(lower) row is given as lower.
+The sum of elements in the i-th column(0-indexed) is colsum[i], where colsum is given as an integer array with length n.
+Your task is to reconstruct the matrix with upper, lower and colsum.
+
+Return it as a 2-D integer array.
+
+If there are more than one valid solution, any of them will be accepted.
+
+If no valid solution exists, return an empty 2-D array.
+</em>
+
 given the sum of the two rows and column sums. reconstruct the array.
 greedy approach: first fill those col sum==2 cases. then fill those colsum==1 by fill row 0 first.
 
