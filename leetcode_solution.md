@@ -1,6 +1,12 @@
 ## leetcode solution
 
 leetcode contest contents
+## contest 221
+1704. Determine if String Halves Are Alike3
+1705. Maximum Number of Eaten Apples4
+1706. Where Will the Ball Fall5
+1707. Maximum XOR With an Element From Array
+
 ## contest 220
 Reformat Phone Number3
 Maximum Erasure Value4
@@ -1060,6 +1066,8 @@ Output: 14
 this problem is very similar to huffman algorithm the worker split problem.
 the idea: sort the input and arrange as the tree leaf, and combine to a parent (x+y) and parent combine with next leaf.
 [1,8,3,5]==>[1,3,5,8]--> 4+9+17=30
+earlier sticks are counted again and again. so use smaller first.
+
 
      17
      /\
@@ -1486,7 +1494,18 @@ postorder traversal and remove the subtree if sum=0. We need to get the sum and 
         return res;
     }
 ```	
+
 ### 1274. Number of Ships in a Rectangle(****)
+<em>
+Each ship is located at an integer point on the sea represented by a cartesian plane, and each integer point may contain at most 1 ship.
+
+You have a function Sea.hasShips(topRight, bottomLeft) which takes two points as arguments and returns true If there is at least one ship in the rectangle represented by the two points, including on the boundary.
+
+Given two points: the top right and bottom left corners of a rectangle, return the number of ships present in that rectangle. It is guaranteed that there are at most 10 ships in that rectangle.
+
+Submissions making more than 400 calls to hasShips will be judged Wrong Answer. Also, any solutions that attempt to circumvent the judge will result in disqualification.
+</em>
+
 this is similar to a quadtree problem. 
 divide into subgrid if there are ships
 make sure the division is non-overlapped.
@@ -1602,7 +1621,9 @@ k as a separator to split the string into two half and remove separately.
 ```
 	
 ## Biweek 13 --pretty hard one
+
 ### 1256. Encode number (***)
+
 0->"" (binary 0)
 1->"0" (binary 1)
 2->"1" (binary 10)
@@ -1719,6 +1740,14 @@ public:
 ```	
 
 ### 1259. Handshakes That Don't Cross (*****)
+<em>
+you are given an even number of people num_people that stand around a circle and each person shakes hands with someone else, so that there are num_people / 2 handshakes total.
+
+Return the number of ways these handshakes could occur such that none of the handshakes cross.
+
+Since this number could be very big, return the answer mod 10^9 + 7
+</em>
+
 even number of people in a circle, return number of ways that do not cross.
 typical dp problem:
 if person i and person j shake hands, then it divide into two groups:
@@ -1763,6 +1792,14 @@ in a sorted array, the >25% element will appear at 1/4, 2/4, 3/4 position
     }
 ```
 ### 1288. Remove Covered Intervals (***)
+<em>
+Given a list of intervals, remove all intervals that are covered by another interval in the list.
+
+Interval [a,b) is covered by interval [c,d) if and only if c <= a and b <= d.
+
+After doing so, return the number of remaining intervals.
+</em>
+
 sort the intervals according to the start. then we using the right max to remove covered intervals	
 ```cpp
     int removeCoveredIntervals(vector<vector<int>>& intervals) {
@@ -1780,6 +1817,14 @@ sort the intervals according to the start. then we using the right max to remove
     }
 ```
 ### 1286. Iterator for Combination	(**)
+<em>
+Design the CombinationIterator class:
+
+CombinationIterator(string characters, int combinationLength) Initializes the object with a string characters of sorted distinct lowercase English letters and a number combinationLength as arguments.
+next() Returns the next combination of length combinationLength in lexicographical order.
+hasNext() Returns true if and only if there exists a next combination.
+</em>
+
 using backtracking to get all the combinations
 ```cpp
     string s;
@@ -1847,6 +1892,14 @@ There is a O(N) method to find the min and 2nd min.
 simple, just do it from right to left and find the max and add to answer
 
 ### 1300. sum of mutated array closest to target (****)
+<em>
+Given an integer array arr and a target value target, return the integer value such that when we change all the integers larger than value in the given array to be equal to value, the sum of the array gets as close as possible (in absolute difference) to target.
+
+In case of a tie, return the minimum such integer.
+
+Notice that the answer is not neccesarilly a number from arr.
+</em>
+
 first we can sort the array to make calculate the sum more efficient. (but not necessary)
 second, it is a binary search problem.
 we are actually looking for a value between 0 and max_element so that the sum==target.
@@ -1931,6 +1984,16 @@ when current depth==max_depth, we need add the node to the sum.
 other approach: level order traversal using bfs
 
 ### 1301. number of paths with max score (***)
+<em>
+You are given a square board of characters. You can move on the board starting at the bottom right square marked with the character 'S'.
+
+You need to reach the top left square marked with the character 'E'. The rest of the squares are labeled either with a numeric character 1, 2, ..., 9 or with an obstacle 'X'. In one move you can go up, left or up-left (diagonally) only if there is no obstacle there.
+
+Return a list of two integers: the first integer is the maximum sum of numeric characters you can collect, and the second is the number of such paths that you can take to get that maximum sum, taken modulo 10^9 + 7.
+
+In case there is no path, return [0, 0].
+</em>
+
 two dp problems:
 one is max score from top left to bottom right
 second is number of max sum paths (note it asks number of path with the max score)
@@ -1968,7 +2031,9 @@ some observations:
         }
         return {dp0[m][n],dp1[m][n]};
     }
-```	### 1313. Decompress Run-Length Encoded List (*)
+```	
+
+### 1313. Decompress Run-Length Encoded List (*)
 problem description is not very clear, however very simple:
 ```cpp
     vector<int> decompressRLElist(vector<int>& nums) {
@@ -1982,6 +2047,10 @@ problem description is not very clear, however very simple:
 ```
 
 ### 1314. Matrix Block Sum (*)
+<em>
+iven a m * n matrix mat and an integer K, return a matrix answer where each answer[i][j] is the sum of all elements mat[r][c] for i - K <= r <= i + K, j - K <= c <= j + K, and (r, c) is a valid position in the matrix.
+</em>
+
 brutal force is fine. however we can use dp to get the prefix sum and then get block matrix sum
 ```cpp
     vector<vector<int>> matrixBlockSum(vector<vector<int>>& mat, int K) {
@@ -2025,20 +2094,15 @@ sliding window is fine
 but rolling hash is another option.
 ```cpp
     int distinctEchoSubstrings(string text) {
-        //substring which is repeat.
-        //we can use a window to see
-        //rolling hash?
-        //problem is not clear, it means two identical parts
+        int n=text.size();
         unordered_set<string> ms;
-        for(int i=0;i<text.size();i++){
-            for(int j=i;2*j+1-i<text.size();j++){
-                //check substr(i,j-i+1)
-                if(text[i]!=text[j+1]) continue;
-                if(text.substr(i,j-i+1)==text.substr(j+1,j-i+1))
-                    ms.insert(text.substr(i,j-i+1));
-            }
+        for(int i=0;i<n;i++){
+           for(int len=1;2*len+i<=n;len++){
+               if(text[i]!=text[i+len]) continue;
+               if(text.substr(i,len)==text.substr(i+len,len)) ms.insert(text.substr(i,len));
+           }
         }
-        return ms.size();
+        return ms.size();    
     }
 ```
 - note if do not check the first char will get TLE since it avoids the substr construction work.
@@ -2434,6 +2498,18 @@ sort by bits
 ```
 
 ### 1357 Apply discount
+<em>
+There is a sale in a supermarket, there will be a discount every n customer.
+There are some products in the supermarket where the id of the i-th product is products[i] and the price per unit of this product is prices[i].
+The system will count the number of customers and when the n-th customer arrive he/she will have a discount on the bill. (i.e if the cost is x the new cost is x - (discount * x) / 100). Then the system will start counting customers again.
+The customer orders a certain amount of each product where product[i] is the id of the i-th product the customer ordered and amount[i] is the number of units the customer ordered of that product.
+
+Implement the Cashier class:
+
+Cashier(int n, int discount, int[] products, int[] prices) Initializes the object with n, the discount, the products and their prices.
+double getBill(int[] product, int[] amount) returns the value of the bill and apply the discount if needed. Answers within 10^-5 of the actual value will be accepted as correct.
+</em>
+
 simple math. using hashmap
 
 ```cpp
@@ -2463,6 +2539,12 @@ simple math. using hashmap
 ```
 
 ### 1358. Number of Substrings Containing All Three Characters	
+<em>
+Given a string s consisting only of characters a, b and c.
+
+Return the number of substrings containing at least one occurrence of all these characters a, b and c.
+</em>
+
 simple sliding window
 important: all prefix is the substring,, we only need to keep the smallest substring.
 ```cpp
@@ -2486,6 +2568,7 @@ important: all prefix is the substring,, we only need to keep the smallest subst
 ```
 
 ### 1359. Count All Valid Pickup and Delivery Options
+pickup alreay ahead of deliver.
 simple dp:
 we have n options for the first position. then reduces to n-1 subproblem. D can be put in 2n-1 positions
 the total dp[n]=n*(2n-1)*dp[n-1]
@@ -2515,13 +2598,13 @@ can be O(1) space
 <em>
 Given a string s. You should re-order the string using the following algorithm:
 
-Pick the smallest character from s and append it to the result.
-Pick the smallest character from s which is greater than the last appended character to the result and append it.
-Repeat step 2 until you cannot pick more characters.
-Pick the largest character from s and append it to the result.
-Pick the largest character from s which is smaller than the last appended character to the result and append it.
-Repeat step 5 until you cannot pick more characters.
-Repeat the steps from 1 to 6 until you pick all characters from s.
+s1:Pick the smallest character from s and append it to the result.
+s2: Pick the smallest character from s which is greater than the last appended character to the result and append it.
+s3: Repeat step 2 until you cannot pick more characters.
+s4：Pick the largest character from s and append it to the result.
+s5: Pick the largest character from s which is smaller than the last appended character to the result and append it.
+s6: Repeat step 5 until you cannot pick more characters.
+s7: Repeat the steps from 1 to 6 until you pick all characters from s.
 In each step, If the smallest or the largest character appears more than once you can choose any occurrence and append it to the result.
 
 Return the result string after sorting s with this algorithm.
@@ -14822,58 +14905,50 @@ approach: first form the hashmap of given letters. then check all valid words. c
 ```cpp
     int maxScoreWords(vector<string>& words, vector<char>& letters, vector<int>& score) {
         vector<int> cnt(26);
+        int n=words.size();
         for(char c: letters) cnt[c-'a']++;
-        //each word: first can be formed or not, if can be formed, the score
-        //knapsack: use it or not, and we need keep track of the number
-        //first get rid of those invalid strings
-        vector<string> vwords;
-        vector<int> vscore;
-        vector<vector<int>> vcnt;
-        for(int i=0;i<words.size();i++){
-            bool valid=1;
-            vector<int> tmp(26);
-            for(char c: words[i]) tmp[c-'a']++;
-            for(int j=0;j<26;j++) 
-                if(tmp[j]>cnt[j]) valid=0;
-            if(valid){
-                int tsum=0;
-                for(int j=0;j<26;j++) tsum+=tmp[j]*score[j];
-                vscore.push_back(tsum);
-                vwords.push_back(words[i]);
-                vcnt.push_back(tmp);
-            }
+        vector<pair<int,vector<int>>> vw(words.size());
+        for(int i=0;i<n;i++){
+            int sc=0;
+            vector<int> v(26);
+            for(char c: words[i]) sc+=score[c-'a'],v[c-'a']++;
+            vw[i]={sc,v};
         }
-        
-        int n=vwords.size();
-        //using bits
         int m=1<<n;
         int ans=0;
         for(int i=1;i<m;i++){
-            int tscore=0;
-            if(valid(i,vcnt,cnt,vscore,tscore)){
-                    ans=max(ans,tscore);
-            }
+            int sc=0;
+            if(valid(vw,i,sc,cnt)) ans=max(ans,sc);
         }
         return ans;
     }
-    bool valid(int s,vector<vector<int>>& vcnt,vector<int>& cnt,vector<int>& vscore,int& score){
-        int n=vcnt.size();
-        bitset<16> bits(s);
-        score=0;
-        vector<int> tmp(26);
+    bool valid(vector<pair<int,vector<int>>>& vp,int bits,int& sc,vector<int>& cnt){
+        vector<int> sum(26);
+        int n=vp.size();
         for(int i=0;i<n;i++){
-            if(bits[i]){
-                for(int j=0;j<26;j++) tmp[j]+=vcnt[i][j];
-                score+=vscore[i];
+            if(bits&(1<<i)){
+                for(int j=0;j<26;j++) {
+                    sum[j]+=vp[i].second[j];
+                    if(sum[j]>cnt[j]) return 0;
+                }
+                sc+=vp[i].first;
             }
         }
-        for(int j=0;j<26;j++){
-            if(tmp[j]>cnt[j]) return 0;}
         return 1;
     }
 ```	
 ## contest 163
 ### 1260. Shift 2D Grid (***)
+<em>
+Given a 2D grid of size m x n and an integer k. You need to shift the grid k times.
+
+In one shift operation:
+
+Element at grid[i][j] moves to grid[i][j + 1].
+Element at grid[i][n - 1] moves to grid[i + 1][0].
+Element at grid[m - 1][n - 1] moves to grid[0][0].
+Return the 2D grid after applying shift operation k times.
+</em>
 idea: convert to 1d and rotate, then convert to 2d
 note: c++ rotate is left rotate, this problem needs right rotate
 ```cpp
@@ -14894,6 +14969,20 @@ note: c++ rotate is left rotate, this problem needs right rotate
     }
 ```	
 ### 1261. Find Elements in a Contaminated Binary Tree (***)
+<em>
+Given a binary tree with the following rules:
+
+root.val == 0
+If treeNode.val == x and treeNode.left != null, then treeNode.left.val == 2 * x + 1
+If treeNode.val == x and treeNode.right != null, then treeNode.right.val == 2 * x + 2
+Now the binary tree is contaminated, which means all treeNode.val have been changed to -1.
+
+You need to first recover the binary tree and then implement the FindElements class:
+
+FindElements(TreeNode* root) Initializes the object with a contamined binary tree, you need to recover it first.
+bool find(int target) Return if the target value exists in the recovered binary tree.
+</em>
+
 dfs with hashmap
 ```cpp
     unordered_set<int> ms;
@@ -14913,6 +15002,10 @@ dfs with hashmap
     }
 ```
 ### 1262. Greatest Sum Divisible by Three	(***)
+<em>
+Given an array nums of integers, we need to find the maximum possible sum of elements of the array such that it is divisible by three.
+</em>
+
 idea: greedy approach: sort the array and get the sum, and remove the smallest element with rem=sum%3. 
 if sum%3==1, remove first rem=1 or two with rem=2
 if sum%3==2, remove first rem=2 or two with rem=1
@@ -14960,6 +15053,22 @@ the code is not very efficient
 ```	
 
 ### 1263. Minimum Moves to Move a Box to Their Target Location (*****)
+<em>
+torekeeper is a game in which the player pushes boxes around in a warehouse trying to get them to target locations.
+
+The game is represented by a grid of size m x n, where each element is a wall, floor, or a box.
+
+Your task is move the box 'B' to the target position 'T' under the following rules:
+
+Player is represented by character 'S' and can move up, down, left, right in the grid if it is a floor (empy cell).
+Floor is represented by character '.' that means free cell to walk.
+Wall is represented by character '#' that means obstacle  (impossible to walk there). 
+There is only one box 'B' and one target cell 'T' in the grid.
+The box can be moved to an adjacent free cell by standing next to the box and then moving in the direction of the box. This is a push.
+The player cannot walk through the box.
+Return the minimum number of pushes to move the box to the target. If there is no way to reach the target, return -1.
+</em>
+
 two bfs problem
 
 typical bfs problem for shortest distance.
@@ -14970,7 +15079,7 @@ however dfs will get TLE since dfs is one direction forward until failure, hence
 check if person can move a position is a conventional bfs.
 check box can be moved to a position is a bit tricky, it needs both the person and box position, so we use a pair of position in the queue
 and the visited shall also use combined information, I used the string combination of the two positions.
-
+```cpp
     int minPushBox(vector<vector<char>>& grid) {
         //bfs with person and box, the person can move in the free cells
         //person must be able to walk to the box.
@@ -15048,9 +15157,21 @@ and the visited shall also use combined information, I used the string combinati
 the critical observation is: the min time from point 1 to point 2 is the max(abs(dx),abs(dy))
 
 ### 1267. Count Servers that Communicate (***)
+<em>
+You are given a map of a server center, represented as a m * n integer matrix grid, where 1 means that on that cell there is a server and 0 means that it is no server. Two servers are said to communicate if they are on the same row or on the same column.
+
+Return the number of servers that communicate with any other server.
+</em>
+
 greedy: just count each row and each col's server number. and count them only when either of them >1
 
 ### 1268. Search Suggestions System (****)
+<em>
+given an array of strings products and a string searchWord. We want to design a system that suggests at most three product names from products after each character of searchWord is typed. Suggested products should have common prefix with the searchWord. If there are more than three products with a common prefix return the three lexicographically minimums products.
+
+Return list of lists of the suggested products after each character of searchWord is typed. 
+</em>
+
 output the top 3 matches (with duplicates)
 using trie. trie node store the count of word, the word, leaf in the leaf node
 alphabetical can be guaranteed by dfs of the trie.
@@ -15109,6 +15230,14 @@ alphabetical can be guaranteed by dfs of the trie.
     }
 ```
 ### 1269. Number of Ways to Stay in the Same Place After Some Steps	(****)
+<em>
+You have a pointer at index 0 in an array of size arrLen. At each step, you can move 1 position to the left, 1 position to the right in the array or stay in the same place  (The pointer should not be placed outside the array at any time).
+
+Given two integers steps and arrLen, return the number of ways such that your pointer still at index 0 after exactly steps steps.
+
+Since the answer may be too large, return it modulo 10^9 + 7.
+</em>
+
 typical dp: the recurrence relation is apparent.
 but there is a critical optimization: after k steps, it can only goes to a[k], the i>k elements are useless.
 similar for several jump game problems. 
@@ -15169,6 +15298,7 @@ anti-diagonal: r+c==n-1
 equation group to find integer solution, elementary math
 
 ### 1277. Count Square Submatrices with All Ones (***)
+
 dp: using top left solution to build current solution
 ```cpp
     int countSquares(vector<vector<int>>& matrix) {
@@ -15190,6 +15320,14 @@ dp: using top left solution to build current solution
     }
 ```
 ### 1278. Palindrome Partitioning III (*****)
+<em>
+You are given a string s containing lowercase letters and an integer k. You need to :
+
+First, change some characters of s to other lowercase English letters.
+Then divide s into k non-empty disjoint substrings such that each substring is palindrome.
+Return the minimal number of characters that you need to change to divide the string.
+</em>
+
 subproblem dp[l,k] represents the min cost for string length l (from begining) with k pal-parts.
 then dp[i,k]=min(dp[j, k-1]+cost(j,i),dp[i,k])
 ```cpp
@@ -15247,8 +15385,50 @@ dp1[i,j]=dp[i+1,j-1]+(s[i]!=s[j]).
 ### 1281. Subtract the Product and Sum of Digits of an Integer (*)
 simple
 ### 1282. Group the People Given the Group Size They Belong To (**)
+<em>
+There are n people that are split into some unknown number of groups. Each person is labeled with a unique ID from 0 to n - 1.
+
+You are given an integer array groupSizes, where groupSizes[i] is the size of the group that person i is in. For example, if groupSizes[1] = 3, then person 1 must be in a group of size 3.
+
+Return a list of groups such that each person i is in a group of size groupSizes[i].
+
+Each person should appear in exactly one group, and every person must be in a group. If there are multiple answers, return any of them. It is guaranteed that there will be at least one valid solution for the given input.
+ </em>
+ 
 greedy: sort the group size with index and then take by turn the elements
+```cpp
+    vector<vector<int>> groupThePeople(vector<int>& groupSizes) {
+        vector<vector<int>> ans;
+        int n=groupSizes.size();
+        vector<vector<int>> g(n);
+        for(int i=0;i<n;i++){
+            g[i]={groupSizes[i],i};
+        }
+        sort(g.begin(),g.end());
+        int cnt=0;
+        vector<int> tmp;
+        for(auto t: g){
+            cnt++;
+            tmp.push_back(t[1]);
+            if(cnt==t[0]){
+                ans.push_back(tmp);
+                tmp.clear();
+                cnt=0;
+            }
+        }
+        return ans;
+    }
+```	
+
 ### 1283. Find the Smallest Divisor Given a Threshold (***)
+<em>
+Given an array of integers nums and an integer threshold, we will choose a positive integer divisor and divide all the array by it and sum the result of the division. Find the smallest divisor such that the result mentioned above is less than or equal to threshold.
+
+Each result of division is rounded to the nearest integer greater than or equal to that element. (For example: 7/3 = 3 and 10/2 = 5).
+
+It is guaranteed that there will be an answer.
+</em>
+
 binary search to find the min value.
 a small trick: it needs to get the ceil division
 
@@ -15273,6 +15453,16 @@ a small trick: it needs to get the ceil division
 ```
 
 ### 1284. Minimum Number of Flips to Convert Binary Matrix to Zero Matrix	(***)
+<em>
+Given a m x n binary matrix mat. In one step, you can choose one cell and flip it and all the four neighbours of it if they exist (Flip is changing 1 to 0 and 0 to 1). A pair of cells are called neighboors if they share one edge.
+
+Return the minimum number of steps required to convert mat to a zero matrix or -1 if you cannot.
+
+Binary matrix is a matrix with all cells equal to 0 or 1 only.
+
+Zero matrix is a matrix with all cells equal to 0.
+</em>
+
 a typical bfs to get the shortest distance
 target is mxn '0's.
 queue to store the matrix, and visited using the serialized matrix string.
@@ -15330,6 +15520,13 @@ queue to store the matrix, and visited using the serialized matrix string.
 simple
 
 ### 1291. Sequential Digits (***)
+<em>
+An integer has sequential digits if and only if each digit in the number is one more than the previous digit.
+
+Return a sorted list of all the integers in the range [low, high] inclusive that have sequential digits.
+</em>
+
+
 simple backtracking
 ```cpp
     vector<int> sequentialDigits(int low, int high) {
@@ -15359,6 +15556,10 @@ simple backtracking
 ```
 
 ### 1292. Maximum Side Length of a Square with Sum Less than or Equal to Threshold	(****)
+<em>
+Given a m x n matrix mat and an integer threshold. Return the maximum side-length of a square with a sum less than or equal to threshold or return 0 if there is no such square.
+</em>
+
 prefix sum for 2d using dp.
 note: we need add 0 to 1d prefix, and one extra col, one extra row to 2d (I didn't fix the bug in the contest)
 ```cpp
@@ -15386,9 +15587,16 @@ note: we need add 0 to 1d prefix, and one extra col, one extra row to 2d (I didn
 ```	
 
 ### 1293. Shortest Path in a Grid with Obstacles Elimination (****)
+<em>
+Given a m * n grid, where each cell is either 0 (empty) or 1 (obstacle). In one step, you can move up, down, left or right from and to an empty cell.
+
+Return the minimum number of steps to walk from the upper left corner (0, 0) to the lower right corner (m-1, n-1) given that you can eliminate at most k obstacles. If it is not possible to find such walk return -1.
+</em>
+ 
 regular bfs
 one important observation: when number of obstacle > m-1+n-1, then we get the shortest length using dx+dy
 this can be used in each step.
+
 ```cpp
     int shortestPath(vector<vector<int>>& grid, int k) {
         int m=grid.size(),n=grid[0].size();
@@ -15432,6 +15640,11 @@ Important: we need use k+1 for the 3rd dimension since it allows 0 to k.
 simple, convert each number to string
 
 ### 1296. divide array in sets of k consecutive numbers (***)
+<em>
+Given an array of integers nums and a positive integer k, find whether it's possible to divide this array into sets of k consecutive numbers
+Return True if its possible otherwise return False.
+</em>
+
 greedy: sort the array first, and start from the smallest and reduce the counting using hashmap
 do not delete elements from hashmap since iterating will cause problem
 ```cpp
@@ -15464,6 +15677,13 @@ do not delete elements from hashmap since iterating will cause problem
     }
 ```
 ### 1297. Maximum Number of Occurrences of a Substring	(***)
+<em>
+Given a string s, return the maximum number of ocurrences of any substring under the following rules:
+
+The number of unique characters in the substring must be less than or equal to maxLetters.
+The substring size must be between minSize and maxSize inclusive.
+</em>
+
 an important observation: larger length substr will be covered by smaller length substr.
 two pointer with hashmap
 ```cpp
@@ -15488,9 +15708,22 @@ two pointer with hashmap
         return ans;
     }
 ```
+
 Note: when length equals to window size, we first check if it satisfies the conditions, then we advance the pointer i.
 
 ### 1298. Maximum Candies You Can Get from Boxes (***)
+<em>
+Given n boxes, each box is given in the format [status, candies, keys, containedBoxes] where:
+
+status[i]: an integer which is 1 if box[i] is open and 0 if box[i] is closed.
+candies[i]: an integer representing the number of candies in box[i].
+keys[i]: an array contains the indices of the boxes you can open with the key in box[i].
+containedBoxes[i]: an array contains the indices of the boxes found in box[i].
+You will start with some boxes given in initialBoxes array. You can take all the candies in any open box and you can use the keys in it to open new boxes and you also can use the boxes you find in it.
+
+Return the maximum number of candies you can get following the rules above.
+</em>
+
 again it is a regular bfs problem.
 we need to push all the found but un-opened boxes into queue, until we do not open any new boxes
 ```cpp
@@ -15518,7 +15751,9 @@ we need to push all the found but un-opened boxes into queue, until we do not op
         }
         return ans;
     }
-```	## contest 169.
+```	
+
+## contest 169.
 ### 1304. find n unique integers sum up to 0 (rate: *)
 greedy, pretty simple
 if odd, add 0
@@ -15526,8 +15761,35 @@ then add +/-1, +/-2... pairs
 
 ### 1305. All elements in two binary search tree (rate: **)
 inorder traversal each tree and store in array and then merge.
+one pass: have to use stack for iterative process.
+```cpp
+void pushLeft(stack<TreeNode*> &s, TreeNode* n) {
+    while (n != nullptr) 
+        s.push(exchange(n, n->left));
+}
+vector<int> getAllElements(TreeNode* root1, TreeNode* root2) {
+    vector<int> res;
+    stack<TreeNode*> s1, s2;
+    pushLeft(s1, root1);
+    pushLeft(s2, root2);
+    while (!s1.empty() || !s2.empty()) {
+        stack<TreeNode*> &s = s1.empty() ? s2 : s2.empty() ? s1 : 
+            s1.top()->val < s2.top()->val ? s1 : s2;
+        auto n = s.top(); s.pop();
+        res.push_back(n->val);
+        pushLeft(s, n->right);
+    }
+    return res;
+}
+```
 
 ### 1306. Jump game III (rate: ***)
+<em>
+Given an array of non-negative integers arr, you are initially positioned at start index of the array. When you are at index i, you can jump to i + arr[i] or i - arr[i], check if you can reach to any index with value 0.
+
+Notice that you can not jump outside of the array at any time.
+</em>
+
 regular bfs to store the position and the jump step.
 using hashset for visited flags
 
@@ -15546,6 +15808,19 @@ note: unordered_set insert will return a pair:
 first is the iterator, second is if it is inserted successfully.
 
 ### 1307. verbal arithmetic puzzle (rate: *****)
+<em>
+Given an equation, represented by words on left side and the result on right side.
+
+You need to check if the equation is solvable under the following rules:
+
+Each character is decoded as one digit (0 - 9).
+Every pair of different characters they must map to different digits.
+Each words[i] and result are decoded as one number without leading zeros.
+Sum of numbers on left side (words) will equal to the number on right side (result). 
+Return True if the equation is solvable otherwise return False.
+</em>
+
+
 typical backtracking problem with extra complexity</br>
 first approach: O(N!) complexity</br>
 we collect all unique letters and repeat 0 to 9 with the help of hashmap.</br>
@@ -15679,10 +15954,11 @@ This solution is at 100 times faster than the O(n!) solution.
 what would be the complexity then?
 - first the result char is mapped directly so we basically eliminate those chars from the loop selection
 - using hashmap to store c2i will make the time from 8ms changed to 100ms, using array is much more efficient.
-	## contest 170 1309-1312
+
+## contest 170 1309-1312
 Participant performance: 903/5186 got 4/4 right. (17.4%)
 
-### 1360. Decrypt String from Alphabet to Integer Mapping (**)
+### 1309. Decrypt String from Alphabet to Integer Mapping (**)
 <em>Problem:
 Given a string s formed by digits ('0' - '9') and '#' . We want to map s to English lowercase characters as follows:
 
@@ -15724,7 +16000,7 @@ backward:
         return ans;
     }
 ```	
-### 1361. XOR Queries of a Subarray (**)
+### 1310. XOR Queries of a Subarray (**)
 <em>Problem:
 
 Given the array arr of positive integers and the array queries where queries[i] = [Li, Ri], for each query i compute the XOR of elements from Li to Ri (that is, arr[Li] xor arr[Li+1] xor ... xor arr[Ri] ). Return an array containing the result for the given queries.
@@ -15768,7 +16044,7 @@ math: prefix xor and range xor is prefix[j+1]^prefix[i]  for range [i,j]. xor is
     }
 ```	
 
-### 1362. Get Watched Videos by Your Friends (***)
+### 1311. Get Watched Videos by Your Friends (***)
 <em>Problem:
 
 There are n people, each person has a unique id between 0 and n-1. Given the arrays watchedVideos and friends, where watchedVideos[i] and friends[i] contain the list of watched videos and the list of friends respectively for the person with id = i.
@@ -15825,7 +16101,7 @@ Note:
 - no need build the tree using another structure again. The given input is always an adjacency matrix.
 - sort the list of pairs do not need pq, just using lambda function is fine.
 
-### 1363. Minimum Insertion Steps to Make a String Palindrome(***)
+### 1312. Minimum Insertion Steps to Make a String Palindrome(***)
 <em>Problem:
 
 Given a string s. In one step you can insert any character at any index of the string.
@@ -15884,6 +16160,12 @@ I got stuck and wrong submission on this trying to get a greedy solution, which 
 ```
 
 ### 1318. Minimum Flips to Make a OR b Equal to c (**)
+<em>
+Given 3 positives numbers a, b and c. Return the minimum flips required in some bits of a and b to make ( a OR b == c ). (bitwise OR operation).
+Flip operation consists of change any single bit 1 to 0 or change the bit 0 to 1 in their binary representation.
+</em>
+ 
+ 
 approach: 
 
 convert the 3 integers to bitset and check if the ith bit c[i]!=a[i]||b[i] then:
@@ -15937,7 +16219,7 @@ Approach:
         return i;
     }
 ```
-### 1310. Minimum Distance to Type a Word Using Two Fingers (*****)
+### 1320. Minimum Distance to Type a Word Using Two Fingers (*****)
 I think this problem is a 5-star problem.
 Analysis:
 
@@ -15978,6 +16260,8 @@ Analysis:
 - initial finger position is 0 and we assume its distance to any char is 0.
 - we always keep the state: current position, finger 1's char, finger 2's char and keep solving the subproblem.
 - memoization to speed the process.
+
+
 1323. Maximum 69 Number
 <em>Problem:
 
@@ -16574,11 +16858,98 @@ n == seats[i].length
 My intuition on this is using backtracking, each valid seat can have an option to sit a person or not.
 the complexity is O(2^n) n is up to 64. This will get TLE. and also it is not prooved that this will get the max solution.
 
+dp approach:
 
+- the ith row is determined by the (i-1)th row.
+- each row can have multiple combinations, we can use bitmask to represent the status.
+- dp[i,state] ith row with state bitmask.
+- there are several restrictions: empty cells only using empty[i] bitmask to represent the available seats on ith row. 
 
 	
- 
- 
+ ```cpp
+ vector<vector<int>> dp;
+    int maxStudents(vector<vector<char>>& seats) {
+		int m=seats.size(),n=seats[0].size();
+        vector<int> s(m),state(m+1);
+		for(int i=0;i<m;i++){
+			for(int j=0;j<n;j++){
+				if(seats[i][j]=='.') s[i]+=1<<j; //LSB
+			}
+		}
+        dp=vector<vector<int>>(m+1,vector<int>(1<<n,-1));
+		backtrack(s,state,1,n);
+		return dp[0][0];
+    }
+	int backtrack(vector<int>& mask,vector<int> state,int row,int n){
+		if(row>mask.size()) {
+            return 0;
+		}
+        int mx=0;
+        int ind=state[row-1];
+        if(dp[row-1][ind]>=0) return dp[row-1][ind];
+        for(int i=0;i<(1<<n);i++){ //try all combinations
+            bitset<8> t(i),pre(0);
+            if(row) pre=state[row-1];
+            if(valid(t,pre,bitset<8>(mask[row-1]),n)) {
+                state[row]=i;
+                mx=max(mx,(int)t.count()+backtrack(mask,state,row+1,n));
+            }
+        }
+        return dp[row-1][ind]=mx;
+	}
+    bool valid(bitset<8>& a,bitset<8>& b,bitset<8> mask,int nbit){
+        bool ans=1;
+        //note bitset 0 is the MSB
+        for(int i=0;i<8;i++){
+            if(!mask[i] && a[i]) {ans=0;break;} 
+            if(a[i] && ((i?a[i-1]:0) || (i?b[i-1]:0) || (i+1<8?b[i+1]:0))) {
+                ans=0;break;
+            }
+        }
+        return ans;
+    }
+```	
+more understandable version
+```cpp
+    int dp[9][256]={};
+    int maxStudents(vector<vector<char>>& seats) {
+        int m=seats.size(),n=seats[0].size(); //m row, n col
+        //bitmask
+        //0 rows, we get 0 people. dp[i,state] represent the max students for i rows and state
+        vector<int> s(m);
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++) s[i] |= seats[i][j]=='.'?(1<<j):0;
+        } //we do not need seats anymore
+        memset(dp,-1,9*256*sizeof(int));
+        return backtrack(s,0,0,n);
+    }
+    int backtrack(vector<int>& s,int premask,int row,int n){
+        if(row==s.size()) return 0; //no more rows
+        if(dp[row][premask]>=0) return dp[row][premask];
+        int ans=0;
+        
+        for(int i=0;i<(1<<n);i++){
+            //state shall be compatible with s[i] and premask
+            if(!valid(s[row],i,premask)) continue;
+            //cout<<"row: "<<row<<" "<<bitset<8>(i).to_string()<<endl;
+            ans=max(ans,nbits(i)+backtrack(s,i,row+1,n));
+        }
+        return dp[row][premask]=ans;
+    }
+    bool valid(int seat,int mask,int premask){
+        bitset<8> a(seat),b(mask),c(premask);
+        //b cannot have adjacent set bit
+        for(int i=0;i<8;i++){
+            if(!a[i] && b[i]) return 0;
+            if(b[i] && ((i&&(c[i-1]||b[i-1])) || (i+1<8 && (c[i+1]||b[i+1])))) return 0;
+        }
+        return 1;
+    }
+    int nbits(int n){
+        return bitset<8>(n).count();
+    }
+```
+	
 ## contest 177
 
 ### 1351. Count Negative Numbers in a Sorted Matrix
@@ -16751,6 +17122,20 @@ this goes to: (2s-t)%(s-t)
     }
 ```	
 complexity O(nlogn)
+
+For example, target = [max, a1, a2]. Here is the standard backtracking:
+
+Subtract the largest with the rest of the array, we have the previous array target = [max-(a1+a2), a1, a2].
+But the value of max is so large, that max-(a1+a2) is still the largest number in the array.
+So we continue to subtract the largest, and we have a new previous array target = [max-2*(a1+a2), a1, a2].
+But the value of max is so large, that max-2*(a1+a2) is still the largest number in the array.
+Repeat 1-4...
+
+After n iterations, we have a new array target = [max-n*(a1+a2), a1, a2], where max-n*(a1+a2) is not the largest any more.
+
+Can we accelerate the process?
+Yes.
+We have max-n*(a1+a2) = max % (a1+a2). That is how the % works.
 
 The max drops to 1 exponentially, using max_element will be O(N)
 ```cpp
@@ -17596,6 +17981,12 @@ This is a dp problem, but I cannot get it correct yet.
 - less(s,evil)=less(s)-less_has(s,evil)
 - less(s) is easy to solve
 - less_has(s,evil) evil string will divide the problem into two subproblem.
+
+For those strings <= s, and of same length as s,
+a: counts the number of strings t, with prefix = evil, i.e. t = evil + t[len(evil):].
+b: counts the number of strings t, such that t[1:] contains evil.
+c: counts the number of strings t with prefix = evil, and t[1:] contains evil.
+By incllusion exclusion principle: helper(s) = a + b - c.
 
 ```cpp
     int mod = 1e9+7, m;
@@ -25045,8 +25436,419 @@ actually it is pretty straightforward, just build the union-find from small edge
     }
 ```	
 
+## contest 221
+
+1704. Determine if String Halves Are Alike
+split into two equal half and count the number of vowels.
+trivial
+
+1705. Maximum Number of Eaten Apples
+<em>
+There is a special kind of apple tree that grows apples every day for n days. On the ith day, the tree grows apples[i] apples that will rot after days[i] days, that is on day i + days[i] the apples will be rotten and cannot be eaten. On some days, the apple tree does not grow any apples, which are denoted by apples[i] == 0 and days[i] == 0.
+
+You decided to eat at most one apple a day (to keep the doctors away). Note that you can keep eating after the first n days.
+
+Given two integer arrays days and apples of length n, return the maximum number of apples you can eat.
+</em>
+
+This is very tricky to get it right.
+
+first intuition: interval problem using map and prefix sum.
+more complexity: you eat one apple a day, which reduces the sum. To decide how many apples you can eat between one interval, we need both information
+case 1: day 1 grows one apple, so we can eat one. we can always count previous and make the first day to the 2nd interval.
+since the last time value always <=0, so this shall be fine.
+using this approach is very hard to get it right.
+
+using priority_queue and greedy approach could be better. Each day, you eat the one closest to rotten.
+
+use i<n || pq.size() for loop condition since pq could be empty while i<n
+
+```cpp
+    typedef pair<int, int> P; // {last date before expiration, number of apples}
+    int eatenApples(vector<int>& apples, vector<int>& days) {
+        int ans = 0, n = apples.size();
+		// min heap, the pair with the smallest expiration date is on the top
+        priority_queue<P, vector<P>, greater<P>> que;
+        int i = 0;
+        while(i < n || que.size()){
+			// add today's apples
+            if(i < n && apples[i] > 0) que.push({i + days[i] - 1, apples[i]});
+			
+			// remove outdate apples
+            while(que.size() && que.top().first < i) que.pop();
+			
+			// get the apple that can be eat today
+            if(que.size()){
+                auto p = que.top();
+                que.pop();
+                if(p.second > 1) que.push({p.first, p.second - 1});
+                ++ans;
+            }
+            
+            ++i;
+        }
+        return ans;
+    }
+```
+
+1706. Where Will the Ball Fall
+<em>
+You have a 2-D grid of size m x n representing a box, and you have n balls. The box is open on the top and bottom sides.
+
+Each cell in the box has a diagonal board spanning two corners of the cell that can redirect a ball to the right or to the left.
+
+A board that redirects the ball to the right spans the top-left corner to the bottom-right corner and is represented in the grid as 1.
+A board that redirects the ball to the left spans the top-right corner to the bottom-left corner and is represented in the grid as -1.
+We drop one ball at the top of each column of the box. Each ball can get stuck in the box or fall out of the bottom. A ball gets stuck if it hits a "V" shaped pattern between two boards or if a board redirects the ball into either wall of the box.
+
+Return an array answer of size n where answer[i] is the column that the ball falls out of at the bottom after dropping the ball from the ith column at the top, or -1 if the ball gets stuck in the box.
+</em>
+
+Similarly we upscaled the grid by 3x3 and then do dfs/bfs
+then we drop the ball at 3*i+1 (which is an empty slot)
+```cpp
+vector<pair<int, int>> dir{{1, 0}, {0, -1}, {0, 1}};
+int drop(int pos, vector<vector<int>> &ug, int m, int n) {
+    queue<pair<int, int>> q;
+    q.push({0, pos});
+    while (!q.empty()) {
+        auto [i, j] = q.front();
+        q.pop();
+        if (i == m - 1)
+            return j / 3;
+        ug[i][j] = 1;
+        for (auto [di, dj] : dir)
+            if (j + dj >= 0 && j + dj < n && !ug[i + di][j + dj]) {
+                q.push({i + di, j + dj});
+                break;
+            }
+    }
+    return -1;
+}
+vector<int> findBall(vector<vector<int>>& g) {
+    int m = g.size(), n = g[0].size();
+    vector<vector<int>> ug(m * 3, vector<int>(n * 3));
+    for (auto i = 0; i < m; ++i)
+        for (auto j = 0; j < n; ++j) {
+            ug[i * 3 + 1][j * 3 + 1] = 1;
+            ug[i * 3][j * 3] = ug[i * 3 + 2][j * 3 + 2] = g[i][j] == 1;
+            ug[i * 3][j * 3 + 2] = ug[i * 3 + 2][j * 3] = g[i][j] != 1;
+        }
+    vector<int> res;
+    for (auto i = 0; i < n; ++i) {
+        res.push_back(drop(i * 3 + 1, ug, m * 3, n * 3));
+    }
+    return res;
+}
+```
+
+1707. Maximum XOR With an Element From Array
+<em>
+You are given an array nums consisting of non-negative integers. You are also given a queries array, where queries[i] = [xi, mi].
+
+The answer to the ith query is the maximum bitwise XOR value of xi and any element of nums that does not exceed mi. In other words, the answer is max(nums[j] XOR xi) for all j such that nums[j] <= mi. If all elements in nums are larger than mi, then the answer is -1.
+
+Return an integer array answer where answer.length == queries.length and answer[i] is the answer to the ith query
+</em>
+
+intuition using trie supporting 0 and 1, 0 on the left and 1 on right, which is basically a tree.
+
+- build the tree with 32 bits MSB first.
+- search using num and mi. this is the tricky part.
+if !current bit  present, then we go that branch, (xor will get 1)
+else we goes that branch (xor will get 0)
+
+```cpp
+class Solution {
+    
+    class TreeNode {
+    public:
+        TreeNode* next[2];
+        TreeNode () {next[0] = nullptr; next[1] = nullptr;};
+    };
+    TreeNode* buildTree(vector<int>& nums) {
+        TreeNode* root = new TreeNode(), *cur;
+        int n = nums.size();
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            cur = root;
+            for (int j = 31; j >= 0; j--) {
+                int index = ((num >> j) & 1);
+                if (cur->next[index] == nullptr)
+                    cur->next[index] = new TreeNode();
+                cur = cur->next[index];
+            }
+        }
+        return root;
+    }
+    
+    int dfs(TreeNode* root, int x, int limit, int value, int height) {
+        if (value > limit) return -1;
+        
+        if (height == -1) return x^value;
+        
+        int bit_x = (x >> height) & 1;
+        
+        if (root->next[1-bit_x] != nullptr) {
+            int v = dfs(root->next[1-bit_x], x, limit, (value | ((1-bit_x) << height)), height-1);
+            if (v >= 0) return v;
+        }
+        if (root->next[bit_x] != nullptr) {
+            int v = dfs(root->next[bit_x], x, limit, (value | (bit_x << height)), height-1);
+            if (v >= 0) return v;
+        }
+        
+        return -1;
+    }
+    
+public:
+    vector<int> maximizeXor(vector<int>& nums, vector<vector<int>>& queries) {
+        vector<int> ans;
+        TreeNode* root = buildTree(nums);
+        
+        for (const vector<int>& query : queries) {            
+            int tmp = dfs(root, query[0], query[1], 0, 31);
+            ans.push_back(tmp);
+        }
+        
+        return ans;
+    }
+};
+```
 
 
+1363. Largest Multiple of Three
+<em>
+Given an integer array of digits, return the largest multiple of three that can be formed by concatenating some of the given digits in any order.
+
+Since the answer may not fit in an integer data type, return the answer as a string.
+
+If there is no answer return an empty string.
+</em>
+
+using math:
+```cpp    
+string largestMultipleOfThree(vector<int>& digits) {
+        //multiple of 3: sum(a[i]*10^i)%3==0, 10^i%3==1
+        //so the requirement is sum(a[i])%3=0
+        string ans;
+        int n=digits.size();
+        sort(digits.rbegin(),digits.rend());
+        int sum=0;
+        int cnt[3]={0};
+        vector<int> rem(n);
+        for(int i=0;i<digits.size();i++) {sum+=digits[i]%3;cnt[digits[i]%3]++;rem[i]=digits[i]%3;}
+        sum%=3;
+        //sum=0: take all, sum=1, 
+        if(sum==0){
+            for(int i=digits.size()-1;i>=0;i--) ans+='0'+digits[i];
+            while(ans.size() && ans.back()=='0') ans.pop_back();
+            if(ans.empty()) return "0";
+            reverse(begin(ans),end(ans));
+            return ans;
+        }
+        else if(sum==1){ //remove smallest rem==1 digits, or 2+2
+            if(cnt[1]){
+                int rm=1;
+                for(int i=digits.size()-1;i>=0;i--){
+                    if(rem[i]==1 && rm) rm--;
+                    else ans+='0'+digits[i];
+                }
+                //reverse(ans.begin(),ans.end());
+            }
+            else if(cnt[2]>1){
+                int rm=2;
+                for(int i=digits.size()-1;i>=0;i--){
+                    if(rem[i]==2 && rm) rm--;
+                    else ans+='0'+digits[i];
+                }
+                //reverse(ans.begin(),ans.end());
+            }
+            
+        }
+        else { //total==2, remove smallest rem==2 digits,  2 or 1+1 whichever comes first
+            if(cnt[2]){
+                int rm=1;
+                for(int i=digits.size()-1;i>=0;i--){
+                    if(rem[i]==2 && rm) rm--;
+                    else ans+='0'+digits[i];
+                }
+                //reverse(ans.begin(),ans.end());
+            }
+            else if(cnt[1]>1){
+                int rm=2;
+                for(int i=digits.size()-1;i>=0;i--){
+                    if(rem[i]==1 && rm) rm--;
+                    else ans+='0'+digits[i];
+                }
+                //reverse(ans.begin(),ans.end());
+            }
+            
+        }
+        if(ans.empty()) return ans;
+        while(ans.size() && ans.back()=='0') ans.pop_back();
+        if(ans.empty()) return "0";
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+```
+
+using dp: dp[3] represent the max number with %3=0,1,2
+d%3==0, you can append the digit to 0,1,2
+d%3=1: 	add dp[0] to dp[1],choose which one is max.
+```
+    def largestMultipleOfThree(self, digits):
+        dp = [-1,-1,-1]
+        for a in sorted(digits)[::-1]:
+            for x in dp[:] + [0]:
+                y = x * 10 + a
+                dp[y % 3] = max(dp[y % 3], y)
+        return str(dp[0]) if dp[0] >= 0 else ""
+```
+		
+1362. Closest Divisors
+<em>
+Given an integer num, find the closest two integers in absolute difference whose product equals num + 1 or num + 2.
+
+Return the two integers in any order.
+</em>
+
+math equation
+```
+    vector<int> closestDivisors(int n) {
+        //ab=n+1 or ab=n+2, |a-b| is smallest
+        //a-b=m a=m+b a*b=b*(m+b)
+        //b^2+mb-(n+1)
+        //m^2-4*(n+1) must be a square number, m is minimized
+        //m^2>4(n+1) or 4(n+2)
+        long x=2*sqrt(n+1),y=2*sqrt(n+2);
+        //find the min 
+        for(long i=0;;i++){
+            long dx2=i*i+4l*(n+1),dy2=i*i+4l*(n+2);
+            long dx=sqrt(dx2),dy=sqrt(dy2);
+            if(dx*dx==dx2) {
+                int ans=(dx-i)/2;
+                return {ans,ans+i};
+            }
+            if(dy*dy==dy2){
+                int ans=(dy-i)/2;
+                return {ans,ans+i};
+            }
+        }
+    }
+```
+or computer science way:
+```cpp
+    vector<int> closestDivisors(int x) {
+        for (int a = sqrt(x + 2); a > 0; --a) {
+            if ((x + 1) % a == 0)
+                return {a, (x + 1) / a};
+            if ((x + 2) % a == 0)
+                return {a, (x + 2) / a};
+        }
+        return {};
+    }
+```
+
+1361. Validate Binary Tree Nodes
+<em>
+You have n binary tree nodes numbered from 0 to n - 1 where node i has two children leftChild[i] and rightChild[i], return true if and only if all the given nodes form exactly one valid binary tree.
+
+If node i has no left child then leftChild[i] will equal -1, similarly for the right child.
+
+Note that the nodes have no values and that we only use the node numbers in this problem.
+</em>
+
+```cpp
+    bool validateBinaryTreeNodes(int n, vector<int>& leftChild, vector<int>& rightChild) {
+        //valid binary tree has only one parent, and n-1 edges
+        vector<vector<int>> edges;
+        for(int i=0;i<n;i++) {
+            if(leftChild[i]>=0) edges.push_back({i,leftChild[i]});
+            if(rightChild[i]>=0) edges.push_back({i,rightChild[i]});
+        }
+        if(edges.size()!=n-1) return 0;
+        //check if each have one parent
+        unordered_map<int,int> parent;
+        for(auto e: edges){
+            if(parent.count(e[1])) return 0; //seen the parent
+            parent[e[1]]=e[0];
+        }
+        return 1;
+    }
+```
+
+1360. Number of Days Between Two Dates
+```cpp
+        int daysBetweenDates(string date1, string date2) {
+            return abs(date_to_int(date2) - date_to_int(date1));
+        }
+        
+    protected:
+        int date_to_int(string s_date)
+        {
+            int Y = stoi(s_date.substr(0, 4));
+            int M = stoi(s_date.substr(5, 2));
+            int D = stoi(s_date.substr(8, 2));
+            
+            int date = 0;
+            for(int y = 1971; y < Y; ++y) date += is_leap_year(y) ? 366 : 365;
+            for(int m = 1; m < M; ++m) date += days_in_month(m, Y);
+            return date + D;
+        }
+        
+        bool is_leap_year(int year)
+        {
+            return (year %4  == 0 && year % 100 != 0) || year % 400 == 0;
+        }
+        
+        int days_in_month(int m, int year)
+        { 
+            if(m==1 || m==3 || m==5 || m==7 || m==8 || m==10 || m==12 ) return 31;
+            if(m==2) return is_leap_year(year) ? 29 : 28;
+            return 30;
+        }
+```		
+ 	
+
+1320. Minimum Distance to Type a Word Using Two Fingers
+<em>
+You have a keyboard layout as shown above in the XY plane, where each English uppercase letter is located at some coordinate, for example, the letter A is located at coordinate (0,0), the letter B is located at coordinate (0,1), the letter P is located at coordinate (2,3) and the letter Z is located at coordinate (4,1).
+
+Given the string word, return the minimum total distance to type such string using only two fingers. The distance between coordinates (x1,y1) and (x2,y2) is |x1 - x2| + |y1 - y2|. 
+
+Note that the initial positions of your two fingers are considered free so don't count towards your total distance, also your two fingers do not have to start at the first letter or the first two letters.
+</em>
+
+using left and right finger location as status.
+
+```cpp
+    int dp[300][26][26];
+    int minimumDistance(string word) {
+        int n=word.size();
+        memset(dp,-1,sizeof(dp));
+        return helper(word,0,0,0);
+    }
+    int helper(string& word,int start,char f1,char f2){
+        if(start>=word.size()) return 0;
+        if(f1&&f2&&dp[start][f1-'A'][f2-'A']>=0) return dp[start][f1-'A'][f2-'A'];
+        char c=word[start];
+        int ans=min(dist(f1,c)+helper(word,start+1,c,f2),dist(f2,c)+helper(word,start+1,f1,c));
+        if(f1 && f2)
+            dp[start][f1-'A'][f2-'A']=ans;
+        return ans;
+    }
+    int dist(char a,char b){
+        if(!a || !b) return 0; //
+        int i=a-'A',j=b-'A';
+        return abs(i/6-j/6)+abs(i%6-j%6);
+    }
+```
+
+process the base is tricky: we just set first left and right finger to undefined location, and then process them separately.
+
+
+	
 
 
 
