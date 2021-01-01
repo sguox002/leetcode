@@ -1147,6 +1147,7 @@ greedy: try the shortest edge first.
 <em>Problem: Given a string S, return the number of substrings that have only one distinct letter.</em>
 idea: find the same char region i,j and the number of subarray is len*(len+1) len=j-i;
 two pointers.
+
 ### 1181. Before and After Puzzle (***)
 <em>Problem:
 
@@ -1228,7 +1229,9 @@ for example [0,0] can be translated horizontally or veritcally.
 we sort it according to its number and fill them first.
 - we can also use a min heap to pop non-needed elements.
 see other O(1) solutions in discussion on the site.
+
 ## biweek 9
+
 ### 1196. How Many Apples Can You Put into the Basket (*)
 <em>Problem:
 
@@ -1359,8 +1362,11 @@ the [1,2] merge with split, got max 3
     }
 ```
 ## biweek 10
+
 ### 1213. Intersection of Three Sorted Arrays (***)
-*Given three integer arrays arr1, arr2 and arr3 sorted in strictly increasing order, return a sorted array of only the integers that appeared in all three arrays.*
+
+<em>Given three integer arrays arr1, arr2 and arr3 sorted in strictly increasing order, return a sorted array of only the integers that appeared in all three arrays.*
+</em>
 
 idea: this can be expanded to a matrix. using k pointers. just like merge sort.
 ```cpp
@@ -1378,47 +1384,44 @@ idea: this can be expanded to a matrix. using k pointers. just like merge sort.
     }
 ```	
 ### 1214. Two Sum BSTs (**)
-*Problem: Given two binary search trees, return True if and only if there is a node in the first tree and a node in the second tree whose values sum up to a given integer target.*
-
+<em>Problem: Given two binary search trees, return True if and only if there is a node in the first tree and a node in the second tree whose values sum up to a given integer target.*
+</em>
 idea: traverse bst1 and store in hashset, and then traverse tree 2 and do the find.
 
 ### 1215. Stepping Numbers (***)
-* Problem: A Stepping Number is an integer such that all of its adjacent digits have an absolute difference of exactly 1. For example, 321 is a Stepping Number while 421 is not.
+<em> Problem: A Stepping Number is an integer such that all of its adjacent digits have an absolute difference of exactly 1. For example, 321 is a Stepping Number while 421 is not.
 
 Given two integers low and high, find and return a sorted list of all the Stepping Numbers in the range [low, high] inclusive.*
+</em>
 
 idea: typical backtracking, but need make sure 0 is exception for leading 0. Also when we add a digit, int will overflow so use long.
 ```cpp
     vector<int> countSteppingNumbers(int low, int high) {
-        vector<int> res;
-        if(low == 0) res.push_back(0);
-        for(int i = 1; i < 10; i++){
-            helper(low, high, i, res);
-        }
-        sort(res.begin(), res.end());
-        return res;
+        vector<int> ans;
+        if(low==0) ans.push_back(0);
+        for(int i=1;i<10;i++)
+            backtrack(low,high,i,ans);
+        sort(ans.begin(),ans.end());
+        return ans;
     }
-    /* We use long int so that we do not have to use overflow check for cur value*/
-    void helper(int low, int high, long int cur, vector<int> &res){
-        if(cur > high) return;
-        if(cur >= low) res.push_back(cur);
+    void backtrack(int low,int high,long t,vector<int>& ans){
+        if(t>high) return;
+        if(t>=low && t<=high) ans.push_back(t);
+        int d=t%10;//last digit
+        if(d) backtrack(low,high,t*10+d-1,ans);
+        if(d<9) backtrack(low,high,t*10+d+1,ans);
         
-        int last = cur%10;
-        long int next = cur*10+last+1;
-        long int prev = cur*10+last-1;
-        
-        if(last != 0) helper(low, high, prev, res);
-        if(last != 9) helper(low, high, next, res);
     }
 ```
 - use long for intermediate
 - deal with 0
 	
 ### 1216. Valid Palindrome III
+<em>
 *Problem: Given a string s and an integer k, find out if the given string is a K-Palindrome or not.
 
 A string is K-Palindrome if it can be transformed into a palindrome by removing at most k characters from it.*
-
+</em>
 idea: equiv to longest common subsequence of s and reversed s. That's the critical point.
 
 ```cpp
@@ -1532,13 +1535,80 @@ rectangle reduces to a point  ---> hasships
 
 ## biweek 12
 ### 1243. Array Transformation (**)
-just check if we have operations
+<em>
+Given an initial array arr, every day you produce a new array using the array of the previous day.
 
+On the i-th day, you do the following operations on the array of day i-1 to produce the array of day i:
+
+If an element is smaller than both its left neighbor and its right neighbor, then this element is incremented.
+If an element is bigger than both its left neighbor and its right neighbor, then this element is decremented.
+The first and last elements never change.
+After some days, the array does not change. Return that final array.
+</em>
+
+just check if we have operations
+```cpp
+    vector<int> transformArray(vector<int>& arr) {
+        int n=arr.size();
+        bool done=0;
+        vector<int> ans=arr;
+        while(!done){
+            for(int i=1;i<n-1;i++){
+                if(arr[i]>max(arr[i-1],arr[i+1])){
+                    ans[i]--;
+                }
+                else if(arr[i]<min(arr[i-1],arr[i+1])){
+                    ans[i]++;
+                }
+            }
+            if(ans==arr) done=1;
+            arr=ans;
+        }
+        return ans;
+    }
+```
+	
 ### 1244. Design A Leaderboard (**)
+<em>
+Design a Leaderboard class, which has 3 functions:
+
+addScore(playerId, score): Update the leaderboard by adding score to the given player's score. If there is no player with such id in the leaderboard, add him to the leaderboard with the given score.
+top(K): Return the score sum of the top K players.
+reset(playerId): Reset the score of the player with the given id to 0 (in other words erase it from the leaderboard). It is guaranteed that the player was added to the leaderboard before calling this function.
+</em>
+
 using a hashmap to record the scores and reset
 using a pq to get the k highest score
-
+```cpp
+    map<int,int> mp; //sorted by score
+    Leaderboard() {
+        
+    }
+    
+    void addScore(int playerId, int score) {
+        mp[playerId]+=score;
+    }
+    
+    int top(int K) {
+        int ans=0;
+        priority_queue<int> pq;
+        for(auto t: mp) pq.push(t.second);
+        while(K--) ans+=pq.top(),pq.pop();
+        return ans;
+    }
+    
+    void reset(int playerId) {
+        mp[playerId]=0;
+    }
+```
+	
 ### 1245. Tree Diameter (*****)
+<em>
+Given an undirected tree, return its diameter: the number of edges in a longest path in that tree.
+
+The tree is given as an array of edges where edges[i] = [u, v] is a bidirectional edge between nodes u and v.  Each node has labels in the set {0, 1, ..., edges.length}.
+</em>
+
 this is not a easy tree problem.
 several points to know:
 - a tree has n-1 edges and n nodes.
@@ -1583,9 +1653,11 @@ attention:
 - if visited return 0 (it just prevent going back, and we shall use min so that we do not mess up the max and 2nd max)
 
 ### 1246. Palindrome Removal (*****)
+<em>
 Given an integer array arr, in one move you can select a palindromic subarray arr[i], arr[i+1], ..., arr[j] where i <= j, and remove that subarray from the given array. Note that after removing a subarray, the elements on the left and on the right of that subarray move to fill the gap left by the removal.
 
 Return the minimum number of moves needed to remove all numbers from the array.
+</em>
 
 this is a hard dp problem.
 a string can have multiple palindrome substr, we can remove one of it and leaves a smaller size subproblem. But this is generally not a correct way since it involves changing of the array.
@@ -10608,7 +10680,9 @@ from root to leaf and dfs to get the string
             if(ans.size())ans=min(ans,t);else ans=t;
         }
     }
-```    ## contest 123
+```    
+
+## contest 123
 
 989. Add to Array-Form of Integer.md
 
@@ -13413,6 +13487,7 @@ dp problem with extra complexity.
 ```
 
 ## contest 152
+
 ### 1175. Prime Arrangement (***)
 <em>Problem:
 
@@ -13530,7 +13605,8 @@ up to 10^9 which is too high complexity.
 	- build puzzle or word? for word
 	- word need remove duplicates and sorted
 	- word may have duplicates after preprocessing, need save count and hashset.
-	```cpp
+
+```cpp
 	    struct TrieNode{
         TrieNode* child[26];
         int count;
@@ -13590,9 +13666,43 @@ Return the shortest distance between the given start and destination stops.
 idea: it is a cycle, we just compare start-end distance and total-start,end distance, make sure start<end
 
 ### 1185. Day of the week (**)
+
 - use built in date functions
 - known today's weekday and calculate how many days between given date and today. and %7. We need to know how to get the leap year.
-
+```cpp
+    int daysOfMonth[2][12] = {
+        31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    string weekName[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+    bool isleapyear(int year)
+    {
+        return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0));
+    }
+    int daystill1971(int year, int month, int day)
+    {
+        int count = 0;
+        int year1 = 1970, month1 = 1, day1 = 1;
+        while (year1 != year)
+        {
+            bool b = isleapyear(year1);
+            if (b) count += 366;
+            else count += 365;
+            year1++;
+        }
+        int b = isleapyear(year1) ? 0 : 1;
+        for (int i = 0; i < month - 1; i++) count += daysOfMonth[b][i];
+        count += day - 1;
+        return count;
+    }
+    string dayOfTheWeek(int day, int month, int year) {
+        int days1 = daystill1971(2019, 9, 8);//today(2019,9,8) is Sunday
+        int days2 = daystill1971(year, month, day);
+        int days = (((days2 - days1) % 7) + 7) % 7;//Number of days off
+        return weekName[days];
+    }
+```
+	
 ### 1186. Maximum Subarray Sum with One Deletion (****)
 <em>Problem:
 
@@ -13699,7 +13809,9 @@ using LIS, we only need to calculate the number of changes from j+1 to i-1.
 ```
 - it checks if replace all the element from start+1 to end-1 if arr2 has all the elements.
 - the check function is quite hard to understand.
+
 ## contest 154
+
 1189. Maximum Number of Balloons (**)
 <em>Problem:
 Given a string text, you want to use the characters of text to form as many instances of the word "balloon" as possible.
@@ -13811,7 +13923,7 @@ Return all critical connections in the network in any order.
 idea:
 - brutal force: loop to union find the edge without current one to see if it combines one set.
 it surely get TLE since the number of edges up to 10^5, and union find is O(N) and the complexity would be O(N^2)
-without path suppresion, it is higher.
+without path suppression, it is higher.
 ```cpp
     vector<int> parent;
     int sz;
@@ -13847,7 +13959,7 @@ if we use dfs to traverse, using visited states, we are able to find if there is
 if there is one or more cycles, all those edges in the cycles need to be discarded.
 so we need find a way to mark edges in each cycle.
 we can mark our visit time:
-
+      
 0 - 2
  \  /
   1 - 3
@@ -14116,6 +14228,7 @@ vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& bef
 }
 ```
 - note: why we need to start from right to do topsort? because all nodes>n-1 are added nodes which are the source/dest nodes for the groups
+
 ### contest 156
 
 ### 1207. Unique Number of Occurrences (*)
@@ -14155,9 +14268,17 @@ idea:
 ```	
 
 ### 1209. Remove All Adjacent Duplicates in String II (**)
-<em>Problem:
+<em>
+Problem:
+Given a string s, a k duplicate removal consists of choosing k adjacent and equal letters from s and removing them causing the left and the right side of the deleted substring to concatenate together.
 
-remove k repeated chars until we cannot. return the final string.</em>
+We repeatedly make k duplicate removals on s until we no longer can.
+
+Return the final string after all such duplicate removals have been made.
+
+It is guaranteed that the answer is unique.
+
+</em>
 
 idea:
 
@@ -14189,6 +14310,7 @@ idea:
 ```	
 
 ### 1210. Minimum Moves to Reach Target with Rotations (****)
+
 <em>Problem:
 
 In an n*n grid, there is a snake that spans 2 cells and starts moving from the top left corner at (0, 0) and (0, 1). The grid has empty cells represented by zeros and blocked cells represented by ones. The snake wants to reach the lower right corner at (n-1, n-2) and (n-1, n-1).
@@ -14203,6 +14325,7 @@ In one move the snake can:
 Return the minimum number of moves to reach the target.
 
 If there is no way to reach the target, return -1.</em>
+</em>
 
 idea:
 - typical bfs problem.
@@ -14264,9 +14387,13 @@ idea:
         }
         return -1;
     }
-```## contest 157
+```
+
+## contest 157
+
 ### 1217. Play with Chips (***)
-_Problem: 
+
+<em>Problem: 
 
 There are some chips, and the i-th chip is at position chips[i].
 
@@ -14277,6 +14404,7 @@ Move the i-th chip by 1 unit to the left or to the right with a cost of 1.
 There can be two or more chips at the same position initially.
 
 Return the minimum cost needed to move all the chips to the same position (any position)._
+</em>
 
 Approach:
 
@@ -14315,6 +14443,7 @@ idea: dp with hashmap. note: you cannot sort or alter the array.
 ```
 	
 ### 1219. Path with Maximum Gold (***)
+<em>
 *Problem: In a gold mine grid of size m * n, each cell in this mine has an integer representing the amount of gold in that cell, 0 if it is empty.
 
 Return the maximum amount of gold you can collect under the conditions:
@@ -14324,6 +14453,7 @@ Every time you are located in a cell you will collect all the gold in that cell.
 - You can't visit the same cell more than once.
 - Never visit a cell with 0 gold.
 - You can start and stop collecting gold from any position in the grid that has some gold.*
+</em>
 
 idea:
 so 0 is actually obstacle you cannot go. and you cannot visit the cell again
@@ -14358,6 +14488,7 @@ so 0 is actually obstacle you cannot go. and you cannot visit the cell again
 	
 
 ### 1220. Count Vowels Permutation (****)
+<em>
 Given an integer n, your task is to count how many strings of length n can be formed under the following rules:
 
 Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
@@ -14367,6 +14498,7 @@ Each vowel 'i' may not be followed by another 'i'.
 Each vowel 'o' may only be followed by an 'i' or a 'u'.
 Each vowel 'u' may only be followed by an 'a'.
 Since the answer may be too large, return it modulo 10^9 + 7.
+</em>
 
 this is similar to the phone number problem.
 a->e.
@@ -14400,7 +14532,9 @@ dp problem: dp is easier if we think it reverse, not follow but previous.
         return t;
     }
 ```
-	## contest 158
+
+## contest 158
+	
 ### 1221. Split a String in Balanced Strings3 (**)
 Balanced strings are those who have equal quantity of 'L' and 'R' characters.
 
@@ -14411,18 +14545,61 @@ Return the maximum amount of splitted balanced strings.
 using stack
 
 ### 1222. Queens That Can Attack the King (**)
+<em>
 On an 8x8 chessboard, there can be multiple Black Queens and one White King.
 
 Given an array of integer coordinates queens that represents the positions of the Black Queens, and a pair of coordinates king that represent the position of the White King, return the coordinates of all the queens (in any order) that can attack the King.
+</em>
+
 idea: same row/col/diagonal/anti-diagonal and direct contect with the king
 brutal force is fine. find the king position and extend 8 directions.
-
+```cpp
+    vector<vector<int>> queensAttacktheKing(vector<vector<int>>& queens, vector<int>& king) {
+        vector<vector<int>> ans;
+        //same row and same col, diagonal, anti-diagonal
+        int x=king[0],y=king[1];
+        set<pair<int,int>> row,col,diag,diag1;
+        for(int i=0;i<queens.size();i++){
+            int dx=queens[i][0]-x,dy=queens[i][1]-y;
+            if(!dy) row.insert({i,dx});
+            if(!dx) col.insert({i,dy});
+            if(dx && dx==dy) diag.insert({i,dx});
+            if(dx && dx==-dy) diag1.insert({i,dx});
+        }
+        //the last < and first >
+        helper(row,queens,ans);
+        helper(col,queens,ans);
+        helper(diag,queens,ans);
+        helper(diag1,queens,ans);
+        return ans;
+    }
+    
+    void helper(set<pair<int,int>>& row,vector<vector<int>>& queens,vector<vector<int>>& ans){
+        int mn=10,mx=-10,ind0=-1,ind1=-1;
+        for(auto t: row){
+            if(t.second<0){
+                mx=max(mx,t.second);
+                if(mx==t.second) ind0=t.first;
+            }
+            else{
+                mn=min(mn,t.second);
+                if(mn==t.second) ind1=t.first;
+            }
+        }
+        if(ind0>=0) ans.push_back(queens[ind0]);
+        if(ind1>=0) ans.push_back(queens[ind1]);        
+    }
+```
+	
 ### 1223. Dice Roll Simulation (****)
+<em>
 A die simulator generates a random number from 1 to 6 for each roll. You introduced a constraint to the generator such that it cannot roll the number i more than rollMax[i] (1-indexed) consecutive times. 
 
 Given an array of integers rollMax and an integer n, return the number of distinct sequences that can be obtained with exact n rolls.
 
 Two sequences are considered different if at least one element differs from each other. Since the answer may be too large, return it modulo 10^9 + 7.
+rollMax[i]<16
+</em>
 
 typical dp problem:
 n = 2, rollMax = [1,1,2,2,2,3]
@@ -14477,9 +14654,11 @@ actually this is a 3d dp problem with repeat 1,2,3,4,....rmax. (rmax<n need proc
 ```
 	
 ### 1224. Maximum Equal Frequency (***)
+<em>
 Given an array nums of positive integers, return the longest possible length of an array prefix of nums, such that it is possible to remove exactly one element from this prefix so that every number that has appeared in it will have the same number of occurrences.
 
 If after removing one element there are no remaining elements, it's still considered that every appeared number has the same number of ocurrences (0).
+</em>
 
 hashmap
 one by one to build the map and check if it is valid, if valid update the max len.
@@ -14515,10 +14694,35 @@ a bit tricky checking valid: convert to hashset, it shall have two elements.
 this problem shall be rated as medium instead of hard.
 	
 ## contest 159
-### 1232. Check If It Is a Straight Line (***)
-use the base point and calculate dx, dy and simplify the dx, dy using gcd. and using dx_dy as a string to store into a hashset
 
+### 1232. Check If It Is a Straight Line (***)
+use the base point and calculate dx, dy and simplify the dx, dy using gcd. and using dx_dy as a string to store into a hashset (no duplicate points)
+```cpp
+    bool checkStraightLine(vector<vector<int>>& coordinates) {
+        //
+        int x0=coordinates[0][0],y0=coordinates[0][1];
+        unordered_set<string> ms;
+        for(int i=1;i<coordinates.size();i++){
+            int x=coordinates[i][0],y=coordinates[i][1];
+            int dx=x-x0,dy=y-y0;
+            //cout<<__gcd(dx,dy)<<endl;
+            int t=__gcd(dx,dy);
+            ms.insert(to_string(dx/t)+","+to_string(dy/t));
+            if(ms.size()>1) return 0;
+        }
+        return 1;
+    }
+```
+	
 ### 1233. Remove Sub-Folders from the Filesystem (****)
+<em>
+Given a list of folders, remove all sub-folders in those folders and return in any order the folders after removing.
+
+If a folder[i] is located within another folder[j], it is called a sub-folder of it.
+
+The format of a path is one or more concatenated strings of the form: / followed by one or more lowercase English letters. For example, /leetcode and /leetcode/problems are valid paths while an empty string and / are not.
+</em>
+
 given a list of folders, remove all those subfolders
 observation:
 - subfolder will be longer than its parent folders, so we can sort the input by length
@@ -14566,7 +14770,26 @@ observation:
         return ans;
     }
 ```
+non-trie using lexi order sort:
+```cpp
+    vector<string> removeSubfolders(vector<string>& folder) {
+        sort(begin(folder),end(folder));//sort lexi order
+        vector<string> ans;
+        int i=0,j=1;
+        ans.push_back(folder[0]);
+        while(j<folder.size()){
+            if(folder[j].substr(0,folder[i].size())==folder[i] && folder[j][folder[i].size()]=='/') j++;
+            else {
+                ans.push_back(folder[j]);
+                i=j++;
+            }
+        }
+        return ans;
+    }
+```	
+
 ### 1234. Replace the Substring for Balanced String (****)	
+<em>
 You are given a string containing only 4 kinds of characters 'Q', 'W', 'E' and 'R'.
 
 A string is said to be balanced if each of its characters appears n/4 times where n is the length of the string.
@@ -14574,6 +14797,7 @@ A string is said to be balanced if each of its characters appears n/4 times wher
 Return the minimum length of the substring that can be replaced with any other string of the same length to make the original string s balanced.
 
 Return 0 if the string is already balanced.
+</em>
 
 Note: it needs to replace a substring!!!!not any char. Very easy to misunderstand the question.
 idea: count each char's occurence. and subtract n/4. our goal is to make them all 0.
@@ -14657,10 +14881,52 @@ similar to knapsack problem
 ```
 	
 ## contest 160
-### 1237. Find Positive Integer Solution for a Given Equation (***)
-brutal force: try all combinations in the range for x, y and once we find a solution, break the internal loop (since f(x,y) is monotonic)
 
+### 1237. Find Positive Integer Solution for a Given Equation (***)
+<em>
+Given a function  f(x, y) and a value z, return all positive integer pairs x and y where f(x,y) == z.
+
+The function is constantly increasing, i.e.:
+
+f(x, y) < f(x + 1, y)
+f(x, y) < f(x, y + 1)
+The function interface is defined like this: 
+
+interface CustomFunction {
+public:
+  // Returns positive integer f(x, y) for any given positive integer x and y.
+  int f(int x, int y);
+};
+For custom testing purposes you're given an integer function_id and a target z as input, where function_id represent one function from an secret internal list, on the examples you'll know only two functions from the list.  
+
+You may return the solutions in any order.
+</em>
+
+brutal force: try all combinations in the range for x, y and once we find a solution, break the internal loop (since f(x,y) is monotonic)
+```cpp
+    vector<vector<int>> findSolution(CustomFunction& customfunction, int z) {
+        //2d binary search
+        vector<vector<int>> ans;
+        for(int x=1;x<=1000;x++){
+            for(int y=1;y<=1000;y++){
+                if(customfunction.f(x,y)==z){
+                    ans.push_back({x,y});
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+```
+	
 ### 1238. Circular Permutation in Binary Representation (***)
+<em>
+Given 2 integers n and start. Your task is return any permutation p of (0,1,2.....,2^n -1) such that :
+
+p[0] = start
+p[i] and p[i+1] differ by only one bit in their binary representation.
+p[0] and p[2^n -1] must also differ by only one bit in their binary representation.
+</em>
 gray code with any start.
 ```cpp
     vector<int> circularPermutation(int n, int start) {
@@ -14691,10 +14957,9 @@ using bitset using dp approach. only when the bit does not overlap can combine.
         int res = 0;
         for (auto& s : A) {
             bitset<26> a;
-            for (char c : s)
-                a.set(c - 'a');
+            for (char c : s) a.set(c - 'a');
             int n = a.count();
-            if (n < s.size()) continue;
+            if (n < s.size()) continue; //not a valid dictionary word.
 
             for (int i = dp.size() - 1; i >= 0; --i) {
                 bitset c = dp[i];
@@ -14706,8 +14971,32 @@ using bitset using dp approach. only when the bit does not overlap can combine.
         return res;
     }
 ```	
-
+using bitset:
+```cpp
+    int maxLength(vector<string>& arr) {
+        int n=arr.size(),m=1<<n;
+        int ans=0;
+        for(int i=1;i<m;i++){
+            ans=max(ans,getlen(arr,i));
+        }
+        return ans;
+    }
+    int getlen(vector<string>& arr,int bits){
+        string s;
+        for(int i=0;i<arr.size();i++){
+            if(bits & (1<<i)) s+=arr[i];
+        }
+        vector<int> cnt(26);
+        for(char c: s) {
+            if(++cnt[c-'a']>1) return 0;
+        }
+        return s.size();
+    }
+```
+	
 ### 1240. Tiling a Rectangle with the Fewest Squares
+<em>Given a rectangle of size n x m, find the minimum number of integer-sided squares that tile the rectangle.</em>
+
 code copied from geeksforgeeks
 ```cpp
     int dp[15][15];     
@@ -14765,10 +15054,12 @@ code copied from geeksforgeeks
 - 	
 
 ## contest 161
+
 ### 1247. Minimum Swaps to Make Strings Equal (****)
-You are given two strings s1 and s2 of equal length consisting of letters "x" and "y" only. Your task is to make these two strings equal to each other. You can swap any two characters that belong to different strings, which means: swap s1[i] and s2[j].
+<em>You are given two strings s1 and s2 of equal length consisting of letters "x" and "y" only. Your task is to make these two strings equal to each other. You can swap any two characters that belong to different strings, which means: swap s1[i] and s2[j].
 
 Return the minimum number of swaps required to make s1 and s2 equal, or return -1 if it is impossible to do so.
+</em>
 
 it is not simple at all.
 idea: 
@@ -25871,6 +26162,720 @@ using left and right finger location as status.
 ```
 
 process the base is tricky: we just set first left and right finger to undefined location, and then process them separately.
+
+
+### 1231. Divide Chocolate
+<em>
+You have one chocolate bar that consists of some chunks. Each chunk has its own sweetness given by the array sweetness.
+
+You want to share the chocolate with your K friends so you start cutting the chocolate bar into K+1 pieces using K cuts, each piece consists of some consecutive chunks.
+
+Being generous, you will eat the piece with the minimum total sweetness and give the other pieces to your friends.
+
+Find the maximum total sweetness of the piece you can get by cutting the chocolate bar optimally.
+</em>
+
+binary search, given the min sweetness and then divide.
+
+```cpp
+    int maximizeSweetness(vector<int>& sweetness, int K) {
+        //max the min sum
+        //binary search the right side.
+        int l=*min_element(sweetness.begin(),sweetness.end());
+        int r=accumulate(sweetness.begin(),sweetness.end(),0);
+        while(l<r){
+            int mid=l+(r-l+1)/2; //target sum
+            int num=getcuts(sweetness,mid);
+            //num<K we need reduce the sum
+            if(num<K+1) r=mid-1; //num<K too large, we need reduce
+            else l=mid; //>=K too small, we need increase
+        }
+        return l;
+    }
+    int getcuts(vector<int>& sw,int target){
+        int ans=0;
+        int sum=0;
+        for(int t: sw){
+            sum+=t;
+            if(sum>=target){
+                ans++;
+                sum=0;
+            }
+        }
+        //if(sum) ans++;
+        return ans;
+    }
+```
+
+### 1230. Toss Strange Coins
+<em>
+You have some coins.  The i-th coin has a probability prob[i] of facing heads when tossed.
+
+Return the probability that the number of coins facing heads equals target if you toss every coin exactly once.
+</em>
+
+dp[i,k] represents the probability for i coins, with k heads up.
+dp[i,k]=p*dp[i-1,k-1]+(1-p)*dp[i-1,k]: p is heads up and (1-p) is the prob for heads down.
+```cpp
+    double probabilityOfHeads(vector<double>& prob, int target) {
+        double ans=0;
+        int n=prob.size();
+        vector<vector<double>> dp(n+1,vector<double>(target+1));
+        //dp[i][k]=dp[i-1][k-1]*p+dp[i-1][k]*(1-p)
+        dp[0][0]=1; //0 toss, 0 target
+        //0 target for other len i is not calculated
+        for(int i=1;i<=n;i++){
+            for(int k=0;k<=target;k++){
+                if(k<=i)
+                dp[i][k]=(k?dp[i-1][k-1]:0)*prob[i-1]+dp[i-1][k]*(1-prob[i-1]);
+            }
+        }
+        return dp[n][target];
+    }
+```
+
+### 1229. Meeting Scheduler	
+<em>
+Given the availability time slots arrays slots1 and slots2 of two people and a meeting duration duration, return the earliest time slot that works for both of them and is of duration duration.
+
+If there is no common time slot that satisfies the requirements, return an empty array.
+
+The format of a time slot is an array of two elements [start, end] representing an inclusive time range from start to end.  
+
+It is guaranteed that no two availability slots of the same person intersect with each other. That is, for any two time slots [start1, end1] and [start2, end2] of the same person, either start1 > end2 or start2 > end1.
+</em>
+
+interval problem, sort by start.
+then get interval overlap segment.
+```cpp
+    vector<int> minAvailableDuration(vector<vector<int>>& slots1, vector<vector<int>>& slots2, int duration) {
+        int m=slots1.size(),n=slots2.size();
+        sort(slots1.begin(),slots1.end());
+        sort(slots2.begin(),slots2.end());
+        int i=0,j=0;
+        while(i<m && j<n){
+            int start=max(slots1[i][0],slots2[j][0]);
+            int end=min(slots1[i][1],slots2[j][1]);
+            if(end-start>=duration) return {start,start+duration};
+            if(slots1[i][1]==end) i++;
+            if(slots2[j][1]==end) j++;
+        }
+        return {};
+            
+    }
+```
+
+### 1228. Missing Number In Arithmetic Progression
+<em>
+In some array arr, the values were in arithmetic progression: the values arr[i+1] - arr[i] are all equal for every 0 <= i < arr.length - 1.
+
+Then, a value from arr was removed that was not the first or last value in the array.
+
+Return the removed value.
+</em>
+simple math
+```cpp
+    int missingNumber(vector<int>& arr) {
+        int tsum=accumulate(arr.begin(),arr.end(),0);
+        int n=arr.size();
+        int diff=(arr.back()-arr[0])/n;
+        return arr[0]*(n+1)+diff*n*(n+1)/2-tsum;
+    }
+```
+	
+### 1227. Airplane Seat Assignment Probability
+
+<em>
+n passengers board an airplane with exactly n seats. The first passenger has lost the ticket and picks a seat randomly. But after that, the rest of passengers will:
+
+Take their own seat if it is still available, 
+Pick other seats randomly when they find their seat occupied 
+What is the probability that the n-th person can get his own seat?
+</em>
+
+greedy: the nth person only have 2 option: get it or not get it.
+or imagine: treat all the person the same, the first person get other's seat, if other comes, the first person leave the seat and find other one. equivalent.
+similar to the problem plankton.
+
+### 1206. Design Skiplist
+<em>
+A Skiplist is a data structure that takes O(log(n)) time to add, erase and search. Comparing with treap and red-black tree which has the same function and performance, the code length of Skiplist can be comparatively short and the idea behind Skiplists are just simple linked lists.
+
+For example: we have a Skiplist containing [30,40,50,60,70,90] and we want to add 80 and 45 into it. The Skiplist works this way:
+
+To be specific, your design should include these functions:
+
+bool search(int target) : Return whether the target exists in the Skiplist or not.
+void add(int num): Insert a value into the SkipList. 
+bool erase(int num): Remove a value in the Skiplist. If num does not exist in the Skiplist, do nothing and return false. If there exists multiple num values, removing any one of them is fine.
+</em>
+
+- design a node structure with right and down pointer.
+- head always point to the top layer (since we are going right and down)
+- build we need from bottom layer to top layer.
+
+add function is critical implementing the structure:
+- start from head and goes right til we hit end or next value > it.
+- go down (if down null, then we insert the node here) and go right (similarly to 1)
+- if we need to insert the node in upper layer: coin flip (random)
+```cpp
+    struct Node {
+        Node *right, *down;
+        int val;
+        Node(Node *right, Node *down, int val): right(right), down(down), val(val) {}
+    };    
+    
+    Node* head;
+    vector<Node*> insertPoints;
+public:
+    Skiplist() { head = new Node(NULL, NULL, 0); }
+    
+    bool search(int num) {
+        Node *p = head;
+        while(p) {
+            while(p->right and p->right->val < num) p = p->right;
+            if(!p->right or p->right->val > num) p = p->down;
+            else return true;
+        }
+        return false;
+    }
+    
+    void add(int num) {
+        insertPoints.clear();
+        Node *p = head;
+        while(p) {
+            while(p->right and p->right->val < num) p = p->right;
+            insertPoints.push_back(p); //we randomly decide if this point shall be inserted in this layer.
+            p = p->down;
+        }
+        
+        Node* downNode = NULL;
+        bool insertUp = true;
+        while(insertUp and insertPoints.size()) {
+            Node *ins = insertPoints.back();
+            insertPoints.pop_back();
+            
+            ins->right = new Node(ins->right, downNode, num);
+            downNode = ins->right;
+            
+            insertUp = (rand() & 1) == 0;
+        }
+        if(insertUp) { //saved insertion point are used up, we add a new layer with num.
+            head = new Node(new Node(NULL, downNode, num), head, 0);
+        }
+    }
+    
+    
+    bool erase(int num) {
+        Node *p = head;
+        bool seen = false;
+        while(p) { //earse the node in all layers
+            while(p->right and p->right->val < num) p = p->right;
+            if(!p->right or p->right->val > num) p = p->down;
+            else {
+                seen = true;
+                p->right = p->right->right;
+                p = p->down;
+            }
+        }
+        return seen;
+    }
+```	
+
+1172. Dinner Plate Stacks
+<em>
+You have an infinite number of stacks arranged in a row and numbered (left to right) from 0, each of the stacks has the same maximum capacity.
+
+Implement the DinnerPlates class:
+
+DinnerPlates(int capacity) Initializes the object with the maximum capacity of the stacks.
+void push(int val) Pushes the given positive integer val into the leftmost stack with size less than capacity.
+int pop() Returns the value at the top of the rightmost non-empty stack and removes it from that stack, and returns -1 if all stacks are empty.
+int popAtStack(int index) Returns the value at the top of the stack with the given index and removes it from that stack, and returns -1 if the stack with that given index is empty.
+</em>
+
+```cpp
+    int c;
+    map<int, vector<int>> m;
+    set<int> available;
+
+    DinnerPlates(int capacity) {
+        c = capacity;
+    }
+
+    void push(int val) {
+        if (!available.size())
+            available.insert(m.size());
+        m[*available.begin()].push_back(val);
+        if (m[*available.begin()].size() == c)
+            available.erase(available.begin());
+    }
+
+    int pop() {
+        if (m.size() == 0)
+            return -1;
+        return popAtStack(m.rbegin()->first);
+    }
+
+    int popAtStack(int index) {
+        if (m[index].size() == 0)
+            return -1;
+        int val = m[index].back();
+        m[index].pop_back();
+        available.insert(index);
+        if (m[index].size() == 0)
+            m.erase(index);
+        return val;
+    }
+```
+
+1171. Remove Zero Sum Consecutive Nodes from Linked List
+<em>
+Given the head of a linked list, we repeatedly delete consecutive sequences of nodes that sum to 0 until there are no such sequences.
+
+After doing so, return the head of the final linked list.  You may return any such answer.
+
+ </em>
+
+similar to find the equal prefix sum value and remove the sum=0 region
+
+```cpp
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        vector<pair<ListNode*,int>> vnode;
+        int prefix=0;
+        unordered_map<int,ListNode*> mp;
+        mp[0]=0; //insert 0
+        ListNode* p=head;
+        while(p){
+            prefix+=p->val;
+            //cout<<p->val<<endl;
+            if(mp.count(prefix)){
+                while(vnode.size()&&vnode.back().first!=mp[prefix]){
+                    //cout<<"remove: "<<vnode.back()->val<<endl;
+                    mp.erase(vnode.back().second);
+                    vnode.pop_back();
+                }
+            }
+            else {
+                mp[prefix]=p;
+                vnode.push_back({p,prefix});
+            }
+            
+            p=p->next;
+        }
+        //cout<<vnode.size();
+        ListNode* tail=0;
+        while(vnode.size()){
+            vnode.back().first->next=tail;
+            tail=vnode.back().first;
+            vnode.pop_back();
+        }
+        return tail;
+    }
+```
+	
+1170. Compare Strings by Frequency of the Smallest Character
+<em>
+Let's define a function f(s) over a non-empty string s, which calculates the frequency of the smallest character in s. For example, if s = "dcce" then f(s) = 2 because the smallest character is "c" and its frequency is 2.
+
+Now, given string arrays queries and words, return an integer array answer, where each answer[i] is the number of words such that f(queries[i]) < f(W), where W is a word in words.
+</em>
+
+```cpp
+    vector<int> numSmallerByFrequency(vector<string>& queries, vector<string>& words) {
+        int n=words.size();
+        vector<int> dict,q;
+        for(string s: words) dict.push_back(f(s));
+        for(string s: queries) q.push_back(f(s));
+        vector<int> ans(q.size());
+        for(int i=0;i<q.size();i++){
+            int cnt=0;
+            for(int j=0;j<dict.size();j++)
+                if(q[i]<dict[j]) cnt++;
+            ans[i]=cnt;
+        }
+        return ans;
+    }
+    int f(string s){
+        vector<int> mp(26);
+        for(char c: s) mp[c-'a']++;
+        for(int i=0;i<26;i++){
+            if(mp[i]) return mp[i];
+        }
+        return 0;
+    }
+```
+
+1169. Invalid Transactions
+<em>
+A transaction is possibly invalid if:
+
+the amount exceeds $1000, or;
+if it occurs within (and including) 60 minutes of another transaction with the same name in a different city.
+Each transaction string transactions[i] consists of comma separated values representing the name, time (in minutes), amount, and city of the transaction.
+
+Given a list of transactions, return a list of transactions that are possibly invalid.  You may return the answer in any order.
+</em>
+
+hashmap
+```cpp
+    vector<string> invalidTransactions(vector<string>& transactions) {
+        unordered_set<string> res;
+        unordered_map<string,vector<vector<string>>> m;
+        for(auto& t:transactions){
+            istringstream ss(t);
+            vector<string> s(4,"");
+            int i=0;
+            while(getline(ss,s[i++],','));
+            if(stoi(s[2])>1000) res.insert(t);
+            for(vector<string> j:m[s[0]])
+                if((j[3]!=s[3])&&abs(stoi(j[1])-stoi(s[1]))<=60){
+                    res.insert(j[0]+","+j[1]+","+j[2]+","+j[3]);
+                    //cout<<"remove: "<<t<<endl;
+                    if(!res.count(t)) res.insert(t);
+                }
+            m[s[0]].push_back({s[0],s[1],s[2],s[3]});
+        }
+        vector<string> ans;
+        for(auto& k:res) ans.push_back(k);
+        return ans;
+    }
+```
+	
+1163. Last Substring in Lexicographical Order
+
+the answer is one of the suffix string starting with the max char.
+
+if we have multiple max char, we need keep comparing and find the largest.
+
+```cpp
+    string lastSubstring(string s) {
+        int n=s.length(),i=0,j=1,k=0;
+        while(j+k<n)
+        {
+            if(s[i+k]==s[j+k]) k++; 
+            else if(s[i+k]<s[j+k]) i=j++,k=0;
+            else j+=k+1,k=0;
+        }
+        return s.substr(i);
+    }
+```
+
+i used to record the starting position of the candidate
+j used to loop the next character. 
+if s[j+k]>s[i+k] i is not max, move to j, and reset counter.
+
+1162. As Far from Land as Possible
+```cpp
+    int maxDistance(vector<vector<int>>& grid) {
+        //find max distance of 0 cell to nearest 1 cell
+        //we can use dp, two directional
+        int ans=-1;
+        int m=grid.size(),n=grid[0].size();
+        int mx=m*n;
+        int sum=0;
+        vector<vector<int>> dp(m,vector<int>(n,mx));
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                sum+=grid[i][j];
+                if(grid[i][j]) dp[i][j]=0;
+                else dp[i][j]=min({i?dp[i-1][j]:mx,j?dp[i][j-1]:mx})+1;
+            }
+        }
+        if(sum==m*n||sum==0) return -1;
+        for(int i=m-1;i>=0;i--){
+            for(int j=n-1;j>=0;j--){
+                if(grid[i][j]) dp[i][j]=0;
+                else dp[i][j]=min(dp[i][j],min(i+1<m?dp[i+1][j]:mx,j+1<n?dp[i][j+1]:mx)+1);
+            }
+        }
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++)
+                ans=max(ans,dp[i][j]);
+        return ans;
+    }
+```
+
+1161. Maximum Level Sum of a Binary Tree
+bfs or dfs
+```cpp
+    int maxLevelSum(TreeNode* root) {
+        vector<int> vsum;
+        traverse(root,1,vsum);
+        return max_element(vsum.begin(),vsum.end())-vsum.begin()+1;
+    }
+    void traverse(TreeNode* root,int d,vector<int>& vsum){
+        if(!root) return;
+        if(d>vsum.size()){
+            vsum.push_back(root->val);
+        }
+        else vsum[d-1]+=root->val;
+        traverse(root->left,d+1,vsum);
+        traverse(root->right,d+1,vsum);
+    }
+```
+
+1160. Find Words That Can Be Formed by Characters
+<em>
+You are given an array of strings words and a string chars.
+
+A string is good if it can be formed by characters from chars (each character can only be used once).
+
+Return the sum of lengths of all good strings in words.
+</em>
+
+```cpp
+    int countCharacters(vector<string>& words, string chars) {
+        vector<int> cmap(26);
+        for(char c: chars) cmap[c-'a']++;
+        int ans=0;
+        for(string w: words){
+            vector<int> tmap(26);
+            bool valid=1;
+            for(char c: w) {
+                tmap[c-'a']++;
+                if(tmap[c-'a']>cmap[c-'a']){
+                    valid=0;
+                    break;
+                } 
+            }
+            if(valid) ans+=w.size();
+        }
+        return ans;
+    }
+```
+
+1157. Online Majority Element In Subarray
+<em>
+Implementing the class MajorityChecker, which has the following API:
+
+MajorityChecker(int[] arr) constructs an instance of MajorityChecker with the given array arr;
+int query(int left, int right, int threshold) has arguments such that:
+0 <= left <= right < arr.length representing a subarray of arr;
+2 * threshold > right - left + 1, ie. the threshold is always a strict majority of the length of the subarray
+Each query(...) returns the element in arr[left], arr[left+1], ..., arr[right] that occurs at least threshold times, or -1 if no such element exists.
+</em>
+
+```cpp
+    vector<int> a;
+    unordered_map<int, vector<int>> idx;
+    MajorityChecker(vector<int>& arr) {
+      for (auto i = 0; i < arr.size(); ++i) idx[arr[i]].push_back(i);
+      a = arr;
+    }
+    int query(int left, int right, int threshold) {
+      for (auto n = 0; n < 10; ++n) {
+        auto i = idx.find(a[left + rand() % (right - left + 1)]);
+        if (i->second.size() < threshold) continue;
+        if (upper_bound(begin(i->second), end(i->second), right) - 
+            lower_bound(begin(i->second), end(i->second), left) >= threshold) return i->first;
+      }
+      return -1;
+    }
+```
+1156. Swap For Longest Repeated Character Substring
+<em>Given a string text, we are allowed to swap two of the characters in the string. Find the length of the longest substring with repeated characters.	</em>
+equivalent: find the longest window with only one char different from the other one. You need has at least one outside the group.
+```cpp
+    int maxRepOpt1(string text) {
+        //longest window containing only one other char, after swapping two window could connect.
+        //also we need have the char outside the window
+        if(text.empty()) return 0;
+        vector<int> cnt(26);
+        for(char c: text) cnt[c-'a']++;
+        int ans=0;
+        
+        for(int i=0;i<text.size();i++){ //try each starting position with this char as the repeat char
+            char c=text[i];
+            int j=i,diff=0;
+            while(j<text.size()){
+                diff+=(text[j]!=c);
+                if(diff>1) break;
+                j++;
+            }
+            //cout<<i<<" "<<j<<" "<<diff<<endl;
+            if(diff){
+                if(j-i-1<cnt[c-'a']) ans=max(ans,j-i); //with one swap
+            }
+            else ans=max(ans,j-i);
+            
+        }
+        
+        return ans;
+    }
+```
+	
+1155. Number of Dice Rolls With Target Sum
+<em>
+You have d dice, and each die has f faces numbered 1, 2, ..., f.
+
+Return the number of possible ways (out of fd total ways) modulo 10^9 + 7 to roll the dice so the sum of the face up numbers equals target.
+</em>
+
+dp: 3d dp is more understandable.
+dp[i,j] i dices roll with sum=j.
+dp[i,j]+=dp[i-1,j-k] k from 1 to f. 
+if current is 1: dp[i-1,j-1]
+current is x: dp[i-1,j-x]...
+
+```cpp
+    int numRollsToTarget(int d, int f, int target) {
+        //dp knapsack
+        int mod=1e9+7;
+        //dp[i,k]: i dices, k targets
+        vector<vector<long>> dp(target+1,vector<long>(d+1));
+        //base target=0, n=0
+        dp[0][0]=1; //[0,i] no ways, [t,0] no ways
+        for(int t=1;t<=target;t++){
+            for(int i=1;i<=d;i++){
+                for(int j=1;j<=f;j++) { //different faces
+                    if(t>=j){
+                        dp[t][i]+=dp[t-j][i-1];
+                        dp[t][i]%=mod;
+                    }
+                }
+            }
+        }
+        return dp[target][d];
+    }
+```
+
+1154. day of year.
+
+```cpp
+    int dayOfYear(string date) {
+        for(char& c: date) if(c=='-') c=' ';
+        stringstream ss(date);
+        int year,mon,day;
+        ss>>year,ss>>mon,ss>>day;
+        int mon_days[]={31,28,31,30,31,30,31,31,30,31,30,31};
+        int ans=0;
+        for(int i=0;i<mon-1;i++)
+            ans+=mon_days[i];
+        if(mon>2) ans+=isleap(year);
+        ans+=day;
+        return ans;
+    }
+    bool isleap(int yr){
+        if(yr%4) return 0;
+        if(yr%100) return 1;
+        if(yr%400) return 0;
+        return 1;
+    }
+```
+
+1153. String Transforms Into Another String
+<em>
+Given two strings str1 and str2 of the same length, determine whether you can transform str1 into str2 by doing zero or more conversions.
+
+In one conversion you can convert all occurrences of one character in str1 to any other lowercase English character.
+
+Return true if and only if you can transform str1 into str2.
+</em>
+
+idea: one by one we map the char in str1 to str2 char's.
+the mapping cannot change.
+you need one unused mapping to transfer the char to non-exist char in str2.
+```
+    bool canConvert(string str1, string str2) {
+        if(str1==str2) return 1;
+		unordered_map<char,char> mp;
+		for(int i=0;i<str1.size();i++){
+			char c1=str1[i],c2=str2[i];
+			if(mp.count(c1) && mp[c1]!=c2) return 0;
+			mp[c1]=c2;
+		}
+		unordered_set<char> ms;
+		for(auto t: mp) ms.insert(t.second);
+		return ms.size()<26;
+    }
+```
+	
+1152. Analyze User Website Visit Pattern
+<em>
+We are given some website visits: the user with name username[i] visited the website website[i] at time timestamp[i].
+
+A 3-sequence is a list of websites of length 3 sorted in ascending order by the time of their visits.  (The websites in a 3-sequence are not necessarily distinct.)
+
+Find the 3-sequence visited by the largest number of users. If there is more than one solution, return the lexicographically smallest such 3-sequence.
+</em>
+
+problem is quite unclear.
+
+- first using hashmap user vs {time,website}
+- for each user, generate the all 3-seq website strings, put in sorted map.
+
+```cpp
+    vector<string> mostVisitedPattern(vector<string>& username, vector<int>& timestamp, vector<string>& website) {
+        vector<string> ans;
+        //it asks the top 3 visited website (one user count only one time?)
+        //what is the timestamp for? 3 sequence 
+        //understand the problem is critical: it needs the 3 sites used by each user.
+        unordered_map<string,map<int,string>> mp; //username vs sorted by time websites
+        for(int i=0;i<username.size();i++){
+            mp[username[i]].insert({timestamp[i],website[i]});
+        }
+        map<string,int> mp1; //3-seq vs count, sorted lexicographically
+        for(auto t: mp){ //loop for each user
+            //backtrack to generate all the 3-seq. note each user pattern only count one time!!!
+            vector<string> sites;
+            unordered_set<string> ms;
+            for(auto w: t.second) sites.push_back(w.second);
+            backtrack(sites,0,{},ms);
+            for(auto w: ms) mp1[w]++;
+        }
+        //now get the max count
+        int max_cnt=0;
+        for(auto t: mp1) {
+            max_cnt=max(max_cnt,t.second);
+            //cout<<t.first<<" "<<t.second<<endl;
+        }
+        for(auto t: mp1){
+            if(max_cnt==t.second){
+                stringstream ss(t.first);
+                vector<string> ans(3);
+                ss>>ans[0]>>ans[1]>>ans[2];
+                return ans;
+            }
+        }
+        return {};
+    }
+    void backtrack(vector<string>& sites,int start,vector<string> t,unordered_set<string>& ms){
+        if(t.size()==3){
+            ms.insert(t[0]+" "+t[1]+" "+t[2]);
+            return;
+        }
+        for(int i=start;i<sites.size();i++){
+            t.push_back(sites[i]);
+            backtrack(sites,i+1,t,ms);
+            t.pop_back();
+        }
+    }
+```
+
+1151. Minimum Swaps to Group All 1's Together
+
+equiv: find the fixed window with most 1s inside.
+```cpp
+    int minSwaps(vector<int>& data) {
+        //get the number of 1 and find the window with most 1s
+        int num1=0;
+        for(int i: data) num1+=i;
+        int ans=0,sum=0;
+        for(int i=0;i<data.size();i++){
+            sum+=data[i];
+            if(i>=num1){
+                sum-=data[i-num1];
+            }
+            ans=max(ans,sum);
+        }
+        return num1-ans;
+    }
+```
+
+1150. Check If a Number Is Majority Element in a Sorted Array
+equal_range to get number of elements
+binary search.
 
 
 	
