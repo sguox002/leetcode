@@ -838,6 +838,12 @@ Take a greedy step and reduce to a smaller problem. Generally need some insights
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 
+<<-1147	Longest Chunked Palindrome Decomposition    		59.1%	Hard	
+problem: decompose into parts and the parts form a palindrome pattern.
+greedy: find the shortest prefix = the suffix and do recusion.
+try to prove the approach is correct.
+->>
+
 <<-1153	String Transforms Into Another String    		35.9%	Hard	
 idea: one by one we map the char in str1 to str2 char's.
 the mapping cannot change.
@@ -1771,6 +1777,7 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-1146	Snapshot Array    		36.9%	Medium	->>
 
 <<-1152	Analyze User Website Visit Pattern    		43.2%	Medium	
 this is quite confusing.
@@ -1956,6 +1963,11 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-1145	Binary Tree Coloring Game    		51.4%	Medium	
+first player choose one node, each player can only choose his neighnors.
+second player can have 3 choices: left child, parent,right child. Since the choice will bprevent the first player to choose that branch. So it turns out the count the nodes in all three branches. You can always choose two branches.
+->>
 
 <<-1161	Maximum Level Sum of a Binary Tree    		71.1%	Medium	->>
 
@@ -2387,6 +2399,11 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-1144	Decrease Elements To Make Array Zigzag    		45.8%	Medium	
+even index element > odd index elements or odd index elements > even index elements (neighboring)
+only -1 is allowed.
+to make even smaller, decrease the even to smaller of the two -1
+->>
 
 <<-1177	Can Make Palindrome from Substring    		35.7%	Medium	
 query [L,R,k] choose the substring [L,R] and check if we can replace at most k chars and rearrange to a pal-string.
@@ -5667,12 +5684,6 @@ A[i] in the range [1,m]
 
 ## leetcode problem list
 
-<<-1147	Longest Chunked Palindrome Decomposition    		59.1%	Hard	
-
-->>
-<<-1146	Snapshot Array    		36.9%	Medium	->>
-<<-1145	Binary Tree Coloring Game    		51.4%	Medium	->>
-<<-1144	Decrease Elements To Make Array Zigzag    		45.8%	Medium	->>
 <<-1143	Longest Common Subsequence    		58.6%	Medium	->>
 <<-1140	Stone Game II    		64.9%	Medium	->>
 <<-1139	Largest 1-Bordered Square    		48.1%	Medium	->>
