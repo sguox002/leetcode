@@ -5,6 +5,8 @@ problem description
 subject or approach
 hard level
 
+All problems are from leetcode 2020.
+
 tag <<- and ->>. tags shall be different so that regex can get the start and end.
 
 whole question: using <<-(.|[\r\n])*?->> to search problems.
@@ -18,7 +20,16 @@ single keyword:
 two keywords:
 <<-((?!->>).|[\r\n])?(keyw1|keyw2)((?!->>).|[\r\n])?(keyw1|keyw2)(.|[\r\n])?->>
 demo using the search pattern:
+find records containing dp + greedy 
 <<-((?!->>).|[\r\n])*?(dp|greedy)((?!->>).|[\r\n])*?(dp|greedy)(.|[\r\n])*?->>
+
+find records containing dijkstra:
+<<-((?!->>).|[\r\n])*?(dijkstra)(.|[\r\n])*?->>
+begin with <<-, followed can be any chars but ->>, non-greedy
+then include dijkstra the keyword
+followed by any char including newlines, ending with ->>
+but it will also match the whole document, why?
+
 
 <<-0111. problem
 subject: dp with greedy.
@@ -29,108 +40,36 @@ problems are classified according to the most important classification. we focus
 ## algorithm focused Problems
 
 ## dp
+common steps to solve dp problems
+- identity it is a dp problem: overlap subproblems, using memoization to avoid repetitive recursive calls, polynomial complexity
+- identify base bases
+- define subproblem and subproblem states
+- find the state transfer or recurrence relation
+- how to get the original problem.
 
-<<-1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
-dice has 1 to f faces, find number of ways for n dices to get sum target.
-dp[i,j]+=dp[i-1,j-x] x is from 1 to f.
+### memoization
+<<-1387	Sort Integers by The Power Value    		70.6%	Medium	
+power of x is the step to transform to 1: even x/2, odd 3*x+1. need do a range.
+use dp to record solved smaller problems. use hashmap to do memoization.
 ->>
 
-<<-1162	As Far from Land as Possible    		44.3%	Medium	
-given 01 matrix, 0 is water, 1 is land. find the largest distance from watr to land.
-dp: two pass get the water cell to top left and then get bottom right.
+<<-1483	Kth Ancestor of a Tree Node    		29.5%	Hard	
+a tree wit n nodes from 0 to n-1. Each node is given the parent node. root is 0.
+query the node's kth ancestor.
+- dfs will TLE.
+just similar to super power, we need use some trick called binary lifting.
+The idea is:
+dp[i][node]=dp[i-1][dp[i-1][node]], node's 2^i parent = node's 2^(i-1) parent of node's 2^(i-1) parent. 2^i=2^(i-1)*2^(i-1), kind of binary representation.
+dp[i,node] represents the 2^i parent of node.
+we store the parent for each node's parent 2^0 parent->2^1 parent->2^2 parent->..... up to log2（N）
+
+when search for kth parent:
+for example k=5 (0b101), we first get 2^0's parent, and then get parent's 2^2 parent and that is it!
 ->>
 
-<<-1186	Maximum Subarray Sum with One Deletion    		38.3%	Medium	
-with at most one deletion.
-- delete only occurs with negative number
-- delete one will help connect left and right to make sum larger.
-dp: del[i] and nodel[i] represent the max subarray sum deleting one or not delete one (not necessary i)
-del[0]=0,notdel=A[0]
-notdel[i]=max(A[i],notdel[i-1]+A[i]), connect to previous or start a new group
-del[i]=max(notdel[i-1],del[i-1]+A[i],A[i]) delete i, not delete i, i start a new group
-->>
+### dp dealing with subarray or intervals
 
-
-<<-1187	Make Array Strictly Increasing    		41.5%	Hard	
-given two arrays A and B, you need make A increasing by assigning A[i]=B[j].
-return the min number of operations.
-- sort and remove duplicates in B. so we can use one by one in order.
-- now it is similar to LIS connecting two arrays.
-dp[i,j] represent the min operations needed to make A[0..i] increasing using B[0...j]
-we have two options: 
-we can choose one from B (the smallest one > A[i])
-if A[i]<prev: we can keep it
-there is 1d approach but it is too hard to understand.
-->>
-
-<<-1191	K-Concatenation Maximum Sum    		25.4%	Medium	
-repeat the array k times. find the max subarray sum.
-k=1: max subarray sum (current element append to previous or start a new one)
-k=2: max subarray sum in circular array (find the min and max)
-k=3: k-2 subarrays contribute the sum only.
-->>
-
-<<-1216	Valid Palindrome III    		48.8%	Hard	
-k palindrome: at most remove k chars and make it palindrome.
-longest common subsequence problem
-->>
-
-<<-1218	Longest Arithmetic Subsequence of Given Difference    		45.9%	Medium	
-dp: longest increasing subsequence
-using hashmap dp[i] means the length ending with i.
-->>
-
-<<-1220	Count Vowels Permutation    		53.8%	Hard	
-Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
-Each vowel 'a' may only be followed by an 'e'.
-Each vowel 'e' may only be followed by an 'a' or an 'i'.
-Each vowel 'i' may not be followed by another 'i'.
-Each vowel 'o' may only be followed by an 'i' or a 'u'.
-Each vowel 'u' may only be followed by an 'a'.
-construct a string of length n.
-dp: convert the relation to before. And then use 5 different vowels.
-dp[i,c] or use 5 different array.
-
-->>
-
-<<-1223	Dice Roll Simulation    		46.8%	Medium	
-given an array Max[i] the max allowed consecutive dice number i.
-return the distinct sequence rolling n times (or n dices)
-dp[i,j,k] ith dice rolls number j with k consecutive same number as j.
-dp[i,j,1] means previous can be 0 to 6 except j. add all of them dp[i-1,x,m], x and m shall loop all cases.
-dp[i,j,k] k>1, means previous must be j.
-->>
-
-<<-1230	Toss Strange Coins    		49.3%	Medium	
-n coins, each coin given probability facing up. return the prob for target coins up.
-dp[i,k]=p*dp[i-1,k-1]+(1-p)*dp[i-1,k]
-->>
-
-<<-1235	Maximum Profit in Job Scheduling    		46.0%	Hard	
-given a list of job {start,end,profit} return the max profit you can get. (no simultaneous job can take)
-- sort the job by ending time
-- then we use dp knapsack to include current job.
-- answer is the max among all dp. or knapsack to convery the max till the end.
-->>
-
-<<-1239	Maximum Length of a Concatenated String with Unique Characters    		48.7%	Medium	
-- use bitset try all combination O(2^n)
-- use bitset represent each dictionary word. and then use dp for longest combination, try to add current set to previous set and get the longest one.
-->>
-
-<<-1240	Tiling a Rectangle with the Fewest Squares    		51.3%	Hard	
-given a mxn matrix, return the min number of squares with integer side length to fill the rect.
-from the example, we see greedy does not work.
-we only know that the side length shall from 1 to min(m,n).
-suppose we first choose a square len: then leave:
-A: len x m-len
-B: n-len x m-len
-c: n-len x len
-AB forms a bigger rect n x m-len
-BC forms a bigger rect n-len x m.
-11x13 gives wrong result since we need consider the L shape as a whole.
- 
-->>
+removing a subarray and then left and right connected. Extremely hard to track the array changes or no good data structure to do it.
 
 <<-1246	Palindrome Removal    		45.7%	Hard	
 each time you can remove a palindrome subarray. return the min number of removals to make it empty.
@@ -139,73 +78,28 @@ think from top down, our first step choose s[i,j], we need to connect the left a
 but if we define dp[i,j] as the min removals for s[i,j] then it is much easier
 answer is dp[0,n-1]. dp[i,j]=min(dp[i,j],dp[i,k]+d[k+1,j]) if we split at k.
 upper triangle dp.
+pattern: palindrome, treat as substr(i,j) or two strings. similar to burst balloon.
 ->>
 
-<<-1259	Handshakes That Don't Cross    		53.9%	Hard	
-even number of people on a circle suppose 1 to n. number of ways that handshaken no cross.
-if i and j handshake, then divide into:
-(i+1)%n to (j-1+n)%n suppose we have m1 people
-(i-1+n)%n to (j+1)%n n-m1-2 people
-dp[i] represent the number of ways for i-pair of people.
-dp[i]+=dp[j]*dp[i-1-j]
+<<-1000. Minimum Cost to Merge Stones
+each time merge k consecutive piles of stones into 1 pile with the cost=sum of stones.
+dp[i,j] represent the min cost to reduce to k piles, then dp[i,j]=min(dp[i,k],dp[k+1,j]) 
 ->>
 
-<<-1269	Number of Ways to Stay in the Same Place After Some Steps    		43.1%	Hard	
-You can jump oe step left or right or stay.
-return the number of ways to stay in the same place 0 after k moves
-dp[i,k] could come from dp[i-1,k-1], dp[i+1,k-1] or dp[i,k-1]
+<<-312. Burst Balloons
+burst a balloon, and get the score: product of left and right and the balloon.
+idea: choose i as the last balloon to burst and its left and right are virtual balloon with value 1. And then balloon i becomes the right and left for two subproblem.
+- top down: is more straightforward.
+- bottom up: loop over all left and right will not work, but we need to do one balloon, 2...until n balloons. (base case is one balloon left)
 ->>
 
-<<-1277	Count Square Submatrices with All Ones    		73.0%	Medium	
-dp[i,j]=0 if mat[i,j]=0
-dp[i,j]=min(dp[i-1,j],dp[i,j-1],dp[i-1,j-1])+1 the max length of square.
-ans+=dp[i,j]
-->>
+### dp dealing with array partitions
+generally dealing with subsequence or subarray and divide into k groups to get max/min scores.
 
 <<-1278	Palindrome Partitioning III    		60.2%	Hard	
 return the min number of characters to replace so that string can be split into k palindrome substr.
 dp[i,k] represent the min cost for length i and k parts.
 dp[i,k]=min(dp[j,k-1]+cost(j,i))
-
-->>
-<<-1289	Minimum Falling Path Sum II    		61.8%	Hard	
-2d grid.
-->>
-
-<<-1292	Maximum Side Length of a Square with Sum Less than or Equal to Threshold    		49.9%	Medium	
-using dp to get all sub-matrices's sum. and then check k length from min(i,j) to 1.
-->>
-<<-1301	Number of Paths with Max Score    		37.7%	Hard	
-a square matrix, E the end, S the start, 1-9 the score, x obstacles. 
-two dp problems:
-max score you can get.
-number of paths on the max score.
-->>
-
-<<-1312	Minimum Insertion Steps to Make a String Palindrome    		58.8%	Hard	
-equivalent: longest common subsequence
-->>
-
-<<-1314	Matrix Block Sum    		73.6%	Medium	
-given k and mat[i,j] is the sum of all rows [i-k,i+k] and columns [j-k,j+k]
-- brutal force
-- dp: dp[i,j]=dp[i-1,j]+dp[i,j-1]-dp[i-1,j-1]+mat[i,j]
-->>
-
-<<-1320	Minimum Distance to Type a Word Using Two Fingers    		62.6%	Hard	
-given a matrix from A to Z. given a word to type and return the min total distance to type the word.
-dp[i,l,r] represent the min total distance to type ith char, with left finger at l, and right finger at r.
-current char use left finger dist(f1,c)+dp(i+1,c,f2)
-current char use right finger dist(f2,c)+dp(i+1,f1,c)
-base case: the first move shall be 0.
-->>
-
-<<-1326	Minimum Number of Taps to Open to Water a Garden    		45.7%	Hard	
-There are n+1 taps located at 0,1....n with range[i]. it can cover [i-range[i],i+range[i]]. 
-return the min number of taps to water the garden [0,n].
-greedy: sort with start, and use the one extended right the most.
-dp: dp[j]=max(dp[j-range[j]]+1)
-similar to 1024 video stitching.
 ->>
 
 <<-1335	Minimum Difficulty of a Job Schedule    		58.5%	Hard	
@@ -228,17 +122,78 @@ that is to say the dp problem is as belows:</br>
 min(max(A[0..i])+sub(i+1,d-1))</br>
 ->>
 
+<<-1478	Allocate Mailboxes    		55.1%	Hard	
+n houses on a street, place k mailboxes. return the min total distance.
+base case: 
+- 1 mailbox, two houses, anywhere between.
+- 1 mailbox, multiple houses, median position.
+dp[i,k]: i houses, k mailboxes.
+- if k==n, then each house has one mailbox, total distance is 0
+- ith house can belong to previous group dp[j,k] or start a new group dp[i-1,k-1]
+- calculate group total distance would be two pointer two end distance.
+->>
+
+### optimization
+
+optimization problem is for max or min. Dp can solve most of them, but bfs, greedy, pq et al can also be the candidates.
+
+<<-1186	Maximum Subarray Sum with One Deletion    		38.3%	Medium	
+with at most one deletion.
+- delete only occurs with negative number
+- delete one will help connect left and right to make sum larger.
+dp: del[i] and nodel[i] represent the max subarray sum deleting one or not delete one (not necessary i)
+del[0]=0,notdel=A[0]
+notdel[i]=max(A[i],notdel[i-1]+A[i]), connect to previous or start a new group
+del[i]=max(notdel[i-1],del[i-1]+A[i],A[i]) delete i, not delete i, i start a new group
+problem pattern: two options interlace. 
+->>
+
+<<-1191	K-Concatenation Maximum Sum    		25.4%	Medium	
+repeat the array k times. find the max subarray sum.
+k=1: max subarray sum (current element append to previous or start a new one)
+k=2: max subarray sum in circular array (find the min and max)
+k=3: k-2 subarrays contribute the sum only.
+problem pattern: subarray max sum, start a new group or belong to previous group
+->>
+
+<<-1235	Maximum Profit in Job Scheduling    		46.0%	Hard	
+given a list of job {start,end,profit} return the max profit you can get. (no simultaneous job can take)
+- sort the job by ending time
+- then we use dp knapsack to include current job.
+- answer is the max among all dp. or knapsack to convery the max till the end.
+pattern: use or not use and propagate the results to next.
+->>
+
+<<-1239	Maximum Length of a Concatenated String with Unique Characters    		48.7%	Medium	
+- use bitset try all combination O(2^n)
+- use bitset represent each dictionary word. and then use dp for longest combination, try to add current set to previous set and get the longest one.
+->>
+
+<<-1240	Tiling a Rectangle with the Fewest Squares    		51.3%	Hard	
+given a mxn matrix, return the min number of squares with integer side length to fill the rect.
+from the example, we see greedy does not work.
+we only know that the side length shall from 1 to min(m,n).
+suppose we first choose a square len: then leave:
+A: len x m-len
+B: n-len x m-len
+c: n-len x len
+AB forms a bigger rect n x m-len
+BC forms a bigger rect n-len x m.
+11x13 gives wrong result since we need consider the L shape as a whole.
+->>
+
+<<-1326	Minimum Number of Taps to Open to Water a Garden    		45.7%	Hard	
+There are n+1 taps located at 0,1....n with range[i]. it can cover [i-range[i],i+range[i]]. 
+return the min number of taps to water the garden [0,n].
+greedy: sort with start, and use the one extended right the most.
+dp: dp[j]=max(dp[j-range[j]]+1)
+similar to 1024 video stitching.
+->>
+
 <<-1340	Jump Game V    		58.3%	Hard	
 given array and d. You are at 0, at each position you can jump back or forth in [1,d] steps, but you need make sure all elements in (i,j] shall be <A[i].
 return max number of nodes you can visit.
 dp: top down.
-->>
-
-<<-1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
-pick up always in the front of delivery
-for the first positions, we have n options, after we choose the first position, we have 2n-1 options for the 2nd position.
-or assume we have finished i-1 pairs, now we want to insert ith pair, the pick up has 2i-1 options, and delivery 2n options, but we have to insert after pickup so it is i. i*(2i-1)
-dp[i]=i*(2i-1)*dp[i-1]
 ->>
 
 <<-1363	Largest Multiple of Three    		33.7%	Hard	
@@ -252,6 +207,7 @@ total%3==2, remove one the smallest digit%3==2, or two smallest %3=1
 d%3==0, append it to all.
 d%3==1, append dp[1] to make it 2, append dp[2] and make it dp[0]
 ->>
+
 <<-1262	Greatest Sum Divisible by Three    		48.4%	Medium	
 similar to 1363. 
 - sort so we can remove smallest
@@ -259,30 +215,11 @@ similar to 1363.
 - remove 1 or 2 depending on tsum%3
 also we can use same dp approach as in 1363.
 ->>
-<<-1387	Sort Integers by The Power Value    		70.6%	Medium	
-power of x is the step to transform to 1: even x/2, odd 3*x+1. need do a range.
-use dp to record solved smaller problems.
-->>
 
 <<-1388	Pizza With 3n Slices    		45.0%	Hard	
 given 3n slices in whole pizza, you can pick one and friend a takes next slice clockwise, friend B takes next slice anticlockwise.
 dp: similar to house robber. you take i, the i-1 and i+1 is taken. You have to take exactly n/3 slices.
 convert circular to two linear dp problem.
-->>
-
-<<-1397	Find All Good Strings    		37.9%	Hard	
-given string s1,s2,and evil. a good string will >=s1 and <=s2 and does not contain evil as a substring.
-return the number of good strings.
-- answer=less(s2)-less(s1)-less(s2,evil)+less(s1,evil) (less(s1,evil) all string <s1 with evil inside)
-- less(s) get the number of strings <s. consider it is a base 26 system, this is the number.
-- less(s,evil) evil can be anywhere and it divide into two subproblem: left and right. (note left right still can contain evil as a substring).
-dp:
-For those strings <= s, and of same length as s,
-a: counts the number of strings t, with prefix = evil, i.e. t = evil + t[len(evil):].
-b: counts the number of strings t, such that t[1:] contains evil.
-c: counts the number of strings t with prefix = evil, and t[1:] contains evil.
-By incllusion exclusion principle: helper(s) = a + b - c.
-so hard!!!
 ->>
 
 <<-1402	Reducing Dishes    		72.3%	Hard	
@@ -293,24 +230,6 @@ dp[i,j] max score for i dishes with j cooked.
 cook dish i: dp[i-1,j-1]+like[i]*j
 discard dish i: dp[i-1,j]
 our answer is the global max.
-->>
-
-<<-1411	Number of Ways to Paint N × 3 Grid    		60.6%	Hard	
-dp: using the first row and derive the next row. limited variations
-->>
-
-<<-1416	Restore The Array    		36.2%	Hard	
-an array of integer is printed without space. each number is in the range [1,k] and there are no leading 0s. return the number of possible array.
-- dp: current digit can attach to previous up to 9 digits. dp[i]+=d[j]
-->>
-
-<<-1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	
-a rect with m x n. 'A' indicates an apple. '.' means empty. given a integer k, you can cut it into k pieces using k-1 cuts.
-each cut you can choose horizontal or vertical. If you choose vertical, give the left part to a person. if you cut horizontally, give the upper part to a person. return the number of ways such that each piece contains at least one apple.
-- dp, each step we have two options.
-- ith cut we shall make sure the left has at least one apple, and remaining k-i apples. for vertical similar.
-- dp[k,i,j] kth cut and cut at i,j. using simple dp to get the postfix sum at each position.
-- then backtracking with two options using memoization.
 ->>
 
 <<-1449	Form Largest Integer With Digits That Add up to Target    		43.1%	Hard	
@@ -338,10 +257,7 @@ string largestNumber(vector<int>& cost, int t) {
 loop from 1 to 9 we prefer larger number with same size.
 ->>
 
-<<-1458	Max Dot Product of Two Subsequences    		42.5%	Hard	
-dp[i,j] represent the max dot product of A with length i and B with length j.
-dp[i,j]=max(dp[i-1,j],dp[i,j-1],A[i-1]*B[j-1]+dp[i-1,j-1])
-->>
+
 
 <<-1473	Paint House III    		48.7%	Hard	
 given m houses and to be colored with n colors from 1 to n. If the house is already colored, then you cannot paint again.
@@ -354,60 +270,12 @@ if current colored, we update the group number
 if not colored, we try all different color, and solve the subproblem
 ->>
 
-<<-1478	Allocate Mailboxes    		55.1%	Hard	
-n houses on a street, place k mailboxes. return the min total distance.
-base case: 
-- 1 mailbox, two houses, anywhere between.
-- 1 mailbox, multiple houses, median position.
-dp[i,k]: i houses, k mailboxes.
-- if k==n, then each house has one mailbox, total distance is 0
-- ith house can belong to previous group dp[j,k] or start a new group dp[i-1,k-1]
-- calculate group total distance would be two pointer two end distance.
-->>
-
-<<-1483	Kth Ancestor of a Tree Node    		29.5%	Hard	
-a tree wit n nodes from 0 to n-1. Each node is given the parent node. root is 0.
-query the node's kth ancestor.
-- dfs will TLE.
-just similar to super power, we need use some trick called binary lifting.
-The idea is:
-dp[i][node]=dp[i-1][dp[i-1][node]], node's 2^i parent = node's 2^(i-1) parent of node's 2^(i-1) parent. 2^i=2^(i-1)*2^(i-1), kind of binary representation.
-dp[i,node] represents the 2^i parent of node.
-we store the parent for each node's parent 2^0 parent->2^1 parent->2^2 parent->..... up to log2（N）
-
-when search for kth parent:
-for example k=5 (0b101), we first get 2^0's parent, and then get parent's 2^2 parent and that is it!
-->>
-
-<<-1504	Count Submatrices With All Ones    		61.5%	Medium	
-dp approach: first round count the number of contiguous 1s along row
-second round, goes up row by row and count the submatrix
-->>
-
-<<-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	
-return %10^9+7.
-
-dp: 
-if current number is odd, then odd[i]=1+even[i-1], even[i]=odd[i-1]
-if current number is even then even[i]=1+even[i-1], odd[i]=odd[i-1]
-odd[i]: number of subarrays ending with element A[i]
-even[i]: number of subarrays ending with element A[i]
-->>
-
 <<-1531	String Compression II    		32.2%	Hard	
 running length compression.
 given string s and number k, you need delete at most k characters such that run length compression is minimized.
 - we shall build the RLE string on the fly. keeping the original string unchanged.
 - greedy: we keep the most frequent char in range [start,n-1] and delete all other chars. ie. making a range the same chars.
 - dp[start,k] subproblem: from start to j (j from start to n) only keep the most frequent chars.
-->>
-
-<<-1542	Find Longest Awesome Substring    		36.0%	Hard	
-find longest subarray which can swap to a palindrome.
-we only need to know the number of even and odd. a palindrome only allows <=1 odd chars. using bitmask xor, even will get 0, odd will get 1.
-- all even, i-dp[mask]
-- one odd: i-dp[mask^(1<<j)]
-hashmap, odd even xor, dp
 ->>
 
 <<-1548	The Most Similar Path in a Graph    		55.3%	Hard	
@@ -424,6 +292,73 @@ using prev matrix to record each node's previous index to recover the path.
 use forward update.
 add the base dp into pq (min heap)
 add all its child into heap (if can reduce the distance)
+->>
+
+<<-1425	Constrained Subsequence Sum    		44.6%	Hard	
+given a integer array nums, and k. find the max sum of a non-empty subsequence such that the neighboring elements in the sequence satisfy i<j and j-i<=k.
+- dp with sliding window max. since in the window k, we have to choose one element.
+each element we can choose or discard.
+we define dp[i] as the max sum ending with A[i], then:
+dp[i]=max(dp[j]...dp[i-1])+A[i], sliding window max using pq or deque.
+->>
+
+<<-1696. Jump Game Vi.
+given a list of numbers, you are located at element 0. Each time you can jump 1 to k steps. return the max sum you can get from 0 to n-1 element.
+dp[i]=max(dp[i-1]...dp[i-k+1])
+using priority_queue 
+using monotonic deque.
+greedy does not work!!
+->>
+
+<<-1553	Minimum Number of Days to Eat N Oranges    		28.6%	Hard	
+n oranges, you can:
+- eat one 
+- if n is even you can eat n/2
+- if n/3==0, you can eat 2*n/3
+approach 1: bfs it will reach to 0 soon
+approach 2: dp, the problem is -1, which needs to solve all subproblems. but we only need solve a very small portion. n%2+dp[n/2],n%3+dp[n/3]
+using hashmap for dp table.
+->>
+
+<<-1611	Minimum One Bit Operations to Make Integers Zero    		56.6%	Hard	
+given a number n, you can
+- change 0th bit
+- change ith bit if (i-1)th bit is 1 and (i-2)th to 0th bit are all 0.
+return min number operations to reduce n to 0.
+bfs will expand exponentially and will TLE.
+consider case 2^k and try to find the relation:
+001->0, 1 ops
+010->011->001->000, 3 ops
+100->101->111->110->010->011->001->000, 7 ops
+2^k, need 2^(k+1)-1 ops.
+1xxxx->....->11000->10000->....->0 The number is decreasing.
+1xxxx to 11000 needs subprob(1xxxx^11000):
+if it is 11xxx, then it is same to convert xxx to 000
+if it is 10xxx, then it is same to convert 0xxx to 1000 and the op needed is subprob(1000)+subprob(xxx). 1000 to 0 is same as from 0 to 1000.
+
+Now suppose we want to know the number of operations for 1110 to become 0. We know it takes 15 operations for 0 to become 1000, and it takes 4 operations for 1000 to become 1110. We get the solution by 15 - 4.
+Note that 4 here is the number of operations from 1000 to become 1110, which is the same as the number of operations from 000 to 110 (ignoring the most significant bit), and it can be computed recursively. The observation gives us: minimumOneBitOperations(1110) + minimumOneBitOperations(0110) = minimumOneBitOperations(1000).
+->>
+
+### state transfer
+
+<<-1230	Toss Strange Coins    		49.3%	Medium	
+n coins, each coin given probability facing up. return the prob for target coins up.
+dp[i,k]=p*dp[i-1,k-1]+(1-p)*dp[i-1,k]
+pattern: two options, probability.
+->>
+
+<<-1463	Cherry Pickup II    		66.2%	Hard	
+two robots on the top left and top right and each time goes down, leftdiag rightdiag or down. return the max cherrys can pick.
+dp: the two robot status is defined as dp[i,j1,j2] is the layer and j1 and j2 are the column index for robot 1 and robot 2. choose the max from previous layer 9 possible combinations. do not go over board.
+->>
+
+<<-1320	Minimum Distance to Type a Word Using Two Fingers    		62.6%	Hard	
+given a matrix from A to Z. given a word to type and return the min total distance to type the word.
+dp[i,l,r] represent the min total distance to type ith char, with left finger at l, and right finger at r.
+current char use left finger dist(f1,c)+dp(i+1,c,f2)
+current char use right finger dist(f2,c)+dp(i+1,f1,c)
+base case: the first move shall be 0.
 ->>
 
 <<-1547	Minimum Cost to Cut a Stick    		51.2%	Hard	
@@ -462,35 +397,62 @@ note the left and right end cannot serve as a cut position.
 ```	
 ->>
 
-<<-1425	Constrained Subsequence Sum    		44.6%	Hard	
-given a integer array nums, and k. find the max sum of a non-empty subsequence such that the neighboring elements in the sequence satisfy i<j and j-i<=k.
-- dp with sliding window max. since in the window k, we have to choose one element.
-each element we can choose or discard.
-we define dp[i] as the max sum ending with A[i], then:
-dp[i]=max(dp[j]...dp[i-1])+A[i], sliding window max using pq or deque.
+### count number of ways
+
+<<-1397	Find All Good Strings    		37.9%	Hard	
+given string s1,s2,and evil. a good string will >=s1 and <=s2 and does not contain evil as a substring.
+return the number of good strings.
+- answer=less(s2)-less(s1)-less(s2,evil)+less(s1,evil) (less(s1,evil) all string <s1 with evil inside)
+- less(s) get the number of strings <s. consider it is a base 26 system, this is the number.
+- less(s,evil) evil can be anywhere and it divide into two subproblem: left and right. (note left right still can contain evil as a substring).
+dp:
+For those strings <= s, and of same length as s,
+a: counts the number of strings t, with prefix = evil, i.e. t = evil + t[len(evil):].
+b: counts the number of strings t, such that t[1:] contains evil.
+c: counts the number of strings t with prefix = evil, and t[1:] contains evil.
+By incllusion exclusion principle: helper(s) = a + b - c.
+so hard!!!
 ->>
 
-<<-1696. Jump Game Vi.
-given a list of numbers, you are located at element 0. Each time you can jump 1 to k steps. return the max sum you can get from 0 to n-1 element.
-dp[i]=max(dp[i-1]...dp[i-k+1])
-using priority_queue 
-using monotonic deque.
-greedy does not work!!
+<<-1269	Number of Ways to Stay in the Same Place After Some Steps    		43.1%	Hard	
+You can jump oe step left or right or stay.
+return the number of ways to stay in the same place 0 after k moves
+dp[i,k] could come from dp[i-1,k-1], dp[i+1,k-1] or dp[i,k-1]
 ->>
 
-<<-1463	Cherry Pickup II    		66.2%	Hard	
-two robots on the top left and top right and each time goes down, leftdiag rightdiag or down. return the max cherrys can pick.
-dp: the two robot status is defined as dp[i,j1,j2] is the layer and j1 and j2 are the column index for robot 1 and robot 2. choose the max from previous layer 9 possible combinations. do not go over board.
+<<-1259	Handshakes That Don't Cross    		53.9%	Hard	
+even number of people on a circle suppose 1 to n. number of ways that handshaken no cross.
+if i and j handshake, then divide into:
+(i+1)%n to (j-1+n)%n suppose we have m1 people
+(i-1+n)%n to (j+1)%n n-m1-2 people
+dp[i] represent the number of ways for i-pair of people.
+dp[i]+=dp[j]*dp[i-1-j]
+pattern: make a choice and split two smaller subproblems.
 ->>
 
-<<-1553	Minimum Number of Days to Eat N Oranges    		28.6%	Hard	
-n oranges, you can:
-- eat one 
-- if n is even you can eat n/2
-- if n/3==0, you can eat 2*n/3
-approach 1: bfs it will reach to 0 soon
-approach 2: dp, the problem is -1, which needs to solve all subproblems. but we only need solve a very small portion. n%2+dp[n/2],n%3+dp[n/3]
-using hashmap for dp table.
+<<-1220	Count Vowels Permutation    		53.8%	Hard	
+Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
+Each vowel 'a' may only be followed by an 'e'.
+Each vowel 'e' may only be followed by an 'a' or an 'i'.
+Each vowel 'i' may not be followed by another 'i'.
+Each vowel 'o' may only be followed by an 'i' or a 'u'.
+Each vowel 'u' may only be followed by an 'a'.
+construct a string of length n.
+dp: convert the relation to before. And then use 5 different vowels.
+dp[i,c] or use 5 different array.
+pattern: dfs similar, ending with
+->>
+
+<<-1416	Restore The Array    		36.2%	Hard	
+an array of integer is printed without space. each number is in the range [1,k] and there are no leading 0s. return the number of possible array.
+- dp: current digit can attach to previous up to 9 digits. dp[i]+=d[j]
+->>
+
+<<-1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
+pick up always in the front of delivery
+for the first positions, we have n options, after we choose the first position, we have 2n-1 options for the 2nd position.
+or assume we have finished i-1 pairs, now we want to insert ith pair, the pick up has 2i-1 options, and delivery 2n options, but we have to insert after pickup so it is i. i*(2i-1)
+dp[i]=i*(2i-1)*dp[i-1]
 ->>
 
 <<-1575	Count All Possible Routes    		58.4%	Hard	
@@ -498,44 +460,32 @@ array represent the location of cities. given start and end city and fuel. fuel 
 idea: dp, choose any city as the first; dp[i,fuel] number of routes start at city i with fuel to dest. destination is fixed but start for subproblem is changing.
 dp[i,f]+=dp[k,f-dist(i,k)]
 ->>
-<<-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	
-given array a permutation of 1 to n. Insert the elements in order to BST. find the number of different ways to reorder nums so that we get the same BST as nums.
-Key information: BST.
-- use the first element as the root, and smaller one as the left, bigger ones as the right, both as a subproblem.
-- can choose left first or right first.
-- for left first, assuming we have m nodes in left, and n nodes in right, then it is equivalent to interleave the left array into right array. C(m+n,n)
-nleft*nright*comb(n-1,left)
-recursive, combination, modular inverse, pascal triangle (using dp to get combination)
+
+<<-1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	
+a rect with m x n. 'A' indicates an apple. '.' means empty. given a integer k, you can cut it into k pieces using k-1 cuts.
+each cut you can choose horizontal or vertical. If you choose vertical, give the left part to a person. if you cut horizontally, give the upper part to a person. return the number of ways such that each piece contains at least one apple.
+- dp, each step we have two options.
+- ith cut we shall make sure the left has at least one apple, and remaining k-i apples. for vertical similar.
+- dp[k,i,j] kth cut and cut at i,j. using simple dp to get the postfix sum at each position.
+- then backtracking with two options using memoization.
 ->>
 
-<<-1594	Maximum Non Negative Product in a Matrix    		31.9%	Medium	
-given a grid, from top left to bottom right, only right and down movement.
-return the max product among all the paths.
-idea: keep the min and max product for each grid. positive using max, negative using min.
-dp: top element or left element.
+<<-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	
+return %10^9+7.
+
+dp: 
+if current number is odd, then odd[i]=1+even[i-1], even[i]=odd[i-1]
+if current number is even then even[i]=1+even[i-1], odd[i]=odd[i-1]
+odd[i]: number of subarrays ending with element A[i]
+even[i]: number of subarrays ending with element A[i]
 ->>
 
-<<-1611	Minimum One Bit Operations to Make Integers Zero    		56.6%	Hard	
-given a number n, you can
-- change 0th bit
-- change ith bit if (i-1)th bit is 1 and (i-2)th to 0th bit are all 0.
-return min number operations to reduce n to 0.
-bfs will expand exponentially and will TLE.
-consider case 2^k and try to find the relation:
-001->0, 1 ops
-010->011->001->000, 3 ops
-100->101->111->110->010->011->001->000, 7 ops
-2^k, need 2^(k+1)-1 ops.
-1xxxx->....->11000->10000->....->0 The number is decreasing.
-1xxxx to 11000 needs subprob(1xxxx^11000):
-if it is 11xxx, then it is same to convert xxx to 000
-if it is 10xxx, then it is same to convert 0xxx to 1000 and the op needed is subprob(1000)+subprob(xxx). 1000 to 0 is same as from 0 to 1000.
-
-Now suppose we want to know the number of operations for 1110 to become 0. We know it takes 15 operations for 0 to become 1000, and it takes 4 operations for 1000 to become 1110. We get the solution by 15 - 4.
-Note that 4 here is the number of operations from 1000 to become 1110, which is the same as the number of operations from 000 to 110 (ignoring the most significant bit), and it can be computed recursively. The observation gives us: minimumOneBitOperations(1110) + minimumOneBitOperations(0110) = minimumOneBitOperations(1000).
-
+<<-1301	Number of Paths with Max Score    		37.7%	Hard	
+a square matrix, E the end, S the start, 1-9 the score, x obstacles. 
+two dp problems:
+max score you can get.
+number of paths on the max score.
 ->>
-
 
 <<-1621	Number of Sets of K Non-Overlapping Line Segments    		41.3%	Medium	
 give a list of positions on a line and number k. number of ways to draw k non-overlapping segments, each segment at least has two points.
@@ -546,7 +496,27 @@ new segment: dp[k,i]+=dp[k-1][j-x]
 use prefix sum for dp[k-1][j-x] to reduce complexity.
 ->>
 
-### count number of ways
+<<-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	
+given array a permutation of 1 to n. Insert the elements in order to BST. find the number of different ways to reorder nums so that we get the same BST as nums.
+Key information: BST.
+- use the first element as the root, and smaller one as the left, bigger ones as the right, both as a subproblem.
+- can choose left first or right first.
+- for left first, assuming we have m nodes in left, and n nodes in right, then it is equivalent to interleave the left array into right array. C(m+n,n)
+nleft*nright*comb(n-1,left)
+recursive, combination, modular inverse, pascal triangle (using dp to get combination)
+->>
+
+
+<<-647. Palindromic Substrings
+problem: count number of palindromic substring.
+- non-dp: for all possible position, expand and get the count
+- dp: dp[i,j] number of pal-string inside. then dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
+->>
+
+<<-1411	Number of Ways to Paint N × 3 Grid    		60.6%	Hard	
+dp: using the first row and derive the next row. limited variations
+->>
+
 <<-1692. Count ways to distribute candies
 n candies from 1 to n, distribute into k bags, each bag number of candies>=1.
 bag order and candy order does not matter.
@@ -559,12 +529,104 @@ dp[i,k]=k*dp[i-1,k]+dp[i-1,k-1]
 another approach:
 k=2: we can put 1 to n-1 candies into first bag, thus C(n,1)+C(n,2)+...+C(n,n-1), redundant /2.
 need some math to derive to above solution.
+->>
 
+<<-1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
+dice has 1 to f faces, find number of ways for n dices to get sum target.
+dp[i,j]+=dp[i-1,j-x] x is from 1 to f.
+- number of paths to current state.
+level 3
+->>
+
+<<-1223	Dice Roll Simulation    		46.8%	Medium	
+given an array Max[i] the max allowed consecutive dice number i.
+return the distinct sequence rolling n times (or n dices)
+dp[i,j,k] ith dice rolls number j with k consecutive same number as j.
+dp[i,j,1] means previous can be 0 to 6 except j. add all of them dp[i-1,x,m], x and m shall loop all cases.
+dp[i,j,k] k>1, means previous must be j.
+->>
+
+<<-730. Count Different Palindromic Subsequences
+number of unique palindromic subsequence.
+needs unique, add one dimension, ending with char x. (only a,b,c,d are in the string).
+dp[i,j,c] represent the number of unique pal-subsequence in the range [i,j].
+derive the relation from [i,j-1] and [i+1,j] and [i+1,j-1]
+- i>j dp[i,j,x]=0
+- i==j, dp[i,j,x]=1 s[i]=x, otherwise 0.
+- i<j
+  s[i]!=s[j] dp[i,j,x]=dp[i,j-1,x]+dp[i+1,j,x]-dp[i+1,j-1,x]
+  s[i]==s[j]=x, dp[i,j,x]=sum(dp[i+1,j-1,c])+2 //we add x and xx.
+ since we need all dp[i,j,c] c from 0 to 3, the loop shall be inside.
+rating: 5
+->>
+
+<<- 1641 Count Sorted Vowel Strings 
+given length n.
+- dp[i,j] represents number of sorted vowel string ending with char j. the previous char shall be <=curr char. dp[i,j]+=dp[i-1,k] k<=j.
+- backtracking
+->>
+
+<<-1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
+a list of dictionary words, and a target string. You can choose a char from kth column, if you used it, then all left side cannot be used.
+return number of ways to form the target.
+for each column, find the hashmap (histogram)
+then apply dp: dp[i,j] we used length i for target and j columns in dictionary
+two options: use j column or not use it.
+->>
+
+### 2d matrix walk
+generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
+- in some cases to save space, we need to store previous row and previous column.
+- in some cases we need only keep the previous whole n elements.
+
+<<-1458	Max Dot Product of Two Subsequences    		42.5%	Hard	
+dp[i,j] represent the max dot product of A with length i and B with length j.
+dp[i,j]=max(dp[i-1,j],dp[i,j-1],A[i-1]*B[j-1]+dp[i-1,j-1])
+->>
+
+<<-1504	Count Submatrices With All Ones    		61.5%	Medium	
+dp approach: first round count the number of contiguous 1s along row
+second round, goes up row by row and count the submatrix
+->>
+
+<<-1292	Maximum Side Length of a Square with Sum Less than or Equal to Threshold    		49.9%	Medium	
+using dp to get all sub-matrices's sum. and then check k length from min(i,j) to 1.
+->>
+
+<<-1594	Maximum Non Negative Product in a Matrix    		31.9%	Medium	
+given a grid, from top left to bottom right, only right and down movement.
+return the max product among all the paths.
+idea: keep the min and max product for each grid. positive using max, negative using min.
+dp: top element or left element.
+->>
+
+<<-1162	As Far from Land as Possible    		44.3%	Medium	
+given 01 matrix, 0 is water, 1 is land. find the largest distance from watr to land.
+dp: two pass get the water cell to top left and then get bottom right.
+- 2d matrix two direction update, one direction first, then try another direction
+level 3
+->>
+
+<<-1277	Count Square Submatrices with All Ones    		73.0%	Medium	
+dp[i,j]=0 if mat[i,j]=0
+dp[i,j]=min(dp[i-1,j],dp[i,j-1],dp[i-1,j-1])+1 the max length of square.
+ans+=dp[i,j]
+pattern: 2d matrix.
+->>
+
+<<-1289	Minimum Falling Path Sum II    		61.8%	Hard	
+2d grid.
+->>
+
+<<-1314	Matrix Block Sum    		73.6%	Medium	
+given k and mat[i,j] is the sum of all rows [i-k,i+k] and columns [j-k,j+k]
+- brutal force
+- dp: dp[i,j]=dp[i-1,j]+dp[i,j-1]-dp[i-1,j-1]+mat[i,j]
 ->>
 
 
-
-### dp: edit distance, longest common subsequence et al.
+### dp: edit distance (similar to 2d matrix walk)
+generally involves two strings or arrays, sometimes the string and the reverse string.
 
 <<-1682. Longest palindromic subsequence II
 problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
@@ -584,39 +646,6 @@ else dp[i,j]=max(dp[i+1,j],dp[i,j-1])
 for substring, 
 - dp: dp[i,j] s[i]==s[j] and inner side s[i+1..j-1] must also be a pal-string.
 - non-dp: for all possible position, expand and update max size.
-->>
-
-<<-647. Palindromic Substrings
-problem: count number of palindromic substring.
-- non-dp: for all possible position, expand and get the count
-- dp: dp[i,j] number of pal-string inside. then dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
-->>
-
-<<-730. Count Different Palindromic Subsequences
-number of unique palindromic subsequence.
-needs unique, add one dimension, ending with char x. (only a,b,c,d are in the string).
-dp[i,j,c] represent the number of unique pal-subsequence in the range [i,j].
-derive the relation from [i,j-1] and [i+1,j] and [i+1,j-1]
-- i>j dp[i,j,x]=0
-- i==j, dp[i,j,x]=1 s[i]=x, otherwise 0.
-- i<j
-  s[i]!=s[j] dp[i,j,x]=dp[i,j-1,x]+dp[i+1,j,x]-dp[i+1,j-1,x]
-  s[i]==s[j]=x, dp[i,j,x]=sum(dp[i+1,j-1,c])+2 //we add x and xx.
- since we need all dp[i,j,c] c from 0 to 3, the loop shall be inside.
-rating: 5
-->>
-
-<<-1143. longest common subsequence
-two strings.
-very typical dp problem. 
-- lcs
-- edit distance.
-there are quite a few variation of this problem.
-->>
-
-<<-1035. Uncrossed lines
-find the max number of connected lines (connecting two same number in two lines)
-longest common subsequence problem
 ->>
 
 <<-72. Edit Distance
@@ -642,7 +671,81 @@ find the lowest ascii sum of deleted chars to make two strings equal.
 edit distance variation
 ->>
 
+### longest common subsequence
+O(mn) complexity.
+need get familiar with this and know the variations equivalent to LCS.
+
+<<-1143. longest common subsequence
+two strings.
+very typical dp problem. 
+- lcs
+- edit distance.
+there are quite a few variation of this problem.
+->>
+
+<<-1216	Valid Palindrome III    		48.8%	Hard	
+k palindrome: at most remove k chars and make it palindrome.
+equivalent: longest common subsequence problem between s and reversed s.
+->>
+
+<<-1312	Minimum Insertion Steps to Make a String Palindrome    		58.8%	Hard	
+equivalent: longest common subsequence
+->>
+
+<<-1035. Uncrossed lines
+find the max number of connected lines (connecting two same number in two lines)
+longest common subsequence problem
+->>
+
 ### longest increasing sequence
+
+longest increasing subsequence can have O(nlogn) optimization which sometimes critical.
+idea: maintain an increasing array. if current element is the largest, add it to the back. 
+if we found one in the array > current, we replace it (making it smaller so to have better chance for longer array). since the array is sorted, we can use binary search.
+The array is the smallest ending element with length i+1.
+for example [4,5,6,3]
+len=1, [4],[5],[6],[3], so tail[0]=3
+len=2, [4,5],[5,6], so tail[1]=5
+len=3, [4,5,6], so tail[2]=6.
+
+```cpp
+    int lengthOfLIS(vector<int>& nums) {
+        vector<int> piles;
+        for(int i=0; i<nums.size(); i++) {
+            auto it = lower_bound(piles.begin(), piles.end(), nums[i]);
+            if (it == piles.end())
+                piles.push_back(nums[i]);
+            else
+                *it = nums[i];
+        }
+        return piles.size();
+    }
+```	
+
+<<-1713. Min operation to make a subsequence
+give target array distinct integers, min number of insertion on other array to make target is a subsequence of this array.
+this is a LCS problem with O(nm) but too high for this problem.
+using the fact elements in target is distinct, we use its index to get an index array in B, and then look for the LIS in O(nlogn) time.
+->>
+
+<<-1218	Longest Arithmetic Subsequence of Given Difference    		45.9%	Medium	
+dp: longest increasing subsequence
+using hashmap dp[i] means the length ending with i.
+->>
+
+<<-1187	Make Array Strictly Increasing    		41.5%	Hard	
+given two arrays A and B, you need make A increasing by assigning A[i]=B[j].
+return the min number of operations.
+- sort and remove duplicates in B. so we can use one by one in order.
+- now it is similar to LIS connecting two arrays.
+dp[i,j] represent the min operations needed to make A[0..i] increasing using B[0...j]
+we have two options: 
+we can choose one from B (the smallest one > A[i])
+if A[i]<prev: we can keep it
+there is 1d approach but it is too hard to understand.
+problem pattern: LIS, two array dp[i,j]
+->>
+
 <<-1626	Best Team With No Conflicts    		36.7%	Medium	
 conflict: younger player has higher score, not allowed. same age is not conflict.
 target: maximize the score with no conflict.
@@ -666,32 +769,17 @@ return the max height.
 - apply LIS dp 
 ->>
 
-### reverse thinking
-<<-312. Burst Balloons
-burst a balloon, and get the score: product of left and right and the balloon.
-idea: choose i as the last balloon to burst and its left and right are virtual balloon with value 1. And then balloon i becomes the right and left for two subproblem.
-- top down: is more straightforward.
-- bottom up: loop over all left and right will not work, but we need to do one balloon, 2...until n balloons. (base case is one balloon left)
-->>
- 
-### build from previous solution.
-<<- 1641 Count Sorted Vowel Strings 
-given length n.
-- dp[i,j] represents number of sorted vowel string ending with char j. the previous char shall be <=curr char. dp[i,j]+=dp[i-1,k] k<=j.
-- backtracking
-->>
-
-<<-1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
-a list of dictionary words, and a target string. You can choose a char from kth column, if you used it, then all left side cannot be used.
-return number of ways to form the target.
-for each column, find the hashmap (histogram)
-then apply dp: dp[i,j] we used length i for target and j columns in dictionary
-two options: use j column or not use it.
-->>
-
 ### bitmask dp
 
 bitmask dp: typical usage the number of elements is very limited and 2^n can fit in a integer.
+
+<<-1542	Find Longest Awesome Substring    		36.0%	Hard	
+find longest subarray which can swap to a palindrome.
+we only need to know the number of even and odd. a palindrome only allows <=1 odd chars. using bitmask xor, even will get 0, odd will get 1.
+- all even, i-dp[mask]
+- one odd: i-dp[mask^(1<<j)]
+hashmap, odd even xor, dp
+->>
 
 <<-1349	Maximum Students Taking Exam    		43.3%	Hard	
 given a mxn matrix with some cells broken by 'x', empty cell '.'. One student can be seated but its left, left diagonal, right and right diagonal cannot have a student.
@@ -743,11 +831,12 @@ dp state is defined by current position, intro used, extro used, previous n cell
 level: 5
 ->>
 
+## greedy
 
-
-### greedy
 greedy problems are actually hard since you need to think hard to find the proper way and is able to prove its correctness.
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
+Most time, greedy approach is incorrect. So use it by caution.
+greedy can often be approached using recursion.
 
 <<-1153	String Transforms Into Another String    		35.9%	Hard	
 idea: one by one we map the char in str1 to str2 char's.
@@ -779,16 +868,17 @@ for example [1,2,3] cost 5
 / \   \
 1  2   3
 we first split 1->2 at cost 5, the worker 1 split again with cost 5, 2+5+5=12
+this is similar to 1167 Min cost to connect sticks
+->>
+
+<<-1167	Minimum Cost to Connect Sticks    		63.8%	Medium	
+suppose you have (a,b,c), you connect a,b first at the cost of (a+b), then combine c: 2*(a+b)+c, smaller one are repeatedly counted. so use smaller ones first. minheap.
+amazon OA: amazon fulfillment builder.
 ->>
 
 <<-1217	Minimum Cost to Move Chips to The Same Position    		71.2%	Easy	
 greedy: odd position move to odd position and even position moves to even cost 0. other cost 1.
 so just merge all odd and all even then decide which to move.
-->>
-
-<<-1227	Airplane Seat Assignment Probability    		61.8%	Medium	
-similar to the last time when all ants drop the plankton. treat all person the same.
-greedy.
 ->>
 
 <<-1234	Replace the Substring for Balanced String    		34.1%	Medium	
@@ -811,7 +901,6 @@ nxy, nyx -> min(nxy,nyx) will be paired using 1 operations
 remaining all xy or yx pattern also need to be paired. 
 ->>
 
-
 <<-1253	Reconstruct a 2-Row Binary Matrix    		41.2%	Medium	
 given a 01 matrix 2xn and the row sum and col sum, reconstruct the array.
 row sum gives number of 1s in each row.
@@ -820,18 +909,15 @@ greedy: fill all colsum=2 first, and reduce the row sum accordingly. colsum=0 bo
 colsum=1, we fill first row 0 and then row 1.
 ->>
 
-<<-1167	Minimum Cost to Connect Sticks    		63.8%	Medium	
-suppose you have (a,b,c), you connect a,b first at the cost of (a+b), then combine c: 2*(a+b)+c, smaller one are repeatedly counted. so use smaller ones first. minheap.
-amazon OA: amazon fulfillment builder.
-->>
 <<-1266	Minimum Time Visiting All Points    		79.2%	Easy	
 from point 1 to point 2 you can go x, y or along diagonal. return the min time to visit all points by order.
 sum(min(dx,dy))
 ->>
+
 <<-1282	Group the People Given the Group Size They Belong To    		84.2%	Medium	
 given n people from 0 to n-1, and given a groupSize array groupSize[i] means ith person belongs to a group of groupSize[i].
 return the groups with all its members.
-greedy: combine size and id, sort using size then fill one group by one group.
+greedy: combine size and id, sort using size then fill one group by one group. fill smaller group first since large group has a lot more choices.
 ->>
 
 <<-1296	Divide Array in Sets of K Consecutive Numbers    		54.9%	Medium	
@@ -842,6 +928,7 @@ greedy: start from the smallest and then change the hashmap. The smallest has to
 substr: unique letters in substr <=maxLetters, substr length [minSize,maxSize]
 key observation: if a larger size substr satisfy the condition, apparently smaller size of this substr will also satisfy the condition, and shorter substr will have larger number of occurrence. so only check minSize is fine. using hashmap+ sliding window for a fixed size substr.
 ->>
+
 <<-1328	Break a Palindrome    		45.1%	Medium	
 replace one char so that it is not a palindrome, and it becomes the smallest string.
 greedy: find the first one not 'a' replace it with 'a' (stop before the mid). if we did not find, replace the last one with 'b'
@@ -851,16 +938,19 @@ greedy: find the first one not 'a' replace it with 'a' (stop before the mid). if
 each char is odd.
 greedy: just use two types of char. for even use n-1，1. for odd just use one char.
 ->>
+
 <<-1403	Minimum Subsequence in Non-Increasing Order    		71.3%	Easy	
 a subsequence sum > the remaining subsequence with the following restrictions:
 - length is minimized.
 - sum is maximized.
 greedy: sort and take the largest until we get the sum > the left.
 ->>
+
 <<-1702. Max binary string after change
 You can change 00 to 10 and 10 to 01, return the max string
 greedy: 011110 you can always change to 101111, ie. you can reduce one 0 and shift the 0 one step right. Thus we make the binary string larger.
 repeat the process until one zero is left.
+when input is large and O(n) is needed, generally there is a greedy approach.
 ->>
 
 <<-1432	Max Difference You Can Get From Changing an Integer    		42.9%	Medium	
@@ -878,19 +968,34 @@ or just sort them and compare one by one. O(nlogn)
 ->>
 
 <<-1481	Least Number of Unique Integers after K Removals    		55.2%	Medium	
-greedy: using hashmap to record the histogram. and the sort according to the count, remove those smallest first.
+greedy: using hashmap to record the histogram. and then sort according to the count, remove those smallest first.
 ->>
 
 <<-1503	Last Moment Before All Ants Fall Out of a Plank    		52.6%	Medium	
 ants on different positions, and some goes left and some goes right. Once two ants meet, they change direction. Get the last moment all fell out of the array
 greedy: it is equivalent that they do not change direction. So it is simple to just find the rightmost left direction and leftmost right direction time.
+this is same idea in airplane seat. All the inside details are not important at all.
+->>
+
+<<-1227	Airplane Seat Assignment Probability    		61.8%	Medium	
+similar to the last time when all ants drop the plankton. treat all person the same.
+greedy. All the inside details are not important at all.
 ->>
 
 <<-1509	Minimum Difference Between Largest and Smallest Value in Three Moves    		51.6%	Medium	
 choose most 3 numbers and change to any value. return the smallest difference.
-greedy: 1. similar to 1423, max point from cards. change the left or right side
-greedy 2: using sliding window with window size=n-3 and find the min.
+greedy 1. similar to 1423, max point from cards. change the left or right side
+greedy 2: using sliding window with window size=n-3 and find the min Lc1561.
 ->>
+
+<<-1561	Maximum Number of Coins You Can Get    		78.9%	Medium	
+given 3n piles of coins, three players.
+You choose any 3 piles, and A takes the max, then you choose, B takes the last.
+return the max coins you can get.
+greedy: sort and start from the max, choose the max 2 and the min.
+similar to the problem in sliding window 
+->>
+
 <<-1526	Minimum Number of Increments on Subarrays to Form a Target Array    		59.3%	Hard	
 intial all zero, you can choose any subarray and increase each element in it by one. 
 return the min steps to reach target array.
@@ -913,6 +1018,7 @@ given a nxn matrix, swap rows to make the cells above main diagonal cells to be 
 count trailing zeros for each row, and reduce to 1d problem, bubble sort.
 greedy: move the FIRST row satisfying to current top row.
 ->>
+
 <<-1538	Guess the Majority in a Hidden Array    		61.3%	Medium	
 given 01 array without direct access.
 a=query(a,b,c,d) 4 different indices, and:
@@ -939,12 +1045,14 @@ just a variation of normal balance using counting.
 - see a left, the prefix shall be even.
 greedy.
 ->>
+
 <<-1540	Can Convert String in K Moves    		29.6%	Medium	
 convert s to t using [1,k] moves, the ith move:
 - choose any index not used before, shift the char by i times (circular)
 check if it is possible.
 greedy: compare when char is not the same, we need shift to t[i]. if used before we need add 26 to it and check if it is >k.
 ->>
+
 <<-908. Smallest range I.
 add x in [-k,k] to each element, find the smallest max-min.
 the max difference is max-min-2*k, when less<0, difference is 0
@@ -966,24 +1074,8 @@ from all 0 to target array by:
 - add 1 to an element
 - *2 for all element
 equivalent to: minus 1 if odd, /2 if even from target array to all zero.
-
 ->>
 
-<<-1561	Maximum Number of Coins You Can Get    		78.9%	Medium	
-given 3n piles of coins, three players.
-You choose any 3 piles, and A takes the max, then you choose, B takes the last.
-return the max coins you can get.
-greedy: sort and start from the max, choose the max 2 and the min.
-->>
-
-<<-1564	Put Boxes Into the Warehouse I    		66.2%	Medium	
-push box from left to right only. You can reorder the box.
-return the max number of boxes can be pushed in.
-greedy: 
-- from left to right, get the min height minh[i] minh is monotonically decreasing.
-- sort box.
-- from right to left, push the smallest box to the right. 
-->>
 
 <<-1576	Replace All ?'s to Avoid Consecutive Repeating Characters    		48.0%	Easy	
 greedy: try each ? from 'a' to 'z' so that it is not the same as left and right.
@@ -998,6 +1090,15 @@ idea: when there is a group of same chars, the min removing cost is sum(cost)-ma
 undirected graph: type 1, A can go, type 2: B can go, type 3: both A and B can go.
 given a list of edges. find the max edges you can remove so that both A and B can traverse the graph.
 greedy: similar to MST, choose type 3 first. Then based on 3, add unconnected 1. based on 3 add type 2 using union find.
+->>
+
+<<-1564	Put Boxes Into the Warehouse I    		66.2%	Medium	
+push box from left to right only. You can reorder the box.
+return the max number of boxes can be pushed in.
+greedy: 
+- from left to right, get the min height minh[i] minh is monotonically decreasing.
+- sort box.
+- from right to left, push the smallest box to the right. 
 ->>
 
 <<-1580	Put Boxes Into the Warehouse II    		63.0%	Medium
@@ -1130,6 +1231,9 @@ level: 3
 ->>
 
 ### binary search
+- keep invariant condition when shrinking the range.
+- left biased and right biased.
+- convert problem to binary search if brutal force checking all range works.
 
 <<-1150	Check If a Number Is Majority Element in a Sorted Array    		58.3%	Easy	
 using equal_range.
@@ -1295,11 +1399,16 @@ also a bitmask dp problem.
 ->>
 
 ### dfs
+- dfs to group connected
+- dfs avoid visiting parents
+- dfs for all paths
+- dfs with rank to detect cycles.
+a lot of cases can also be done via bfs, union find, backtracking.
+
 <<-1219	Path with Maximum Gold    		65.6%	Medium	
 mxn matrix with gold, 0 means you cannot cross. You cannot visit the same cell again.
 you can start and stop any place.
 - dfs: at any position with gold do dfs, visited changed to 0. and find the max.
-
 ->>
 
 <<-1254	Number of Closed Islands    		61.1%	Medium	
@@ -1319,14 +1428,12 @@ given an undirected tree with n vertices from 1 to n. Starts at 1, it can jump t
 given time t and target node, find the probability on the target at time t.
 dfs: decrease t and get its neighbors
 leaf node: 1/0
-
 ->>
 
 <<-1462	Course Schedule IV    		43.9%	Medium	
 given n course from 0 to n-1 and a list of prerquisitites. given a list of queries (a,b) need to return if a is b's prerequisites.
 - the graph will form several connected graphs.
 - post order traversal to get the parent child relations.
-
 ->>
 
 <<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	
@@ -1354,11 +1461,19 @@ dfs, hashmap
 ->>
 
 ### bfs
+- bfs with queue
+- bfs with deque pop from both end
+- bfs with priority_queue
+- bfs with parent information
+- bfs with more than one state.
+- bfs with shortest distance problem
+
 <<-1197	Minimum Knight Moves    		36.7%	Medium	
 knight at (0,0), return the min moves to (x,y)
 - limit it in the first coordinate.
 - bfs: convert target to first coord, and try all 8 directions and build a matrix in first coord.
-just convert the jump position to abs(x) and abd(y)
+just convert the jump position to abs(x) and abs(y)
+it is also important: limit the xy not go beyond 400x400, use array instead hashset for visited. Otherwise it will TLE soon.
 ->>
 
 <<-1210	Minimum Moves to Reach Target with Rotations    		45.9%	Hard	
@@ -1388,7 +1503,6 @@ matrix with 01, 1 is obstacle. given k, you can remove at most k obstacles and r
 bfs: using (i,j,numRemoved) for the queue data. 
 when number of obstacle > m-1+n-1, then we get the shortest length using dx+dy
 this can be used in each step.
-
 ->>
 
 <<-1298	Maximum Candies You Can Get from Boxes    		59.5%	Hard	
@@ -1425,13 +1539,17 @@ bfs: with two status. either from right or from left.
 need store position and direction also, the visited array.
 ->>
 
-### union-find
+## union-find
+- union-find with nothing, O(n)
+- union find with rank O(logn)
+- union find with path compression O(1)
+- use vector to store parent
+- use hashmap to store parent
 
 <<-1202	Smallest String With Swaps    		47.5%	Medium	
 given a string and a list of index pairs. You can swap the character pair by the index pair any number of times. return the smallest string.
 - union-find: characters in one set can be sorted.
 ->>
-
 
 <<-1319	Number of Operations to Make Network Connected    		54.6%	Medium	
 union find the disjoint set and connect these disjoint set.
@@ -1465,7 +1583,6 @@ return the latest step at which there exists a groups of ones of length exactly 
  node count vs number of sets.
  ->>
 
-
 <<-1627	Graph Connectivity With Threshold    		36.9%	Hard	
 n cities from 1 to n. Two cities are directly connected if they share a common divisor >threshold.
 given two cities, check if they are connected.
@@ -1479,7 +1596,6 @@ simple version of the 2d rank problem. sort and assign values.
 
 <<-1632. Rank transform of a matrix
 mxn matrix. rank matrix: smallest element in its row and column shall be 1. smaller value smaller rank. rank shall be as small as possible. same value on the row and col shall have the same rank.
-
 - greedy: process in sorted order.
 - using map to store element vs positions
 - using union find to group the same value elements into groups and process each group separately
@@ -1490,7 +1606,11 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 
 ## data structure focused problems
 
-### stack
+## stack
+- general stack
+- monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
+- recursive stack for syntax parsing.
+- stack is very useful and sometimes is also hard!
 
 <<-84	Largest Rectangle in Histogram    		36.0%	Hard	
 find the largest rectange
@@ -1508,7 +1628,7 @@ add 7: [0,6,7]
 add 5: now we know next right is 7. pop 7, get area 7
 		pop 6, get area 6*2
 		stack [0,5]
-...
+the idea:each bar can be the height of some rect, and we are looking for previous smaller and next smaller. so element increasing is fine, using monotonic increasing stack.
 ->>
 
 <<-1209	Remove All Adjacent Duplicates in String II    		57.4%	Medium	
@@ -1537,9 +1657,7 @@ simulate stack.
 ->>
 <<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	
 if you buy prices[i] you can get discount at price[j] where j>i and prices[j]<prices[i], j shall be minimized.
-
 stack: find next smaller.
-
 ->>
 
 <<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	
@@ -1547,6 +1665,7 @@ expression tree: leaf nodes are numbers, inner nodes are +-*/.
 infix expression: in order traversal of the binary tree
 given an input string with (), produce a expression tree with equal infix (omitting the ())
 typical syntax analysis using stack.
+using vector to store the node* is better for processing.
 ->>
 
 <<-1628	Design an Expression Tree With Evaluate Function    		86.0%	Medium	
@@ -1564,13 +1683,17 @@ subject: tree, stack, OOP, polymorphism
 recursive stack. syntax parser.
 ->>
 
-### queue & deque
+## queue & deque
+- monotonic deque
+
 <<-1700 number of students unable to eat lunch
 each student has a prefer of lunch, if current lunch is not preferred, back to the queue end.
 just simulate the deque
 ->>
 
-### heap: priority-queue, set, map
+## heap: priority-queue, set, map
+heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+
 <<-1353	Maximum Number of Events That Can Be Attended    		29.7%	Medium	
 a list of event [start,end], you can attend an event each day. 
 - why we cannot use event start/end map? we are not asking the simultaneously max.
@@ -1622,7 +1745,6 @@ if we use the event start/end will be very complicated since we have to eat one 
 but using greedy approach: to eat the apple the most close to rot.
 ->>
 
-
 <<-1438	Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit    		43.5%	Medium	
 equivalent to find the max and min difference <=limit. 
 using deque to find min and max.
@@ -1648,10 +1770,10 @@ approach:
 - heap: try using stones or ladders first, when one is used up, replace the max stone for a ladder or a ladder for min stones.
 ->>
 
-### hashset, hashmap
+## hashset, hashmap
+
 <<-1152	Analyze User Website Visit Pattern    		43.2%	Medium	
 this is quite confusing.
-
 ->>
 
 <<-1166	Design File System    		57.8%	Medium	
@@ -1673,7 +1795,6 @@ popAtStack: pop from the given stack.
 - maintain a list of available stacks (sorted)
 - maintain a non-empty map (sorted)
 similar to 2d matrix, move elements between two maps.
-
 ->>
 
 <<-1181	Before and After Puzzle    		44.4%	Medium	
@@ -1713,7 +1834,6 @@ just do the simulation according to the problem.
 <<-1395	Count Number of Teams    		82.1%	Medium	
 choose a triplet sorted or reversely sorted (no equal).
 using a left set and right set, then use each number as the middle, and update left and right.
-
 ->>
 
 <<-1396	Design Underground System    		67.5%	Medium	
@@ -1722,7 +1842,6 @@ checkOut(int id, string stationName, int t)
 getAverageTime(string startStation, string endStation): average time from start to end.
 collect all customer with start and end the same. 
 hashmap. You can also build route map so that we do not need to find the route from other maps.
-
 ->>
 
 <<-1418	Display Table of Food Orders in a Restaurant    		67.6%	Medium	
@@ -1757,10 +1876,12 @@ use prefix and suffix to find the region from left and right and then get the  m
 given a string of NSEW,N north, S: south, E: east, W: west. Check if it cross itself. initial at (0,0)
 hashset: each location store as string.
 ->>
+
 <<-1487	Making File Names Unique    		30.0%	Medium	
 create file, if the file name is seen add suffix (i) i the smallest positive integer not used.
 hashmap: record the file name and its suffix number. if it is 0, there is no suffix. maintain a list
 ->>
+
 <<-1488	Avoid Flood in The City    		24.9%	Medium	
 rains[i] means it will rain on ith lake. if the lake is empty, it will full. otherwise it will flood.
 rains[i]=0 means no rain, >0 mean there is rain.
@@ -1825,7 +1946,16 @@ return list of name entry 3 or more times in one hour in a single day.
 idea: hashmap to record entry time for each person. Then for each person we check one hour period entry times. (this can be approached using deque)
 ->>
 
-### tree
+## tree
+why tree is important? tree is base for a lot of data structures with O(n) or O(logn) complexity.
+- recursive
+- iterative
+- inorder traversal
+- preorder traversal
+- postorder traversal
+- algorithm in array applied in tree.
+- tree is a special graph.
+- binary tree, BST, n-ary tree
 
 <<-1161	Maximum Level Sum of a Binary Tree    		71.1%	Medium	->>
 
@@ -1843,7 +1973,6 @@ diameter is the max depth + 2nd max depth via some node.
 <<-1261	Find Elements in a Contaminated Binary Tree    		74.3%	Medium	
 recover and find.
 root is x then left=2x+1, and right=2x+2
-
 ->>
 
 <<-1273	Delete Tree Nodes    		63.3%	Medium
@@ -1892,9 +2021,9 @@ check if the linked list exist in the tree as a down path.
 choose a node and then choose a direction and then switch direction. Get the longest path.
 postorder traversal and return the subtree max path, using left branch or right branch,
 ->>
+
 <<-1373	Maximum Sum BST in Binary Tree    		38.1%	Hard	
 postorder to find the left max, right min and sum and isBST.
-
 ->>
 
 <<-1379	Find a Corresponding Node of a Binary Tree in a Clone of That Tree    		84.0%	Medium	
@@ -2041,12 +2170,19 @@ level: 4
 ->>
 
 ### segment tree or binary index tree
+see the appendix for binary index tree.
 
 <<-1649	Create Sorted Array through Instructions    		42.0%	Hard	
 segment tree 
 ->>
 
 ### linked list
+- single linked list
+- libray list
+- doubly linked list
+- list is the base for hash table.
+- cycle detection
+- traversal
 
 <<-1206	Design Skiplist    		57.9%	Hard	
 - design a node structure with right and down pointer.
@@ -2069,10 +2205,12 @@ subject: linked list
 approach: get the head and tail of list2 and get the start and end node of list1 and connect
 level: 2
 ->>
+
 <<-1634. Add Two Polynomials Represented as Linked Lists
 node has coefficient and power.
 two pointer merge.
 ->>
+
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
@@ -2099,7 +2237,6 @@ i the best candidate position,
 j loop over following chars
 k: the length or following chars.
 if s[j+k]>s[i+k] then i is not best, move to j.
-
 ->>
 
 <<-1176	Diet Plan Performance    		53.9%	Easy	
@@ -2117,6 +2254,7 @@ sliding window.
 find number of subarrays with k odd number inside.
 sliding window: only keep the odd numbers with fixed k window.
 ->>
+
 <<-1343	Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold    		64.3%	Medium	
 fix size sliding window.
 ->>
@@ -2130,6 +2268,7 @@ a string consists of only a,b,c. find number of strings containing all 3 chars.
 - we only need to find the smallest window containing the 3 chars. and all previous including the window are all valid substrings.
 sliding window to find the min window containing abc.
 ->>
+
 <<-1703. Min adjacent swaps for k consecutive ones.
 sliding window with some tricks
 - if we slide window on original array, we need binary search to find the size first.
@@ -2165,9 +2304,10 @@ given an array of positive numbers, erase a subarray containing unique elements.
 using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
 ->>
 
+## sort
+- sort makes things easier.
+- sort using given order
 
-
-### sort
 <<-1333	Filter Restaurants by Vegan-Friendly, Price and Distance    		56.9%	Medium	
 restaurants[i] = [idi, ratingi, veganFriendlyi, pricei, distancei]
 filter them by veganfriendly=true or false, and max price and max distance, first by rating, then by id.
@@ -2195,7 +2335,8 @@ using stable_sort.
 sort using lambda function with a parameter or customized compare function
 ->>
 
-# string
+## string
+
 <<-1233	Remove Sub-Folders from the Filesystem    		61.2%	Medium	
 given a list of folders, remove all those subfolders
 observation:
@@ -2245,7 +2386,7 @@ find given list of special strings and replace with given string
 typical string: find all positions and replace from right.
 ->>
 
-### array
+## array
 
 <<-1177	Can Make Palindrome from Substring    		35.7%	Medium	
 query [L,R,k] choose the substring [L,R] and check if we can replace at most k chars and rearrange to a pal-string.
@@ -3517,9 +3658,8 @@ max steps and min steps.
 greedy: 
 - min steps-->equivalent to find the window with min empty spaces. (window size is the number of piles)
 - max steps-->equivalent to find the window with max empty spaces.
-
-
 ->>
+
 <<-667. Beautiful Arrangement II
 use 1 to n, arrange so that |a1-a2|,|a2-a3|....|an-1-An| has exactly k distinct integer
 approach:
@@ -5204,6 +5344,7 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+
 <<-1168	Optimize Water Distribution in a Village    		62.1%	Hard	
 given n houses in a village. Each house can be provided water via well or pipe.
 each house either build a well in it and connect a pipe from another well.
@@ -5344,7 +5485,7 @@ simulate the services
 if the substring contains c, it must contain all occurences of c.
 if there are multiple answers, return the one with min total length.
 - find each char's first and last index.
-- extend range using inside chars.
+- extend range using inside chars. -this is very tricky. (once we found the interval no change the we stop)
 - sort intervals and get the max non-overlapping substrings. always uses smaller segment first.
 Very hard.
 ->>
@@ -5526,8 +5667,6 @@ A[i] in the range [1,m]
 
 ## leetcode problem list
 
-
-
 <<-1147	Longest Chunked Palindrome Decomposition    		59.1%	Hard	
 
 ->>
@@ -5692,7 +5831,6 @@ A[i] in the range [1,m]
 <<-964	Least Operators to Express Number    		44.5%	Hard	->>
 <<-963	Minimum Area Rectangle II    		51.5%	Medium	->>
 <<-962	Maximum Width Ramp    		45.9%	Medium	->>
-
 <<-961	N-Repeated Element in Size 2N Array    		74.2%	Easy	->>
 <<-960	Delete Columns to Make Sorted III    		54.0%	Hard	->>
 <<-959	Regions Cut By Slashes    		66.6%	Medium	->>
@@ -6465,7 +6603,6 @@ Similar problem: 398
 problem: given a list of intervals, find the min required room.
 idea: overlapped intervals need separate room. so to find max overlapped intervals.
 approach: intervals, using map to mark start and ending of an event. prefix sum
-
 ->>
 <<-252	Meeting Rooms    		55.1%	Easy	
 check if intervals have overlaps.
@@ -6473,7 +6610,6 @@ approach: intervals, sort with begin and check begin with previous end.
 O(N)
 level: 2
 ->>
-
 
 <<-375. guess number higher or lower II
 number from 1 to n. You guess a number if correct, you win. otherwise, you guess x and pay x. return the min money to guarantee win.
@@ -6778,6 +6914,9 @@ s3: For the current node, consider all of its unvisited neighbours and calculate
 s4: When we are done considering all of the unvisited neighbours of the current node, mark the current node as visited and remove it from the unvisited set. A visited node will never be checked again.
 s5: If the destination node has been marked visited (when planning a route between two specific nodes) or if the smallest tentative distance among the nodes in the unvisited set is infinity (when planning a complete traversal; occurs when there is no connection between the initial node and remaining unvisited nodes), then stop. The algorithm has finished.
 s6: Otherwise, select the unvisited node that is marked with the smallest tentative distance, set it as the new "current node", and go back to step 3.
+
+see the Maze II.
+
 
 skip list:
 
