@@ -13187,7 +13187,10 @@ this is essentially bellman-ford algorithm.
         }
         return dp[(1<<n) -1];        
     }
-```## contest 146
+```
+
+## contest 146
+
 ### 1128. Number of Equivalent Domino Pairs (**)
 <em>Given a list of dominoes, dominoes[i] = [a, b] is equivalent to dominoes[j] = [c, d] if and only if either (a==c and b==d), or (a==d and b==c) - that is, one domino can be rotated to be equal to another domino.</em>
 
@@ -13441,31 +13444,22 @@ Analysys:
 ```cpp
     int largest1BorderedSquare(vector<vector<int>>& grid) {
         int m=grid.size(),n=grid[0].size();
-        vector<vector<int>> hor(m,vector<int>(n)),ver(m,vector<int>(n));
+        int ans=0;
+        vector<vector<int>> hor(m+1,vector<int>(n+1)),ver(m+1,vector<int>(n+1));
         for(int i=0;i<m;i++){
             for(int j=0;j<n;j++){
                 if(grid[i][j]){
-                    hor[i][j]=j==0?1:hor[i][j-1]+1;
-                    ver[i][j]=i==0?1:ver[i-1][j]+1;
-                }
-            }
-        }
-        int maxlen=0;
-        for(int i=m-1;i>=0;i--){
-            for(int j=n-1;j>=0;j--){
-                if(grid[i][j]){
-                    int len=min({hor[i][j],ver[i][j]});
-                    //check ver[i][j-len+1] and hor[i-len+1][j]
-                    for(int l=len;l>=1;l--){
-                        if(ver[i][j-l+1]>=l && hor[i-l+1][j]>=l){
-                            maxlen=max(maxlen,l);
-                            break;
-                        }
+                    hor[i+1][j+1]=hor[i+1][j]+1;
+                    ver[i+1][j+1]=ver[i][j+1]+1;
+                    int mx=min(hor[i+1][j+1],ver[i+1][j+1]);
+                    for(int k=mx;k>ans;k--){
+                        if(hor[i+2-k][j+1]>=k && ver[i+1][j+2-k]>=k)
+                            ans=max(ans,k);
                     }
                 }
             }
         }
-        return maxlen*maxlen;
+        return ans*ans;
     }
 ```
 

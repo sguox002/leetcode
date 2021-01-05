@@ -579,6 +579,12 @@ generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
 - in some cases to save space, we need to store previous row and previous column.
 - in some cases we need only keep the previous whole n elements.
 
+<<-1139	Largest 1-Bordered Square    		48.1%	Medium	
+similarly use dp to record the horizontal and vertical length of 1s at each position. first goes from top left to bottom right. 
+then we from bottom right to top left, check each position [i,j] with a side length [1 to min(h[i,j],v[i,j]] and check its top point and left point
+actually we do not need the second pass.
+->>
+
 <<-1458	Max Dot Product of Two Subsequences    		42.5%	Hard	
 dp[i,j] represent the max dot product of A with length i and B with length j.
 dp[i,j]=max(dp[i-1,j],dp[i,j-1],A[i-1]*B[j-1]+dp[i-1,j-1])
@@ -1474,6 +1480,15 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+<<-1129	Shortest Path with Alternating Colors    		39.6%	Medium	
+assemble the edge with odd/even property and do bfs.
+->>
+
+<<-1136	Parallel Courses    		61.1%	Hard	
+given a list of prerquisitites relations. In a semester you can study any number of courses if cleared. return the min semester needed.
+- put all sources in queue and clear them and do bfs.
+->>
+
 <<-1197	Minimum Knight Moves    		36.7%	Medium	
 knight at (0,0), return the min moves to (x,y)
 - limit it in the first coordinate.
@@ -1552,6 +1567,10 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-1135	Connecting Cities With Minimum Cost    		58.6%	Medium	
+greedy: try smallest edge first, MST using union find.
+->>
+
 <<-1202	Smallest String With Swaps    		47.5%	Medium	
 given a string and a list of index pairs. You can swap the character pair by the index pair any number of times. return the smallest string.
 - union-find: characters in one set can be sorted.
@@ -1617,6 +1636,18 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-1130	Minimum Cost Tree From Leaf Values    		67.1%	Medium	
+given an array of integer, consider all binary tree:
+the leaf nodes are the array elements in order, the inner nodes is the product of left and right max leaf value. return the smallest sum of non-leaf nodes.
+[6,2,4] we first combine 2 and 4, which get a sum of 32.
+- a number can only combine its nieghboring, cannot cross!
+- sorted order will be simple.
+Once we are clear about that, we can use greedy approach.
+every leaf shall be combined with its left or right. For each element it shall combine to the next larger number to get rid of itself.
+So the problem is equivalent to find next larger integer in its left or right.
+And this can be solved using stack.
+->>
 
 <<-84	Largest Rectangle in Histogram    		36.0%	Hard	
 find the largest rectange
@@ -2399,6 +2430,12 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+
+<<-1138	Alphabet Board Path    		49.8%	Medium	
+a-z arranged by 5 letters a row. print a string, return the path. The only special is the z, we need first go to u. or first go to u and then go to z.
+using bfs is overkill. 
+->>
+
 <<-1144	Decrease Elements To Make Array Zigzag    		45.8%	Medium	
 even index element > odd index elements or odd index elements > even index elements (neighboring)
 only -1 is allowed.
@@ -2691,6 +2728,17 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+
+<<-1131	Maximum of Absolute Value Expression    		52.2%	Medium	
+given two arrays A and B, return the max value |A[i]-A[j]|+|B[i]-B[j]|+|i-j|
+we need assemble A[i] B[i],i together. we can always assume i<j.
+so 4 cases:
+A[i]-A[j]+B[i]-B[j]+i-j ->(A[i]+B[i]+i)-(A[j]+B[j]+j)
+A[i]-A[j]+B[j]-B[i]+i-j ->(A[i]-B[i]+i)-(A[j]-B[j]+j)
+A[j]-A[i]+B[i]-B[j]+i-j ->(-A[i]+B[i]+i)-(-A[j]+B[j]+j)
+A[j]-A[i]+B[j]-B[i]+i-j ->(-A[i]-B[i]+i)-(-A[j]-B[j]+j)
+it is clearly we are looking for the same max and min difference of 4 functions.
+->>
 
 <<-1175	Prime Arrangements    		51.5%	Easy	
 rearrange 1 to n so that prime is at prime index.
@@ -4930,6 +4978,14 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-1128	Number of Equivalent Domino Pairs    		46.8%	Easy	->>
+<<-1133	Largest Unique Number    		67.1%	Easy	->>
+
+<<-1134	Armstrong Number    		78.0%	Easy	
+k is the number of digits, so that sum of digit's k power equal the number.
+->>
+
+<<-1137	N-th Tribonacci Number    		56.2%	Easy	->>
 
 <<-1160	Find Words That Can Be Formed by Characters    		67.3%	Easy	->>
 
@@ -5119,6 +5175,11 @@ linear programming
 NP-hard: non-deterministic polynomial time hardness.
 
 some games especially zero-sum game
+
+<<-1140	Stone Game II    		64.9%	Medium	
+A and B takes turn. Initially M=1, each time you can take 1<<x<<2M piles of staones. then we set M=max(M,x).
+dp: top down, max(A-B), strategy game.
+->>
 
 <<-1406	Stone Game III    		56.8%	Hard	
 strategy game: you can take up to 3 piles of stones from the beginning. The sum of stones is the score.
@@ -5684,20 +5745,13 @@ A[i] in the range [1,m]
 
 ## leetcode problem list
 
-<<-1143	Longest Common Subsequence    		58.6%	Medium	->>
-<<-1140	Stone Game II    		64.9%	Medium	->>
-<<-1139	Largest 1-Bordered Square    		48.1%	Medium	->>
-<<-1138	Alphabet Board Path    		49.8%	Medium	->>
-<<-1137	N-th Tribonacci Number    		56.2%	Easy	->>
-<<-1136	Parallel Courses    		61.1%	Hard	->>
-<<-1135	Connecting Cities With Minimum Cost    		58.6%	Medium	->>
-<<-1134	Armstrong Number    		78.0%	Easy	->>
-<<-1133	Largest Unique Number    		67.1%	Easy	->>
-<<-1131	Maximum of Absolute Value Expression    		52.2%	Medium	->>
-<<-1130	Minimum Cost Tree From Leaf Values    		67.1%	Medium	->>
-<<-1129	Shortest Path with Alternating Colors    		39.6%	Medium	->>
-<<-1128	Number of Equivalent Domino Pairs    		46.8%	Easy	->>
-<<-1125	Smallest Sufficient Team    		46.9%	Hard	->>
+<<-1125	Smallest Sufficient Team    		46.9%	Hard	
+giving a list of required skill and a list of people with skill set. find the min team with required skills. people<60, require skills<16
+- convert the required skills and people skills to bitmask number.
+- not-want skills are just ignored.
+- if we use a,b,c the result is a|b|c. we are looking for the shortest distance to reach required skill number.
+
+->>
 <<-1124	Longest Well-Performing Interval    		33.0%	Medium	->>
 <<-1123	Lowest Common Ancestor of Deepest Leaves    		67.2%	Medium	->>
 <<-1122	Relative Sort Array    		67.7%	Easy	->>
