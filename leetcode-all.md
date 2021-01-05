@@ -47,6 +47,20 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+### shortest distance problem
+dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
+bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
+floyd-warshal: find all pair node shortest distance using dp.
+
+<<-1125	Smallest Sufficient Team    		46.9%	Hard	
+giving a list of required skill and a list of people with skill set. find the min team with required skills. people<60, require skills<16
+- convert the required skills and people skills to bitmask number.
+- not-want skills are just ignored.
+- if we use a,b,c the result is a|b|c. we are looking for the shortest distance to reach required skill number.
+- shortest distance using bitmask dp: dp[status,[]] for each status we store the list of person. status up to 1<<n, n is the number of skills. people is the number of nodes. Using bellman-ford we try to relax all the dp.
+- we can also use backtrack.
+->>
+
 ### memoization
 <<-1387	Sort Integers by The Power Value    		70.6%	Medium	
 power of x is the step to transform to 1: even x/2, odd 3*x+1. need do a range.
@@ -95,6 +109,11 @@ idea: choose i as the last balloon to burst and its left and right are virtual b
 
 ### dp dealing with array partitions
 generally dealing with subsequence or subarray and divide into k groups to get max/min scores.
+
+<<-1105	Filling Bookcase Shelves    		57.9%	Medium	
+given book height and width in order, and bookshelf width. find the min height.
+dp, either start a new layer or attach to previous layer.
+->>
 
 <<-1278	Palindrome Partitioning III    		60.2%	Hard	
 return the min number of characters to replace so that string can be split into k palindrome substr.
@@ -579,6 +598,11 @@ generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
 - in some cases to save space, we need to store previous row and previous column.
 - in some cases we need only keep the previous whole n elements.
 
+<<-1074	Number of Submatrices That Sum to Target    		60.9%	Hard	
+kadane: get the sum row by row and convert to 1d subarray sum to matrix using hashmap.
+strictly it is not dp instead it is hashmap.
+->>
+
 <<-1139	Largest 1-Bordered Square    		48.1%	Medium	
 similarly use dp to record the horizontal and vertical length of 1s at each position. first goes from top left to bottom right. 
 then we from bottom right to top left, check each position [i,j] with a side length [1 to min(h[i,j],v[i,j]] and check its top point and left point
@@ -681,6 +705,11 @@ edit distance variation
 O(mn) complexity.
 need get familiar with this and know the variations equivalent to LCS.
 
+<<-1092	Shortest Common Supersequence     		52.5%	Hard	
+two strings, return the shortest common supersequence.
+idea: find the LCS and only incorporate one copy of it.
+->>
+
 <<-1143. longest common subsequence
 two strings.
 very typical dp problem. 
@@ -779,6 +808,17 @@ return the max height.
 
 bitmask dp: typical usage the number of elements is very limited and 2^n can fit in a integer.
 
+<<-1066	Campus Bikes II    		54.0%	Medium	
+campus given as a 2d grid, n workers and m bikes n<=m at different grid position,
+return the min distance sum so that each worker is assigned a unique bike.
+- build a distance matrix for person vs bike.
+- dp[i,bitmask] represent the shortest distance sum for i people and bitmask(indicate which bike is taken)
+- dp[i,bitmask]=min(dp[i-1,pre]+dist(i-1,j)) if we assign bike j to person i-1.
+use current status, and loop and assign the bike to i-1 th person to see if we can reduce the total.
+
+also can use dijkstra. 
+->>
+
 <<-1542	Find Longest Awesome Substring    		36.0%	Hard	
 find longest subarray which can swap to a palindrome.
 we only need to know the number of even and odd. a palindrome only allows <=1 odd chars. using bitmask xor, even will get 0, odd will get 1.
@@ -843,6 +883,17 @@ greedy problems are actually hard since you need to think hard to find the prope
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
+
+<<-1111	Maximum Nesting Depth of Two Valid Parentheses Strings    		72.3%	Medium	
+very confusing question. count, ( +1 and ) -1. odd number group, even number group.
+greedy.
+->>
+
+<<-1121	Divide Array Into Increasing Sequences    		57.6%	Hard	
+given a sorted array, and k. find out if this array can be divided one or more dijoint increasing subsequence of length >=k.
+- get the histogram, the highest frequency indicates number of parts we shall divide.
+- greedy: decrease the all the number with maxfreq by 1 (if less than k, we need keep going until we have k.
+->>
 
 <<-1147	Longest Chunked Palindrome Decomposition    		59.1%	Hard	
 problem: decompose into parts and the parts form a palindrome pattern.
@@ -1247,6 +1298,21 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-1064	Fixed Point    		65.6%	Easy	
+sorted array with distinct numbers, find A[i]=i.
+binary search or brutal force.
+->>
+
+<<-1095	Find in Mountain Array    		35.7%	Hard	
+- find the peak first and do left and right binary search
+- find upward and downward side.
+->>
+
+<<-1102	Path With Maximum Minimum Value    		49.9%	Medium	
+from top left to bottom right, a path is the min value in the path. 
+binary search
+->>
+
 <<-1150	Check If a Number Is Majority Element in a Sorted Array    		58.3%	Easy	
 using equal_range.
 ->>
@@ -1340,6 +1406,12 @@ level: 5
 backtracking problem generally finds all sets required. It can also be used for counting.
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
+
+<<-1079	Letter Tile Possibilities    		75.6%	Medium	
+given a list of letters, return number of different string can form.
+permutation with duplicates. n!/(n1!n2!..)
+-backtrack. with a hashmap.
+->>
 
 <<-1215	Stepping Numbers    		42.7%	Medium	
 stepping number: its neighboring digits absolute difference is 1. return a sorted list stepping number in range [L,R]
@@ -1480,6 +1552,11 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+<<-1091	Shortest Path in Binary Matrix    		38.6%	Medium	
+given a binary matrix, 1 means blocked. You can go 8 directions.
+regular bfs.
+->>
+
 <<-1129	Shortest Path with Alternating Colors    		39.6%	Medium	
 assemble the edge with odd/even property and do bfs.
 ->>
@@ -1567,6 +1644,9 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-1101	The Earliest Moment When Everyone Become Friends    		66.8%	Medium	
+union-find
+->>
 <<-1135	Connecting Cities With Minimum Cost    		58.6%	Medium	
 greedy: try smallest edge first, MST using union find.
 ->>
@@ -1636,6 +1716,26 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-1063	Number of Valid Subarrays    		71.7%	Hard	
+leftmost element in the subarray <= other elements in the subarray.
+so the element shall be the min and we are looking for next smaller for each element.
+monotonic increasing stack.
+->>
+
+<<-1081	Smallest Subsequence of Distinct Characters    		53.3%	Medium	
+given a string, find the smallest subsequence with distinct characters.
+using monotonic increasing stack, when we see a smaller char behind we pop from stack (if the char has no more behind we cannot pop it)
+->>
+
+<<-1124	Longest Well-Performing Interval    		33.0%	Medium	
+change 9 to 1 and <8 to -1, then we are looking for the longest subarray sum >0.
+subarray sum can be done using prefix sum. 
+can generalize to subarry sum>target.
+- using ordered_map, we need check all smaller than current one. complexity would be O(nlogn)
+- using stack. keep the new lowest prefix into stack, and then from right, while current is larger than top, pop it and get the answer. 
+- using hashmap to record the prefix sum vs first appear index. if prefix>0, then the whole prefix is the valid subarray. if prefix<0, if we have not seen it, record it, otherwise we check score-1 (since the score start from 0, and -1 must appear than -2. (pretty tricky)
+->>
 
 <<-1130	Minimum Cost Tree From Leaf Values    		67.1%	Medium	
 given an array of integer, consider all binary tree:
@@ -1715,6 +1815,12 @@ subject: tree, stack, OOP, polymorphism
 ->>
 
 ### recursive stack
+<<-1087	Brace Expansion    		63.0%	Medium	->>
+<<-1096	Brace Expansion II    		62.3%	Hard	->>
+
+<<-1106	Parsing A Boolean Expression    		58.9%	Hard	
+recursive stack
+->>
 
 <<-1190	Reverse Substrings Between Each Pair of Parentheses    		63.8%	Medium	
 recursive stack. syntax parser.
@@ -1730,6 +1836,13 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+
+<<-1090	Largest Values From Labels    		60.0%	Medium	
+confusing question: values[i] is the value, labels[i] is the label for ith element.
+you choose with restriction: each label number <=Limit, total number of selection <=num_wanted.
+return the max sum.
+priority_queue to store each value with same label<=limit, and then take from bigger to smaller.
+->>
 
 <<-1353	Maximum Number of Events That Can Be Attended    		29.7%	Medium	
 a list of event [start,end], you can attend an event each day. 
@@ -1808,6 +1921,13 @@ approach:
 ->>
 
 ## hashset, hashmap
+
+<<-1072	Flip Columns For Maximum Number of Equal Rows    		61.2%	Medium	
+flip columns will not change the equal rows, they are still equal. 
+so it is equivalent to find the max equal rows.
+using hashmap.
+->>
+
 <<-1146	Snapshot Array    		36.9%	Medium	->>
 
 <<-1152	Analyze User Website Visit Pattern    		43.2%	Medium	
@@ -1994,6 +2114,30 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-1080	Insufficient Nodes in Root to Leaf Paths    		49.7%	Medium	
+a node is insufficient if all path passing this node has a sum < limit.
+remove all the insufficient nodes.
+dfs and subtract the node from limit. Note if the left and right is removed, the root shall also be removed.
+->>
+
+<<-1104	Path In Zigzag Labelled Binary Tree    		72.6%	Medium	
+full tree, odd row are labelled from left to right, even rows are labelled from right to left.
+just use full tree ordering and then convert.
+->>
+
+<<-1110	Delete Nodes And Return Forest    		67.4%	Medium	
+postorder traversal.
+->>
+
+<<-1120	Maximum Average Subtree    		63.1%	Medium	
+get the sum of values and number of nodes, postorder
+->>
+
+<<-1123	Lowest Common Ancestor of Deepest Leaves    		67.2%	Medium	
+postorder visit and get the maxDepth and then back to root to check if left and right==maxh.
+tricky.
+->>
 
 <<-1145	Binary Tree Coloring Game    		51.4%	Medium	
 first player choose one node, each player can only choose his neighnors.
@@ -2227,6 +2371,10 @@ segment tree
 - cycle detection
 - traversal
 
+<<-83	Remove Duplicates from Sorted List    		46.0%	Easy	
+easy but tricky, for each node we need iterate until we find no more duplicates.
+->>
+
 <<-1206	Design Skiplist    		57.9%	Hard	
 - design a node structure with right and down pointer.
 - head always point to the top layer (since we are going right and down)
@@ -2257,6 +2405,10 @@ two pointer merge.
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+
+<<-1100	Find K-Length Substrings With No Repeated Characters    		73.4%	Medium	
+find number of substrings. hashmap sliding window.
+->>
 
 <<-1151	Minimum Swaps to Group All 1's Together    		58.7%	Medium	
 equivalent to find the window with most 1s. window size=total number of 1s.
@@ -2351,6 +2503,11 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-1122	Relative Sort Array    		67.7%	Easy	
+given two arrays A and B, sort A according to B, elements not in B shall go after in sorted order.
+using map and do count sort.
+->>
+
 <<-1333	Filter Restaurants by Vegan-Friendly, Price and Distance    		56.9%	Medium	
 restaurants[i] = [idi, ratingi, veganFriendlyi, pricei, distancei]
 filter them by veganfriendly=true or false, and max price and max distance, first by rating, then by id.
@@ -2379,6 +2536,25 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+
+<<-1062	Longest Repeating Substring    		57.7%	Medium	
+- binary search
+- dp solution, id(s[i]==s[j] dp[i,j]=dp[i-1,j-1]
+- trie
+- KMP
+->>
+
+<<-1065	Index Pairs of a String    		61.1%	Easy	
+- brutal force.
+- trie.
+->>
+
+<<-1071	Greatest Common Divisor of Strings    		51.7%	Easy	->>
+
+<<-1078	Occurrences After Bigram    		64.7%	Easy	
+first second and store the followed words.
+stringstream just keep 2 in the storage, keep updating.
+->>
 
 <<-1233	Remove Sub-Folders from the Filesystem    		61.2%	Medium	
 given a list of folders, remove all those subfolders
@@ -2430,6 +2606,18 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-1089	Duplicate Zeros    		52.2%	Easy	
+inplace duplicate is tricky. using two pointer from left to right and count the 0, and then from right to left to add 0 and place element in right position. O(N)
+->>
+
+<<-1099	Two Sum Less Than K    		60.8%	Easy	
+find the max pair sum <K. sort previous elements in set and do binary search
+->>
+
+<<-1103	Distribute Candies to People    		63.6%	Easy	
+n people distributes 1,2,3.....each time one more candy is given to next person, and then return to the beginning. find the number of each person's candies.
+do not use math, but use % and add.
+->>
 
 <<-1138	Alphabet Board Path    		49.8%	Medium	
 a-z arranged by 5 letters a row. print a string, return the path. The only special is the z, we need first go to u. or first go to u and then go to z.
@@ -2728,6 +2916,33 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-1067	Digit Count in Range    		40.4%	Hard	
+given an integer d and range [L,R], find the number of occurrence of d.
+=count(d,R)-count(d,L)
+count(d,n) based on 233. Number of Digit One (logN). do it digit by digit
+for example looking for 1, 235
+digit 5: xx1,1,11,..91, total 24
+->>
+
+<<-233 Number of digit one
+count(1,n).
+->>
+
+<<-1073	Adding Two Negabinary Numbers    		34.6%	Medium	
+negative base.
+->>
+
+<<-1088	Confusing Number II    		44.8%	Hard	
+number rotate 180, it means upside down and left right reverse. the number shall be valid and different from original.
+given N, return number of confusing number.
+- can only contain 0,1,6,9,8 (0,1,8 upside down is still the same)
+- backtrack
+- or: find the number of numbers with only 01689 (for different length) and then minus those symmetric ones.
+->>
+
+<<-1093	Statistics from a Large Sample    		49.0%	Medium	
+min,max,mean,median,mode, math.
+->>
 
 <<-1131	Maximum of Absolute Value Expression    		52.2%	Medium	
 given two arrays A and B, return the max value |A[i]-A[j]|+|B[i]-B[j]|+|i-j|
@@ -4978,6 +5193,14 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-1085	Sum of Digits in the Minimum Number    		74.8%	Easy	->>
+<<-1086	High Five    		79.9%	Easy	->>
+<<-1108	Defanging an IP Address    		88.2%	Easy	->>
+<<-1119	Remove Vowels from a String    		90.2%	Easy	->>
+<<-1118	Number of Days in a Month    		57.3%	Easy	
+again check for leap year.
+->>
+
 <<-1128	Number of Equivalent Domino Pairs    		46.8%	Easy	->>
 <<-1133	Largest Unique Number    		67.1%	Easy	->>
 
@@ -5530,6 +5753,13 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 ## intervals
 
+<<-1094	Car Pooling    		59.0%	Medium	->>
+
+<<-1109	Corporate Flight Bookings    		53.8%	Medium	
+n flights labeled from 1 to n. a list of array in the format [i,j,k] means from flight i to flight j we booked k seats. return each flight's booking number
+interval event start/end.
+->>
+
 <<-1229	Meeting Scheduler    		53.8%	Medium	
 find the common available time interval >=d.
 interval overlap 
@@ -5743,60 +5973,10 @@ A[i] in the range [1,m]
 ->>
 
 
+
 ## leetcode problem list
 
-<<-1125	Smallest Sufficient Team    		46.9%	Hard	
-giving a list of required skill and a list of people with skill set. find the min team with required skills. people<60, require skills<16
-- convert the required skills and people skills to bitmask number.
-- not-want skills are just ignored.
-- if we use a,b,c the result is a|b|c. we are looking for the shortest distance to reach required skill number.
 
-->>
-<<-1124	Longest Well-Performing Interval    		33.0%	Medium	->>
-<<-1123	Lowest Common Ancestor of Deepest Leaves    		67.2%	Medium	->>
-<<-1122	Relative Sort Array    		67.7%	Easy	->>
-<<-1121	Divide Array Into Increasing Sequences    		57.6%	Hard	->>
-<<-1120	Maximum Average Subtree    		63.1%	Medium	->>
-<<-1119	Remove Vowels from a String    		90.2%	Easy	->>
-<<-1118	Number of Days in a Month    		57.3%	Easy	->>
-<<-1111	Maximum Nesting Depth of Two Valid Parentheses Strings    		72.3%	Medium	->>
-<<-1110	Delete Nodes And Return Forest    		67.4%	Medium	->>
-<<-1109	Corporate Flight Bookings    		53.8%	Medium	->>
-<<-1108	Defanging an IP Address    		88.2%	Easy	->>
-<<-1106	Parsing A Boolean Expression    		58.9%	Hard	->>
-<<-1105	Filling Bookcase Shelves    		57.9%	Medium	->>
-<<-1104	Path In Zigzag Labelled Binary Tree    		72.6%	Medium	->>
-<<-1103	Distribute Candies to People    		63.6%	Easy	->>
-<<-1102	Path With Maximum Minimum Value    		49.9%	Medium	->>
-<<-1101	The Earliest Moment When Everyone Become Friends    		66.8%	Medium	->>
-<<-1100	Find K-Length Substrings With No Repeated Characters    		73.4%	Medium	->>
-<<-1099	Two Sum Less Than K    		60.8%	Easy	->>
-<<-1096	Brace Expansion II    		62.3%	Hard	->>
-<<-1095	Find in Mountain Array    		35.7%	Hard	->>
-<<-1094	Car Pooling    		59.0%	Medium	->>
-<<-1093	Statistics from a Large Sample    		49.0%	Medium	->>
-<<-1092	Shortest Common Supersequence     		52.5%	Hard	->>
-<<-1091	Shortest Path in Binary Matrix    		38.6%	Medium	->>
-<<-1090	Largest Values From Labels    		60.0%	Medium	->>
-<<-1089	Duplicate Zeros    		52.2%	Easy	->>
-<<-1088	Confusing Number II    		44.8%	Hard	->>
-<<-1087	Brace Expansion    		63.0%	Medium	->>
-<<-1086	High Five    		79.9%	Easy	->>
-<<-1085	Sum of Digits in the Minimum Number    		74.8%	Easy	->>
-<<-1081	Smallest Subsequence of Distinct Characters    		53.3%	Medium	->>
-<<-1080	Insufficient Nodes in Root to Leaf Paths    		49.7%	Medium	->>
-<<-1079	Letter Tile Possibilities    		75.6%	Medium	->>
-<<-1078	Occurrences After Bigram    		64.7%	Easy	->>
-<<-1074	Number of Submatrices That Sum to Target    		60.9%	Hard	->>
-<<-1073	Adding Two Negabinary Numbers    		34.6%	Medium	->>
-<<-1072	Flip Columns For Maximum Number of Equal Rows    		61.2%	Medium	->>
-<<-1071	Greatest Common Divisor of Strings    		51.7%	Easy	->>
-<<-1067	Digit Count in Range    		40.4%	Hard	->>
-<<-1066	Campus Bikes II    		54.0%	Medium	->>
-<<-1065	Index Pairs of a String    		61.1%	Easy	->>
-<<-1064	Fixed Point    		65.6%	Easy	->>
-<<-1063	Number of Valid Subarrays    		71.7%	Hard	->>
-<<-1062	Longest Repeating Substring    		57.7%	Medium	->>
 <<-1061	Lexicographically Smallest Equivalent String    		66.0%	Medium	->>
 <<-1060	Missing Element in Sorted Array    		54.5%	Medium	->>
 <<-1059	All Paths from Source Lead to Destination    		43.3%	Medium	->>
@@ -6867,7 +7047,6 @@ add all left into stack, pop and add all right into stack.
 <<-87	Scramble String    		34.2%	Hard	->>
 <<-86	Partition List    		42.5%	Medium	->>
 <<-85	Maximal Rectangle    		38.7%	Hard	->>
-<<-83	Remove Duplicates from Sorted List    		46.0%	Easy	->>
 <<-82	Remove Duplicates from Sorted List II    		37.6%	Medium	->>
 <<-81	Search in Rotated Sorted Array II    		33.3%	Medium	->>
 <<-80	Remove Duplicates from Sorted Array II    		44.7%	Medium	->>
@@ -6969,7 +7148,7 @@ using a^(p-2) (binary power in log(p) time) to get the modular.
 ```	
 
 dijkstra and shortest path problem
-dijkstra find the shortest path between two nodes, trying the shortest edge first.
+dijkstra find the shortest path between two nodes, trying the shortest edge first. non-negative weight.
 - one source to all other nodes, shortest path tree.
 dijkstra's algorithm:
 

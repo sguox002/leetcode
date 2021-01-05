@@ -454,6 +454,8 @@ Given an array A of distinct integers sorted in ascending order, return the smal
 1065. Index Pairs of a String
 <em>
 Given a text string and words (a list of strings), return all index pairs [i, j] so that the substring text[i]...text[j] is in the list of words.	
+Input: text = "thestoryofleetcodeandme", words = ["story","fleet","leetcode"]
+Output: [[3,7],[9,13],[10,17]]
 </em>
 
 brutal force using hashmap
@@ -736,7 +738,9 @@ for example 123:
 11x: 5
 total 25+10-1=34
 - find the total number of strobogrammatic numbers (this is much easier, can use backtrack.)
+
 ## biweek 3
+
 ### 1099. Two sum less than K (***)
 <em>Given an array A of integers and integer K, return the maximum S such that there exists i < j with A[i] + A[j] = S and S < K. If no i, j exist satisfying this equation, return -1.</em>
 idea:
@@ -912,6 +916,9 @@ hashmap to get the histogram. The most frequent one determines at least how many
         return 1;
     }
 ```	
+note: when max freq elements are all used once and still <k, then we use the 2nd max freq with the max elements (actually does not matter)
+[0,1,2,2,3,3,4,5] we choose first 2,3,5, then 0,1,2,3,4
+
 ## biweek 5
 ### 1133. Largest Unique Number (*)
 heap map..
@@ -12202,7 +12209,9 @@ gcd for strings. using similar algorithm for numbers. remove the shorter one fro
         return gcdOfStrings(str1.substr(str2.size()), str2);
     }
 ```
+
 1072. Flip Columns For Maximum Number of Equal Rows
+
 <em>Given a matrix consisting of 0s and 1s, we may choose any number of columns in the matrix and flip every cell in that column.  Flipping a cell changes the value of that cell from 0 to 1 or from 1 to 0.
 
 Return the maximum number of rows that have all values equal after some number of flips.</em>
@@ -12307,7 +12316,9 @@ Classic problem: reduce to 1d sum to target problem.
 
 
 ## contest 140
+
 ### 1078. Occurrences After Bigram
+
 <em>Given words first and second, consider occurrences in some text of the form "first second third", where second comes immediately after first, and third comes immediately after second.
 
 For each such occurrence, add "third" to the answer, and return the answer.</em>
@@ -12392,6 +12403,7 @@ backtracking using hashmap:
 ```
 
 ### 1080. Insufficient Nodes in Root to Leaf Paths
+
 <em>Given the root of a binary tree, consider all root to leaf paths: paths from the root to any leaf.  (A leaf is a node with no children.)
 
 A node is insufficient if every such root to leaf path intersecting this node has sum strictly less than limit.
@@ -12416,6 +12428,7 @@ two cases: leaf node itself, inner node causing subtree removal.
 - leaf node shall return 0 or root, if let leaf to process by recursion, then it is incorrect.
 
 ### 1081. Smallest Subsequence of Distinct Characters
+
 <em>Return the lexicographically smallest subsequence of text that contains all the distinct characters of text exactly once.
 Example 1:
 
@@ -12444,7 +12457,8 @@ if current char is smaller than stack top, we pop it if it still has, otherwise 
       return res;
     }   
 ```
-	## Contest 141
+
+## Contest 141
 
 ### 1089. Duplicate Zeros (***)
 very interesting problem. Need in-place to duplicate zero elements.
@@ -12596,7 +12610,10 @@ A bit different: we are looking for lcs string, not the length.
                     dp[i + 1][j + 1] = dp[i + 1][j].size() > dp[i][j + 1].size() ?  dp[i + 1][j] : dp[i][j + 1];
         return dp[n][m];
     }
-```## contest 142
+```
+
+## contest 142
+
 1093. Statistics from a Large Sample
 <em>We sampled integers between 0 and 255, and stored the results in an array count:  count[k] is the number of integers we sampled equal to k.
 
@@ -12899,7 +12916,10 @@ bool parseBoolExpr(string e) {
   return res;
 }
 ```	
-the coding is pretty tricky.## contest 144
+the coding is pretty tricky.
+
+
+## contest 144
 ### 1108. Defanging an IP Address (*)
 simple
 
@@ -13089,6 +13109,32 @@ else find the valid
 ```
 note: map/set has lower_bound member function
 
+O(N) stack:
+first record the new lowest score from left to right in stack.
+then from right to left, find the first one > top and popping all smaller top. thus we get the longest interval
+
+```
+    int longestWPI(vector<int>& hours) {
+        int n=hours.size();
+        vector<int> prefix(n+1);
+        for(int i=0;i<n;i++) prefix[i+1]=prefix[i]+(hours[i]>8?1:-1);
+        
+        stack<int> st;
+        st.push(0);
+        for(int i=1;i<=n;i++){ //record the new smallest score
+            if(prefix[i]<prefix[st.top()]) st.push(i);
+        }
+        int ans=0;
+        for(int i=n;i>0;i--){
+            while(st.size() && prefix[i]>prefix[st.top()]){
+                ans=max(ans,i-st.top());
+                st.pop();
+            }
+        }
+        return ans;
+    }
+```
+	
 ### 1125. Smallest Sufficient Team (****)
 idea: 
 - convert skills into bit set
