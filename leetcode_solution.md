@@ -27086,3 +27086,86 @@ approach 2: bitmask dp.
     }
 ```
 	
+1044. Longest Duplicate Substring
+using binary search and rolling hash (be sure to check collision)
+
+```cpp
+    string longestDupSubstring(string s) {
+        //binary search with rolling hash
+        int l=0,r=s.size();
+        int ind=-1;
+        while(l<r){
+            int m=l+(r-l+1)/2;
+            if(valid(s,m,ind)) l=m;
+            else r=m-1;
+        }
+        if(ind==-1) return "";
+        return s.substr(ind,l);
+    }
+    bool valid(string& s,int k,int& ind){
+        //using rolling hash + hashmap
+        int mod=1e9+7;
+        long hash=0;
+        unordered_map<int,int> mp; //index vs hash value
+        for(int i=0;i<s.size();i++){
+            hash=(hash*26+s[i]-'a')%mod;
+            if(i>=k){
+                hash-=(long(s[i-k]-'a')*mypow(26,k,mod))%mod;
+                hash=(hash+mod)%mod;
+            }
+            if(i>=k-1){
+                if(mp.count(hash) && s.substr(mp[hash],k)==s.substr(i-k+1,k)) {
+                    ind=i-k+1;
+                    return 1;
+                }
+                mp[hash]=i-k+1;
+            }
+        }
+        return 0;
+    }
+    int mypow(int a,int b,int mod){
+        long ans=1;
+        while(b--) ans*=a,ans%=mod;
+        return ans;
+    }
+```
+
+TLE on long example.
+
+change mypow to binary exponential will be able to pass it.
+```
+    long mypow(int a,int b,int mod){
+        if(!b) return 1;
+        if(b%2) return (long)a*mypow((long)a*a%mod,b/2,mod)%mod;
+        return mypow((long)a*a%mod,b/2,mod)%mod;
+    }
+```
+	
+1043. Partition Array for Maximum Sum
+<em>
+Given an integer array arr, you should partition the array into (contiguous) subarrays of length at most k. After partitioning, each subarray has their values changed to become the maximum value of that subarray.
+
+Return the largest sum of the given array after partitioning.
+</em>
+similar to min difficulty sum for job scheduling
+
+dp:
+```cpp
+    int maxSumAfterPartitioning(vector<int>& arr, int k) {
+        int n=arr.size();
+        vector<int> dp(n+1);
+        for(int i=1;i<=n;i++){
+            dp[i]=dp[i-1]+arr[i-1]; //start a new group
+            int mx=arr[i-1];
+            for(int j=i-1;j>=max(0,i-k);j--){
+                mx=max(mx,arr[j]);
+                dp[i]=max(dp[i],dp[j]+(i-j)*mx);
+            }
+        }
+        return dp[n];
+    }
+```
+an important optimization: eliminate the loop of finding max in k window.
+
+	
+

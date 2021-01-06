@@ -91,6 +91,14 @@ for example k=5 (0b101), we first get 2^0's parent, and then get parent's 2^2 pa
 
 removing a subarray and then left and right connected. Extremely hard to track the array changes or no good data structure to do it.
 
+<<-1000	Minimum Cost to Merge Stones    		40.4%	Hard	
+each time you merge k consecutive piles into one pile at the cost of the total sum.
+- prefix sum so we can get range sum in O(1)
+- dp[i,j] deals with subproblem to merge i to j. dp[i,j]=min(dp[i,j],dp[i,m]+dp[m+1,j])
+- also there is a restriction the length (n-1)%(k-1)==0 must be satisfied.
+- final answer is dp[0,n-1]
+->>
+
 <<-1246	Palindrome Removal    		45.7%	Hard	
 each time you can remove a palindrome subarray. return the min number of removals to make it empty.
 this is not the same as burst balloon since the last could be a subsequence left.
@@ -115,6 +123,12 @@ idea: choose i as the last balloon to burst and its left and right are virtual b
 
 ### dp dealing with array partitions
 generally dealing with subsequence or subarray and divide into k groups to get max/min scores.
+
+<<-1043	Partition Array for Maximum Sum    		66.4%	Medium	
+partition into subarray of length <=k. after partitioning, the subarray's value all become the max in the subarray, return the largest sum.
+- dp, dp[i] represent the max sum for length i. current element can bind to previous k-1 elements.
+very similar to min difficulty in job scheduling.
+->>
 
 <<-1105	Filling Bookcase Shelves    		57.9%	Medium	
 given book height and width in order, and bookshelf width. find the min height.
@@ -161,6 +175,14 @@ dp[i,k]: i houses, k mailboxes.
 ### optimization
 
 optimization problem is for max or min. Dp can solve most of them, but bfs, greedy, pq et al can also be the candidates.
+
+<<-1039	Minimum Score Triangulation of Polygon    		49.9%	Medium	
+given n-sided polygon, convert to n-2 triangles. the value of triangle is the product of the 3 vertices.
+return the min score sum.
+dp[i,j] represent the min score for trianglize i to j (clockwise) and connect i,j.
+dp[i,j]=min(dp[i,j],dp[i,k]+dp[k,j]+A[i]*A[j]*A[k]) i<k<j.
+since k>i. we need loop i reversely.
+->>
 
 <<-1186	Maximum Subarray Sum with One Deletion    		38.3%	Medium	
 with at most one deletion.
@@ -763,6 +785,18 @@ len=3, [4,5,6], so tail[2]=6.
     }
 ```	
 
+<<-1027	Longest Arithmetic Subsequence    		50.4%	Medium	
+each element can bind with previous one with a different difference, since d varies, we shall use array of hashmap for the dp.  
+LIS.
+->>
+
+<<-1048	Longest String Chain    		55.2%	Medium	
+if word1 is predecessor of word2, we can add a char to word1 so that it equals to word2. 
+given a list of words return the longest word chain length.
+- dp: sort by length and attach to previous.
+LIS.
+->>
+
 <<-1713. Min operation to make a subsequence
 give target array distinct integers, min number of insertion on other array to make target is a subsequence of this array.
 this is a LCS problem with O(nm) but too high for this problem.
@@ -890,12 +924,37 @@ Take a greedy step and reduce to a smaller problem. Generally need some insights
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 
+<<-1005	Maximize Sum Of Array After K Negations    		52.2%	Easy	
+negate the array element exactly k times, return the max sum.
+priority_queue: negate the smallest one first. When all becomes positive, we repeatedly negate the smallest. (odd/even of k decide the final value)
+->>
+
+<<-1024	Video Stitching    		49.3%	Medium	
+a list of video each with start and end. find the min number of clip that cover [0,T].
+greedy on interval: sort with start, for those satifying the start requirement, choose the one with largest end.
+->>
+
+<<-1029	Two City Scheduling    		57.1%	Medium	
+given 2n people flying to A or B. half to A and half to B, cost for each person is given in array.
+return the min cost.
+[a0,b0],[a1,b1], if we choose a0,b1, then a0+b1>b0+a1, a0-a1>b0-b1 sort by the difference.
+greedy.
+->>
+
+<<-1041	Robot Bounded In Circle    		54.4%	Medium	
+G: go forward by 1, L: turn left, R: turn right.
+greedy: repeat the instructions for 4 times and see if repeat. (why 4 times?)
+->>
+
 <<-1058	Minimize Rounding Error to Meet Target    		42.7%	Medium	
 given a double array, round up or down to get a sum of target.
 if yes, return the smallest rounding error. rounding error=sum(|round(p)-p|.
 - if all round up ->max, if all round down we get min. 
 - greedy approach: we need use target-min to ceil. which one to choose? the one closet to the ceil. sort according to round to ceil error.
 - ceil (note the integer cannot count into ceil for example 8.0)
+proof: we need use m=(target-min) ceil so the error would be mCeil+(n-m)Floor=m(ceil-Floor)+nFloor
+nFloor is constant and we can ignore, so min m(ceil-Floor) ie we need take the smallest ceil-floor.
+this is very similar to Amazon OA five star. 
 ->>
 
 <<-1111	Maximum Nesting Depth of Two Valid Parentheses Strings    		72.3%	Medium	
@@ -1312,6 +1371,13 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-1011	Capacity To Ship Packages Within D Days    		59.3%	Medium	->>
+
+<<-1044	Longest Duplicate Substring    		31.8%	Hard	
+give string, duplicated substring (2 or more times). The occurrences may overlap. return the longest substring.
+binary search with rolling hash. use binary power to speed the calculation. be sure to check collision
+->>
+
 <<-1060	Missing Element in Sorted Array    		54.5%	Medium	
 find the kth missing number start from the leftmost
 binary search!!
@@ -1382,7 +1448,7 @@ binary search: make sure the two range has equal length. odd length, even length
 
 <<-1539	Kth Missing Positive Number    		53.4%	Easy	
 positive array in strictly increasing order. find the kth missing integer.
-binary search: using arr[i]-i+1, right biased.
+binary search: using arr[i]-i-1 compare with k.
 ->>
 
 <<-1552	Magnetic Force Between Two Balls    		48.2%	Medium	
@@ -1425,6 +1491,14 @@ level: 5
 backtracking problem generally finds all sets required. It can also be used for counting.
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
+
+<<-996	Number of Squareful Arrays    		47.5%	Hard	
+given an array, it is squareful if every adjacent pair sum is a square number.
+return number of permutation of A is squareful.
+- for each number, find all its paired numbers.
+- each number may have duplicate, using hashmap to count for it.
+- backtracking: 
+->>
 
 <<-1079	Letter Tile Possibilities    		75.6%	Medium	
 given a list of letters, return number of different string can form.
@@ -1508,6 +1582,17 @@ also a bitmask dp problem.
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
 
+<<-1020	Number of Enclaves    		58.5%	Medium	
+find those cannot connect to boundary
+dfs
+->>
+
+<<-1034	Coloring A Border    		45.1%	Medium	
+same value and connected. border has at least a neighboring cell which is not the connected group.
+dfs to mark negative as visited and then check all negatives and see if they have a cell not in the group.
+
+->>
+
 <<-1219	Path with Maximum Gold    		65.6%	Medium	
 mxn matrix with gold, 0 means you cannot cross. You cannot visit the same cell again.
 you can start and stop any place.
@@ -1570,6 +1655,13 @@ dfs, hashmap
 - bfs with parent information
 - bfs with more than one state.
 - bfs with shortest distance problem
+
+<<-1036	Escape a Large Maze    		35.1%	Hard	
+from src to target, with obstacles <=200. 
+with obstacles, it is only able to enclose a small region. If we cannot escape the enclosed area, we cannot reach target.
+bfs or dfs with optimization: obstacles around src, obstacles around target. if dfs can reach out the max radius (defined by 200) then we can reach.
+dfs with greedy
+->>
 
 <<-1091	Shortest Path in Binary Matrix    		38.6%	Medium	
 given a binary matrix, 1 means blocked. You can go 8 directions.
@@ -1740,6 +1832,21 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-1003	Check If Word Is Valid After Substitutions    		55.6%	Medium	
+given a string s, with only 'a','b','c'. check if you can build t by adding "abc" any times.
+equivalent: eliminate "abc" and make it empty.
+using stack or deque is more convenient since it needs check two chars.
+->>
+
+<<-1019	Next Greater Node In Linked List    		58.2%	Medium	->>
+
+<<-1028	Recover a Tree From Preorder Traversal    		70.3%	Hard	
+preorder traversal to get the serialization string, with (dashes), number of dashes=depth+value.
+if only one child, it is the left child.
+iterative stack: store node and depth. When top depth larger than current, pop it.
+add a - at the end for convenience.
+->>
 
 <<-1063	Number of Valid Subarrays    		71.7%	Hard	
 leftmost element in the subarray <= other elements in the subarray.
@@ -1956,6 +2063,14 @@ approach:
 
 ## hashset, hashmap
 
+<<-1001	Grid Illumination    		36.3%	Hard	
+given nxn matrix, a light at [i,j] can illuminate the row, column, diagonal.
+given a list of queries, check if the cell is illuminated. after query turn off the all the lamp in the 3x3 submatrix.
+hashamp: row, col, diag, diag1. diagonal: rr-cc as key, diagonal 1: rr+cc as key.
+->>
+
+<<-1010	Pairs of Songs With Total Durations Divisible by 60    		47.9%	Easy	->>
+
 <<-1072	Flip Columns For Maximum Number of Equal Rows    		61.2%	Medium	
 flip columns will not change the equal rows, they are still equal. 
 so it is equivalent to find the max equal rows.
@@ -2148,6 +2263,26 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-998	Maximum Binary Tree II    		63.6%	Medium	
+max tree: node value is greater than all nodes in its subtree.
+build from an array, if A[i] is the max, then A[i] will be the root, and left put in left subtree, right put in right subtree.
+Now we already build the tree and we append a val to A, return the tree.
+- if val>root, root will be the left.
+- else add the val to the right tree.
+->>
+
+<<-1008	Construct Binary Search Tree from Preorder Traversal    		78.6%	Medium	->>
+<<-1022	Sum of Root To Leaf Binary Numbers    		71.2%	Easy	->>
+
+<<-1026	Maximum Difference Between Node and Ancestor    		68.8%	Medium	
+dfs to get the previous min and max, and compare the difference.
+->>
+
+<<-1038	Binary Search Tree to Greater Sum Tree    		81.5%	Medium	
+change the node's value to value+sum of all keys > val.
+right, root, left traversal
+->>
 
 <<-1080	Insufficient Nodes in Root to Leaf Paths    		49.7%	Medium	
 a node is insufficient if all path passing this node has a sum < limit.
@@ -2440,6 +2575,20 @@ two pointer merge.
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+<<-1004	Max Consecutive Ones III    		60.1%	Medium	
+change 0 to 1 for at most k time.
+equivalent: find the longest window containing at most k 0s. 
+->>
+
+<<-1033	Moving Stones Until Consecutive    		42.6%	Easy	
+3 stones only.
+->>
+
+<<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	
+min move and max move
+sliding window for min: find the window with length=n with min empty slots or max filled.
+greedy for max: move the leftmost to next right available position or rightmost to left available slot.
+->>
 <<-1052	Grumpy Bookstore Owner    		55.5%	Medium	
 sliding window to find the max grumpy 
 ->>
@@ -2541,6 +2690,9 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-1030	Matrix Cells in Distance Order    		66.9%	Easy	
+distance to reference (r0,c0)
+->>
 <<-1122	Relative Sort Array    		67.7%	Easy	
 given two arrays A and B, sort A according to B, elements not in B shall go after in sorted order.
 using map and do count sort.
@@ -2574,6 +2726,10 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+
+<<-1016	Binary String With Substrings Representing 1 To N    		59.4%	Medium	
+just find if all the n string appears in it.
+->>
 
 <<-1062	Longest Repeating Substring    		57.7%	Medium	
 - binary search
@@ -2644,6 +2800,29 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-999	Available Captures for Rook    		66.8%	Easy	->>
+
+<<-1007	Minimum Domino Rotations For Equal Row    		50.9%	Medium	
+given two rows of number, you can swap A[i] B[i].
+return the min swaps to make A or B the same.
+two choices: make all =A[0] or all=B[0]. Then you have two choices put A[0] to A or B.
+->>
+
+<<-1013	Partition Array Into Three Parts With Equal Sum    		50.0%	Easy	
+count group.
+->>
+<<-1014	Best Sightseeing Pair    		52.7%	Medium	
+given array A[i]=value of ith spot.distance of i and j= |i-j|.
+max the function A[i]+A[j]+i-j, i<j.
+separate A[i]+i and A[j]-j for left and right side.
+using lmax and rmax approach.
+->>
+
+<<-1031	Maximum Sum of Two Non-Overlapping Subarrays    		58.6%	Medium	
+given the two subarray's length L and M, return the max sum of the two non-overlapped subarray sum.
+two problem max(sub(A,L,M),sub(A,M,L)) 
+then sliding window to get the lmax and rmax, then combine.
+->>
 
 <<-1053	Previous Permutation With One Swap    		50.5%	Medium	
 greedy: from right to left find the first larger one, (if equal shall push forward)
@@ -2960,6 +3139,31 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-1006	Clumsy Factorial    		53.6%	Medium	
+given n, use */+- in order repeatedly. return the value.
+for example 9*8/7+6-5*4/3+2-1
+- approach 1: using a stack
+- i*(i-1)/(i-2)=i+1 when i>=5
+->>
+
+<<-1012	Numbers With Repeated Digits    		37.8%	Hard	
+given N, return number of numbers with at least 1 repeated digit.
+equivalent=N-count(number without repeated digits)
+combination: 9*8*7...
+->>
+
+<<-1015	Smallest Integer Divisible by K    		32.6%	Medium	
+number shall be all 1s. find the smallest number length.
+pigeon hole principle: we only need to check those number from length=1 to K. N%K has K values from 0 to K-1. if 0 does not exist, then two duplicate must appear and this will form a cycle. (only remainder matters).
+->>
+
+<<-1017	Convert to Base -2    		59.4%	Medium	
+negative base but coefficient is still 0/1. get the coefficient if negative then we need convert to 0,1 and increase n. for example get coefficient -1, we change to 1, we need add 2 on n.
+->>
+<<-1037	Valid Boomerang    		37.8%	Easy	
+check 3 points on a line, math.
+->>
+
 <<-1067	Digit Count in Range    		40.4%	Hard	
 given an integer d and range [L,R], find the number of occurrence of d.
 =count(d,R)-count(d,L)
@@ -5237,6 +5441,21 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-997	Find the Town Judge    		49.9%	Easy	->>
+<<-1002	Find Common Characters    		67.8%	Easy	->>
+<<-1018	Binary Prefix Divisible By 5    		47.7%	Easy	
+keep %5 to prevent overflow
+->>
+
+<<-1021	Remove Outermost Parentheses    		78.5%	Easy	->>
+
+<<-1047	Remove All Adjacent Duplicates In String    		69.7%	Easy	
+simple stack
+->>
+<<-1046	Last Stone Weight    		62.4%	Easy	
+simple stack
+->>
+
 <<-1051	Height Checker    		71.8%	Easy	->>
 
 <<-1056	Confusing Number    		47.6%	Easy	
@@ -5695,6 +5914,13 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-1042	Flower Planting With No Adjacent    		48.4%	Medium	
+n gardens, given a list of edges (bidirectional). In each garden plant one type of 4 types of flowers.
+all garden have <=3 paths into or leaving it.
+connected garden shall have different color.
+return any choice of combination.
+graph: confusing.greedy paint nodes one by one.????
+->>
 
 <<-1059	All Paths from Source Lead to Destination    		43.3%	Medium	
 check if all path from src leads to destination.
@@ -5887,6 +6113,12 @@ recursive approach.
 
 ## two pointer
 
+<<-1023	Camelcase Matching    		57.1%	Medium	
+given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
+- capital shall match exactly.
+- using two pointer matching. if capital does not match, return false.
+->>
+
 <<-1055	Shortest Way to Form String    		57.2%	Medium	
 given string src and target, return the min number of subsequence used to reach target string.
 two pointer, with one using mod.
@@ -5901,6 +6133,8 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+
+<<-1009	Complement of Base 10 Integer    		61.5%	Easy	->>
 
 <<-1238	Circular Permutation in Binary Representation    		65.4%	Medium	
 gray code ans[i]=start^i^(i>>1)
@@ -5959,6 +6193,11 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ->>
 
 ## trie
+
+<<-1032	Stream of Characters    		48.4%	Hard	
+given a dictionary, and check if the last several character is in the dictionary
+trie: add the dictionary words (reversed) into trie, and then check the reversed stream strings.
+->>
 
 <<-1178	Number of Valid Words for Each Puzzle    		38.4%	Hard	
 given a list of puzzle strings and a list of words. return number of valid words for each puzzle.
@@ -6037,64 +6276,7 @@ A[i] in the range [1,m]
 
 ## leetcode problem list
 
-<<-1048	Longest String Chain    		55.2%	Medium	
-if word1 is predecessor of word2, we can add a char to word1 so that it equals to word2. 
-given a list of words return the longest word chain length.
-- dp: sort by length. 
 
-->>
-<<-1047	Remove All Adjacent Duplicates In String    		69.7%	Easy	->>
-<<-1046	Last Stone Weight    		62.4%	Easy	->>
-<<-1044	Longest Duplicate Substring    		31.8%	Hard	->>
-<<-1043	Partition Array for Maximum Sum    		66.4%	Medium	->>
-<<-1042	Flower Planting With No Adjacent    		48.4%	Medium	->>
-<<-1041	Robot Bounded In Circle    		54.4%	Medium	->>
-<<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	->>
-<<-1039	Minimum Score Triangulation of Polygon    		49.9%	Medium	->>
-<<-1038	Binary Search Tree to Greater Sum Tree    		81.5%	Medium	->>
-<<-1037	Valid Boomerang    		37.8%	Easy	->>
-<<-1036	Escape a Large Maze    		35.1%	Hard	->>
-<<-1035	Uncrossed Lines    		56.0%	Medium	->>
-<<-1034	Coloring A Border    		45.1%	Medium	->>
-<<-1033	Moving Stones Until Consecutive    		42.6%	Easy	->>
-<<-1032	Stream of Characters    		48.4%	Hard	->>
-<<-1031	Maximum Sum of Two Non-Overlapping Subarrays    		58.6%	Medium	->>
-<<-1030	Matrix Cells in Distance Order    		66.9%	Easy	->>
-<<-1029	Two City Scheduling    		57.1%	Medium	->>
-<<-1028	Recover a Tree From Preorder Traversal    		70.3%	Hard	->>
-<<-1027	Longest Arithmetic Subsequence    		50.4%	Medium	->>
-<<-1026	Maximum Difference Between Node and Ancestor    		68.8%	Medium	->>
-<<-1025	Divisor Game    		66.1%	Easy	->>
-<<-1024	Video Stitching    		49.3%	Medium	->>
-<<-1023	Camelcase Matching    		57.1%	Medium	->>
-<<-1022	Sum of Root To Leaf Binary Numbers    		71.2%	Easy	->>
-<<-1021	Remove Outermost Parentheses    		78.5%	Easy	->>
-<<-1020	Number of Enclaves    		58.5%	Medium	->>
-<<-1019	Next Greater Node In Linked List    		58.2%	Medium	->>
-<<-1018	Binary Prefix Divisible By 5    		47.7%	Easy	->>
-<<-1017	Convert to Base -2    		59.4%	Medium	->>
-<<-1016	Binary String With Substrings Representing 1 To N    		59.4%	Medium	->>
-<<-1015	Smallest Integer Divisible by K    		32.6%	Medium	->>
-<<-1014	Best Sightseeing Pair    		52.7%	Medium	->>
-<<-1013	Partition Array Into Three Parts With Equal Sum    		50.0%	Easy	->>
-<<-1012	Numbers With Repeated Digits    		37.8%	Hard	->>
-
-<<-1011	Capacity To Ship Packages Within D Days    		59.3%	Medium	->>
-<<-1010	Pairs of Songs With Total Durations Divisible by 60    		47.9%	Easy	->>
-<<-1009	Complement of Base 10 Integer    		61.5%	Easy	->>
-<<-1008	Construct Binary Search Tree from Preorder Traversal    		78.6%	Medium	->>
-<<-1007	Minimum Domino Rotations For Equal Row    		50.9%	Medium	->>
-<<-1006	Clumsy Factorial    		53.6%	Medium	->>
-<<-1005	Maximize Sum Of Array After K Negations    		52.2%	Easy	->>
-<<-1004	Max Consecutive Ones III    		60.1%	Medium	->>
-<<-1003	Check If Word Is Valid After Substitutions    		55.6%	Medium	->>
-<<-1002	Find Common Characters    		67.8%	Easy	->>
-<<-1001	Grid Illumination    		36.3%	Hard	->>
-<<-1000	Minimum Cost to Merge Stones    		40.4%	Hard	->>
-<<-999	Available Captures for Rook    		66.8%	Easy	->>
-<<-998	Maximum Binary Tree II    		63.6%	Medium	->>
-<<-997	Find the Town Judge    		49.9%	Easy	->>
-<<-996	Number of Squareful Arrays    		47.5%	Hard	->>
 <<-995	Minimum Number of K Consecutive Bit Flips    		49.2%	Hard	->>
 <<-994	Rotting Oranges    		49.4%	Medium	->>
 <<-993	Cousins in Binary Tree    		52.1%	Easy	->>
