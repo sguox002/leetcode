@@ -12187,17 +12187,9 @@ int findMin(int arr[], int n)
 } 
 ```
  
- 
- 
- 
- 
-
-
-
-
-
 
 ## contest 139
+
 1071. Greatest Common Divisor of Strings
 gcd for strings. using similar algorithm for numbers. remove the shorter one from the longer one.
 

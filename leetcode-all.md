@@ -47,6 +47,12 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+### knapsack
+<<-1049	Last Stone Weight II    		44.3%	Medium	
+x==y, both destoyed, x!=y the smaller destroyed, keep y-x.
+equivalent: knapsack to make positive sum >=tsum/2.
+->>
+
 ### shortest distance problem
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
@@ -884,6 +890,14 @@ Take a greedy step and reduce to a smaller problem. Generally need some insights
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 
+<<-1058	Minimize Rounding Error to Meet Target    		42.7%	Medium	
+given a double array, round up or down to get a sum of target.
+if yes, return the smallest rounding error. rounding error=sum(|round(p)-p|.
+- if all round up ->max, if all round down we get min. 
+- greedy approach: we need use target-min to ceil. which one to choose? the one closet to the ceil. sort according to round to ceil error.
+- ceil (note the integer cannot count into ceil for example 8.0)
+->>
+
 <<-1111	Maximum Nesting Depth of Two Valid Parentheses Strings    		72.3%	Medium	
 very confusing question. count, ( +1 and ) -1. odd number group, even number group.
 greedy.
@@ -1298,6 +1312,11 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-1060	Missing Element in Sorted Array    		54.5%	Medium	
+find the kth missing number start from the leftmost
+binary search!!
+->>
+
 <<-1064	Fixed Point    		65.6%	Easy	
 sorted array with distinct numbers, find A[i]=i.
 binary search or brutal force.
@@ -1644,6 +1663,11 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-1061	Lexicographically Smallest Equivalent String    		66.0%	Medium	
+given string A and B, they are equivalent if we do the mapping. given a string s, return the smallest equivalent string.
+union find the put equivalent chars in a set then use the smallest char to replace the string. union find with rank.
+->>
+
 <<-1101	The Earliest Moment When Everyone Become Friends    		66.8%	Medium	
 union-find
 ->>
@@ -1836,6 +1860,16 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+
+<<-1054	Distant Barcodes    		44.0%	Medium	
+rearrange so that no adjacent are the same.
+priority_queue
+->>
+
+<<-1057	Campus Bikes    		57.6%	Medium	
+assign the shortest distance pair, tie assign to the smallest worker index.
+priority_queue
+->>
 
 <<-1090	Largest Values From Labels    		60.0%	Medium	
 confusing question: values[i] is the value, labels[i] is the label for ith element.
@@ -2406,6 +2440,10 @@ two pointer merge.
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+<<-1052	Grumpy Bookstore Owner    		55.5%	Medium	
+sliding window to find the max grumpy 
+->>
+
 <<-1100	Find K-Length Substrings With No Repeated Characters    		73.4%	Medium	
 find number of substrings. hashmap sliding window.
 ->>
@@ -2606,6 +2644,12 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+
+<<-1053	Previous Permutation With One Swap    		50.5%	Medium	
+greedy: from right to left find the first larger one, (if equal shall push forward)
+[1,9,4,6,7] the first peak is 9, and swap with the max 7. ->17469
+->>
+
 <<-1089	Duplicate Zeros    		52.2%	Easy	
 inplace duplicate is tricky. using two pointer from left to right and count the 0, and then from right to left to add 0 and place element in right position. O(N)
 ->>
@@ -5193,6 +5237,12 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-1051	Height Checker    		71.8%	Easy	->>
+
+<<-1056	Confusing Number    		47.6%	Easy	
+check if it's confusing number.
+->>
+
 <<-1085	Sum of Digits in the Minimum Number    		74.8%	Easy	->>
 <<-1086	High Five    		79.9%	Easy	->>
 <<-1108	Defanging an IP Address    		88.2%	Easy	->>
@@ -5646,6 +5696,11 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 
 ## graph
 
+<<-1059	All Paths from Source Lead to Destination    		43.3%	Medium	
+check if all path from src leads to destination.
+dfs or bfs on graph.
+->>
+
 <<-1168	Optimize Water Distribution in a Village    		62.1%	Hard	
 given n houses in a village. Each house can be provided water via well or pipe.
 each house either build a well in it and connect a pipe from another well.
@@ -5831,6 +5886,12 @@ recursive approach.
 ->>
 
 ## two pointer
+
+<<-1055	Shortest Way to Form String    		57.2%	Medium	
+given string src and target, return the min number of subsequence used to reach target string.
+two pointer, with one using mod.
+->>
+
 <<-1537	Get the Maximum Score    		36.1%	Hard	
 two sorted array, a valid path (at the same value you can switch to the other array) return the max path sum.
 - path can begin from nums1 or nums2, end at nums1 or nums2.
@@ -5976,20 +6037,12 @@ A[i] in the range [1,m]
 
 ## leetcode problem list
 
+<<-1048	Longest String Chain    		55.2%	Medium	
+if word1 is predecessor of word2, we can add a char to word1 so that it equals to word2. 
+given a list of words return the longest word chain length.
+- dp: sort by length. 
 
-<<-1061	Lexicographically Smallest Equivalent String    		66.0%	Medium	->>
-<<-1060	Missing Element in Sorted Array    		54.5%	Medium	->>
-<<-1059	All Paths from Source Lead to Destination    		43.3%	Medium	->>
-<<-1058	Minimize Rounding Error to Meet Target    		42.7%	Medium	->>
-<<-1057	Campus Bikes    		57.6%	Medium	->>
-<<-1056	Confusing Number    		47.6%	Easy	->>
-<<-1055	Shortest Way to Form String    		57.2%	Medium	->>
-<<-1054	Distant Barcodes    		44.0%	Medium	->>
-<<-1053	Previous Permutation With One Swap    		50.5%	Medium	->>
-<<-1052	Grumpy Bookstore Owner    		55.5%	Medium	->>
-<<-1051	Height Checker    		71.8%	Easy	->>
-<<-1049	Last Stone Weight II    		44.3%	Medium	->>
-<<-1048	Longest String Chain    		55.2%	Medium	->>
+->>
 <<-1047	Remove All Adjacent Duplicates In String    		69.7%	Easy	->>
 <<-1046	Last Stone Weight    		62.4%	Easy	->>
 <<-1044	Longest Duplicate Substring    		31.8%	Hard	->>
