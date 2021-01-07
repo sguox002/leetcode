@@ -9432,6 +9432,26 @@ Actually there is a flaw: even if we convert, we shall consider negatives and po
     }
 ```
 
+concise but less efficient
+```
+    bool canReorderDoubled(vector<int>& A) {
+        unordered_map<int,int> mp;
+        for(int i: A) mp[i]++;
+        sort(begin(A),end(A),[](int a,int b){
+            return abs(a)<abs(b);
+        });
+        for(int i: A){
+            if(mp[i]){
+                if(mp[i]>mp[2*i]) return 0;
+                mp[2*i]-=mp[i];
+                mp[i]=0;
+            }
+        }
+        return 1;
+    }
+```	
+
+
 955. Delete Columns to Make Sorted II.md
 
 ### Problem summary
@@ -10334,19 +10354,28 @@ There is one thing I missed: it also requires the first jump is odd, second jump
 
 ```cpp
     int oddEvenJumps(vector<int>& A) {
-        int n  = A.size(), res = 1;
-        vector<int> higher(n), lower(n);
-        higher[n - 1] = lower[n - 1] = 1;
-        map<int, int> map;
-        map[A[n - 1]] = n - 1;
-        for (int i = n - 2; i >= 0; --i) {
-            auto hi = map.lower_bound(A[i]), lo = map.upper_bound(A[i]);
-            if (hi != map.end()) higher[i] = lower[hi->second];
-            if (lo != map.begin()) lower[i] = higher[(--lo)->second];
-            if (higher[i]) res++;
-            map[A[i]] = i;
+        //from right to left
+        map<int,int> mp; //element vs index
+        int n=A.size();
+        vector<bool> odd(n),even(n);
+        odd[n-1]=even[n-1]=1;
+        int ans=1;
+        mp[A[n-1]]=n-1;
+        for(int i=n-2;i>=0;i--){
+            //can we reversely from the first high or low jump to here?
+            auto it=mp.lower_bound(A[i]); //find the first A[j]>=A[i] for odd jump
+            auto it1=mp.upper_bound(A[i]); //A[j]>A[i] 
+            if(it1!=mp.begin()) {
+                it1--; //largest possible A[j]
+                even[i]=odd[it1->second];
+            }
+            if(it!=mp.end()) odd[i]=even[it->second];
+            
+            ans+=odd[i];
+            mp[A[i]]=i;
         }
-        return res;
+        //print(odd);print(even);
+        return ans;
     }
 ```
 
@@ -11246,25 +11275,29 @@ Two mergings happen in this pile, so it contains 1+2(K-1) original piles, let k 
 When (l-1) mod (K-1)==0, we can see all piles in interval [i,i+l) can be finally merged into one pile, and the cost of the last merging is sum(stones[j]) for j in [i,i+l), regardless of the merging choices before the last one. And this "last cost" happens if and only if (l-1) mod (K-1)==0
 
 ```cpp
-int mergeStones(vector<int>& stones, int K)
-{
-    int N = (int)stones.size();
-    if((N - 1) % (K - 1)) return -1;
-    
-    vector<int> sum(N + 1, 0);
-    for(int i = 0; i < N; i++) sum[i + 1] = sum[i] + stones[i];
-    
-    vector<vector<int> > dp(N + 1, vector<int>(N, 0));
-    for(int l = K; l <= N; l++) //length
-        for(int i = 0; i + l <= N; i++) //start position
-        {
-            dp[l][i] = 10000;
-            for(int k = 1; k < l; k += K - 1) //
-                dp[l][i] = min(dp[l][i], dp[k][i] + dp[l - k][i + k]);
-            if((l - 1) % (K - 1) == 0) dp[l][i] += sum[i + l] - sum[i];
+    int mergeStones(vector<int>& stones, int k) {
+        int n=stones.size();
+        //dp[i,j] represents the min cost to merge stones[i...j]
+        if((n-1)%(k-1)) return -1;
+        //prefix sum
+        vector<int> prefix(1);
+        for(int i: stones) prefix.push_back(prefix.back()+i);
+        vector<vector<int>> dp(n,vector<int>(n));
+        for(int i=0;i<n;i++){
+            for(int j=i+k-1;j<n;j+=k-1)
+                dp[i][j]=prefix[j+1]-prefix[i];
         }
-    return dp[N][0];
-}
+        for(int len=k;len<=n;len++)        {
+            for(int i=0;i+len<n;i++){
+                int j=i+len-1;
+                dp[i][j]=INT_MAX;
+                for(int m=i;m<j;m+=k-1)
+                    dp[i][j]=min(dp[i][j],dp[i][m]+dp[m+1][j]);
+            }
+        }
+        return dp[0][n-1];
+        
+    }
 ```
 
 The solution is hard to comprehend. k=1, 1+(K-1), 1+2*(K-1)....., we are looking for the min cost among all these possible choices:

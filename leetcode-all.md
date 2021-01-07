@@ -47,12 +47,52 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+### two state interlace
+<<-964	Least Operators to Express Number    		44.5%	Hard	
+given a positive integer x, use +-*/ and x to represent any number.
+x/x->get x^0
+x*x->get any x^i
+so this is x-base number representation with - allowed.
+dp: uses + or uses - to see which needs less operator. change + to - need to push forward a cf.
+use pos or neg. 
+->>
+
+<<-975	Odd Even Jump    		41.7%	Hard	
+given an integer array. from some starting index, you can make a series jump. 
+odd jump 1,3,5.., even jump: 2,4,6..
+odd jump at i: you can jump to the smallest index and smallest possible A[j]>=A[i]
+even jump at i: you can jump to the smallest index and largest possible A[j]<=A[i]
+possible that you can not make any jump.
+good start index: mean you can jump to the end index.
+return the number of good starting index.
+dp approach:
+- equivalent: do it reverse way from last index we jump to see which index we can go. (how do we get this? the base case is the last index)
+- go higher or lower shall also reverse.
+- put the elements right (visited) in ordered map so we can do binary search. (the later appeared duplicate can replace before element since we only care the first index)
+- even odd interlaced. 
+- even[i], odd[i] represent we can do an even/odd jump to this index.
+base case: the last index odd[n-1]=even[n-1]=1
+- answer is the odd[i] (the first jump start here)
+->>
+
 <<-978	Longest Turbulent Subarray    		46.6%	Medium	
 turbulent: goes up/down... subarray.
 dp: use two state inc,dec.
 ->>
 
 ### knapsack
+put elements in two or three options.
+
+<<-956	Tallest Billboard    		39.8%	Hard	
+given an array of rod length, build two rods with equal largest length.
+knapsack: a rod can be part a, or part b or discard. use +1, -1 and 0.
+max target is totalsum/2.
+dp[i,target] represent the max postive sum for i rods with target.
+- we only add positive
+- choose as a, sum+rod, choose as b, sum-rod, and final score shall be 0.
+- maximize the positive score.
+->>
+
 <<-1049	Last Stone Weight II    		44.3%	Medium	
 x==y, both destoyed, x!=y the smaller destroyed, keep y-x.
 equivalent: knapsack to make positive sum >=tsum/2.
@@ -70,6 +110,13 @@ giving a list of required skill and a list of people with skill set. find the mi
 - if we use a,b,c the result is a|b|c. we are looking for the shortest distance to reach required skill number.
 - shortest distance using bitmask dp: dp[status,[]] for each status we store the list of person. status up to 1<<n, n is the number of skills. people is the number of nodes. Using bellman-ford we try to relax all the dp.
 - we can also use backtrack.
+->>
+
+<<-943	Find the Shortest Superstring    		43.2%	Hard	
+given a list of words, return the shortest superstring connecting all words
+- build a matrix for the pair distance (graph)
+- then it becomes a travel's shortest distance problem (with traceback)
+- using bitmask dp.
 ->>
 
 ### memoization
@@ -456,6 +503,17 @@ note the left and right end cannot serve as a cut position.
 ->>
 
 ### count number of ways
+<<-935	Knight Dialer    		45.9%	Medium	
+return the number of ways on the phone pad.
+build the adjacency matrix and do a dfs like (dp from previous group)
+->>
+
+<<-940	Distinct Subsequences II    		41.5%	Hard	
+count the number of distinct non-empty subsequence of string s.
+- ending with different char with different length are distinct.
+- dp[i,c] represent the number of distinct subsequence for length i and ending with c.
+- dp[i,c]+=d[i-1,x] x can be any char, add 1 for a single char ending with c.
+->>
 
 <<-1397	Find All Good Strings    		37.9%	Hard	
 given string s1,s2,and evil. a good string will >=s1 and <=s2 and does not contain evil as a substring.
@@ -637,6 +695,8 @@ generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
 - in some cases to save space, we need to store previous row and previous column.
 - in some cases we need only keep the previous whole n elements.
 
+<<-931	Minimum Falling Path Sum    		63.1%	Medium	->>
+
 <<-1074	Number of Submatrices That Sum to Target    		60.9%	Hard	
 kadane: get the sum row by row and convert to 1d subarray sum to matrix using hashmap.
 strictly it is not dp instead it is hashmap.
@@ -796,6 +856,17 @@ len=3, [4,5,6], so tail[2]=6.
     }
 ```	
 
+<<-960	Delete Columns to Make Sorted III    		54.0%	Hard	
+a list of word, (can treat as a 2d matrix) return the min number of columns to delete making every row sorted.
+LIS problem.
+->>
+<<-955	Delete Columns to Make Sorted II    		33.4%	Medium	
+after delete columns, each row gets a string, the strings are in sorted order.
+check column: if column is not sorted, it shall be deleted. if equal found, we shall proceed to next column. no need geedy or dp.
+->>
+<<-944	Delete Columns to Make Sorted    		70.9%	Easy	
+after deletion, each column is sorted. return the min number of deletion.
+->>
 <<-1027	Longest Arithmetic Subsequence    		50.4%	Medium	
 each element can bind with previous one with a different difference, since d varies, we shall use array of hashmap for the dp.  
 LIS.
@@ -934,6 +1005,23 @@ greedy problems are actually hard since you need to think hard to find the prope
 Take a greedy step and reduce to a smaller problem. Generally need some insights.
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
+greedy focus more on idea instead of algorithm or data structure.
+
+<<-936	Stamping The Sequence    		46.8%	Hard	
+given a stamp string and a target string. The next stamp will replace the old one at the same place.
+do it reversely, remove the stamp string and replace with ?. 
+greedy: find one match and replace
+->>
+
+<<-945	Minimum Increment to Make Array Unique    		46.5%	Medium	
+each time you can choose to increase one element by 1. 
+greedy: sort and them increase the next one. (increase previous will cost more)
+->>
+
+<<-954	Array of Doubled Pairs    		35.4%	Medium	
+length is even, if we can reorder A[2i+1]=2*A[i].
+use hashmap to get each number's occurrence, sort by the abs value and then start from the smallest and remove the 2x. greedy approach.
+->>
 
 <<-984	String Without AAA or BBB    		38.2%	Medium	
 give a 'a' and b 'b', return any string without 'aaa' or 'bbb'
@@ -1522,6 +1610,11 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 
+<<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	
+given n=number of digits, adjacent digit's absolute difference=k. return all numbers.
+backtrack.
+->>
+
 <<-996	Number of Squareful Arrays    		47.5%	Hard	
 given an array, it is squareful if every adjacent pair sum is a square number.
 return number of permutation of A is squareful.
@@ -1611,6 +1704,20 @@ also a bitmask dp problem.
 - dfs for all paths
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
+
+<<-934	Shortest Bridge    		49.2%	Medium	
+shortest bridge between two island.
+group all positions in each set and try the distance.
+dfs to two groups.
+->>
+
+<<-959	Regions Cut By Slashes    		66.6%	Medium	
+upscale 3 by 3 and do bfs/dfs.
+->>
+<<- 1706. Where will the ball fall
+the grid with / and \,
+upscale the grid by 3, and then use bfs or dfs to find which one to go. bfs is better (for implementation)
+->>
 
 <<-980	Unique Paths III    		77.0%	Hard	
 from start to end, 0 can go, -1 cannot go.
@@ -1774,11 +1881,6 @@ check if there is a path from top left to bottom right.
 regular bfs, if it is able to connect then add into queue.
 ->>
 
-<<- 1706. Where will the ball fall
-the grid with / and \,
-upscale the grid by 3, and then use bfs or dfs to find which one to go.
-->>
-
 <<-1654	Minimum Jumps to Reach Home    		28.0%	Medium	
 a line with forbidden position. given a and b. you can jump forward by a, or jump backward with b. You cannot jump backward twice in a row. cannot jump to forbidden position.
 given position x, return the min number of jumps to home (at position 0)
@@ -1792,6 +1894,13 @@ need store position and direction also, the visited array.
 - union find with path compression O(1)
 - use vector to store parent
 - use hashmap to store parent
+
+<<-947	Most Stones Removed with Same Row or Column    		55.3%	Medium	->>
+
+<<-952	Largest Component Size by Common Factor    		36.0%	Hard	
+given a list of numbers, if two numbers share a common factor, there is an edge between them
+union find.
+->>
 
 <<-990	Satisfiability of Equality Equations    		46.0%	Medium	
 given array of strings represent logical relation. check if all equations are satisfied.
@@ -1875,6 +1984,11 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-946	Validate Stack Sequences    		63.1%	Medium	
+two arrays one is pushed values, one is popped values
+simulate the stack.
+->>
 
 <<-1003	Check If Word Is Valid After Substitutions    		55.6%	Medium	
 given a string s, with only 'a','b','c'. check if you can build t by adding "abc" any times.
@@ -2003,6 +2117,15 @@ recursive stack. syntax parser.
 ## queue & deque
 - monotonic deque
 
+<<-950	Reveal Cards In Increasing Order    		75.0%	Medium	
+given a list of cards, the following operation
+take the top one, move the second one to the bottom
+need to form a list in increasing order
+return the original order of the cards
+do it reversely. from sorted order get to the original array by reversing the work.
+using deque.
+->>
+
 <<-1700 number of students unable to eat lunch
 each student has a prefer of lunch, if current lunch is not preferred, back to the queue end.
 just simulate the deque
@@ -2107,6 +2230,28 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-930	Binary Subarrays With Sum    		43.8%	Medium	
+give 01 array and return number of subarray sum=target.
+prefix sum + hashmap (prefix occurrence).
+->>
+
+<<-937	Reorder Data in Log Files    		54.3%	Easy	->>
+
+<<-953	Verifying an Alien Dictionary    		53.0%	Easy	
+given alien letters in sorted order, check given list of words, check if each word is sorted.
+map to normal order and compare.
+->>
+
+<<-957	Prison Cells After N Days    		40.3%	Medium	
+use hashmap to record status and skip cycles.
+->>
+
+<<-966	Vowel Spellchecker    		47.6%	Medium	
+capitalization: ignore case
+vowel errors: ignore vowels
+hashmap.
+->>
+
 <<-974	Subarray Sums Divisible by K    		49.9%	Medium	->>
 
 <<-981	Time Based Key-Value Store    		53.6%	Medium	
@@ -2313,6 +2458,48 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-897	Increasing Order Search Tree    		72.5%	Easy	
+change tree to a in-order order tree.
+using reverse inorder traversal.
+root->right=process(root->right,prev)
+...
+return process(root->left,prev);
+level: 3
+->>
+
+<<-938	Range Sum of BST    		82.6%	Easy	->>
+
+<<-951	Flip Equivalent Binary Trees    		65.5%	Medium	
+check if you flip left and right and get the other tree.
+left vs left, right vs right
+left vs right, right vs left.
+->>
+
+<<-958	Check Completeness of a Binary Tree    		52.3%	Medium	
+- bfs level order traversal. If we see a null and still have nodes following, then it is not a complete tree.
+- dfs: find the depth. mark the end, h=mh-1. after end is found, if we see h=mh, then it is not a complete tree.
+->>
+
+<<-968	Binary Tree Cameras    		38.1%	Hard	
+a camera can monitor its adjacent nodes and itself.
+return the min number of cameras needed to monitor every node.
+idea: greedy approach, we need do postorder traversal and put the camera on the parent node, since it will cover the child and parent and itself
+define 3 state： 0： not covered, 1, place a camera, 2: covered.
+child 0x or x0, we need add one at parent, 22, we do not place camera but not monitored.
+12 or 21->monitored.
+->>
+
+<<-971	Flip Binary Tree To Match Preorder Traversal    		46.1%	Medium	
+binary tree with n nodes from 1 to n. you can flip a node's left and right subtree to match the preorder traversal.
+our goal is to flip the least number of nodes to match them.
+if we can do it, return the list of nodes flipped. otherwise return [-1]
+preorder: root, left, right.
+first compare root, with A[ind] start from 0, fail then directly return.
+check left (preorder traversal) if fail, we first check right and then left.
+check right.
+very good tree problem.
+->>
 
 <<-965	Univalued Binary Tree    		67.6%	Easy	->>
 
@@ -2760,6 +2947,13 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-969	Pancake Sorting    		68.4%	Medium	
+you can choose the prefix with k (k can be any length) length and reverse it.
+sort the array and gives the array of k.
+greedy: find the max element and flip to the first, and then reverse to the last. max 2n operations.
+since the input is the permutation of 1 to n, so we do not need find max.
+->>
+
 <<-1030	Matrix Cells in Distance Order    		66.9%	Easy	
 distance to reference (r0,c0)
 ->>
@@ -2870,6 +3064,42 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-932	Beautiful Array    		60.9%	Medium	
+given permutation of 1 to n. rearrange so that for every i<j there is no k i<k<j with 2*A[k]=A[i]+A[j]
+idea: A[i]+A[j] must be odd. keep the odd and even separated. If the odd is beautiful then the even follow the same pattern is also beautiful.
+- divide and conquer
+- first step: divide into odd and even
+- further divide.
+another approach:
+if A is beautiful, then 2A, 2A+1, 2A-1 is also beautiful.
+[1], 2*i-1 ->1 2i->2 [1,2]
+[1,2] 2*A-1->[1,3], 2i->[2,4] -->[1,3,2,4]
+->>
+
+<<-942	DI String Match    		73.2%	Easy	->>
+<<-941	Valid Mountain Array    		32.3%	Easy	
+climb and meet at the peak.
+->>
+
+<<-949	Largest Time for Given Digits    		36.3%	Medium	
+given 4 digits, and each use once exactly.
+try all permutations.
+->>
+
+<<-961	N-Repeated Element in Size 2N Array    		74.2%	Easy	
+array has N unique numbers, only one appears N times.
+- hashset approach O(N)
+-  repeated numbers have to appear either next to each other (A[i] == A[i + 1]), or alternated (A[i] == A[i + 2]). The only exception is sequences like [2, 1, 3, 2]. In this case, the result is the last number, so we just return it in the end. 
+->>
+
+<<-962	Maximum Width Ramp    		45.9%	Medium	
+in the array i<j and A[i]<=A[j] find the max(j-i)
+- get the left min array (the array is in descending order)
+- reverse left min
+- get rmax and compare with lmin and get the max ramp.
+tricky.
+->>
+
 <<-982	Triples with Bitwise AND Equal To Zero    		55.7%	Hard	
 - first get pairs & stored in hashmap
 - then check the elements with the pair to get 0.
@@ -3214,6 +3444,30 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+
+<<-963	Minimum Area Rectangle II    		51.5%	Medium	
+given a set of points in xy plane, find the min area of rectangle can be formed.
+a rectangle can be defined two equal diagonals with the mid point.
+we get all paired lines and store its length and mid point in hashmap vs the point.
+find the min in all these rects.
+->>
+
+<<-939	Minimum Area Rectangle    		51.7%	Medium	
+the rect is parallel to the axis.
+- sort by x and the sort by y map<int,set<int>>
+- check by x.
+->>
+<<-970	Powerful Integers    		40.0%	Easy	
+given x, y, bound. if n==x^i+y^j then n is a powerful integer. find all powerful integer <=bound.
+just try x^0,....x^m and combine with y^j and store in set. Do not need loop for each number in range.
+(need reverse thinking a bit)
+->>
+
+<<-972	Equal Rational Numbers    		41.8%	Hard	
+given two string () enclosed repeating part. check if they are equal.
+convert to double precision, 20 digits (double only has 16 decimal digits, 52 bits precision)
+->>
+
 <<-977	Squares of a Sorted Array    		72.1%	Easy	->>
 <<-976	Largest Perimeter Triangle    		58.4%	Easy	->>
 
@@ -5521,6 +5775,13 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-933	Number of Recent Calls    		71.9%	Easy	->>
+<<-929	Unique Email Addresses    		67.2%	Easy	->>
+<<-925	Long Pressed Name    		39.0%	Easy	->>
+<<-922	Sort Array By Parity II    		70.0%	Easy	->>
+<<-917	Reverse Only Letters    		58.4%	Easy	->>
+<<-914	X of a Kind in a Deck of Cards    		34.5%	Easy	->>
+
 <<-989	Add to Array-Form of Integer    		44.5%	Easy	->>
 
 <<-997	Find the Town Judge    		49.9%	Easy	->>
@@ -6199,6 +6460,15 @@ recursive approach.
 
 ## two pointer
 
+<<-948	Bag of Tokens    		46.2%	Medium	
+given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
+- if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
+- you can lose 1 point and get token[i]
+return the max score.
+greedy approach: use the point to get the max power. losing min power to get 1 point.
+using two pointer to do it from min and max side.
+->>
+
 <<-1023	Camelcase Matching    		57.1%	Medium	
 given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
 - capital shall match exactly.
@@ -6361,82 +6631,23 @@ A[i] in the range [1,m]
 
 
 ## leetcode problem list
-<<-975	Odd Even Jump    		41.7%	Hard	
-given an integer array. from some starting index, you can make a series jump. 
-odd jump 1,3,5.., even jump: 2,4,6..
-odd jump at i: you can jump to the first index A[j]>=A[i]
-even jump at i: you can jump to the first index A[j]<=A[i]
-possible that you can not make any jump.
-good start index: mean you can jump to the end index.
-return the number of good starting index.
-dp approach:
-- do it from right to left (since we are going right)
-- put the elements right (visited) in ordered map so we can do binary search.
-- even odd interlaced. 
-- even[i], odd[i] represent we can do an even/odd jump to this index.
-base case: the last index odd[n-1]=even[n-1]=1
 
-->>
 
-<<-972	Equal Rational Numbers    		41.8%	Hard	->>
-<<-971	Flip Binary Tree To Match Preorder Traversal    		46.1%	Medium	->>
-<<-970	Powerful Integers    		40.0%	Easy	->>
-<<-969	Pancake Sorting    		68.4%	Medium	->>
-<<-968	Binary Tree Cameras    		38.1%	Hard	->>
-<<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	->>
-<<-966	Vowel Spellchecker    		47.6%	Medium	->>
-
-<<-964	Least Operators to Express Number    		44.5%	Hard	->>
-<<-963	Minimum Area Rectangle II    		51.5%	Medium	->>
-<<-962	Maximum Width Ramp    		45.9%	Medium	->>
-<<-961	N-Repeated Element in Size 2N Array    		74.2%	Easy	->>
-<<-960	Delete Columns to Make Sorted III    		54.0%	Hard	->>
-<<-959	Regions Cut By Slashes    		66.6%	Medium	->>
-<<-958	Check Completeness of a Binary Tree    		52.3%	Medium	->>
-<<-957	Prison Cells After N Days    		40.3%	Medium	->>
-<<-956	Tallest Billboard    		39.8%	Hard	->>
-<<-955	Delete Columns to Make Sorted II    		33.4%	Medium	->>
-<<-954	Array of Doubled Pairs    		35.4%	Medium	->>
-<<-953	Verifying an Alien Dictionary    		53.0%	Easy	->>
-<<-952	Largest Component Size by Common Factor    		36.0%	Hard	->>
-<<-951	Flip Equivalent Binary Trees    		65.5%	Medium	->>
-<<-950	Reveal Cards In Increasing Order    		75.0%	Medium	->>
-<<-949	Largest Time for Given Digits    		36.3%	Medium	->>
-<<-948	Bag of Tokens    		46.2%	Medium	->>
-<<-947	Most Stones Removed with Same Row or Column    		55.3%	Medium	->>
-<<-946	Validate Stack Sequences    		63.1%	Medium	->>
-<<-945	Minimum Increment to Make Array Unique    		46.5%	Medium	->>
-<<-944	Delete Columns to Make Sorted    		70.9%	Easy	->>
-<<-943	Find the Shortest Superstring    		43.2%	Hard	->>
-<<-942	DI String Match    		73.2%	Easy	->>
-<<-941	Valid Mountain Array    		32.3%	Easy	->>
-<<-940	Distinct Subsequences II    		41.5%	Hard	->>
-<<-939	Minimum Area Rectangle    		51.7%	Medium	->>
-<<-938	Range Sum of BST    		82.6%	Easy	->>
-<<-937	Reorder Data in Log Files    		54.3%	Easy	->>
-<<-936	Stamping The Sequence    		46.8%	Hard	->>
-<<-935	Knight Dialer    		45.9%	Medium	->>
-<<-934	Shortest Bridge    		49.2%	Medium	->>
-<<-933	Number of Recent Calls    		71.9%	Easy	->>
-<<-932	Beautiful Array    		60.9%	Medium	->>
-<<-931	Minimum Falling Path Sum    		63.1%	Medium	->>
-<<-930	Binary Subarrays With Sum    		43.8%	Medium	->>
-<<-929	Unique Email Addresses    		67.2%	Easy	->>
 <<-928	Minimize Malware Spread II    		41.0%	Hard	->>
 <<-927	Three Equal Parts    		34.2%	Hard	->>
 <<-926	Flip String to Monotone Increasing    		52.7%	Medium	->>
-<<-925	Long Pressed Name    		39.0%	Easy	->>
+
 <<-924	Minimize Malware Spread    		41.9%	Hard	->>
 <<-923	3Sum With Multiplicity    		35.9%	Medium	->>
-<<-922	Sort Array By Parity II    		70.0%	Easy	->>
+
 <<-921	Minimum Add to Make Parentheses Valid    		74.4%	Medium	->>
 <<-920	Number of Music Playlists    		47.4%	Hard	->>
 <<-919	Complete Binary Tree Inserter    		58.1%	Medium	->>
 <<-918	Maximum Sum Circular Subarray    		34.0%	Medium	->>
-<<-917	Reverse Only Letters    		58.4%	Easy	->>
+
 <<-916	Word Subsets    		48.1%	Medium	->>
 <<-915	Partition Array into Disjoint Intervals    		45.7%	Medium	->>
-<<-914	X of a Kind in a Deck of Cards    		34.5%	Easy	->>
+
 <<-913	Cat and Mouse    		33.8%	Hard	->>
 <<-912	Sort an Array    		64.1%	Medium	->>
 
@@ -6454,14 +6665,7 @@ base case: the last index odd[n-1]=even[n-1]=1
 <<-900	RLE Iterator    		54.8%	Medium	->>
 <<-899	Orderly Queue    		52.8%	Hard	->>
 <<-898	Bitwise ORs of Subarrays    		34.0%	Medium	->>
-<<-897	Increasing Order Search Tree    		72.5%	Easy	
-change tree to a in-order order tree.
-using reverse inorder traversal.
-root->right=process(root->right,prev)
-...
-return process(root->left,prev);
-level: 3
-->>
+
 <<-896	Monotonic Array    		58.0%	Easy	->>
 <<-895	Maximum Frequency Stack    		61.9%	Hard	->>
 <<-894	All Possible Full Binary Trees    		76.5%	Medium	->>
