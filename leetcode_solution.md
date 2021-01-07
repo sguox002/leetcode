@@ -8503,12 +8503,6 @@ divide and conquer.
     }
 ```
 
-	
-	
-
-
-
-
 ## contest 109
 
 Number of Recent Calls4
@@ -8721,7 +8715,7 @@ reverse operation and matching:
     }
 ```
 
-	## contest 110
+## contest 110
 
 Reorder Data in Log Files4
 Range Sum of BST4
@@ -9028,6 +9022,7 @@ from A to destination we will get len(A)+sum(edge)).
         return n;
     }
 ```
+
 ## contest 112
 945. min increment to make array unique (greedy)
 946. validate stack sequences (stack)
