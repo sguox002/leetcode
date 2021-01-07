@@ -47,6 +47,11 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-978	Longest Turbulent Subarray    		46.6%	Medium	
+turbulent: goes up/down... subarray.
+dp: use two state inc,dec.
+->>
+
 ### knapsack
 <<-1049	Last Stone Weight II    		44.3%	Medium	
 x==y, both destoyed, x!=y the smaller destroyed, keep y-x.
@@ -175,6 +180,12 @@ dp[i,k]: i houses, k mailboxes.
 ### optimization
 
 optimization problem is for max or min. Dp can solve most of them, but bfs, greedy, pq et al can also be the candidates.
+
+<<-983	Minimum Cost For Tickets    		62.5%	Medium	
+three prices one day pass, 7 day pass, 30 day pass.
+given a list of days, return the min cost needed.
+dp: you have 3 options to cover, dp[i] is the min prices covering i items in the front.
+->>
 
 <<-1039	Minimum Score Triangulation of Polygon    		49.9%	Medium	
 given n-sided polygon, convert to n-2 triangles. the value of triangle is the product of the 3 vertices.
@@ -924,6 +935,25 @@ Take a greedy step and reduce to a smaller problem. Generally need some insights
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 
+<<-984	String Without AAA or BBB    		38.2%	Medium	
+give a 'a' and b 'b', return any string without 'aaa' or 'bbb'
+greedy: recursive, if a==b choose ab, a==0 choose b, b==0 choose 'a'
+a>b choose "aab" else choose "abb" (cannot use "bba")
+->>
+
+<<-991	Broken Calculator    		46.3%	Medium	
+calculator can only do *2 or -1.
+return the min number of operations from x to y.
+equivalent from y to x by /2 or +1. even /2, odd +1
+->>
+
+<<-995	Minimum Number of K Consecutive Bit Flips    		49.2%	Hard	
+a k-bit flip operation: choose window k, flip every bit. 
+return the min number of operations so that there is no 0s.
+- approach: from left to right, find the first 0 and do a flip.
+greedy.
+->>
+
 <<-1005	Maximize Sum Of Array After K Negations    		52.2%	Easy	
 negate the array element exactly k times, return the max sum.
 priority_queue: negate the smallest one first. When all becomes positive, we repeatedly negate the smallest. (odd/even of k decide the final value)
@@ -1582,6 +1612,12 @@ also a bitmask dp problem.
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
 
+<<-980	Unique Paths III    		77.0%	Hard	
+from start to end, 0 can go, -1 cannot go.
+return number of paths what walk over every empty cell exactly once.
+dfs: visited cannot visit again, final nstep is the total empty cell.
+->>
+
 <<-1020	Number of Enclaves    		58.5%	Medium	
 find those cannot connect to boundary
 dfs
@@ -1655,6 +1691,8 @@ dfs, hashmap
 - bfs with parent information
 - bfs with more than one state.
 - bfs with shortest distance problem
+
+<<-994	Rotting Oranges    		49.4%	Medium	->>
 
 <<-1036	Escape a Large Maze    		35.1%	Hard	
 from src to target, with obstacles <=200. 
@@ -1754,6 +1792,11 @@ need store position and direction also, the visited array.
 - union find with path compression O(1)
 - use vector to store parent
 - use hashmap to store parent
+
+<<-990	Satisfiability of Equality Equations    		46.0%	Medium	
+given array of strings represent logical relation. check if all equations are satisfied.
+union-find the equal
+->>
 
 <<-1061	Lexicographically Smallest Equivalent String    		66.0%	Medium	
 given string A and B, they are equivalent if we do the mapping. given a string s, return the smallest equivalent string.
@@ -1968,6 +2011,8 @@ just simulate the deque
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
 
+<<-973	K Closest Points to Origin    		64.3%	Medium	->>
+
 <<-1054	Distant Barcodes    		44.0%	Medium	
 rearrange so that no adjacent are the same.
 priority_queue
@@ -2062,6 +2107,11 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-974	Subarray Sums Divisible by K    		49.9%	Medium	->>
+
+<<-981	Time Based Key-Value Store    		53.6%	Medium	
+hashmap
+->>
 
 <<-1001	Grid Illumination    		36.3%	Hard	
 given nxn matrix, a light at [i,j] can illuminate the row, column, diagonal.
@@ -2264,6 +2314,22 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
+<<-965	Univalued Binary Tree    		67.6%	Easy	->>
+
+<<-979	Distribute Coins in Binary Tree    		69.2%	Medium	
+given a binary tree with n nodes and n coins. In each move, you can choose two adjacent nodes and move one coin from one to the other. The coin initial distribution is given as tree node value.
+return the min number of operations to make each node one coin.
+postorder to get the sum of node value -1 (since we need 1)
+the steps from/to root is abs(sum).
+->>
+
+<<-987	Vertical Order Traversal of a Binary Tree    		37.2%	Medium	->>
+
+<<-988	Smallest String Starting From Leaf    		46.4%	Medium	
+preorder
+->>
+
+<<-993	Cousins in Binary Tree    		52.1%	Easy	->>
 <<-998	Maximum Binary Tree II    		63.6%	Medium	
 max tree: node value is greater than all nodes in its subtree.
 build from an array, if A[i] is the max, then A[i] will be the root, and left put in left subtree, right put in right subtree.
@@ -2575,6 +2641,10 @@ two pointer merge.
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+<<-992	Subarrays with K Different Integers    		49.9%	Hard	
+sliding window with hashmap
+->>
+
 <<-1004	Max Consecutive Ones III    		60.1%	Medium	
 change 0 to 1 for at most k time.
 equivalent: find the longest window containing at most k 0s. 
@@ -2800,6 +2870,11 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-982	Triples with Bitwise AND Equal To Zero    		55.7%	Hard	
+- first get pairs & stored in hashmap
+- then check the elements with the pair to get 0.
+->>
+
 <<-999	Available Captures for Rook    		66.8%	Easy	->>
 
 <<-1007	Minimum Domino Rotations For Equal Row    		50.9%	Medium	
@@ -3139,6 +3214,11 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-977	Squares of a Sorted Array    		72.1%	Easy	->>
+<<-976	Largest Perimeter Triangle    		58.4%	Easy	->>
+
+<<-985	Sum of Even Numbers After Queries    		60.8%	Easy	->>
+
 <<-1006	Clumsy Factorial    		53.6%	Medium	
 given n, use */+- in order repeatedly. return the value.
 for example 9*8/7+6-5*4/3+2-1
@@ -5441,6 +5521,8 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-989	Add to Array-Form of Integer    		44.5%	Easy	->>
+
 <<-997	Find the Town Judge    		49.9%	Easy	->>
 <<-1002	Find Common Characters    		67.8%	Easy	->>
 <<-1018	Binary Prefix Divisible By 5    		47.7%	Easy	
@@ -6034,6 +6116,10 @@ try all combination states (using bitmask) and calculate the distance in the sub
 
 ## intervals
 
+<<-986	Interval List Intersections    		67.8%	Medium	
+merge the intersection, two pointer on intervals.
+->>
+
 <<-1094	Car Pooling    		59.0%	Medium	->>
 
 <<-1109	Corporate Flight Bookings    		53.8%	Medium	
@@ -6275,31 +6361,23 @@ A[i] in the range [1,m]
 
 
 ## leetcode problem list
+<<-975	Odd Even Jump    		41.7%	Hard	
+given an integer array. from some starting index, you can make a series jump. 
+odd jump 1,3,5.., even jump: 2,4,6..
+odd jump at i: you can jump to the first index A[j]>=A[i]
+even jump at i: you can jump to the first index A[j]<=A[i]
+possible that you can not make any jump.
+good start index: mean you can jump to the end index.
+return the number of good starting index.
+dp approach:
+- do it from right to left (since we are going right)
+- put the elements right (visited) in ordered map so we can do binary search.
+- even odd interlaced. 
+- even[i], odd[i] represent we can do an even/odd jump to this index.
+base case: the last index odd[n-1]=even[n-1]=1
 
+->>
 
-<<-995	Minimum Number of K Consecutive Bit Flips    		49.2%	Hard	->>
-<<-994	Rotting Oranges    		49.4%	Medium	->>
-<<-993	Cousins in Binary Tree    		52.1%	Easy	->>
-<<-992	Subarrays with K Different Integers    		49.9%	Hard	->>
-<<-991	Broken Calculator    		46.3%	Medium	->>
-<<-990	Satisfiability of Equality Equations    		46.0%	Medium	->>
-<<-989	Add to Array-Form of Integer    		44.5%	Easy	->>
-<<-988	Smallest String Starting From Leaf    		46.4%	Medium	->>
-<<-987	Vertical Order Traversal of a Binary Tree    		37.2%	Medium	->>
-<<-986	Interval List Intersections    		67.8%	Medium	->>
-<<-985	Sum of Even Numbers After Queries    		60.8%	Easy	->>
-<<-984	String Without AAA or BBB    		38.2%	Medium	->>
-<<-983	Minimum Cost For Tickets    		62.5%	Medium	->>
-<<-982	Triples with Bitwise AND Equal To Zero    		55.7%	Hard	->>
-<<-981	Time Based Key-Value Store    		53.6%	Medium	->>
-<<-980	Unique Paths III    		77.0%	Hard	->>
-<<-979	Distribute Coins in Binary Tree    		69.2%	Medium	->>
-<<-978	Longest Turbulent Subarray    		46.6%	Medium	->>
-<<-977	Squares of a Sorted Array    		72.1%	Easy	->>
-<<-976	Largest Perimeter Triangle    		58.4%	Easy	->>
-<<-975	Odd Even Jump    		41.7%	Hard	->>
-<<-974	Subarray Sums Divisible by K    		49.9%	Medium	->>
-<<-973	K Closest Points to Origin    		64.3%	Medium	->>
 <<-972	Equal Rational Numbers    		41.8%	Hard	->>
 <<-971	Flip Binary Tree To Match Preorder Traversal    		46.1%	Medium	->>
 <<-970	Powerful Integers    		40.0%	Easy	->>
@@ -6307,7 +6385,7 @@ A[i] in the range [1,m]
 <<-968	Binary Tree Cameras    		38.1%	Hard	->>
 <<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	->>
 <<-966	Vowel Spellchecker    		47.6%	Medium	->>
-<<-965	Univalued Binary Tree    		67.6%	Easy	->>
+
 <<-964	Least Operators to Express Number    		44.5%	Hard	->>
 <<-963	Minimum Area Rectangle II    		51.5%	Medium	->>
 <<-962	Maximum Width Ramp    		45.9%	Medium	->>
