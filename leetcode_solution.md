@@ -7581,7 +7581,9 @@ Now, given two positive integers L and R (represented as strings), return the nu
         }
         return 1;
     }
-```## contest 103
+```
+
+## contest 103
 
 Smallest Range I3
 Snakes and Ladders6
