@@ -47,6 +47,26 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-873	Length of Longest Fibonacci Subsequence    		47.9%	Medium	
+for current element, we can bind with previous element to form a fib pair
+dp[i,j] the max length for the pair with ith and jth element as the ending two elements in fib series
+good practice on dp why we need 2d dp.
+->>
+
+<<-887	Super Egg Drop    		27.1%	Hard	
+given k eggs and 1 to n floors. There exist a floor F, such that above F egg will drop break.
+return the min moves need to know F.
+- drop below F, one move, k eggs, remain N-F floors
+- drop above F, one move, k-1 eggs, remain X-1.
+min max problem.
+dp[k,n]=1+max(dp[k-1][i-1],dp[k,n-i]) for all i. KN^2
+if we convert to dp[m,k] reprenting the max floor we can check using m move and k eggs
+dp[m,k]=dp[m-1,k-1]+dp[m-1,k]+1
+if egg breaks we can check dp[m-1,k-1] floors
+if egg does not break, we can check dp[m-1,k] floors
+ 
+->>
+
 ### two state interlace
 <<-964	Least Operators to Express Number    		44.5%	Hard	
 given a positive integer x, use +-*/ and x to represent any number.
@@ -82,6 +102,13 @@ dp: use two state inc,dec.
 
 ### knapsack
 put elements in two or three options.
+
+<<-879	Profitable Schemes    		39.9%	Hard	
+n people and a list of tasks with profit[i] and group[i]. The people cannot be reused again.
+profitable scheme: profit>minProfit people used<=n.
+knapsack: all >minProfit will be assigned to minProfit.
+dp[p,g] number of good scheme using g people and profit p.
+->>
 
 <<-956	Tallest Billboard    		39.8%	Hard	
 given an array of rod length, build two rods with equal largest length.
@@ -1054,6 +1081,20 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-881	Boats to Save People    		47.4%	Medium	
+given array of people weight, boat has limit of max weight and most 2 people.
+return the min number of boats
+greedy: two pointer carray the max + min.
+->>
+
+<<-891	Sum of Subsequence Widths    		32.7%	Hard	
+sequence width = max-min.
+return the sum of width of all subsequences.
+- a fixed max and min pair can have a lot of sequences (with other elements each has 2 options)
+- single element does not contribute max-min=0;
+- sort it will solve our dilema since we do not care what the sequence will be.
+->>
+
 <<-908	Smallest Range I    		65.9%	Easy	
 You can add any number in range [-K,K]
 greedy: if max-min>2K, otherwise get 0.
@@ -1547,6 +1588,12 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-875	Koko Eating Bananas    		53.0%	Medium	
+given N piles of banana, You have H hour time, each hour you take 1 pile and eat at most K bananas.
+return the min K so that he can eat all.
+binary search conversion.
+->>
+
 <<-911	Online Election    		51.0%	Medium	
 ith vote gives the time and person of voting. query: giving the time, return the winner.
 using a map get the winner at ith time and then use binary search.
@@ -1768,6 +1815,10 @@ also a bitmask dp problem.
 - dfs for all paths
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
+
+<<-886	Possible Bipartition    		44.7%	Medium	
+dfs coloring alternatively.
+->>
 
 <<-934	Shortest Bridge    		49.2%	Medium	
 shortest bridge between two island.
@@ -2332,6 +2383,18 @@ approach:
 ->>
 
 ## hashset, hashmap
+
+<<-874	Walking Robot Simulation    		36.5%	Easy	
+robot faces north first, -2 turn left 90 degree, -1 turn right 90, 1-9 take number of steps along direction.
+with obstacles list. 
+return the max distance robot reaches from the origin.
+simulate the movements
+->>
+
+<<-884	Uncommon Words from Two Sentences    		63.8%	Easy	
+use hashmap to record if it appears in both.
+->>
+
 <<-916	Word Subsets    		48.1%	Medium	
 given two array of words A and B. All character (including multiplicity) in B appear in a word of A, then a is called universal
 note: if B='["lo","eo"] it only asks there is lo and eo, but not require 2 'o's.
@@ -2567,6 +2630,9 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-872	Leaf-Similar Trees    		64.5%	Easy	->>
+<<-889	Construct Binary Tree from Preorder and Postorder Traversal    		66.9%	Medium	->>
 
 <<-894	All Possible Full Binary Trees    		76.5%	Medium	
 each node has 0 or 2 children. n nodes.
@@ -2912,6 +2978,9 @@ segment tree
 - cycle detection
 - traversal
 
+<<-876	Middle of the Linked List    		68.8%	Easy	
+fast slow pointer.
+->>
 <<-83	Remove Duplicates from Sorted List    		46.0%	Easy	
 easy but tricky, for each node we need iterate until we find no more duplicates.
 ->>
@@ -3126,6 +3195,12 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-890	Find and Replace Pattern    		74.0%	Medium	->>
+
+<<-893	Groups of Special-Equivalent Strings    		67.9%	Easy	
+you can swap odd index vs odd index, even index vs even index.
+sort by odd or even.
+->>
 
 <<-1016	Binary String With Substrings Representing 1 To N    		59.4%	Medium	
 just find if all the n string appears in it.
@@ -3200,6 +3275,22 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-885	Spiral Matrix III    		70.0%	Medium	
+give a 2d grid with R rows and C columns, start with (r0,c0), goes clockwise.
+it goes 1R,1D,2L,2U,3R.....
+out of boundary just ignore.
+simulate the process 
+->>
+
+<<-59 Spiral matrix II.
+generate nxn matrix using spiral order (shrinking size)
+use 4 boundaries.
+->>
+
+<<54 Spiral Matrix
+traverse the matrix in spiral order (using 4 bounaries)
+->>
+
 <<-900	RLE Iterator    		54.8%	Medium	
 run length encoding iterator.
 prefix sum on the element count and do binary search.
@@ -3602,6 +3693,28 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-878	Nth Magical Number    		28.6%	Hard	
+if it is divisible by a or b.
+binary search convert to count.
+see similar problem with gcd lcm. 1201 Ugly number III.
+->>
+
+<<-883	Projection Area of 3D Shapes    		67.9%	Easy	
+matrix with each element the height of 1x1x1 cube stack. return the total area projected in 3 planes.
+since projection will only refect the largest one, we shall get the max.
+->>
+
+<<-888	Fair Candy Swap    		58.6%	Easy	
+exchange to make A and B have the same size. simple math.
+->>
+
+<<-892	Surface Area of 3D Shapes    		59.4%	Easy	
+given a nxn grid, and A[i,j] is the height of 1x1x1 cube stacks.
+return the total surface area.
+we only need to look its top left and see if overlapped with previous. Then we need subtract both
+
+->>
+
 <<-902	Numbers At Most N Given Digit Set    		32.0%	Hard	
 given a digit set, and n, return number of numbers composed only digits from the set <=n.
 pretty hard one.
@@ -6186,7 +6299,9 @@ linear programming
 NP-hard: non-deterministic polynomial time hardness.
 
 some games especially zero-sum game
-
+<<-877	Stone Game    		66.0%	Medium	
+by turn take either end. dp problem.
+->>
 <<-1140	Stone Game II    		64.9%	Medium	
 A and B takes turn. Initially M=1, each time you can take 1<<x<<2M piles of staones. then we set M=max(M,x).
 dp: top down, max(A-B), strategy game.
@@ -6609,6 +6724,15 @@ two problems here:
 ->>
 
 ## recursive
+<<-880	Decoded String at Index    		24.5%	Medium	
+digit in the string d means the previous string will be copied d-1 times.
+return the char at index. (note a23 mean a is repeated 2 time becoming aa3 and then aa is repeated 3 times.)
+We decode the string and N keeps the length of decoded string, until N >= K.
+Then we go back from the decoding position.
+If it's S[i] = d is a digit, then N = N / d before repeat and K = K % N is what we want.
+If it's S[i] = c is a character, we return c if K == 0 or K == N
+???
+->>
 
 <<-1274	Number of Ships in a Rectangle    		65.6%	Hard	
 given api hasShip(topRight, bottomLeft), reduce size until one single point
@@ -6819,30 +6943,9 @@ A[i] in the range [1,m]
 
 ## leetcode problem list
 <<-913	Cat and Mouse    		33.8%	Hard	->>
-
-
-<<-893	Groups of Special-Equivalent Strings    		67.9%	Easy	->>
-<<-892	Surface Area of 3D Shapes    		59.4%	Easy	->>
-<<-891	Sum of Subsequence Widths    		32.7%	Hard	->>
-<<-890	Find and Replace Pattern    		74.0%	Medium	->>
-<<-889	Construct Binary Tree from Preorder and Postorder Traversal    		66.9%	Medium	->>
-<<-888	Fair Candy Swap    		58.6%	Easy	->>
-<<-887	Super Egg Drop    		27.1%	Hard	->>
-<<-886	Possible Bipartition    		44.7%	Medium	->>
-<<-885	Spiral Matrix III    		70.0%	Medium	->>
-<<-884	Uncommon Words from Two Sentences    		63.8%	Easy	->>
-<<-883	Projection Area of 3D Shapes    		67.9%	Easy	->>
 <<-882	Reachable Nodes In Subdivided Graph    		42.0%	Hard	->>
-<<-881	Boats to Save People    		47.4%	Medium	->>
-<<-880	Decoded String at Index    		24.5%	Medium	->>
-<<-879	Profitable Schemes    		39.9%	Hard	->>
-<<-878	Nth Magical Number    		28.6%	Hard	->>
-<<-877	Stone Game    		66.0%	Medium	->>
-<<-876	Middle of the Linked List    		68.8%	Easy	->>
-<<-875	Koko Eating Bananas    		53.0%	Medium	->>
-<<-874	Walking Robot Simulation    		36.5%	Easy	->>
-<<-873	Length of Longest Fibonacci Subsequence    		47.9%	Medium	->>
-<<-872	Leaf-Similar Trees    		64.5%	Easy	->>
+
+
 <<-871	Minimum Number of Refueling Stops    		31.8%	Hard	->>
 <<-870	Advantage Shuffle    		46.1%	Medium	->>
 <<-869	Reordered Power of 2    		53.9%	Medium	->>
