@@ -7841,6 +7841,7 @@ Given a graph, and assuming both players play optimally, return 1 if the game is
 </em>
 
 too hard!!	
+
 ## contest 105
 
 Reverse Only Letters4
@@ -8971,7 +8972,7 @@ from A to destination we will get len(A)+sum(edge)).
         {
             for(int j=0;j<n;j++)
             {
-                if(i & (1<<j)) //if node j is visited
+                if(i & (1<<j)) //visited node j as the previous 
                 {
                     int prev=i-(1<<j); //previous status
                     if(prev==0) dp[i][j]=A[j].length(); //in case j is the starting node.
@@ -8980,6 +8981,8 @@ from A to destination we will get len(A)+sum(edge)).
                         for(int k=0;k<n;k++)
                         {
                             if(dp[prev][k]<INT_MAX && dp[i][j]>dp[prev][k]+graph[k][j])
+							//you can replace equivalent:
+							/*if((prev&(1<<k)) && dp[state][j]>dp[prev][k]+graph[k][j])*/
                             {
                                 dp[i][j]=dp[prev][k]+graph[k][j];
                                 path[i][j]=k; //save the node

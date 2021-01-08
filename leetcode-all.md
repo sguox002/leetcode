@@ -117,6 +117,16 @@ given a list of words, return the shortest superstring connecting all words
 - build a matrix for the pair distance (graph)
 - then it becomes a travel's shortest distance problem (with traceback)
 - using bitmask dp.
+
+- starting from a node, edge weight is the length to add to reach the next node.
+- bitmask can represent the choice of words, but there is no ordering info.
+- dp[i,status] represent the min distance ending with node i.
+- in the status, we repeatedly choose each as the ending node j: dp[j,prev]
+dp[i,status]=min(dp[j,prev]+dist[j,i]
+ie. try any node as the last node, and try any node in previous status as the previous ending and connect them and releax the edge.
+answer is the min(dp[x,0xffff]) x can be any node.
+base case: 1 word
+two words, use each word as the end and get the shortest distance.
 ->>
 
 ### memoization
@@ -175,6 +185,11 @@ idea: choose i as the last balloon to burst and its left and right are virtual b
 
 ### dp dealing with array partitions
 generally dealing with subsequence or subarray and divide into k groups to get max/min scores.
+
+<<-918	Maximum Sum Circular Subarray    		34.0%	Medium	
+find subarray max sum.
+dp: connect or start a new group, one max one min problem.
+->>
 
 <<-1043	Partition Array for Maximum Sum    		66.4%	Medium	
 partition into subarray of length <=k. after partitioning, the subarray's value all become the max in the subarray, return the largest sum.
@@ -503,6 +518,23 @@ note the left and right end cannot serve as a cut position.
 ->>
 
 ### count number of ways
+
+<<-920	Number of Music Playlists    		47.4%	Hard	
+given N different songs, want to make a list with length L:
+- Every song is played at least once
+- A song can only be played again only if K other songs have been played
+Return the number of possible playlists.  
+0<=K<N<=L<=100
+
+dp approach: 
+- dp[n,l,k] n songs with list L, and k restraints.
+- used n-1 songs, for the l-1 list, the not appeared song can be added. 
+dp[n,l,k]=n*dp[n-1,l-1,k]
+- if l-1 used n songs already, then we have n-k choices 
+dp[n,l,k]=(n-k)*dp[n,l-1,k]
+->>
+
+
 <<-935	Knight Dialer    		45.9%	Medium	
 return the number of ways on the phone pad.
 build the adjacency matrix and do a dfs like (dp from previous group)
@@ -1007,6 +1039,17 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-908	Smallest Range I    		65.9%	Easy	
+You can add any number in range [-K,K]
+greedy: if max-min>2K, otherwise get 0.
+->>
+
+<<-910	Smallest Range II    		27.0%	Medium	
+add K or -K to each element, return the smallest range obtained.
+greedy: sort first, left shall add k, and right shall -k, the problem is where is the separation position.
+suppose add k at ith element, A[i]+K may become a new max, A[i+1]-k and it may becomes a new min (right bigger elements cannot be min). still need to compare with A[n-1]-k and A[0]+k.
+->>
+
 <<-936	Stamping The Sequence    		46.8%	Hard	
 given a stamp string and a target string. The next stamp will replace the old one at the same place.
 do it reversely, remove the stamp string and replace with ?. 
@@ -1489,6 +1532,12 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-911	Online Election    		51.0%	Medium	
+ith vote gives the time and person of voting. query: giving the time, return the winner.
+using a map get the winner at ith time and then use binary search.
+get the winner using a map or heap to store the count for each person.
+->>
+
 <<-1011	Capacity To Ship Packages Within D Days    		59.3%	Medium	->>
 
 <<-1044	Longest Duplicate Substring    		31.8%	Hard	
@@ -1799,6 +1848,10 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+<<-909	Snakes and Ladders    		38.9%	Medium	
+convert to 1d bfs.
+->>
+
 <<-994	Rotting Oranges    		49.4%	Medium	->>
 
 <<-1036	Escape a Large Maze    		35.1%	Hard	
@@ -1895,6 +1948,18 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-924	Minimize Malware Spread    		41.9%	Hard	
+remove one node from initial list (not disconnecting)
+the one with the most number of nodes in the set.
+union-find.
+->>
+
+<<-928	Minimize Malware Spread II    		41.0%	Hard	
+given a list of nodes initially infected. we can remove one infected node from initial list and break its all connections. return the first node removed which can minimize malware spread.
+- disconnect not convenient to do, but we can do add without it.
+- union find without given node, and find the min infected set.
+->>
+
 <<-947	Most Stones Removed with Same Row or Column    		55.3%	Medium	->>
 
 <<-952	Largest Component Size by Common Factor    		36.0%	Hard	
@@ -1984,6 +2049,15 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-907	Sum of Subarray Minimums    		33.3%	Medium	
+sum of all subarray min.
+each element can be min. using stack find previous larger and next larger to get the range. if left length is L: we can have L*A[i]
+->>
+
+<<-921	Minimum Add to Make Parentheses Valid    		74.4%	Medium	
+using stack. right mismatch just record, left mismatch still in the stack.
+->>
 
 <<-946	Validate Stack Sequences    		63.1%	Medium	
 two arrays one is pushed values, one is popped values
@@ -2230,6 +2304,13 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-916	Word Subsets    		48.1%	Medium	
+given two array of words A and B. All character (including multiplicity) in B appear in a word of A, then a is called universal
+note: if B='["lo","eo"] it only asks there is lo and eo, but not require 2 'o's.
+so we are using the max frequency in each word of B.
+then check against each word in A.
+->>
+
 <<-930	Binary Subarrays With Sum    		43.8%	Medium	
 give 01 array and return number of subarray sum=target.
 prefix sum + hashmap (prefix occurrence).
@@ -2458,6 +2539,11 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-919	Complete Binary Tree Inserter    		58.1%	Medium	
+using array to represent a complete binary tree.
+root child index relation i,2i,2i+1
+->>
 
 <<-897	Increasing Order Search Tree    		72.5%	Easy	
 change tree to a in-order order tree.
@@ -2828,6 +2914,13 @@ two pointer merge.
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+<<-904	Fruit Into Baskets    		42.7%	Medium	
+you have two baskests, each basket holds one type of fruit. You start at any index of the array. if you cannot choose, stop. each tree you can pick one fruit.
+return max amount of fruits
+equivalent find the longest subarray with only two types of fruit. 
+sliding window + hashmap.
+->>
+
 <<-992	Subarrays with K Different Integers    		49.9%	Hard	
 sliding window with hashmap
 ->>
@@ -2947,6 +3040,10 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-912	Sort an Array    		64.1%	Medium	
+implement qsort or merge sort.
+->>
+
 <<-969	Pancake Sorting    		68.4%	Medium	
 you can choose the prefix with k (k can be any length) length and reverse it.
 sort the array and gives the array of k.
@@ -3064,6 +3161,23 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+
+<<-915	Partition Array into Disjoint Intervals    		45.7%	Medium	
+partition into left and right, so that left[i]<=right[j] for any i,j.
+left max and rmin.
+->>
+
+<<-926	Flip String to Monotone Increasing    		52.7%	Medium	
+give a 01 string, you can flip 1 to 0 or 0 to 1.
+return the min number of flips to make it monotonic increasing.
+count left 1s and right 0s.
+->>
+
+<<-927	Three Equal Parts    		34.2%	Hard	
+binary array, find the index i,j divide into 3 equal parts.
+count 1's pattern, leading zero does not matter, but trailing matters.
+->>
+
 <<-932	Beautiful Array    		60.9%	Medium	
 given permutation of 1 to n. rearrange so that for every i<j there is no k i<k<j with 2*A[k]=A[i]+A[j]
 idea: A[i]+A[j] must be odd. keep the odd and even separated. If the odd is beautiful then the even follow the same pattern is also beautiful.
@@ -3074,6 +3188,7 @@ another approach:
 if A is beautiful, then 2A, 2A+1, 2A-1 is also beautiful.
 [1], 2*i-1 ->1 2i->2 [1,2]
 [1,2] 2*A-1->[1,3], 2i->[2,4] -->[1,3,2,4]
+This is also reverse thinking. If it is hard to rearrange, why not build it from beginning.
 ->>
 
 <<-942	DI String Match    		73.2%	Easy	->>
@@ -3444,6 +3559,18 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-906	Super Palindromes    		32.8%	Hard	
+a number is super palindrome if itself is a palindrome also it is square of some other palindrome. find number of super palindrome in range [L,R].
+- itself check is trivials
+- x*x=n. reverse using x build odd/even length palindrome and then square it, check it is in the range.
+- find the x region
+->>
+
+<<-923	3Sum With Multiplicity    		35.9%	Medium	
+return number of tuples (i,j,k) A[i]+A[j]+A[k]=target. The array includes duplicate (that's why called multiplicity)
+- sort and then use 2 pointer.
+- use hashmap to suppress the duplicates, then pick any 3 elements and calculate the combination.
+->>
 
 <<-963	Minimum Area Rectangle II    		51.5%	Medium	
 given a set of points in xy plane, find the min area of rectangle can be formed.
@@ -6460,6 +6587,11 @@ recursive approach.
 
 ## two pointer
 
+<<-905	Sort Array By Parity    		74.9%	Easy	
+even first.
+two pointer: i for current position, j for even number position
+->>
+
 <<-948	Bag of Tokens    		46.2%	Medium	
 given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
 - if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
@@ -6631,35 +6763,14 @@ A[i] in the range [1,m]
 
 
 ## leetcode problem list
-
-
-<<-928	Minimize Malware Spread II    		41.0%	Hard	->>
-<<-927	Three Equal Parts    		34.2%	Hard	->>
-<<-926	Flip String to Monotone Increasing    		52.7%	Medium	->>
-
-<<-924	Minimize Malware Spread    		41.9%	Hard	->>
-<<-923	3Sum With Multiplicity    		35.9%	Medium	->>
-
-<<-921	Minimum Add to Make Parentheses Valid    		74.4%	Medium	->>
-<<-920	Number of Music Playlists    		47.4%	Hard	->>
-<<-919	Complete Binary Tree Inserter    		58.1%	Medium	->>
-<<-918	Maximum Sum Circular Subarray    		34.0%	Medium	->>
-
-<<-916	Word Subsets    		48.1%	Medium	->>
-<<-915	Partition Array into Disjoint Intervals    		45.7%	Medium	->>
-
 <<-913	Cat and Mouse    		33.8%	Hard	->>
-<<-912	Sort an Array    		64.1%	Medium	->>
 
-<<-911	Online Election    		51.0%	Medium	->>
-<<-910	Smallest Range II    		27.0%	Medium	->>
-<<-909	Snakes and Ladders    		38.9%	Medium	->>
-<<-908	Smallest Range I    		65.9%	Easy	->>
-<<-907	Sum of Subarray Minimums    		33.3%	Medium	->>
-<<-906	Super Palindromes    		32.8%	Hard	->>
-<<-905	Sort Array By Parity    		74.9%	Easy	->>
-<<-904	Fruit Into Baskets    		42.7%	Medium	->>
-<<-903	Valid Permutations for DI Sequence    		53.8%	Hard	->>
+<<-903	Valid Permutations for DI Sequence    		53.8%	Hard	
+given a DI string, return number of permuation using 0 to n.
+dp:
+- string empty, there is only 1 way.
+- adding i: 
+->>
 <<-902	Numbers At Most N Given Digit Set    		32.0%	Hard	->>
 <<-901	Online Stock Span    		60.9%	Medium	->>
 <<-900	RLE Iterator    		54.8%	Medium	->>
