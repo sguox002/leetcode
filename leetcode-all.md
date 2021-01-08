@@ -517,6 +517,21 @@ note the left and right end cannot serve as a cut position.
 ```	
 ->>
 
+### ending with 
+
+<<-903	Valid Permutations for DI Sequence    		53.8%	Hard	
+given a DI string, return number of permuation using 0 to n.
+dp:
+- string empty, there is only 1 way.
+- dp[i,j] represents number of permutation using 0 to i ending with j.
+how do we get dp[i,j] from previous solution?
+since j is in the range [0,i], if we want to end with j, we need put i in front.
+if 'D', previous can be in range [j+1,i]
+if 'I', previous can be in range [0,j-1]
+this can be done by shifting all numbers >=j by 1 (shift them to j+1...i), which has the same number of permutation. (understand this to get the transfer function).
+1032, if we want to end 2, we need first change to 1043 then append 2 -> 10432
+->>
+
 ### count number of ways
 
 <<-920	Number of Music Playlists    		47.4%	Hard	
@@ -2050,6 +2065,19 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
 
+<<-895	Maximum Frequency Stack    		61.9%	Hard	
+push
+pop: pop the most frequent element in the stack.
+hashmap to record each element's frequency
+for each frequency, maintain a stack map<int,stack<int>>
+
+->>
+
+<<-901	Online Stock Span    		60.9%	Medium	
+stock span means from today previous stock prices are consecutively <= today's price
+stack for previous larger. Montonic stack.
+->>
+
 <<-907	Sum of Subarray Minimums    		33.3%	Medium	
 sum of all subarray min.
 each element can be min. using stack find previous larger and next larger to get the range. if left length is L: we can have L*A[i]
@@ -2539,6 +2567,11 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-894	All Possible Full Binary Trees    		76.5%	Medium	
+each node has 0 or 2 children. n nodes.
+N must be an odd number, give left/right (1,N-2),(3,N-5)... and do recursive
+->>
 
 <<-919	Complete Binary Tree Inserter    		58.1%	Medium	
 using array to represent a complete binary tree.
@@ -3040,6 +3073,12 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-899	Orderly Queue    		52.8%	Hard	
+given a string and integer k. each time choose the one of the first k letters and move to the end of string. return the smallest string we can get.
+k=1, rotation
+k>1, sort, you have a buffer >1 and can swap any pair.
+->>
+
 <<-912	Sort an Array    		64.1%	Medium	
 implement qsort or merge sort.
 ->>
@@ -3161,6 +3200,10 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-900	RLE Iterator    		54.8%	Medium	
+run length encoding iterator.
+prefix sum on the element count and do binary search.
+->>
 
 <<-915	Partition Array into Disjoint Intervals    		45.7%	Medium	
 partition into left and right, so that left[i]<=right[j] for any i,j.
@@ -3559,6 +3602,11 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-902	Numbers At Most N Given Digit Set    		32.0%	Hard	
+given a digit set, and n, return number of numbers composed only digits from the set <=n.
+pretty hard one.
+->>
+
 <<-906	Super Palindromes    		32.8%	Hard	
 a number is super palindrome if itself is a palindrome also it is square of some other palindrome. find number of super palindrome in range [L,R].
 - itself check is trivials
@@ -5902,6 +5950,7 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-896	Monotonic Array    		58.0%	Easy	->>
 <<-933	Number of Recent Calls    		71.9%	Easy	->>
 <<-929	Unique Email Addresses    		67.2%	Easy	->>
 <<-925	Long Pressed Name    		39.0%	Easy	->>
@@ -6621,6 +6670,12 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+<<-898	Bitwise ORs of Subarrays    		34.0%	Medium	
+count number of possible values.
+- brutal force using hash to remove duplicates
+- optimization: add more number into OR will not decrease number of 1s. we can only use current element to or the previous result and add new results into hashset. O(N).
+also we can remove duplicates in the input.
+->>
 
 <<-1009	Complement of Base 10 Integer    		61.5%	Easy	->>
 
@@ -6765,21 +6820,7 @@ A[i] in the range [1,m]
 ## leetcode problem list
 <<-913	Cat and Mouse    		33.8%	Hard	->>
 
-<<-903	Valid Permutations for DI Sequence    		53.8%	Hard	
-given a DI string, return number of permuation using 0 to n.
-dp:
-- string empty, there is only 1 way.
-- adding i: 
-->>
-<<-902	Numbers At Most N Given Digit Set    		32.0%	Hard	->>
-<<-901	Online Stock Span    		60.9%	Medium	->>
-<<-900	RLE Iterator    		54.8%	Medium	->>
-<<-899	Orderly Queue    		52.8%	Hard	->>
-<<-898	Bitwise ORs of Subarrays    		34.0%	Medium	->>
 
-<<-896	Monotonic Array    		58.0%	Easy	->>
-<<-895	Maximum Frequency Stack    		61.9%	Hard	->>
-<<-894	All Possible Full Binary Trees    		76.5%	Medium	->>
 <<-893	Groups of Special-Equivalent Strings    		67.9%	Easy	->>
 <<-892	Surface Area of 3D Shapes    		59.4%	Easy	->>
 <<-891	Sum of Subsequence Widths    		32.7%	Hard	->>
