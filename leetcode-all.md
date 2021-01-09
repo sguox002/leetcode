@@ -1081,6 +1081,37 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-857	Minimum Cost to Hire K Workers    		50.0%	Hard	
+N worker given with quality[i] and min wage requirement wage[i].
+we want to hire k workers for the min amount of money.
+restriction:
+- each worker is paid in the ratio of his quality compared with other workers.
+- each worker must meet min wage requirement.
+greedy: 
+- Wi/Qi=Wj/Qj=const with Wi>wage[i] and Wj>=wage[j]. total money=sum(Wi)=A*sum(Q). W>=wage[i] then Wi/Qi>=wage[i]/Qi so the max wage[i]/Qi shall be the ratio.
+- to min the money, we need to min ratio A, and sum(Q).
+- if we sort by wage[i]/Qi, then the k group is the last ratio, and Q is put in a heap.
+- once we add a larger ratio, we want to kick out the one with max quality.
+often seen optimization problem which one to choose first with adding new and kicking out old.
+->>
+
+<<-861	Score After Flipping Matrix    		73.1%	Medium	
+choose any row or column and toggle the row or column. Each row is interpret as a binary number. return the largest sum of all row numbers.
+greedy: toggle each row MSB to 1. then choose columnwise, to make majority to 1.
+->>
+
+<<-870	Advantage Shuffle    		46.1%	Medium	
+A[i]>B[i] to maximize number of advantage (permutation of A)
+greedy: sort A and use the min greater element for A (since it asks for ordering B cannot sort).
+->>
+
+<<-871	Minimum Number of Refueling Stops    		31.8%	Hard	
+given a list of station with position and gas amount, the car starts at 0 with initial fuel. return the min number of refuel to reach target.
+can be approached using greedy or dp.
+greedy: put all reachable gas into pq, and choose the max. when there is no gas to add, return -1.
+dp: convert to equivalent problem dp[t] represent longest distance using t refuels. 
+->>
+
 <<-881	Boats to Save People    		47.4%	Medium	
 given array of people weight, boat has limit of max weight and most 2 people.
 return the min number of boats
@@ -1914,6 +1945,13 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+<<-864	Shortest Path to Get All Keys    		41.1%	Hard	
+given 2d grid, '.' empty cell, '#' wall, '@' start, lowercase letter are keys, capital letters are locks. You cannot walk over a lock unless you have the key.
+return min number of moves to get all keys. impossible return -1.
+using bitmask to represent the keys you are carrying.
+bfs.
+->>
+
 <<-909	Snakes and Ladders    		38.9%	Medium	
 convert to 1d bfs.
 ->>
@@ -2270,6 +2308,12 @@ recursive stack. syntax parser.
 ## queue & deque
 - monotonic deque
 
+<<-862	Shortest Subarray with Sum at Least K    		24.9%	Hard	
+find the length.
+- prefix sum and record its index and sorted in map then binary search. O(nlogn)
+- use deque to get O(N). monotonic decreasing deque (larger and old value are discarded)
+->>
+
 <<-950	Reveal Cards In Increasing Order    		75.0%	Medium	
 given a list of cards, the following operation
 take the top one, move the second one to the bottom
@@ -2286,6 +2330,7 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+
 
 <<-973	K Closest Points to Origin    		64.3%	Medium	->>
 
@@ -2630,6 +2675,10 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-865	Smallest Subtree with all the Deepest Nodes    		61.4%	Medium	
+postorder to get the max depth and the first node with ldepth=rdepth.
+->>
 
 <<-872	Leaf-Similar Trees    		64.5%	Easy	->>
 <<-889	Construct Binary Tree from Preorder and Postorder Traversal    		66.9%	Medium	->>
@@ -3195,6 +3244,11 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-859	Buddy Strings    		29.9%	Easy	
+by swapping a pair in A exactly once, can you get B?
+compare one by one: 0 mismatch or 2 mismatch, for 2 mismatch must be able to swap. for 0 mismatch we need to find two same chars in A.
+->>
+
 <<-890	Find and Replace Pattern    		74.0%	Medium	->>
 
 <<-893	Groups of Special-Equivalent Strings    		67.9%	Easy	
@@ -3693,6 +3747,17 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-858	Mirror Reflection    		59.4%	Medium	
+math to extend the wall and unwrap the reflections
+->>
+
+<<-866	Prime Palindrome    		25.0%	Medium	
+find smallest prime palindrome >=N.
+according to input we limit the range to contruct the palindrome.
+- all palindrome with even length is not prime (divisible by 11)
+- only consider odd length.
+->>
+
 <<-878	Nth Magical Number    		28.6%	Hard	
 if it is divisible by a or b.
 binary search convert to count.
@@ -6063,6 +6128,13 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+
+<<-860	Lemonade Change    		51.9%	Easy	->>
+
+<<-868	Binary Gap    		60.8%	Easy	
+longest distance between 2 1s.
+->>
+<<-867	Transpose Matrix    		62.3%	Easy	->>
 <<-896	Monotonic Array    		58.0%	Easy	->>
 <<-933	Number of Recent Calls    		71.9%	Easy	->>
 <<-929	Unique Email Addresses    		67.2%	Easy	->>
@@ -6548,6 +6620,10 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-863	All Nodes Distance K in Binary Tree    		56.8%	Medium	
+form a graph and bfs from the node.
+->>
+
 <<-1042	Flower Planting With No Adjacent    		48.4%	Medium	
 n gardens, given a list of edges (bidirectional). In each garden plant one type of 4 types of flowers.
 all garden have <=3 paths into or leaving it.
@@ -6900,6 +6976,11 @@ first cd is counted, second cd shall be discarded.
 ->>
 
 ## misc
+<<-869	Reordered Power of 2    		53.9%	Medium	
+if we can reorder the digit to get power of 2. only 32 candidates.
+sort the string and compare.
+->>
+
 <<-1154	Day of the Year    		49.3%	Easy	
 leap year, count days
 ->>
@@ -6946,22 +7027,6 @@ A[i] in the range [1,m]
 <<-882	Reachable Nodes In Subdivided Graph    		42.0%	Hard	->>
 
 
-<<-871	Minimum Number of Refueling Stops    		31.8%	Hard	->>
-<<-870	Advantage Shuffle    		46.1%	Medium	->>
-<<-869	Reordered Power of 2    		53.9%	Medium	->>
-<<-868	Binary Gap    		60.8%	Easy	->>
-<<-867	Transpose Matrix    		62.3%	Easy	->>
-<<-866	Prime Palindrome    		25.0%	Medium	->>
-<<-865	Smallest Subtree with all the Deepest Nodes    		61.4%	Medium	->>
-<<-864	Shortest Path to Get All Keys    		41.1%	Hard	->>
-<<-863	All Nodes Distance K in Binary Tree    		56.8%	Medium	->>
-<<-862	Shortest Subarray with Sum at Least K    		24.9%	Hard	->>
-<<-	#	Title	Solution	Acceptance	Difficulty	Frequency  ->>
-<<-861	Score After Flipping Matrix    		73.1%	Medium	->>
-<<-860	Lemonade Change    		51.9%	Easy	->>
-<<-859	Buddy Strings    		29.9%	Easy	->>
-<<-858	Mirror Reflection    		59.4%	Medium	->>
-<<-857	Minimum Cost to Hire K Workers    		50.0%	Hard	->>
 <<-856	Score of Parentheses    		61.8%	Medium	->>
 <<-855	Exam Room    		43.4%	Medium	->>
 <<-854	K-Similar Strings    		38.3%	Hard	->>
