@@ -47,6 +47,76 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-795	Number of Subarrays with Bounded Maximum    		46.9%	Medium	
+return number of subarrays whose max is in the range [L,R].
+- each element can be a max of some subarray. so we discard those elements not in the range
+- to get the range for A[i] as max, we need to get previous greater and next greater which can be done using monotonic stack.
+approach 2: use two pointer to define valid region left and right.
+approach 3: dp, dp[i] represents the max number of subarray ending with A[i].
+A[i]<L, append to previous dp[i]=dp[i-1]
+A[i]>R, dp[i]=0;
+[L,R]: can combine with all previous after the previous invalid.
+->>
+
+<<-799	Champagne Tower    		43.8%	Medium	
+dp: next row dp[i+1,j]=dp[i+1,j+1]=(dp[i,j]-1)/2
+->>
+<<-801	Minimum Swaps To Make Sequences Increasing    		39.0%	Medium	
+two array A and B at the same size, you can swap A[i] vs B[i] so that A and B are both strictly increasing.
+return the min number of swaps.
+- dp approach: using swap noswap 
+A[i-1]<A[i] && B[i-1]<B[i], swap both or do not swap either
+A[i-1]<B[i] && B[i-1]<A[i], swap i-1 or swap i.
+->>
+
+
+<<-808	Soup Servings    		40.5%	Medium	
+given N of each two soup. 4 operations:
+100A0B, 75A25B,50A50B,25A75B
+each operation has the same probability.
+return the probability that A is empty first, plus half the probability A and B empty at the same time.
+dp top down. A empty first 1.0, A and B empty same time, 0.5
+->>
+
+<<-818	Race Car    		39.4%	Hard	
+start at 0 and speed=1, 'A' position+=speed, speed*=2, ‘R： speed=-1/+1 position no change.
+given a target position: retrn the shortest instruction length 
+dp: pass the target and return, or in front of the target and back and then back
+each time we get a smaller target solved or use top down approach.
+go back 1 to n-1 steps to get the min number of steps.
+->>
+
+<<-823	Binary Trees With Factors    		36.1%	Medium	
+given a list of integers, and each number can be used any number of times. Each non-leaf node's value shall equal to the product of their children.
+return number of binary trees can make.
+if a number as the root and it has factor i and j.
+then dp[n]=dp[i]*dp[j]
+->>
+
+<<-828	Count Unique Characters of All Substrings of a Given String    		46.5%	Hard	
+return the sum of all substring's unique number
+- brutal force: try all substring and add the unique count.
+- for ith char we get its left and right and its contribution is L[i]*R[i]
+- dp: instead of calculating substrings, we count each char. 
+dp[i] represents the sum of unique char in all substrings for the prefix string len=i.
+when we add A[i], we add [i,i],[i-1,i],...[0,i] i+1 suffix strings.
+if we did not see this char on the left, we add i+1
+if we see this char at j, we add (i-j+1)
+dp[i]=dp[i-1]+(i-f)-(f-s) f: the first index, s the second index. (from right to left)
+because we have (i-f) more unique chars, (f-s) less unique chars.
+- previous have 2 same char at j and k, k<j, dp[i-]1 includes extra substring from [k+1,i-1]
+
+->>
+
+<<-837	New 21 Game    		35.2%	Medium	
+you can draw number when you have points <K. each draw will randomly get a number in [1,W]. 
+what is the probability to have <=N points.
+- when you have k-w to k-1, you can draw 1 card.
+- prob(x)=prob(x-w)+..+prob(x-1), window is W.
+- for <=N we sum all the probability prob(N)+prob(N-1)+....prob(N-W+1)
+sliding window + dp
+->>
+
 <<-873	Length of Longest Fibonacci Subsequence    		47.9%	Medium	
 for current element, we can bind with previous element to form a fib pair
 dp[i,j] the max length for the pair with ith and jth element as the ending two elements in fib series
@@ -103,6 +173,18 @@ dp: use two state inc,dec.
 ### knapsack
 put elements in two or three options.
 
+<<-805	Split Array With Same Average    		26.5%	Hard	
+split array into two parts (not necessary in order) making the two arrays have the same average.
+check if it is possible.
+take m elements to A, sum(Ai)/m=Sum(Aj)/(n-m) ->sum(Ai)*(n-m)=(Total-Sum(Ai))*m->S=mT/n
+we are looking for a subset's sum = mT/n only for those mT%n==0.
+now problem converts to pick m number with target sum=mT/n.
+- backtracking with optimization (sort from largest to smallest and early return)
+- since the length is small, we can use bitmask with m bits (go over all bitmask) C(n,m) choices. pretty large. using the trick to loop over all bitmask with same set bits (can apply binary search here)
+- dp: dp[n,k,t] mean if we can get sum t using k elements with array len=n.
+dp[n,k,t]=dp[n-1,k,t]||dp[n-1,k-1,t-A[n]), weakness the memory is too large!!
+->>
+
 <<-879	Profitable Schemes    		39.9%	Hard	
 n people and a list of tasks with profit[i] and group[i]. The people cannot be reused again.
 profitable scheme: profit>minProfit people used<=n.
@@ -129,6 +211,15 @@ equivalent: knapsack to make positive sum >=tsum/2.
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
 floyd-warshal: find all pair node shortest distance using dp.
+
+<<-847	Shortest Path Visiting All Nodes    		52.7%	Hard	
+a graph is given vector<vector<int>> adj format. You can start/stop at any node and revisit multiple times
+return the shortest path visiting all nodes.
+The graph indicates there might be some separate groups.
+for a connected group.
+dijkstra but with all weight the same so use queue to avoid pq.
+bitmask dp (state compression)
+->>
 
 <<-1125	Smallest Sufficient Team    		46.9%	Hard	
 giving a list of required skill and a list of people with skill set. find the min team with required skills. people<60, require skills<16
@@ -212,6 +303,12 @@ idea: choose i as the last balloon to burst and its left and right are virtual b
 
 ### dp dealing with array partitions
 generally dealing with subsequence or subarray and divide into k groups to get max/min scores.
+
+<<-813	Largest Sum of Averages    		50.6%	Medium	
+partition the array into at most K groups. the score is sum of group average.
+return the max score.
+dp: element either append to previous or start a new group
+->>
 
 <<-918	Maximum Sum Circular Subarray    		34.0%	Medium	
 find subarray max sum.
@@ -1081,6 +1178,16 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-826	Most Profit Assigning Work    		38.8%	Medium	
+given n jobs with difficulty[i] and profit[i]. given a list of workers with worker[i] is the worker's max difficulty level. 
+each worker at most has one job. but one job can be completed multiple times.
+return the max profit.
+greedy approach: assign the most profitable task to people who can do it. 
+- same difficulty task only need keep the max profit one. possible to have less difficulty but more profitable task.
+- sort the worker
+- we can get leftmax and do binary search (pair upper_bound will not only compare the first but also the second, so may not get what you expect so use two different array)
+->>
+
 <<-857	Minimum Cost to Hire K Workers    		50.0%	Hard	
 N worker given with quality[i] and min wage requirement wage[i].
 we want to hire k workers for the min amount of money.
@@ -1302,6 +1409,11 @@ sum(min(dx,dy))
 given n people from 0 to n-1, and given a groupSize array groupSize[i] means ith person belongs to a group of groupSize[i].
 return the groups with all its members.
 greedy: combine size and id, sort using size then fill one group by one group. fill smaller group first since large group has a lot more choices.
+->>
+
+<<-846	Hand of Straights    		55.0%	Medium	
+reorder the cards in groups, each group with consecutive number and with size W.
+greedy: from the smallest. same as 1296
 ->>
 
 <<-1296	Divide Array in Sets of K Consecutive Numbers    		54.9%	Medium	
@@ -1752,6 +1864,22 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 
+<<-797	All Paths From Source to Target    		78.2%	Medium	
+given a directed acyclic graph with n node from 0 to n-1. find all possible path from 0 to n-1.
+backtracking or dfs.
+->>
+<<-816	Ambiguous Coordinates    		47.6%	Medium	
+(x,y) the . and comma are missing. return all possible pairs of coordinates
+backtracking: separate first into two strings and do backtracking by adding .
+- left possible strings and right possible strings and then combine.
+->>
+
+<<-842	Split Array into Fibonacci Sequence    		36.4%	Medium	
+given a string divide it into fib series.
+once the first two elements are determined, the whole series are determined.
+c=a+b, so c at least is as long as the larger one. limit the first two to half length and try all combinations.
+->>
+
 <<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	
 given n=number of digits, adjacent digit's absolute difference=k. return all numbers.
 backtrack.
@@ -1945,6 +2073,23 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+<<-815	Bus Routes    		43.0%	Hard	
+given a list of routes, each route will repeat several stops. given Start to Destination, return the min number of bus we shall take.
+- each route is a set, multiple routes may connect at different stops.
+- bfs: we add the connected stops in our queue. hashmap to convert to stop to route (a stop may belong to multiple route). visited is for route.
+->>
+
+<<-841	Keys and Rooms    		64.9%	Medium	
+given n rooms from 0 to n-1. Initially you are in room 0, each room may have some keys to access other room. check if you can unlock each room.
+simple bfs
+->>
+
+<<-854	K-Similar Strings    		38.3%	Hard	
+if we can swap the positions of two letters in A exactly k times so that A=B.
+return the smallest k.
+bfs to find the shortest distance from A to B.
+->>
+
 <<-864	Shortest Path to Get All Keys    		41.1%	Hard	
 given 2d grid, '.' empty cell, '#' wall, '@' start, lowercase letter are keys, capital letters are locks. You cannot walk over a lock unless you have the key.
 return min number of moves to get all keys. impossible return -1.
@@ -2052,6 +2197,31 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-803	Bricks Falling When Hit    		31.1%	Hard	
+given a 2d matrix, 1 represent a brick.
+a brick is stable if:
+- it is directly connected to the top of the grid or
+- its neighboring brick is stable.
+given a list of hit which removes the brick. Those unstable brick will fall.
+return the number of bricks falling for each hit.
+union-find: all stable bricks are connected to top. we can do reversely, adding the hit how many can add.
+
+->>
+
+<<-827	Making A Large Island    		46.4%	Hard	
+given a 2d matrix, you can at most change one 0 to 1. return the max size of the island.
+- one island only, add 1 (if there is 0)
+- more than 1 island, (not necessary the largest two connect), we shall try all 0 cell.
+- a cell may be able to connect 1,2,3,4 sets together.
+union-find.
+->>
+
+<<-839	Similar String Groups    		39.1%	Hard	
+two strings are similar if we can swap two letters in x so that it equals y. 
+given a list of words, return the number of similar groups
+union-find.
+->>
+
 <<-924	Minimize Malware Spread    		41.9%	Hard	
 remove one node from initial list (not disconnecting)
 the one with the most number of nodes in the set.
@@ -2153,6 +2323,11 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-856	Score of Parentheses    		61.8%	Medium	
+() score=1, AB score=A+B (A) score=2*A.
+simulate the stack.
+->>
 
 <<-895	Maximum Frequency Stack    		61.9%	Hard	
 push
@@ -2676,6 +2851,21 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
+<<-814	Binary Tree Pruning    		73.3%	Medium	
+prune all subtree with all 0.
+postorder traversal
+->>
+
+<<-834	Sum of Distances in Tree    		44.9%	Hard	
+given a tree representing as a list of edges. return the sum of distance from i to all other nodes.
+this is mostly about optimization since a lot of paths are revisited.
+- brutal force starting from each node and do dfs and get the answer. O(N^2)
+- build the adjacency matrix.
+- start from root 0, do a postorder traversal to get number of nodes in subtree and sum of distance in substree. count[root]=sum(count[child])+1, dist[root]=sum(dist[child])+sum(count[child])
+- when we move root from parent to its child i, res[i]=res[root]-count[i]+N-count[i], do a preorder dfs to update.
+tree+dp, hard!!
+->>
+
 <<-865	Smallest Subtree with all the Deepest Nodes    		61.4%	Medium	
 postorder to get the max depth and the first node with ldepth=rdepth.
 ->>
@@ -3026,6 +3216,11 @@ segment tree
 - list is the base for hash table.
 - cycle detection
 - traversal
+<<-817	Linked List Components    		57.4%	Medium	
+given a linked list of unique numbers and a subset. return the number of connected groups.
+hashset and do traversal.
+
+->>
 
 <<-876	Middle of the Linked List    		68.8%	Easy	
 fast slow pointer.
@@ -3244,6 +3439,24 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-796	Rotate String    		49.4%	Easy	
+check if we can rotate A to get B.
+circular: A+A to see if B is a substr.
+->>
+
+<<-820	Short Encoding of Words    		51.2%	Medium	
+return the shortest encoded string, encoding format:
+word#word#...each word in the list can be found in the encoded string.
+- we shall embed some common subarray into one word. each word is a suffix of a substring
+- using Trie
+- or sort by length, short word can be suffix of longer.(build a suffix array hashmap)
+->>
+
+<<-831	Masking Personal Information    		44.6%	Medium	->>
+<<-833	Find And Replace in String    		51.0%	Medium	
+find and replace shall be done separately.
+->>
+
 <<-859	Buddy Strings    		29.9%	Easy	
 by swapping a pair in A exactly once, can you get B?
 compare one by one: 0 mismatch or 2 mismatch, for 2 mismatch must be able to swap. for 0 mismatch we need to find two same chars in A.
@@ -3329,6 +3542,90 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-798	Smallest Rotation with Highest Score    		44.6%	Hard	
+given an array and you can pick a index k and rotate k to n-1 to left. after rotation, any elements <=index worth 1 point. A[i] is from 0 t0 n-1.
+return the max score we could receive.
+- need O(N)
+- it is also equivalent to left rotation.
+- each step: A[0] goes to A[n-1] and we get 1 point
+- left rotation one step: A[i]->A[(i-1+N)%N]
+
+- interval approach: for each element we calculate the rotation when it gains point and lose point.
+A[i] at ith position: 
+gain point: we move it to the end, which needs (i+1)%N.
+lose point: move A[i] to position A[i]-1 (so value>index) which needs (i+1-A[i]+N)%N rotations
+find the most overlapped. 
+->>
+
+<<-807	Max Increase to Keep City Skyline    		84.1%	Medium	
+given a grid with each element height. You are allowed to increase the height
+looking from 4 direction up down, left right must be the same as orgiinal.
+return the max sum increased.
+looking left or right we get the max in each row.
+looking up or down, we get the max in each column.
+so each element can be increased to col and row max.
+
+->>
+<<-821	Shortest Distance to a Character    		67.5%	Easy	
+in a string find each char to a given char's shortest distance.
+two pass to update the distance to left and right.
+->>
+
+<<-822	Card Flipping Game    		43.4%	Medium	
+each card with back[i] and front[i]. we choose and flip if the card is not on the front of any card, it is good. for example front=[1,2,4,4,7],back=[1,3,4,1,3].flip the 2nd get 3, which is not on the front. so the smallest good is 2 (front value)
+what is the smallest good number?
+- front back the same card are not candidates
+very confusing
+->>
+
+<<-825	Friends Of Appropriate Ages    		43.5%	Medium	
+A will not request B if any of the condition is satisified:
+- age[B]<=0.5*age[A]+7
+- age[B]>age[A]
+- age[B]>100 && age[A]<100
+otherwise A will request B. return number of requests.
+group peope according to their ages.
+
+->>
+
+<<-835	Image Overlap    		62.0%	Medium	
+convert to index moving in a 1d array.
+then overlap using i-j as key to do hashmap.
+->>
+
+<<-838	Push Dominoes    		49.3%	Medium	
+given a list of dominoes, and push some dominos at the same time with L or R.
+return the final state of the dominos. L means left, R, means right, . means not pushed.
+using stack to store dominos.
+- L on the left, all left shall be 'L'
+- R...L, half R and half L. (odd length mid one will not affect)
+- R on the right, all shall be R.
+using stack is not straightforward.
+we only need find R...L pair and use two pointer to assign the value.
+for convenience we can add L and R on the left side and right side.
+->>
+
+<<-840	Magic Squares In Grid    		37.6%	Medium	
+magic square is 3x3 with 1-9 each and each row, col, diagonal sum are all equal. return number of magic square in matrix.
+
+->>
+<<-845	Longest Mountain in Array    		38.5%	Medium	
+- can use binary search
+- can use one pass O(N) to find up and down and update the max size.
+->>
+
+<<-849	Maximize Distance to Closest Person    		44.3%	Medium	
+similar to exam room. 
+->>
+
+<<-855	Exam Room    		43.4%	Medium	
+a single row. sit:
+- maximize the distance to the closest person
+- multiple option take the lowest index seat.
+- nobdy then take 0.
+just simulate the process, using vector or set to store the index
+->>
+
 <<-885	Spiral Matrix III    		70.0%	Medium	
 give a 2d grid with R rows and C columns, start with (r0,c0), goes clockwise.
 it goes 1R,1D,2L,2U,3R.....
@@ -3747,6 +4044,45 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-793	Preimage Size of Factorial Zeroes Function    		40.4%	Hard	
+f(x) represents the trailing zeros for x!
+return the number of f(x)=K.
+math: number of trailing zeros is dependent on number of factor 5.
+find the rule of 0s.
+->>
+
+<<-810	Chalkboard XOR Game    		49.1%	Hard	
+A and B takes turn taking away a number. if the remaining xor=0, then the player lose.
+greedy approach: suppose take away x: x^rem=res, we want rem!=0, rem=res^x, we shall choose one which has a bit different from res.
+so we just need to remove one number which is different from res. 
+- also need to be even length, since if A is the last step and no number to remove, he loses.
+->>
+
+<<-812	Largest Triangle Area    		58.6%	Easy	
+given a list of points, return the largest triangle area.
+try all possible combination (triangle area using 3 vertices)
+->>
+
+<<-829	Consecutive Numbers Sum    		39.3%	Hard	
+given N, return the number of ways to write it as a sum of consecutive integers
+assuming start with x with k integers: N=x+x+1+...x+k-1=kx+k(k-1)/2
+N-k(k-1)/2=kx  or (N-k*(k-1)/2)%k==0
+->>
+
+<<-848	Shifting Letters    		44.9%	Medium	
+shift[i] will shift 0 to i by shift[i] times. prefix sum and then %.
+->>
+
+<<-853	Car Fleet    		43.3%	Medium	
+N cars with position[i] and speed[i], the destination is at target.
+a car can never pass, after catch it drives at the same speed.
+return the number of car fleets arriving the destination.
+- calculate the time for each car arriving at target.
+- sort by position.
+- the behind cars if the time < previous car, change the time to it.
+- count number of groups.
+->>
+
 <<-858	Mirror Reflection    		59.4%	Medium	
 math to extend the wall and unwrap the reflections
 ->>
@@ -6128,7 +6464,26 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-800	Similar RGB Color    		61.9%	Easy	->>
 
+<<-804	Unique Morse Code Words    		77.5%	Easy	->>
+<<-806	Number of Lines To Write String    		65.3%	Easy	
+given width of 26 chars, each line is 100 pixels wide. 
+return number of lines.
+->>
+
+<<-811	Subdomain Visit Count    		70.7%	Easy	->>
+
+<<-819	Most Common Word    		45.2%	Easy	->>
+
+<<-824	Goat Latin    		66.2%	Easy	->>
+<<-830	Positions of Large Groups    		50.0%	Easy	->>
+<<-832	Flipping an Image    		77.6%	Easy	
+flip horizontally and invert.
+->>
+
+<<-836	Rectangle Overlap    		46.3%	Easy	->>
+<<-852	Peak Index in a Mountain Array    		71.8%	Easy	->>
 <<-860	Lemonade Change    		51.9%	Easy	->>
 
 <<-868	Binary Gap    		60.8%	Easy	
@@ -6620,6 +6975,20 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-802	Find Eventual Safe States    		49.3%	Medium	
+given a directed graph as an adjacency matrix.
+a node is safe if starting from it we reach a terminal.
+return the list of safe nodes.
+all paths shall lead to the terminal, if one fail then fail. cycle detection
+->>
+
+<<-851	Loud and Rich    		52.2%	Medium	
+n people with different money and quietness[i]. We are given a list of compare richer[i]=[x,y] means x is richer than y.
+return answer[i] the least quite person who is richer than person i.
+- build a graph
+- start dfs from each node and save the min quiteness 
+->>
+
 <<-863	All Nodes Distance K in Binary Tree    		56.8%	Medium	
 form a graph and bfs from the node.
 ->>
@@ -6743,6 +7112,14 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-850	Rectangle Area II    		48.2%	Hard	
+given a list of rect defined by bottom left and top right points, all rects aligned with axis.
+return the total area covered.
+- 2d interval overlap, loop on x and interval on y direction.
+- sort by x, if x the same then by y.
+- and then loop on x and connect to previous x for the area.
+the y segment is added at left x and removed at right x. so we set a add/remove flag to remove the segment.
+->>
 
 <<-986	Interval List Intersections    		67.8%	Medium	
 merge the intersection, two pointer on intervals.
@@ -6835,6 +7212,14 @@ recursive approach.
 ->>
 
 ## two pointer
+<<-809	Expressive Words    		46.7%	Medium	
+two pointer compare.
+->>
+
+<<-844	Backspace String Compare    		46.7%	Easy	
+string with # to backspace previous char. return two string equal.
+two pointer from right to count.
+->>
 
 <<-905	Sort Array By Parity    		74.9%	Easy	
 even first.
@@ -7020,79 +7405,19 @@ given n, m, k, build the array with n elements:
 A[i] in the range [1,m]
 ->>
 
-
-
 ## leetcode problem list
 <<-913	Cat and Mouse    		33.8%	Hard	->>
 <<-882	Reachable Nodes In Subdivided Graph    		42.0%	Hard	->>
 
-
-<<-856	Score of Parentheses    		61.8%	Medium	->>
-<<-855	Exam Room    		43.4%	Medium	->>
-<<-854	K-Similar Strings    		38.3%	Hard	->>
-<<-853	Car Fleet    		43.3%	Medium	->>
-<<-852	Peak Index in a Mountain Array    		71.8%	Easy	->>
-<<-851	Loud and Rich    		52.2%	Medium	->>
-<<-850	Rectangle Area II    		48.2%	Hard	->>
-<<-849	Maximize Distance to Closest Person    		44.3%	Medium	->>
-<<-848	Shifting Letters    		44.9%	Medium	->>
-<<-847	Shortest Path Visiting All Nodes    		52.7%	Hard	->>
-<<-846	Hand of Straights    		55.0%	Medium	->>
-<<-845	Longest Mountain in Array    		38.5%	Medium	->>
-<<-844	Backspace String Compare    		46.7%	Easy	->>
-<<-843	Guess the Word    		46.4%	Hard	->>
-<<-842	Split Array into Fibonacci Sequence    		36.4%	Medium	->>
-<<-841	Keys and Rooms    		64.9%	Medium	->>
-<<-840	Magic Squares In Grid    		37.6%	Medium	->>
-<<-839	Similar String Groups    		39.1%	Hard	->>
-<<-838	Push Dominoes    		49.3%	Medium	->>
-<<-837	New 21 Game    		35.2%	Medium	->>
-<<-836	Rectangle Overlap    		46.3%	Easy	->>
-<<-835	Image Overlap    		62.0%	Medium	->>
-<<-834	Sum of Distances in Tree    		44.9%	Hard	->>
-<<-833	Find And Replace in String    		51.0%	Medium	->>
-<<-832	Flipping an Image    		77.6%	Easy	->>
-<<-831	Masking Personal Information    		44.6%	Medium	->>
-<<-830	Positions of Large Groups    		50.0%	Easy	->>
-<<-829	Consecutive Numbers Sum    		39.3%	Hard	->>
-<<-828	Count Unique Characters of All Substrings of a Given String    		46.5%	Hard	->>
-<<-827	Making A Large Island    		46.4%	Hard	->>
-<<-826	Most Profit Assigning Work    		38.8%	Medium	->>
-<<-825	Friends Of Appropriate Ages    		43.5%	Medium	->>
-<<-824	Goat Latin    		66.2%	Easy	->>
-<<-823	Binary Trees With Factors    		36.1%	Medium	->>
-<<-822	Card Flipping Game    		43.4%	Medium	->>
-<<-821	Shortest Distance to a Character    		67.5%	Easy	->>
-<<-820	Short Encoding of Words    		51.2%	Medium	->>
-<<-819	Most Common Word    		45.2%	Easy	->>
-<<-818	Race Car    		39.4%	Hard	->>
-<<-817	Linked List Components    		57.4%	Medium	->>
-<<-816	Ambiguous Coordinates    		47.6%	Medium	->>
-<<-815	Bus Routes    		43.0%	Hard	->>
-<<-814	Binary Tree Pruning    		73.3%	Medium	->>
-<<-813	Largest Sum of Averages    		50.6%	Medium	->>
-<<-812	Largest Triangle Area    		58.6%	Easy	->>
-<<-	#	Title	Solution	Acceptance	Difficulty	Frequency  ->>
-<<-811	Subdomain Visit Count    		70.7%	Easy	->>
-<<-810	Chalkboard XOR Game    		49.1%	Hard	->>
-<<-809	Expressive Words    		46.7%	Medium	->>
-<<-808	Soup Servings    		40.5%	Medium	->>
-<<-807	Max Increase to Keep City Skyline    		84.1%	Medium	->>
-<<-806	Number of Lines To Write String    		65.3%	Easy	->>
-<<-805	Split Array With Same Average    		26.5%	Hard	->>
-<<-804	Unique Morse Code Words    		77.5%	Easy	->>
-<<-803	Bricks Falling When Hit    		31.1%	Hard	->>
-<<-802	Find Eventual Safe States    		49.3%	Medium	->>
-<<-801	Minimum Swaps To Make Sequences Increasing    		39.0%	Medium	->>
-<<-800	Similar RGB Color    		61.9%	Easy	->>
-<<-799	Champagne Tower    		43.8%	Medium	->>
-<<-798	Smallest Rotation with Highest Score    		44.6%	Hard	->>
-<<-797	All Paths From Source to Target    		78.2%	Medium	->>
-<<-796	Rotate String    		49.4%	Easy	->>
-<<-795	Number of Subarrays with Bounded Maximum    		46.9%	Medium	->>
-<<-794	Valid Tic-Tac-Toe State    		33.6%	Medium	->>
-<<-793	Preimage Size of Factorial Zeroes Function    		40.4%	Hard	->>
-<<-792	Number of Matching Subsequences    		47.8%	Medium	->>
+<<-843	Guess the Word    		46.4%	Hard	
+given a list of words, each word is 6 char long. each time guess return number of matched chars. 
+idea: randomly take one guess, find all those matched same amount of chars and discard others.
+->>
+<<-792	Number of Matching Subsequences    		47.8%	Medium	
+given a list of words, find number of words which is subsequence of string s.
+- check if subsequence will be O(N)
+- store each char's index and do binary search 
+->>
 <<-791	Custom Sort String    		65.8%	Medium	->>
 <<-790	Domino and Tromino Tiling    		39.7%	Medium	->>
 <<-789	Escape The Ghosts    		57.8%	Medium	->>
@@ -7585,6 +7910,7 @@ Similar problem: 398
 <<-350	Intersection of Two Arrays II    		51.7%	Easy	->>
 <<-349	Intersection of Two Arrays    		63.8%	Easy	->>
 <<-348	Design Tic-Tac-Toe    		55.0%	Medium	->>
+<<-794	Valid Tic-Tac-Toe State    		33.6%	Medium	->>
 <<-347	Top K Frequent Elements    		61.9%	Medium	->>
 <<-346	Moving Average from Data Stream    		72.4%	Easy	->>
 <<-345	Reverse Vowels of a String    		44.6%	Easy	->>
@@ -7969,6 +8295,8 @@ add all left into stack, pop and add all right into stack.
 <<-2	Add Two Numbers    		34.6%	Medium	->>
 <<-1	Two Sum    		45.8%	Easy	->>
 
+common small tricks:
+
 modular inverse
 Fermat little thereom:
 for prime p, a^p-a is a multiple of p. 
@@ -7983,6 +8311,23 @@ using a^(p-2) (binary power in log(p) time) to get the modular.
         return modinv((long)a*a%p,n/2,p)%p;
     }
 ```	
+
+iterate all sub bitmask for a bitmask
+start from the largest
+```
+for(int s=m;s;s=(s-1)&m){
+}
+```
+
+next bigger number with same number of set bits
+```
+    unsigned next_bigger(unsigned a) {
+      /* works for any word length */
+      unsigned c = (a & -a);
+      unsigned r = a+c;
+      return (((r ^ a) >> 2) / c) | r;
+    }    
+```
 
 dijkstra and shortest path problem
 dijkstra find the shortest path between two nodes, trying the shortest edge first. non-negative weight.
