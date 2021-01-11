@@ -47,6 +47,12 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-790	Domino and Tromino Tiling    		39.7%	Medium	
+return the number of ways to reach 2xN tile.
+dp: two kind of shapes to reach final status. L shape and I shape.
+
+->>
+
 <<-795	Number of Subarrays with Bounded Maximum    		46.9%	Medium	
 return number of subarrays whose max is in the range [L,R].
 - each element can be a max of some subarray. so we discard those elements not in the range
@@ -211,6 +217,13 @@ equivalent: knapsack to make positive sum >=tsum/2.
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
 floyd-warshal: find all pair node shortest distance using dp.
+
+<<-787	Cheapest Flights Within K Stops    		39.4%	Medium	
+from src to dest within K stops. find the cheapest cost.
+shortest distance from src to target 
+- bellman ford, 
+- dijkstra.
+->>
 
 <<-847	Shortest Path Visiting All Nodes    		52.7%	Hard	
 a graph is given vector<vector<int>> adj format. You can start/stop at any node and revisit multiple times
@@ -2506,6 +2519,11 @@ just simulate the deque
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
 
+<<-786	K-th Smallest Prime Fraction    		41.4%	Hard	
+given a list of prime numbers in sorted order, distinct. i<j and A[i]/A[j] find the kth pair.
+sorted up triangle, sorted in row and col.
+similar to sorted matrix, using heap.
+->>
 
 <<-973	K Closest Points to Origin    		64.3%	Medium	->>
 
@@ -3386,6 +3404,11 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-791	Custom Sort String    		65.8%	Medium	
+sort T using S's order.
+- count sort.
+- use lambda function s.find(a)<s.find(b)
+->>
 <<-899	Orderly Queue    		52.8%	Hard	
 given a string and integer k. each time choose the one of the first k letters and move to the end of string. return the smallest string we can get.
 k=1, rotation
@@ -3542,6 +3565,12 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-792	Number of Matching Subsequences    		47.8%	Medium	
+given a list of words, find number of words which is subsequence of string s.
+- check if subsequence will be O(N)
+- store each char's index and do binary search 
+->>
+
 <<-798	Smallest Rotation with Highest Score    		44.6%	Hard	
 given an array and you can pick a index k and rotate k to n-1 to left. after rotation, any elements <=index worth 1 point. A[i] is from 0 t0 n-1.
 return the max score we could receive.
@@ -4044,6 +4073,15 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-789	Escape The Ghosts    		57.8%	Medium	
+from (0,0) to (tx,ty), given some ghosts at different position.
+return if you can reach the destination.
+greedy: all ghost goes to the destination and wait there.
+->>
+<<-843	Guess the Word    		46.4%	Hard	
+given a list of words, each word is 6 char long. each time guess return number of matched chars. 
+idea: randomly take one guess, find all those matched same amount of chars and discard others.
+->>
 <<-793	Preimage Size of Factorial Zeroes Function    		40.4%	Hard	
 f(x) represents the trailing zeros for x!
 return the number of f(x)=K.
@@ -6464,6 +6502,12 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-788	Rotated Digits    		57.3%	Easy	
+rotate 180 degrees and number is still valid and different from original.
+given n, return the number of good numbers.
+loop and check each.
+->>
+
 <<-800	Similar RGB Color    		61.9%	Easy	->>
 
 <<-804	Unique Morse Code Words    		77.5%	Easy	->>
@@ -7409,22 +7453,9 @@ A[i] in the range [1,m]
 <<-913	Cat and Mouse    		33.8%	Hard	->>
 <<-882	Reachable Nodes In Subdivided Graph    		42.0%	Hard	->>
 
-<<-843	Guess the Word    		46.4%	Hard	
-given a list of words, each word is 6 char long. each time guess return number of matched chars. 
-idea: randomly take one guess, find all those matched same amount of chars and discard others.
+<<-785	Is Graph Bipartite?    		48.0%	Medium	
+
 ->>
-<<-792	Number of Matching Subsequences    		47.8%	Medium	
-given a list of words, find number of words which is subsequence of string s.
-- check if subsequence will be O(N)
-- store each char's index and do binary search 
-->>
-<<-791	Custom Sort String    		65.8%	Medium	->>
-<<-790	Domino and Tromino Tiling    		39.7%	Medium	->>
-<<-789	Escape The Ghosts    		57.8%	Medium	->>
-<<-788	Rotated Digits    		57.3%	Easy	->>
-<<-787	Cheapest Flights Within K Stops    		39.4%	Medium	->>
-<<-786	K-th Smallest Prime Fraction    		41.4%	Hard	->>
-<<-785	Is Graph Bipartite?    		48.0%	Medium	->>
 <<-784	Letter Case Permutation    		65.7%	Medium	->>
 <<-783	Minimum Distance Between BST Nodes    		53.4%	Easy	->>
 <<-782	Transform to Chessboard    		46.8%	Hard	->>
