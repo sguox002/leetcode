@@ -879,6 +879,13 @@ generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
 - in some cases to save space, we need to store previous row and previous column.
 - in some cases we need only keep the previous whole n elements.
 
+<<-764	Largest Plus Sign    		46.1%	Medium	
+plus: center is 1 and up down left and right has k (k+1 order)
+return the order of the largest plus sign.
+- dp: find left and top, then reverse find right and down size. min of all the 4.
+- optimization using 1 matrix.
+->>
+
 <<-931	Minimum Falling Path Sum    		63.1%	Medium	->>
 
 <<-1074	Number of Submatrices That Sum to Target    		60.9%	Hard	
@@ -1190,6 +1197,14 @@ Take a greedy step and reduce to a smaller problem. Generally need some insights
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
+
+<<-765	Couples Holding Hands    		55.0%	Hard	
+N couples sit on 2N chairs. return the min swaps so that every couple sit side by side. couple (2i,2i+1)
+greedy:
+- divide by 2 and couple has the same id.
+- swap can eliminate one or two mismatch.
+union-find.
+->>
 
 <<-826	Most Profit Assigning Work    		38.8%	Medium	
 given n jobs with difficulty[i] and profit[i]. given a list of workers with worker[i] is the worker's max difficulty level. 
@@ -1744,6 +1759,16 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-774	Minimize Max Distance to Gas Station    		47.7%	Hard	
+given n gas stations in position[i]. add k more stations so that the max distance between adjacent stations is minimized.
+- final arrangement the gas station shall spread in between. 
+- convert to binary search: given max distance allowed, number of stations to add.
+->>
+
+<<-778	Swim in Rising Water    		54.0%	Hard	
+binary search
+->>
+
 <<-875	Koko Eating Bananas    		53.0%	Medium	
 given N piles of banana, You have H hour time, each hour you take 1 pile and eat at most K bananas.
 return the min K so that he can eat all.
@@ -1876,6 +1901,19 @@ level: 5
 backtracking problem generally finds all sets required. It can also be used for counting.
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
+
+<<-756	Pyramid Transition Matrix    		55.3%	Medium	
+given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
+backtracking: 
+- the first two as the key and build a list of 3rd chars.
+- try all these combinations.
+
+->>
+<<-784	Letter Case Permutation    		65.7%	Medium	
+string of letter and digits, you can change to lowercase or uppercase
+return all combination
+backtracking: no change or change to upper/lower.
+->>
 
 <<-797	All Paths From Source to Target    		78.2%	Medium	
 given a directed acyclic graph with n node from 0 to n-1. find all possible path from 0 to n-1.
@@ -2085,6 +2123,12 @@ dfs, hashmap
 - bfs with parent information
 - bfs with more than one state.
 - bfs with shortest distance problem
+
+<<-773	Sliding Puzzle    		60.2%	Hard	
+given 2x3 board with 1-5, return min number of moves to solve the board.
+bfs: define the possible direction to go.
+
+->>
 
 <<-815	Bus Routes    		43.0%	Hard	
 given a list of routes, each route will repeat several stops. given Start to Destination, return the min number of bus we shall take.
@@ -2482,6 +2526,25 @@ subject: tree, stack, OOP, polymorphism
 ->>
 
 ### recursive stack
+<<-761	Special Binary String    		58.4%	Hard	
+speical binary string:
+- number of 0s=number of 1s
+- every prefix has at least as many 1s as 0s. (num1s>=num0s)
+a move: choose two consecutive special substring and swap.
+what is the largest string possible.
+similar to valid parentheses strings: we need swap valid parentheses substr to make it larger.
+deeper string shall swap to forward.
+approach: arrange the children first to largest and then arrange root level.
+for example. ()(()), () and (()) is the same level, (()) has two levels.
+same level: we swap the deeper one forward.
+- when we see a 1 we process it recursively, sort the same level strings and reorder.
+->>
+
+<<-772	Basic Calculator III    		42.5%	Hard	
+evaluate the expression including +-*/()
+recusive stack.
+->>
+
 <<-1087	Brace Expansion    		63.0%	Medium	->>
 <<-1096	Brace Expansion II    		62.3%	Hard	->>
 
@@ -2518,6 +2581,10 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+<<-767	Reorganize String    		49.5%	Medium	
+no adjacent char is the same.
+use hashmap to record the frequency and then use pq.
+->>
 
 <<-786	K-th Smallest Prime Fraction    		41.4%	Hard	
 given a list of prime numbers in sorted order, distinct. i<j and A[i]/A[j] find the kth pair.
@@ -2868,6 +2935,25 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-776	Split BST    		56.3%	Medium	
+given a bst and a target value, split into two subtree so that one <= target and the other > target.
+most of the structure shall be kept.
+- split the tree get smaller and bigger subtree
+- if root>target, we go left and split into smaller and larger. root->left=larger.
+- if root<=target, we go right and split into smaller and larger, root->right=smaller 
+tricky.
+->>
+
+<<-779	K-th Symbol in Grammar    		38.3%	Medium	
+first row 0. The second row will change each 0 to 01 and 1 to 10.
+find row N and kth digit.
+it forms a complete binary tree. if previous node is 0, then left is 0 and right is 1. if previous node is 1, then left is 1 right is 0. do it recursively.
+->>
+
+<<-783	Minimum Distance Between BST Nodes    		53.4%	Easy	
+absolute difference, just do inorder traversal.
+->>
 
 <<-814	Binary Tree Pruning    		73.3%	Medium	
 prune all subtree with all 0.
@@ -3462,6 +3548,14 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+
+<<-758	Bold Words in String    		46.8%	Easy	
+given a list keyword, all appearances in string shall be bolded by <b> </b>
+the returned string shall have least number of tags possible.
+same as 616. just mark the index to be bolded and then check the segment.
+->>
+<<-616	Add Bold Tag in String    		44.1%	Medium	->>
+
 <<-796	Rotate String    		49.4%	Easy	
 check if we can rotate A to get B.
 circular: A+A to see if B is a substr.
@@ -3565,6 +3659,36 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-769	Max Chunks To Make Sorted    		55.2%	Medium	
+given a permutation of 0 to n-1. divide into groups and sort each partition and connect them the whole array is sorted.
+return the max number of chunks.
+- greedy: compare to sort. if identical +1, using two hashset to save elements in A and sorted. If they are equal this is a group.
+
+->>
+<<-768	Max Chunks To Make Sorted II    		49.4%	Hard	
+elements could be duplicate. use multiset.
+->>
+
+<<-775	Global and Local Inversions    		42.4%	Medium	
+permutation of 0 to n-1. global inversion if i<j and A[i]>A[j]
+local inversion: A[i]>A[i+1]
+check if local inversion=global inversion
+- local inversion is also global inversion.
+- if we invert the inversion we shall be able to get a sorted array-->
+- if(abs(A[i]-i)>1) there is a global inversion.
+or lmax <A[i+2].
+->>
+
+<<-782	Transform to Chessboard    		46.8%	Hard	
+given nxn 01 matrix, swap any two rows or two columns
+return min number of mvoes to transform to a chess board or impossible -1
+- determine the [0,0] element is 0 or 1. If N is odd, this is fixed.
+- if even, have two choices the top left can be 0 or 1.
+- if first row is determined, then everything is determined.
+- rowSwap compare to row 0
+- colSwap compare to col 0
+->>
+
 <<-792	Number of Matching Subsequences    		47.8%	Medium	
 given a list of words, find number of words which is subsequence of string s.
 - check if subsequence will be O(N)
@@ -4073,6 +4197,55 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-753	Cracking the Safe    		51.4%	Hard	
+password is a sequene of n digits using 0 to k-1. if a substr matches then unlock
+return the min length that guarantee to open the box.
+- to guarantee we need have all the combination up to k^n.
+- we need to rearrange so that the total length is min.
+- gray code similar: start from 00, take the suffix with n-1 length and add from k-1 to 0
+n=2, k=2, we start with "00"
+then add 1 ->"001"
+then add 0 ->"000" but 00 already used, discard.
+
+->>
+
+<<-754	Reach a Number    		35.1%	Medium	
+start from 0, on each move you can go let or right. nth move you go n steps.
+return the min steps required to reach target.
+- take n steps you go 1+2+..+n=n(n+1)/2
+- pass the target
+- get the difference
+- if it is even we flip several steps
+- if it is odd, if(n+1) is odd, we add n+1 to become even and then negate one.
+   if n+1 is even, we add n+1 and subtract n+2, becomes even.
+->>
+
+<<-780	Reaching Points    		30.0%	Hard	
+a move: transform (x,y) to (x,x+y) or (x+y,y)
+check if we can go from(sx,sy) to (tx,ty).
+(x,y)->(x,x+y)...->(x,mx+y)
+(x,y)->(x+y,y)...->(x+ny,y)
+combine ->(x+ny,mx+y)
+Tx=Sx+nSy; ->(Tx-Sx)%Sy=0, n>=0, Tx>=Sx
+Ty=mSx+Sy; ->(Ty-Sy)%Sx=0, m>=0, Ty>=Sy
+
+do it reversely:
+- reduce to (x,y+kx) or (x+ky,y). 
+first format: Tx=x,ty=y+kx, ty>x, ty%tx reduce to y. 
+second format: Tx=x+ky, Ty=y, Tx>Ty, Tx%Ty to reduce to x.
+->>
+
+
+<<-781	Rabbits in Forest    		55.1%	Medium	
+each rabbit has some color. some subset of rabbits tell you the number of other rabbits have the same color. return the min number of rabbits in the forest.
+[1,1,2], 1+1+2+1=5.
+the same number can be considered one color.
+different number must be different group.
+- using hashmap to count groupsize vs number of group. 
+- if n%(x+1)==0 we need n/(x+1)*(x+1) rabbits
+- if n%(x+1)!=0, we need (n/(x+1)+1)*(x+1) rabbits
+->>
+
 <<-789	Escape The Ghosts    		57.8%	Medium	
 from (0,0) to (tx,ty), given some ghosts at different position.
 return if you can reach the destination.
@@ -6502,6 +6675,16 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-760	Find Anagram Mappings    		81.5%	Easy	->>
+
+<<-762	Prime Number of Set Bits in Binary Representation    		63.8%	Easy	
+find number of integers in [L,R] which has a prime number of set bits.
+count bits and see if they are prime (limited to 32)
+->>
+
+<<-766	Toeplitz Matrix    		65.6%	Easy	->>
+<<-771	Jewels and Stones    		86.7%	Easy	->>
+
 <<-788	Rotated Digits    		57.3%	Easy	
 rotate 180 degrees and number is still valid and different from original.
 given n, return the number of good numbers.
@@ -7019,6 +7202,9 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-785	Is Graph Bipartite?    		48.0%	Medium	
+dfs coloring
+->>
 <<-802	Find Eventual Safe States    		49.3%	Medium	
 given a directed graph as an adjacency matrix.
 a node is safe if starting from it we reach a terminal.
@@ -7156,6 +7342,23 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-757	Set Intersection Size At Least Two    		41.6%	Hard	
+interval [a,b] contains all integer from a to b.
+given a list of intervals, return the min size of set s so that the set intersect with each interval with at least two numbers.
+- sort by end. first need takes the end 2,
+- we use two numbers p1,and p2 to track, add 0, add 1, add 2.
+->>
+
+<<-759	Employee Free Time    		67.4%	Hard	
+given a list of interval reprresenting the working time for each employee.
+return a list of common interval freetime.
+->>
+
+<<-763	Partition Labels    		77.7%	Medium	
+partition to as many parts as possible so each char only apprear in at most one part.
+similar to interval: record the last index, update the curmax and when we see the index==curmax, we know there is no more.
+->>
+
 <<-850	Rectangle Area II    		48.2%	Hard	
 given a list of rect defined by bottom left and top right points, all rects aligned with axis.
 return the total area covered.
@@ -7256,6 +7459,18 @@ recursive approach.
 ->>
 
 ## two pointer
+<<-777	Swap Adjacent in LR String    		35.1%	Medium	
+string of 'L','R','X', you can replace XL to LX or RX to XR.
+check if we can convert A to B.
+XL->LX we push L to left
+RX->XR we push R to right
+L cannot pass right R, R cannot pass left L.
+check one by one: 
+- first they shall one by one equal ignoring x. (two pointer)
+- L's index in L(B)>=L(A), R(B)<=R(A)
+to make it easier first return -1 for invalid cases.
+->>
+
 <<-809	Expressive Words    		46.7%	Medium	
 two pointer compare.
 ->>
@@ -7453,42 +7668,14 @@ A[i] in the range [1,m]
 <<-913	Cat and Mouse    		33.8%	Hard	->>
 <<-882	Reachable Nodes In Subdivided Graph    		42.0%	Hard	->>
 
-<<-785	Is Graph Bipartite?    		48.0%	Medium	
-
+<<-770	Basic Calculator IV    		54.1%	Hard	
+expression with varibles, variable vs value is given, evaluate the expression.
+symbolic evaluation
 ->>
-<<-784	Letter Case Permutation    		65.7%	Medium	->>
-<<-783	Minimum Distance Between BST Nodes    		53.4%	Easy	->>
-<<-782	Transform to Chessboard    		46.8%	Hard	->>
-<<-781	Rabbits in Forest    		55.1%	Medium	->>
-<<-780	Reaching Points    		30.0%	Hard	->>
-<<-779	K-th Symbol in Grammar    		38.3%	Medium	->>
-<<-778	Swim in Rising Water    		54.0%	Hard	->>
-<<-777	Swap Adjacent in LR String    		35.1%	Medium	->>
-<<-776	Split BST    		56.3%	Medium	->>
-<<-775	Global and Local Inversions    		42.4%	Medium	->>
-<<-774	Minimize Max Distance to Gas Station    		47.7%	Hard	->>
-<<-773	Sliding Puzzle    		60.2%	Hard	->>
-<<-772	Basic Calculator III    		42.5%	Hard	->>
-<<-771	Jewels and Stones    		86.7%	Easy	->>
-<<-770	Basic Calculator IV    		54.1%	Hard	->>
-<<-769	Max Chunks To Make Sorted    		55.2%	Medium	->>
-<<-768	Max Chunks To Make Sorted II    		49.4%	Hard	->>
-<<-767	Reorganize String    		49.5%	Medium	->>
-<<-766	Toeplitz Matrix    		65.6%	Easy	->>
-<<-765	Couples Holding Hands    		55.0%	Hard	->>
-<<-764	Largest Plus Sign    		46.1%	Medium	->>
-<<-763	Partition Labels    		77.7%	Medium	->>
-<<-762	Prime Number of Set Bits in Binary Representation    		63.8%	Easy	->>
-
-<<-761	Special Binary String    		58.4%	Hard	->>
-<<-760	Find Anagram Mappings    		81.5%	Easy	->>
-<<-759	Employee Free Time    		67.4%	Hard	->>
-<<-758	Bold Words in String    		46.8%	Easy	->>
-<<-757	Set Intersection Size At Least Two    		41.6%	Hard	->>
-<<-756	Pyramid Transition Matrix    		55.3%	Medium	->>
 <<-755	Pour Water    		43.8%	Medium	->>
-<<-754	Reach a Number    		35.1%	Medium	->>
-<<-753	Cracking the Safe    		51.4%	Hard	->>
+
+
+
 <<-752	Open the Lock    		52.3%	Medium	->>
 <<-751	IP to CIDR    		60.6%	Medium	->>
 <<-750	Number Of Corner Rectangles    		66.6%	Medium	->>
@@ -7637,7 +7824,7 @@ To check if the array can get more or less than target average:
 <<-619	Biggest Single Number    		44.0%	Easy	->>
 <<-618	Students Report By Geography    		57.7%	Hard	->>
 <<-617	Merge Two Binary Trees    		74.8%	Easy	->>
-<<-616	Add Bold Tag in String    		44.1%	Medium	->>
+
 <<-615	Average Salary: Departments VS Company    		50.0%	Hard	->>
 <<-614	Second Degree Follower    		31.6%	Medium	->>
 <<-613	Shortest Distance in a Line    		78.7%	Easy	->>
