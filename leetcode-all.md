@@ -47,6 +47,8 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-714	Best Time to Buy and Sell Stock with Transaction Fee    		55.4%	Medium	->>
+
 <<-740	Delete and Earn    		48.9%	Medium	
 delete num[i] and get score num[i] and delete all elements=nums[i]-1 or nums[i]+1
 bucket sort and then we can apply house robbing dp algorthm
@@ -975,6 +977,8 @@ given k and mat[i,j] is the sum of all rows [i-k,i+k] and columns [j-k,j+k]
 ### dp: edit distance (similar to 2d matrix walk)
 generally involves two strings or arrays, sometimes the string and the reverse string.
 
+<<-712	Minimum ASCII Delete Sum for Two Strings    		59.0%	Medium	->>
+
 <<-1682. Longest palindromic subsequence II
 problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
 dp[i,j,k] using 26 chars.
@@ -1224,6 +1228,12 @@ Take a greedy step and reduce to a smaller problem. Generally need some insights
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
+
+<<-738	Monotone Increasing Digits    		45.1%	Medium	
+give a number N, find the largest number with monotone increasing digits. (<=)
+idea: 12321->12299 from right to left find the last position increase stops.
+for this one, ends at 3. we reduce it by 1
+->>
 
 <<-765	Couples Holding Hands    		55.0%	Hard	
 N couples sit on 2N chairs. return the min swaps so that every couple sit side by side. couple (2i,2i+1)
@@ -1786,6 +1796,17 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-702	Search in a Sorted Array of Unknown Size    		68.1%	Medium	
+you can only access the array using ArrayReader. find the index for the target.
+binary search just assume right=INT_MAX.
+->>
+
+<<-719	Find K-th Smallest Pair Distance    		32.2%	Hard	
+given an array, find the kth smallest pair difference (absolute difference)
+sort and do binary search: min is 0, max is the last one - first one.
+then give a mid, count number of pairs < mid. (count can use two pointer to reach O(N))
+->>
+
 <<-774	Minimize Max Distance to Gas Station    		47.7%	Hard	
 given n gas stations in position[i]. add k more stations so that the max distance between adjacent stations is minimized.
 - final arrangement the gas station shall spread in between. 
@@ -1929,6 +1950,12 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 
+<<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
+backtracking: since the length is small, we can use bitmask to indicate which one is used.
+complexity: will choose or not choose for one grouping. O(k2^n)
+can also do dp: dp[mask|(1<<i)]=dp[mask]+nums[i].
+->>
+
 <<-756	Pyramid Transition Matrix    		55.3%	Medium	
 given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
 backtracking: 
@@ -2052,6 +2079,23 @@ also a bitmask dp problem.
 - dfs for all paths
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
+
+<<-694	Number of Distinct Islands    		56.8%	Medium	
+only need to remove the reference.
+->>
+<<-711	Number of Distinct Islands II    		48.6%	Hard	
+supports rotation (90,180,270 degrees) or reflections
+for each set we save the points with 8 different format and convert to string and push into hashset.
+see dihedral_group in wiki
+- reflection 2, rotation 4, total 8 combinations
+- save all the 8 shapes
+- remove the reference (shift to origin)
+- sort the 8 shapes so we get the smallest representation and use it as key.
+->>
+
+<<-733	Flood Fill    		55.6%	Easy	
+start (sr,sc) and flood fill with a new color. dfs.
+->>
 
 <<-749	Contain Virus    		47.1%	Hard	
 given a 2d grid, 0 uninfected, 1 infected. a wall can be installed between ajacent cells. Each nigh the virus spreads to its neighboring cells. Each day you can install walls around only one region- the affected area the threatens the most unaffected cells.
@@ -2297,6 +2341,19 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-721	Accounts Merge    		50.4%	Medium	
+name vs a list of email address. email address is unique.
+union find to merge email address with parent (index)
+->>
+
+<<-737	Sentence Similarity II    		46.3%	Medium	
+given a list of similar word pairs, and determine if two sentences are similar
+union-find. using string-string for parent structure.
+->>
+<<-734	Sentence Similarity    		42.2%	Easy	
+similarity is not transitive. using hashmap, A-B are mutual.
+->>
+
 <<-803	Bricks Falling When Hit    		31.1%	Hard	
 given a 2d matrix, 1 represent a brick.
 a brick is stable if:
@@ -2423,6 +2480,17 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-735	Asteroid Collision    		43.0%	Medium	
+given a list of numbers, negative means going left, positive goes right.
+two meet, the less heavier will explode, same size both will explode.
+using stack. (abs)
+->>
+
+<<-739	Daily Temperatures    		64.1%	Medium	
+given a list of temperature each day, return number of days to wait for a warmer day
+stack find next greater element
+->>
 
 <<-856	Score of Parentheses    		61.8%	Medium	
 () score=1, AB score=A+B (A) score=2*A.
@@ -2569,6 +2637,17 @@ subject: tree, stack, OOP, polymorphism
 ->>
 
 ### recursive stack
+<<-726	Number of Atoms    		50.9%	Hard	
+atom name: Capital+0 or more lowercase.
+include ()
+->>
+<<-736	Parse Lisp Expression    		49.8%	Hard	
+string parser using recursive stack.
+operator: add,mult,let
+variables
+()
+->>
+
 <<-761	Special Binary String    		58.4%	Hard	
 speical binary string:
 - number of 0s=number of 1s
@@ -2979,6 +3058,11 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
+<<-701	Insert into a Binary Search Tree    		76.0%	Medium	
+just insert in left or right. (use it as root is much complicated)
+->>
+<<-700	Search in a Binary Search Tree    		73.3%	Easy	->>
+
 <<-776	Split BST    		56.3%	Medium	
 given a bst and a target value, split into two subtree so that one <= target and the other > target.
 most of the structure shall be kept.
@@ -3363,6 +3447,17 @@ segment tree
 - list is the base for hash table.
 - cycle detection
 - traversal
+
+<<-708	Insert into a Sorted Circular Linked List    		32.2%	Medium	
+- empty list
+- traverse and find a proper position with prev<val<=cur.
+- all are equal and not=target, insert anywhere.
+->>
+
+<<-725	Split Linked List in Parts    		52.6%	Medium	
+split the list into k consecutive parts. K could be larger than number of nodes.
+->>
+
 <<-817	Linked List Components    		57.4%	Medium	
 given a linked list of unique numbers and a subset. return the number of connected groups.
 hashset and do traversal.
@@ -3591,6 +3686,15 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-718	Maximum Length of Repeated Subarray    		49.7%	Medium	
+repeated subarray in two arrays.
+- dp: just like LCS
+- binary search. rolling hash
+->>
+
+<<-722	Remove Comments    		35.5%	Medium	
+regex or mark the comment begin and start similar to stack.
+->>
 
 <<-758	Bold Words in String    		46.8%	Easy	
 given a list keyword, all appearances in string shall be bolded by <b> </b>
@@ -3702,6 +3806,16 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-723	Candy Crush    		71.5%	Medium	
+a grid, different value means different type of candies.
+0 mean the cell is empty. You need to restore it to a stable state.
+- if 3 or more same type candies on row or column, eliminate them all.
+- top candies will drop to fill the empty space
+- after drop, more cells will eliminate until no more crashes.
+approach: since it will only drop to bottom. better to use bottom as the first row. so we only need shift the columns forward.
+simulate the process.
+->>
+
 <<-769	Max Chunks To Make Sorted    		55.2%	Medium	
 given a permutation of 0 to n-1. divide into groups and sort each partition and connect them the whole array is sorted.
 return the max number of chunks.
@@ -4240,6 +4354,16 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+
+<<-710	Random Pick with Blacklist    		32.5%	Hard	
+blacklist contains unique integer in range [0,n]. uniform distribution which avoid numbers in blacklist.
+remap to the end of the array. generate rand%newLen, if number is in the blacklist, we use the hashmap one.
+->>
+
+<<-724	Find Pivot Index    		44.7%	Easy	
+its left sum=right sum. math and prefix sum.
+->>
+
 <<-753	Cracking the Safe    		51.4%	Hard	
 password is a sequene of n digits using 0 to k-1. if a substr matches then unlock
 return the min length that guarantee to open the box.
@@ -6718,6 +6842,11 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-716	Max Stack    		42.8%	Easy	->>
+<<-709	To Lower Case    		79.8%	Easy	->>
+
+<<-728	Self Dividing Numbers    		75.0%	Easy	->>
+
 <<-744	Find Smallest Letter Greater Than Target    		45.6%	Easy	->>
 
 <<-748	Shortest Completing Word    		57.1%	Easy	->>
@@ -7396,6 +7525,32 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-699	Falling Squares    		42.2%	Hard	
+a list of squares [xi,leni] with x position and side length. Touched squares will glue together.
+return a list of height at position i (left max).\
+similar to skyline problem, using interval.
+Similar to skyline concept, going from left to right the path is decomposed to consecutive segments, and each segment has a height. Each time we drop a new square, then update the level map by erasing & creating some new segments with possibly new height. There are at most 2n segments that are created / removed throughout the process, and the time complexity for each add/remove operation is O(log(n)).
+- map to record the interval
+- find the range max height
+- erase the intervals in the range
+- add the new interval with new height.
+->>
+<<-218. The Skyline Problem
+->>
+<<-715	Range Module    		39.5%	Hard	
+track interval.
+->>
+
+<<-732	My Calendar III    		60.9%	Hard	
+k booking.
+->>
+<<-731	My Calendar II    		49.8%	Medium	
+avoid triple booking
+->>
+<<-729	My Calendar I    		52.7%	Medium	
+check if double booking
+->>
+
 <<-757	Set Intersection Size At Least Two    		41.6%	Hard	
 interval [a,b] contains all integer from a to b.
 given a list of intervals, return the min size of set s so that the set intersect with each interval with at least two numbers.
@@ -7513,6 +7668,27 @@ recursive approach.
 ->>
 
 ## two pointer
+
+<<-713	Subarray Product Less Than K    		40.3%	Medium	
+return number of subarray
+to avoid overflow, we have to use sliding window using two pointer.
+->>
+
+<<-727	Minimum Window Subsequence    		42.1%	Hard	
+given S and T, find the min size substr of S so that T is a subsequence of it.
+a very good question:
+approach 1: two pointer: i for S, and j for T. 
+first find one match, and from right to left we get the smallest length for this one
+then we proceed from next char and find next match
+for example: abcdebdde match against bde
+we first find "bcde" and from right to left get the smallest length is 4
+then we start from c: "cdebdde" and we find "bdde".
+- dp approach: dp[i,j] stores the starting index of S[0..i] and T[0...j].
+if S[i-1]==T[j-1] then the index no change.
+else dp[i,j-1] (since we only matched j-1 chars)
+invalid put -1.
+->>
+
 <<-777	Swap Adjacent in LR String    		35.1%	Medium	
 string of 'L','R','X', you can replace XL to LX or RX to XR.
 check if we can convert A to B.
@@ -7634,6 +7810,11 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ->>
 
 ## trie
+<<-720	Longest Word in Dictionary    		48.9%	Easy	
+longest word which can be built one char from other words in the dictionary.
+build a trie and search start with. (sort reversely using length)
+->>
+
 <<-745	Prefix and Suffix Search    		34.7%	Hard	
 given a list of dictionary words, give prefix string and suffix string, find the word index with given prefix and suffix. If multiple find the one with largest index.
 - how to combine prefix and suffix in one search?
@@ -7727,7 +7908,6 @@ A[i] in the range [1,m]
 ## leetcode problem list
 <<-913	Cat and Mouse    		33.8%	Hard	->>
 <<-882	Reachable Nodes In Subdivided Graph    		42.0%	Hard	->>
-
 <<-770	Basic Calculator IV    		54.1%	Hard	
 expression with varibles, variable vs value is given, evaluate the expression.
 symbolic evaluation
@@ -7735,53 +7915,22 @@ symbolic evaluation
 <<-755	Pour Water    		43.8%	Medium	->>
 <<-751	IP to CIDR    		60.6%	Medium	->>
 
-<<-739	Daily Temperatures    		64.1%	Medium	->>
-<<-738	Monotone Increasing Digits    		45.1%	Medium	->>
-<<-737	Sentence Similarity II    		46.3%	Medium	->>
-<<-736	Parse Lisp Expression    		49.8%	Hard	->>
-<<-735	Asteroid Collision    		43.0%	Medium	->>
-<<-734	Sentence Similarity    		42.2%	Easy	->>
-<<-733	Flood Fill    		55.6%	Easy	->>
-<<-732	My Calendar III    		60.9%	Hard	->>
-<<-731	My Calendar II    		49.8%	Medium	->>
-<<-730	Count Different Palindromic Subsequences    		43.1%	Hard	->>
-<<-729	My Calendar I    		52.7%	Medium	->>
-<<-728	Self Dividing Numbers    		75.0%	Easy	->>
-<<-727	Minimum Window Subsequence    		42.1%	Hard	->>
-<<-726	Number of Atoms    		50.9%	Hard	->>
-<<-725	Split Linked List in Parts    		52.6%	Medium	->>
-<<-724	Find Pivot Index    		44.7%	Easy	->>
-<<-723	Candy Crush    		71.5%	Medium	->>
-<<-722	Remove Comments    		35.5%	Medium	->>
-<<-721	Accounts Merge    		50.4%	Medium	->>
-<<-720	Longest Word in Dictionary    		48.9%	Easy	->>
-<<-719	Find K-th Smallest Pair Distance    		32.2%	Hard	->>
-<<-718	Maximum Length of Repeated Subarray    		49.7%	Medium	->>
-<<-717	1-bit and 2-bit Characters    		47.8%	Easy	->>
-<<-716	Max Stack    		42.8%	Easy	->>
-<<-715	Range Module    		39.5%	Hard	->>
-<<-714	Best Time to Buy and Sell Stock with Transaction Fee    		55.4%	Medium	->>
-<<-713	Subarray Product Less Than K    		40.3%	Medium	->>
-<<-712	Minimum ASCII Delete Sum for Two Strings    		59.0%	Medium	->>
 
-<<-711	Number of Distinct Islands II    		48.6%	Hard	->>
-<<-710	Random Pick with Blacklist    		32.5%	Hard	->>
-<<-709	To Lower Case    		79.8%	Easy	->>
-<<-708	Insert into a Sorted Circular Linked List    		32.2%	Medium	->>
+<<-717	1-bit and 2-bit Characters    		47.8%	Easy	
+from right to left.
+->>
 <<-707	Design Linked List    		25.3%	Medium	->>
 <<-706	Design HashMap    		62.1%	Easy	->>
 <<-705	Design HashSet    		64.5%	Easy	->>
 <<-704	Binary Search    		53.7%	Easy	->>
-<<-703	Kth Largest Element in a Stream    		50.2%	Easy	->>
-<<-702	Search in a Sorted Array of Unknown Size    		68.1%	Medium	->>
-<<-701	Insert into a Binary Search Tree    		76.0%	Medium	->>
-<<-700	Search in a Binary Search Tree    		73.3%	Easy	->>
-<<-699	Falling Squares    		42.2%	Hard	->>
-<<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	->>
+<<-703	Kth Largest Element in a Stream    		50.2%	Easy	
+heap->>
+
+
 <<-697	Degree of an Array    		54.2%	Easy	->>
 <<-696	Count Binary Substrings    		57.0%	Easy	->>
 <<-695	Max Area of Island    		63.7%	Medium	->>
-<<-694	Number of Distinct Islands    		56.8%	Medium	->>
+
 <<-693	Binary Number with Alternating Bits    		59.6%	Easy	->>
 <<-692	Top K Frequent Words    		52.6%	Medium	->>
 <<-691	Stickers to Spell Word    		43.5%	Hard	->>
