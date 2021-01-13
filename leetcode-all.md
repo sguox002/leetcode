@@ -47,6 +47,17 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-740	Delete and Earn    		48.9%	Medium	
+delete num[i] and get score num[i] and delete all elements=nums[i]-1 or nums[i]+1
+bucket sort and then we can apply house robbing dp algorthm
+dp[i+2]=max(dp[i]+a[i],dp[i+1])
+->>
+
+<<-746	Min Cost Climbing Stairs    		50.7%	Easy	
+cost[i]: you pay the cost and you then can climb one or two steps. You can start from 0 or 1.
+dp. dp[i]=min(dp[i-2],dp[i-1])+cost[i], note this is the cost to reach i+1 or i+2
+->>
+
 <<-790	Domino and Tromino Tiling    		39.7%	Medium	
 return the number of ways to reach 2xN tile.
 dp: two kind of shapes to reach final status. L shape and I shape.
@@ -217,6 +228,13 @@ equivalent: knapsack to make positive sum >=tsum/2.
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
 floyd-warshal: find all pair node shortest distance using dp.
+
+<<-743	Network Delay Time    		45.1%	Medium	
+given a network of n nodes from 1 to n. given a list of edges [u,v,w], where w is the edge traveling time. We will send a signl from node k and return the tme when all the nodes received the signal.
+max distance from source to all other nodes.
+- dijkstra
+- bellman ford (much slower than dijkstra, 1300 vs 100ms)
+->>
 
 <<-787	Cheapest Flights Within K Stops    		39.4%	Medium	
 from src to dest within K stops. find the cheapest cost.
@@ -605,6 +623,10 @@ dp[i,k]=p*dp[i-1,k-1]+(1-p)*dp[i-1,k]
 pattern: two options, probability.
 ->>
 
+<<-741	Cherry Pickup    		34.6%	Hard	
+go from top left to bottom right and return to bottom left.
+use two branches at the same time.
+->>
 <<-1463	Cherry Pickup II    		66.2%	Hard	
 two robots on the top left and top right and each time goes down, leftdiag rightdiag or down. return the max cherrys can pick.
 dp: the two robot status is defined as dp[i,j1,j2] is the layer and j1 and j2 are the column index for robot 1 and robot 2. choose the max from previous layer 9 possible combinations. do not go over board.
@@ -878,6 +900,11 @@ two options: use j column or not use it.
 generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
 - in some cases to save space, we need to store previous row and previous column.
 - in some cases we need only keep the previous whole n elements.
+
+<<-750	Number Of Corner Rectangles    		66.6%	Medium	
+given a 01 matrix, corner rect means the 4 corner is 1. return number of corner rectangles.
+idea: two rows count number of columns is 11 and then n*(n-1)/2
+->>
 
 <<-764	Largest Plus Sign    		46.1%	Medium	
 plus: center is 1 and up down left and right has k (k+1 order)
@@ -2026,6 +2053,16 @@ also a bitmask dp problem.
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
 
+<<-749	Contain Virus    		47.1%	Hard	
+given a 2d grid, 0 uninfected, 1 infected. a wall can be installed between ajacent cells. Each nigh the virus spreads to its neighboring cells. Each day you can install walls around only one region- the affected area the threatens the most unaffected cells.
+if it is possible to save? number of walls required?
+- need dfs to get region and number of cells to be infected. = number of walls
+- growing of all other regions.
+- quarantine region can mark as -1 so no dfs will be done.
+- using dfs/bfs/union-find to save each set's infect list.
+- store information in heap.
+->>
+
 <<-886	Possible Bipartition    		44.7%	Medium	
 dfs coloring alternatively.
 ->>
@@ -2123,6 +2160,12 @@ dfs, hashmap
 - bfs with parent information
 - bfs with more than one state.
 - bfs with shortest distance problem
+
+<<-752	Open the Lock    		52.3%	Medium	
+GIVEN 4 circular wheel with 0-9 on it. You can turn around the wheel, each move turn the wheel one digit. lock initial is 0000. You are given a list of deadends that the wheel stops turning.
+given a target, return the min total number of returns.
+bfs. you can rotate clockwise or counterclockwise.
+->>
 
 <<-773	Sliding Puzzle    		60.2%	Hard	
 given 2x3 board with 1-5, return min number of moves to solve the board.
@@ -6675,6 +6718,10 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-744	Find Smallest Letter Greater Than Target    		45.6%	Easy	->>
+
+<<-748	Shortest Completing Word    		57.1%	Easy	->>
+<<-747	Largest Number At Least Twice of Others    		42.6%	Easy	->>
 <<-760	Find Anagram Mappings    		81.5%	Easy	->>
 
 <<-762	Prime Number of Set Bits in Binary Representation    		63.8%	Easy	
@@ -7202,6 +7249,13 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-742	Closest Leaf in a Binary Tree    		44.0%	Medium	
+tree has unique value, given a target value which exist in the tree. find the leaf node which is closest to it.
+- find the target node and then do a bfs starting on this node, the first leaf.
+- recursive: find the node and dfs to get the leaf node depth = min depth.
+basically it is two problem: find the node and find the min-depth (note you need rebuild the tree with root=k) or get parent's other subtree distance (shall do recursively since ancestor may have shorter distance)
+->>
+
 <<-785	Is Graph Bipartite?    		48.0%	Medium	
 dfs coloring
 ->>
@@ -7580,6 +7634,12 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ->>
 
 ## trie
+<<-745	Prefix and Suffix Search    		34.7%	Hard	
+given a list of dictionary words, give prefix string and suffix string, find the word index with given prefix and suffix. If multiple find the one with largest index.
+- how to combine prefix and suffix in one search?
+- suffix+$+original string, then search pattern suffix+$+prefix.
+- same string use the larger index so naturally we get the larger
+->>
 
 <<-1032	Stream of Characters    		48.4%	Hard	
 given a dictionary, and check if the last several character is in the dictionary
@@ -7673,22 +7733,8 @@ expression with varibles, variable vs value is given, evaluate the expression.
 symbolic evaluation
 ->>
 <<-755	Pour Water    		43.8%	Medium	->>
-
-
-
-<<-752	Open the Lock    		52.3%	Medium	->>
 <<-751	IP to CIDR    		60.6%	Medium	->>
-<<-750	Number Of Corner Rectangles    		66.6%	Medium	->>
-<<-749	Contain Virus    		47.1%	Hard	->>
-<<-748	Shortest Completing Word    		57.1%	Easy	->>
-<<-747	Largest Number At Least Twice of Others    		42.6%	Easy	->>
-<<-746	Min Cost Climbing Stairs    		50.7%	Easy	->>
-<<-745	Prefix and Suffix Search    		34.7%	Hard	->>
-<<-744	Find Smallest Letter Greater Than Target    		45.6%	Easy	->>
-<<-743	Network Delay Time    		45.1%	Medium	->>
-<<-742	Closest Leaf in a Binary Tree    		44.0%	Medium	->>
-<<-741	Cherry Pickup    		34.6%	Hard	->>
-<<-740	Delete and Earn    		48.9%	Medium	->>
+
 <<-739	Daily Temperatures    		64.1%	Medium	->>
 <<-738	Monotone Increasing Digits    		45.1%	Medium	->>
 <<-737	Sentence Similarity II    		46.3%	Medium	->>
