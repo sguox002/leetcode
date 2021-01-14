@@ -47,6 +47,20 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-656	Coin Path    		29.3%	Hard	
+given n elements A[i] is the cost to step on i. You can jump forward 1 to B steps. If A[i]=-1 you cannot jump. start from 0 you have to reach the last index with min cost. return the path (if tie return the lexi smallest path)
+dp from right to left (left to right is also fine) dp with path information
+to get the lexi smallest path, we need smaller index if tie, thus from right to left is more convenient.
+very good question!
+->>
+
+<<-673	Number of Longest Increasing Subsequence    		38.2%	Medium	
+return the number of LIS.
+two dp problem: LIS and number of LIS ending with nums[i]
+- if len(i)==len(j)+1, cnt[i]+=cnt[j]
+then we add all len=maxlen, cnt
+->>
+
 <<-691	Stickers to Spell Word    		43.5%	Hard	
 given a list of stickers (can reuse) to spell a target string. return the min number of stickers.
 - convert target string and stickers into hashmap (no order needed)
@@ -312,6 +326,27 @@ for example k=5 (0b101), we first get 2^0's parent, and then get parent's 2^2 pa
 ### dp dealing with subarray or intervals
 
 removing a subarray and then left and right connected. Extremely hard to track the array changes or no good data structure to do it.
+
+<<-546	Remove Boxes    		43.7%	Hard	
+remove box with same color and get k*k points (k is the number of boxes removed)
+return the max score.
+Similar to 664, but now the number cares.
+dp[i,j,k] max points among [i,j] with k same color boxes attached to it. 
+->>
+
+<<-664	Strange Printer    		41.0%	Hard	
+printer can only a sequence of same char each time.
+later printing will cover previous printing.
+given a string, return the min number of prints
+reverse do it: remove all same char substr.
+for example "aba", first remove "b"->"axa"->"" consider all same char is one group.
+dp problem: the first choice is not greedy but will affect choices later.
+delete a group will connect the left and right.
+- all consecutive chars does not matter, we can reduce to one single char (does not depend on the number)
+- dp[i,j] represents the min number of prints
+dp[i,j]=1+dp[i+1,j]
+dp[i,j]=min(dp[i+1,m-1]+dp[m,j]) if s[i]==s[m] //we erase i+1 to m-1 so i and m connects to the right (erase one char).
+->>
 
 <<-1000	Minimum Cost to Merge Stones    		40.4%	Hard	
 each time you merge k consecutive piles into one pile at the cost of the total sum.
@@ -1238,6 +1273,28 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-659	Split Array into Consecutive Subsequences    		44.0%	Medium	
+given a sorted array, see if you can split into 1 or more subsequence with consecutive integers with length>=3
+- the highest frequency number determines number of sequence we shall divide
+- since it is sorted we can loop over the array
+for example [1,2,3,3,4,5]: frequency 1:1,2:1,3:2,4:1,5:1
+we see 1, and we need 2 and 3, 1:0,2:0,3:1,4:1,5:1 need[4]=1
+we see 2: skip since it is used.
+we see 3: skipped
+we see 3: and we need 4 and 5, 1:0,2:0,3:0,4:0,5:0
+greedy+hashmap
+->>
+
+<<-667	Beautiful Arrangement II    		54.7%	Medium	
+given 1 to n, arrange so that adjacent absolute difference has exactly k distinct numbers.
+arrange like this 1,k,2,k-1..... l=1, r=k+1, until they meet.
+->>
+
+<<-670	Maximum Swap    		44.5%	Medium	
+swap two digits at most once to get the max number.
+greedy: find the right max to swap.
+->>
+
 <<-681	Next Closest Time    		45.5%	Medium	
 given a time hh:mm, you may reuse or not use some digits. return the next closest time. (next greater)
 greedy: from right to left, replace current with the next larger digit available. if not possible, replace with the min (expecting we increase left digit) for example: 19:34, we change 4, next bigger is 9, 19:39
@@ -1810,6 +1867,28 @@ level: 3
 - keep invariant condition when shrinking the range.
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
+
+<<-658	Find K Closest Elements    		41.4%	Medium	
+sorted array find the k closest to x elements. if tie choose the smaller one.
+sort using abs(a-x).
+- binary search: find the leftmost element x-A[mid]>A[mid+k]-x.
+->>
+
+<<-644	Maximum Average Subarray II    		32.5%	Hard	
+problem: subarray length>=k and find the max subarray average.
+subject: binary search, double with greedy.
+approach: subarray length =k to n and we can get the max average for each length.
+sum(Ai)/j=average->sum(Ai)=j*average->Sum(Ai-Average)
+Sum(Ai-Average)>0 then we know we can increase it. otherwise, we shall decrease it.
+this leads to a binary search approach.
+To check if the array can get more or less than target average:
+- Sum(Ai-target) can be achieved using prefix sum.
+- we keep the 0 to i-k minimum sum and prefix sum. If prefix sum>min sum, then we know we can get average > target.
+->>
+
+<<-668	Kth Smallest Number in Multiplication Table    		47.3%	Hard	
+binary search counting the number < target. counting shall be O(n).
+->>
 
 <<-683	K Empty Slots    		35.8%	Hard	
 n bulbs from 1 to n. bulb[i] means on ith day we will turn on bulb at bulb[i].
@@ -3112,6 +3191,35 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
+<<-662	Maximum Width of Binary Tree    		40.2%	Medium	
+width is the level width. (according to full tree definition)
+dfs with full tree index.
+->>
+
+<<-663	Equal Tree Partition    		39.6%	Medium	
+divide into two subtree with same sum by removing one edge.
+record each subtree's sum in hashmap. one tree must be a subtree, so we just find sum/2.
+->>
+
+<<-666	Path Sum IV    		55.3%	Medium	
+three digit number represent:
+hundreds: depth (1-4)
+tens: the position in the level as in full binary tree
+unit digit: value.
+[113,215,221]: 
+113 represent depth=1, first node, value=3
+215: depth=2, first node, value=5
+221: depth=2, second node, value=1
+tree is given in ascending order.
+return the sum of all paths from root to leaf.
+represent the tree with array (full tree representation). nonexistent with 0.
+->>
+
+<<-669	Trim a Binary Search Tree    		63.2%	Easy	
+trim so that all value in range [L,R]
+postorder.
+->>
+
 <<-690	Employee Importance    		57.9%	Easy	
 tree structure for postorder add.
 ->>
@@ -3689,6 +3797,8 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 ## sort
 - sort makes things easier.
 - sort using given order
+
+
 
 <<-791	Custom Sort String    		65.8%	Medium	
 sort T using S's order.
@@ -4436,8 +4546,8 @@ level: 2
 <<-1658	Minimum Operations to Reduce X to Zero    		29.3%	Medium	
 problem: remove either end and subtract it from x. return the min number of operation.
 - no need dp.
-- at the last it will remove some elements from both ends. So it is equivalent to find the longest window sum=tsum-x.
-this can be done using sliding window or hashmap.
+- at the last it will remove some elements from both ends. So it is equivalent to find the longest window sum=tsum-x. (find the longest window with sum=tsum-target.
+this can be done using sliding window + hashmap.
 ->>
 
 <<-1657	Determine if Two Strings Are Close    		50.0%	Medium	
@@ -4462,7 +4572,22 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-660	Remove 9    		53.8%	Hard	
+return nth number after removing all 9 in digits.
+this is actually a base-9 problem.
+->>
 
+<<-672	Bulb Switcher II    		51.0%	Medium	
+n bulbs are all on, there are 4 types of operations:
+- flip all
+- flip all even
+- flip all odd
+- flip 3k+1 k=0,1...
+after performing m operations unknown, what is the number of different bulb status.
+we see: 1+2 equivalent to 3, 1+3 equivalent to 2, 2+3 equivalent to 1.
+so only 8 cases:
+all on,1,2,3,4,1+4,2+4,3+4
+->>
 <<-710	Random Pick with Blacklist    		32.5%	Hard	
 blacklist contains unique integer in range [0,n]. uniform distribution which avoid numbers in blacklist.
 remap to the end of the array. generate rand%newLen, if number is in the blacklist, we use the hashmap one.
@@ -8061,29 +8186,16 @@ heap->>
 <<-682	Baseball Game    		65.2%	Easy	
 simple stack operation
 ->>
-
-
-
-<<-674	Longest Continuous Increasing Subsequence    		46.0%	Easy	->>
-<<-673	Number of Longest Increasing Subsequence    		38.2%	Medium	->>
-<<-672	Bulb Switcher II    		51.0%	Medium	->>
-<<-671	Second Minimum Node In a Binary Tree    		42.7%	Easy	->>
-<<-670	Maximum Swap    		44.5%	Medium	->>
-<<-669	Trim a Binary Search Tree    		63.2%	Easy	->>
-<<-668	Kth Smallest Number in Multiplication Table    		47.3%	Hard	->>
-<<-667	Beautiful Arrangement II    		54.7%	Medium	->>
-<<-666	Path Sum IV    		55.3%	Medium	->>
+<<-674	Longest Continuous Increasing Subsequence    		46.0%	Easy	
+subarray, just count.
+->>
+<<-671	Second Minimum Node In a Binary Tree    		42.7%	Easy	
+use the array second min method.
+->>
 <<-665	Non-decreasing Array    		19.6%	Easy	->>
-<<-664	Strange Printer    		41.0%	Hard	->>
-<<-663	Equal Tree Partition    		39.6%	Medium	->>
-<<-662	Maximum Width of Binary Tree    		40.2%	Medium	->>
-
 <<-661	Image Smoother    		52.0%	Easy	->>
-<<-660	Remove 9    		53.8%	Hard	->>
-<<-659	Split Array into Consecutive Subsequences    		44.0%	Medium	->>
-<<-658	Find K Closest Elements    		41.4%	Medium	->>
 <<-657	Robot Return to Origin    		73.4%	Easy	->>
-<<-656	Coin Path    		29.3%	Hard	->>
+
 <<-655	Print Binary Tree    		55.4%	Medium	->>
 <<-654	Maximum Binary Tree    		80.6%	Medium	->>
 <<-653	Two Sum IV - Input is a BST    		55.9%	Easy	->>
@@ -8095,17 +8207,6 @@ simple stack operation
 <<-647	Palindromic Substrings    		61.4%	Medium	->>
 <<-646	Maximum Length of Pair Chain    		52.4%	Medium	->>
 <<-645	Set Mismatch    		42.3%	Easy	->>
-<<-644	Maximum Average Subarray II    		32.5%	Hard	
-problem: subarray length>=k and find the max subarray average.
-subject: binary search, double with greedy.
-approach: subarray length =k to n and we can get the max average for each length.
-sum(Ai)/j=average->sum(Ai)=j*average->Sum(Ai-Average)
-Sum(Ai-Average)>0 then we know we can increase it. otherwise, we shall decrease it.
-this leads to a binary search approach.
-To check if the array can get more or less than target average:
-- Sum(Ai-target) can be achieved using prefix sum.
-- we keep the 0 to i-k minimum sum and prefix sum. If prefix sum>min sum, then we know we can get average > target.
-->>
 <<-643	Maximum Average Subarray I    		41.7%	Easy	->>
 <<-642	Design Search Autocomplete System    		45.5%	Hard	->>
 <<-641	Design Circular Deque    		54.5%	Medium	->>
@@ -8205,7 +8306,7 @@ To check if the array can get more or less than target average:
 <<-549	Binary Tree Longest Consecutive Sequence II    		47.1%	Medium	->>
 <<-548	Split Array with Equal Sum    		47.2%	Medium	->>
 <<-547	Friend Circles    		59.5%	Medium	->>
-<<-546	Remove Boxes    		43.7%	Hard	->>
+
 <<-545	Boundary of Binary Tree    		39.3%	Medium	->>
 <<-544	Output Contest Matches    		75.5%	Medium	->>
 <<-543	Diameter of Binary Tree    		48.9%	Easy	->>
