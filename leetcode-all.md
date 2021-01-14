@@ -47,6 +47,15 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-691	Stickers to Spell Word    		43.5%	Hard	
+given a list of stickers (can reuse) to spell a target string. return the min number of stickers.
+- convert target string and stickers into hashmap (no order needed)
+- greedy may not work.
+- backtracking + memo, reduced target map for the same input. (dp but with up to 26 chars)
+- DP top down is more convenient since we involves 26 numbers.
+- bottom up dp: dp[string] using hashmap representing min stickers for string s. dp[string]=1+min(dp[string-sticki])
+->>
+
 <<-714	Best Time to Buy and Sell Stock with Transaction Fee    		55.4%	Medium	->>
 
 <<-740	Delete and Earn    		48.9%	Medium	
@@ -1229,6 +1238,12 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-681	Next Closest Time    		45.5%	Medium	
+given a time hh:mm, you may reuse or not use some digits. return the next closest time. (next greater)
+greedy: from right to left, replace current with the next larger digit available. if not possible, replace with the min (expecting we increase left digit) for example: 19:34, we change 4, next bigger is 9, 19:39
+23:59->23:52->23:22->22:22
+->>
+
 <<-738	Monotone Increasing Digits    		45.1%	Medium	
 give a number N, find the largest number with monotone increasing digits. (<=)
 idea: 12321->12299 from right to left find the last position increase stops.
@@ -1796,6 +1811,13 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-683	K Empty Slots    		35.8%	Hard	
+n bulbs from 1 to n. bulb[i] means on ith day we will turn on bulb at bulb[i].
+return he min days such that there exist two turned on bulbs that have exacly k bulbs off between them.
+- brutal force: loop from day 1 to day n and record the index TLE.
+- insert will be able to return the insert position and we do not need to loop from begin. (check its previous/following)
+->>
+
 <<-702	Search in a Sorted Array of Unknown Size    		68.1%	Medium	
 you can only access the array using ArrayReader. find the index for the target.
 binary search just assume right=INT_MAX.
@@ -2080,6 +2102,14 @@ also a bitmask dp problem.
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
 
+<<-688	Knight Probability in Chessboard    		49.6%	Medium	
+dfs
+->>
+
+<<-695	Max Area of Island    		63.7%	Medium	
+dfs calculate the number of nodes in each set.
+->>
+
 <<-694	Number of Distinct Islands    		56.8%	Medium	
 only need to remove the reference.
 ->>
@@ -2204,6 +2234,8 @@ dfs, hashmap
 - bfs with parent information
 - bfs with more than one state.
 - bfs with shortest distance problem
+
+<<-675	Cut Off Trees for Golf Event    		34.9%	Hard	->>
 
 <<-752	Open the Lock    		52.3%	Medium	
 GIVEN 4 circular wheel with 0-9 on it. You can turn around the wheel, each move turn the wheel one digit. lock initial is 0000. You are given a list of deadends that the wheel stops turning.
@@ -2340,6 +2372,18 @@ need store position and direction also, the visited array.
 - union find with path compression O(1)
 - use vector to store parent
 - use hashmap to store parent
+
+<<-685	Redundant Connection II    		32.8%	Hard	
+a rooted tree. given a list of directed edges node from 0 to n-1. return an edge that can be removed to that the resulting graph is a rooted tree of n nodes. if there are multiple answers, remove the last one.
+- union find. for current edge, if it already has parent, this edge is forming a cycle, a->b, (a,b) and (parent(b),b) are candidate.
+two cases: 
+- two parents
+- a cycle is formed.
+->>
+<<-684	Redundant Connection    		58.3%	Medium	
+undirected gaph. so parent information is not clear from the edges.
+the edge forms the cycle. using union find.
+->>
 
 <<-721	Accounts Merge    		50.4%	Medium	
 name vs a list of email address. email address is unique.
@@ -2703,6 +2747,11 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+<<-692	Top K Frequent Words    		52.6%	Medium	
+sort frequency form highest to lowest, tie, smaller string first.
+pq.
+->>
+
 <<-767	Reorganize String    		49.5%	Medium	
 no adjacent char is the same.
 use hashmap to record the frequency and then use pq.
@@ -2810,6 +2859,11 @@ approach:
 ->>
 
 ## hashset, hashmap
+
+<<-697	Degree of an Array    		54.2%	Easy	
+max frequency is the degree. find the smallest subarray length that has the same degree.
+keep the start and ending index for each element. HashMap
+->>
 
 <<-874	Walking Robot Simulation    		36.5%	Easy	
 robot faces north first, -2 turn left 90 degree, -1 turn right 90, 1-9 take number of steps along direction.
@@ -3057,6 +3111,14 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-690	Employee Importance    		57.9%	Easy	
+tree structure for postorder add.
+->>
+
+<<-687	Longest Univalue Path    		36.8%	Medium	
+postorder: get the left and right max depth with value=root->val, and connect via the root. (left+right)
+->>
 
 <<-701	Insert into a Binary Search Tree    		76.0%	Medium	
 just insert in left or right. (use it as root is much complicated)
@@ -3686,6 +3748,13 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-686	Repeated String Match    		32.6%	Medium	
+return the min times of repeat string a so that b is a substrng of the repeated one.
+- at least to make the length >=b.
+- shall have the same set of chars.
+repeat until a length >=b then add just one to make rotation valid (keeps finding at the end)
+->>
+
 <<-718	Maximum Length of Repeated Subarray    		49.7%	Medium	
 repeated subarray in two arrays.
 - dp: just like LCS
@@ -3806,6 +3875,45 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-678 valid paenthesis string
+string include (*) * can represent left or right or empty.
+'*' as a left, we increase counter by 1
+'*' as a right,we decrease counter by 1
+'*' as empty, no change
+- recursive approach, passing the left and right counter.
+- direct approach
+for example "(**())" we get the tree structure
+                1           (
+		   /    |    \
+          0     1     2     * -1,0,1
+		 /|\   /|\   /|\    
+	  -1  0 1 0 1 2 1 2 3   * -1,0,1
+	   0  1 2 1 2 3 2 3 4   (
+	  -1  0 1 0 1 2 1 2 3   )
+	  -2 -1 0-1 0 1 0 1 2   ) 
+- we see 3 paths leading to 0, (with any <0 is invalid) they are (()) and ()(()) and (()())
+- the final number will from [min,max], if it covers 0, then we are fine.
+so we just counter min and max.  need keep mn>=0 to eliminate invalid paths.
+->>
+
+<<-680	Valid Palindrome II    		36.8%	Easy	
+remove at most one char to make it palindrome.
+->>
+
+<<-680	Valid Palindrome II    		31.4%	Medium	
+you can delete at most one char. compare string with reversed string. at least two mismatch. remove the first or the second.
+->>
+
+<<-689	Maximum Sum of 3 Non-Overlapping Subarrays    		46.9%	Hard	
+fix left and right and find range for bottom
+->>
+
+<<-696	Count Binary Substrings    		57.0%	Easy	
+substr same number of 0 and 1. and all 0 and all 1 are grouped together.
+- 01,0011,000111...pattern.
+use pre counter and current counter, when we see a change 01 or 10, we reset.
+->>
+
 <<-723	Candy Crush    		71.5%	Medium	
 a grid, different value means different type of candies.
 0 mean the cell is empty. You need to restore it to a stable state.
@@ -6842,6 +6950,9 @@ coordinates sorted by x. fid the max yi+yj+|xi-xj|->>
 <<-767. reorganize string ***->>
 
 ### trivials & straightforward
+<<-693	Binary Number with Alternating Bits    		59.6%	Easy	
+compare with prev bit->>
+
 <<-716	Max Stack    		42.8%	Easy	->>
 <<-709	To Lower Case    		79.8%	Easy	->>
 
@@ -7633,6 +7744,13 @@ two problems here:
 ->>
 
 ## recursive
+<<-679	24 Game    		46.9%	Hard	
+given 4 number check if you can use +-*/() to reach 24.
+division is real division not integer division.
+- no order
+- idea: pick any 2 numbers and do +-*/ and then reduce to 3 numbers
+->>
+
 <<-880	Decoded String at Index    		24.5%	Medium	
 digit in the string d means the previous string will be copied d-1 times.
 return the char at index. (note a23 mean a is repeated 2 time becoming aa3 and then aa is repeated 3 times.)
@@ -7810,6 +7928,22 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ->>
 
 ## trie
+<<-676	Implement Magic Dictionary    		55.0%	Medium	
+given a list of word, and a string, check if we change exactly one char in the string and can match the dictionary word.
+Trie: make a trie on string or dictionary word? we can replace the char to * to represent any char. for the string we only need add n strings inside to trie. and then we use dictionary word to match.
+but the search pattern can be changed so we still have to use dictionary word.
+- hashmap is also ok.
+->>
+
+<<-677	Map Sum Pairs    		53.7%	Medium	
+design mapsum and insert (string,value) pairs, 
+sum(prefix) sum all the values with key prefix = prefix.
+- direct approach: store in hashmap.
+- Trie: startWith. when we insert we add the value for each node. so we directly know the sum. (only store value in leaf node will need dfs and will not save time)
+note this include a modification function. use the delta (need save a hashmap)
+thus no dfs needed.
+->>
+
 <<-720	Longest Word in Dictionary    		48.9%	Easy	
 longest word which can be built one char from other words in the dictionary.
 build a trie and search start with. (sort reversely using length)
@@ -7915,7 +8049,6 @@ symbolic evaluation
 <<-755	Pour Water    		43.8%	Medium	->>
 <<-751	IP to CIDR    		60.6%	Medium	->>
 
-
 <<-717	1-bit and 2-bit Characters    		47.8%	Easy	
 from right to left.
 ->>
@@ -7925,31 +8058,12 @@ from right to left.
 <<-704	Binary Search    		53.7%	Easy	->>
 <<-703	Kth Largest Element in a Stream    		50.2%	Easy	
 heap->>
+<<-682	Baseball Game    		65.2%	Easy	
+simple stack operation
+->>
 
 
-<<-697	Degree of an Array    		54.2%	Easy	->>
-<<-696	Count Binary Substrings    		57.0%	Easy	->>
-<<-695	Max Area of Island    		63.7%	Medium	->>
 
-<<-693	Binary Number with Alternating Bits    		59.6%	Easy	->>
-<<-692	Top K Frequent Words    		52.6%	Medium	->>
-<<-691	Stickers to Spell Word    		43.5%	Hard	->>
-<<-690	Employee Importance    		57.9%	Easy	->>
-<<-689	Maximum Sum of 3 Non-Overlapping Subarrays    		46.9%	Hard	->>
-<<-688	Knight Probability in Chessboard    		49.6%	Medium	->>
-<<-687	Longest Univalue Path    		36.8%	Medium	->>
-<<-686	Repeated String Match    		32.6%	Medium	->>
-<<-685	Redundant Connection II    		32.8%	Hard	->>
-<<-684	Redundant Connection    		58.3%	Medium	->>
-<<-683	K Empty Slots    		35.8%	Hard	->>
-<<-682	Baseball Game    		65.2%	Easy	->>
-<<-681	Next Closest Time    		45.5%	Medium	->>
-<<-680	Valid Palindrome II    		36.8%	Easy	->>
-<<-679	24 Game    		46.9%	Hard	->>
-<<-678	Valid Parenthesis String    		31.4%	Medium	->>
-<<-677	Map Sum Pairs    		53.7%	Medium	->>
-<<-676	Implement Magic Dictionary    		55.0%	Medium	->>
-<<-675	Cut Off Trees for Golf Event    		34.9%	Hard	->>
 <<-674	Longest Continuous Increasing Subsequence    		46.0%	Easy	->>
 <<-673	Number of Longest Increasing Subsequence    		38.2%	Medium	->>
 <<-672	Bulb Switcher II    		51.0%	Medium	->>
