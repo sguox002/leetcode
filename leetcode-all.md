@@ -47,6 +47,32 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-651	4 Keys Keyboard    		52.8%	Medium	
+key1: print one 'A'
+key2: selet all
+key3: copy
+key4: paste
+press the key N times, return the max print length.
+N=1: 1 key1
+N=2: 2 key1 twice
+N=3: 3 key1 3 times
+N=4: 4 key1 4 times
+N=5: 5 key1 5 times
+N=6: 6 AAA +S+C+P 
+N=7: 8 AAAA+S+C+P, AAA+SCPP->9 len(3)*3=9
+N=8: 10 len(5)*2 or AAA+SCPPP->3*4=12
+N=9: len(6)*2, len(3)*2*2 or AAA+SCPPPP->3*5=15
+dp[i]=i press key1 i times
+dp[i]=dp[j]*(
+S+C+P 3 keys will double it. len[n]=len[j]*(i-j-1)
+->>
+<<-650	2 Keys Keyboard    		49.6%	Medium	
+on screen there is one 'A', you can use copy all and paste.
+return the min keys to reach n 'A'.
+i can be obtained from j (if i%j==0) by paste multiple times.
+dp[i]=dp[j]+i/j (include one copy key and i/j-1 pastes)
+->>
+
 <<-656	Coin Path    		29.3%	Hard	
 given n elements A[i] is the cost to step on i. You can jump forward 1 to B steps. If A[i]=-1 you cannot jump. start from 0 you have to reach the last index with min cost. return the path (if tie return the lexi smallest path)
 dp from right to left (left to right is also fine) dp with path information
@@ -738,7 +764,22 @@ this can be done by shifting all numbers >=j by 1 (shift them to j+1...i), which
 ->>
 
 ### count number of ways
+<<-634	Find the Derangement of An Array    		40.3%	Medium	
+given n integers from 1 to n, derangement means no element is in its original position.
+find the number of derangement.
+try dp: dp[i] represents number of derangement for length i.
+we add ith element, you can put Ai in any previous location. suppose we put it on j. (all other not changed instead shift right). if we put at ith position, i is at the end, we get dp[n-2] otherwise dp[n-1] (n-1)*(dp[n-2]+dp[n-1])
+->>
 
+<<-639	Decode Ways II    		27.2%	Hard	
+A-Z corresponds to 1 to 26. * can be treated as 1-9.
+digit string with *, return number of decoding ways.
+combine to previous char, or no.
+dp[i]=a*dp[i-1]+b*dp[i-2]
+->>
+<<-91	Decode Ways    		25.5%	Medium	
+no *. dp similar, notice contains some illegal case.
+->>
 <<-920	Number of Music Playlists    		47.4%	Hard	
 given N different songs, want to make a list with length L:
 - Every song is played at least once
@@ -1121,7 +1162,11 @@ len=3, [4,5,6], so tail[2]=6.
         return piles.size();
     }
 ```	
-
+<<-646	Maximum Length of Pair Chain    		52.4%	Medium	
+given a list of intervals, (a,b) (c,d) can be chained if b<c.
+return the length of longest chain.
+longest increasing sequence: dp[i] is the max length ending ith pair.
+->>
 <<-960	Delete Columns to Make Sorted III    		54.0%	Hard	
 a list of word, (can treat as a 2d matrix) return the min number of columns to delete making every row sorted.
 LIS problem.
@@ -1868,6 +1913,12 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-635	Design Log Storage System    		59.0%	Medium	
+add log with time stamps
+query start,end with granularity.
+hashmap, binary search
+->>
+
 <<-658	Find K Closest Elements    		41.4%	Medium	
 sorted array find the k closest to x elements. if tie choose the smaller one.
 sort using abs(a-x).
@@ -1884,6 +1935,9 @@ this leads to a binary search approach.
 To check if the array can get more or less than target average:
 - Sum(Ai-target) can be achieved using prefix sum.
 - we keep the 0 to i-k minimum sum and prefix sum. If prefix sum>min sum, then we know we can get average > target.
+->>
+<<-642 Maximum Average Subarray I
+fixed window size k. trivial
 ->>
 
 <<-668	Kth Smallest Number in Multiplication Table    		47.3%	Hard	
@@ -2051,6 +2105,12 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 
+<<-638	Shopping Offers    		52.1%	Medium	
+given a list offers [na,nb,price], and [pricea,priceb] if buy separately. and target number [Na,Nb]
+you can use offers repeatedly. return the min cost to buy exactly the numbers.
+backtracking: with vector operations, could use dp for memoization
+->>
+
 <<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
 backtracking: since the length is small, we can use bitmask to indicate which one is used.
 complexity: will choose or not choose for one grouping. O(k2^n)
@@ -2181,6 +2241,20 @@ also a bitmask dp problem.
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
 
+<<-339	Nested List Weight Sum    		75.0%	Easy
+do dfs and depth*element
+->>
+<<-364	Nested List Weight Sum II    		63.1%	Medium	
+now changed to bottom level depth is 1.
+approach 1: 
+for example 1x+2y+3z=4*(x+y+z)-(3x+2y+1z)
+so just (depth+1)*flatsum-weightsum in 339.
+approach 2: bfs.
+approach 3: do dfs for example 
+we see x, sum=x, 
+then we see y, sum+=flatsum+y->2x+y, 
+we see z: sum+=sum+z ->2x+y+x+y+z, ie we get the flat sum and keep adding. 
+->>
 <<-688	Knight Probability in Chessboard    		49.6%	Medium	
 dfs
 ->>
@@ -2603,7 +2677,10 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
-
+<<-636	Exclusive Time of Functions    		53.2%	Medium	
+single threaded: given string: "id:start:time" and "id:end:time"
+using stack: subtract the eliminated time in stack.
+->>
 <<-735	Asteroid Collision    		43.0%	Medium	
 given a list of numbers, negative means going left, positive goes right.
 two meet, the less heavier will explode, same size both will explode.
@@ -2760,6 +2837,13 @@ subject: tree, stack, OOP, polymorphism
 ->>
 
 ### recursive stack
+
+<<-640	Solve the Equation    		42.5%	Medium	
+equation contains number +-= and x and its coefficient.
+- collect x's coefficient and number sum.
+- stack processing.
+->>
+
 <<-726	Number of Atoms    		50.9%	Hard	
 atom name: Capital+0 or more lowercase.
 include ()
@@ -2804,6 +2888,15 @@ recursive stack. syntax parser.
 ## queue & deque
 - monotonic deque
 
+<<-649	Dota2 Senate    		39.2%	Medium	
+two parties, randiant and dire. Voting is a round based procedure:
+- ban one's right, a senator can make another to lose his rights and all the following rounds
+- announce victory: if the senator find all having rights to vote are from same party.
+The round-based procedure starts from the first senator to the last senator in the given order. This procedure will last until the end of voting. All the senators who have lost their rights will be skipped during the procedure.
+strategy game: greedy: ban the senator from other party next to him, then move himself to the end.
+use two queues (use the index)
+->>
+
 <<-862	Shortest Subarray with Sum at Least K    		24.9%	Hard	
 find the length.
 - prefix sum and record its index and sorted in map then binary search. O(nlogn)
@@ -2826,6 +2919,10 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+<<-632	Smallest Range Covering Elements from K Lists    		53.3%	Hard	
+priority_queue do merge sort.
+->>
+
 <<-692	Top K Frequent Words    		52.6%	Medium	
 sort frequency form highest to lowest, tie, smaller string first.
 pq.
@@ -3870,6 +3967,13 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-647	Palindromic Substrings    		61.4%	Medium	
+return number of pal substrings (with different start end index)
+- expand at all possible position 2n-1 positions
+- dp: dp[i,j]=ispal(s,i,j)+dp[i+1,j]+dp[i,j-1]-dp[i+1,j-1], can also be used for subsequence.
+- manacher most fast.
+->>
+
 <<-686	Repeated String Match    		32.6%	Medium	
 return the min times of repeat string a so that b is a substrng of the repeated one.
 - at least to make the length >=b.
@@ -4584,6 +4688,18 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-633	Sum of Square Numbers    		32.2%	Medium	
+check if c=a^2+b^2, just do search.
+->>
+
+<<-645	Set Mismatch    		42.3%	Easy	
+given 1 to n, one number is changed to other number and then one is missing, one is repeated twice
+find the two number.
+- use number as index to mark seen as negative, thus we can find the repeated.
+- once the repeated is found we can get the missing using sum and target sum.
+- the missing index will not be touched (so we can check the positive one)
+->>
+
 <<-660	Remove 9    		53.8%	Hard	
 return nth number after removing all 9 in digits.
 this is actually a base-9 problem.
@@ -7318,7 +7434,9 @@ save the first index for each char seen. then find the max length.
 hashmap or array.
 ->>
 
-<<-1646	Get Maximum in Generated Array    		48.2%	Easy	->>
+<<-1646	Get Maximum in Generated Array    		48.2%	Easy	
+directly generate the array according to the rule
+->>
 
 <<-1680. Concatneation of consecutive binary numbers
 left shift and add.
@@ -8065,6 +8183,21 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ->>
 
 ## trie
+<<-642	Design Search Autocomplete System    		45.5%	Hard	
+input sentence ending by #
+for each char, return the top 3 hot sentences that the have same prefix as typed
+- sort by frequency
+- same frequency sort by lex order.
+- dfs + pq to sort the top 3 (or no pq, just O(N) to get the top 3)
+->>
+
+<<-648	Replace Words    		57.7%	Medium	
+root word, successor= root word+some other word
+replace all successor with root word, if match more use the root with shortest length.
+- using hashmap for root word, and search each word in string char by char
+- trie (prefix searching, the first ending match)
+->>
+
 <<-676	Implement Magic Dictionary    		55.0%	Medium	
 given a list of word, and a string, check if we change exactly one char in the string and can match the dictionary word.
 Trie: make a trie on string or dictionary word? we can replace the char to * to represent any char. for the string we only need add n strings inside to trie. and then we use dictionary word to match.
@@ -8185,7 +8318,6 @@ symbolic evaluation
 ->>
 <<-755	Pour Water    		43.8%	Medium	->>
 <<-751	IP to CIDR    		60.6%	Medium	->>
-
 <<-717	1-bit and 2-bit Characters    		47.8%	Easy	
 from right to left.
 ->>
@@ -8207,29 +8339,19 @@ use the array second min method.
 <<-665	Non-decreasing Array    		19.6%	Easy	->>
 <<-661	Image Smoother    		52.0%	Easy	->>
 <<-657	Robot Return to Origin    		73.4%	Easy	->>
-
-
-
-<<-651	4 Keys Keyboard    		52.8%	Medium	->>
-<<-650	2 Keys Keyboard    		49.6%	Medium	->>
-<<-649	Dota2 Senate    		39.2%	Medium	->>
-<<-648	Replace Words    		57.7%	Medium	->>
-<<-647	Palindromic Substrings    		61.4%	Medium	->>
-<<-646	Maximum Length of Pair Chain    		52.4%	Medium	->>
-<<-645	Set Mismatch    		42.3%	Easy	->>
 <<-643	Maximum Average Subarray I    		41.7%	Easy	->>
-<<-642	Design Search Autocomplete System    		45.5%	Hard	->>
 <<-641	Design Circular Deque    		54.5%	Medium	->>
-<<-640	Solve the Equation    		42.5%	Medium	->>
-<<-639	Decode Ways II    		27.2%	Hard	->>
-<<-638	Shopping Offers    		52.1%	Medium	->>
 <<-637	Average of Levels in Binary Tree    		64.0%	Easy	->>
-<<-636	Exclusive Time of Functions    		53.2%	Medium	->>
-<<-635	Design Log Storage System    		59.0%	Medium	->>
-<<-634	Find the Derangement of An Array    		40.3%	Medium	->>
-<<-633	Sum of Square Numbers    		32.2%	Medium	->>
-<<-632	Smallest Range Covering Elements from K Lists    		53.3%	Hard	->>
-<<-631	Design Excel Sum Formula    		31.8%	Hard	->>
+
+
+<<-631	Design Excel Sum Formula    		31.8%	Hard	
+excel function: 
+Excel(H,W), H 1-26, W A to Z.
+set(r,c) set the value
+sum(row,col,vector<string>) C[r,c]=sum of all the value represented by string
+A1 ->row 1 col A, A1:B2 means the top cell is A1 and bottom right cell is B2.
+
+->>
 <<-630	Course Schedule III    		33.6%	Hard	->>
 <<-629	K Inverse Pairs Array    		31.4%	Hard	->>
 <<-628	Maximum Product of Three Numbers    		47.0%	Easy	->>
@@ -8530,7 +8652,7 @@ Similar problem: 398
 <<-367	Valid Perfect Square    		41.9%	Easy	->>
 <<-366	Find Leaves of Binary Tree    		71.3%	Medium	->>
 <<-365	Water and Jug Problem    		30.8%	Medium	->>
-<<-364	Nested List Weight Sum II    		63.1%	Medium	->>
+
 <<-363	Max Sum of Rectangle No Larger Than K    		38.2%	Hard	->>
 <<-362	Design Hit Counter    		64.6%	Medium	->>
 
@@ -8557,7 +8679,7 @@ Similar problem: 398
 <<-342	Power of Four    		41.4%	Easy	->>
 <<-341	Flatten Nested List Iterator    		53.7%	Medium	->>
 <<-340	Longest Substring with At Most K Distinct Characters    		44.7%	Hard	->>
-<<-339	Nested List Weight Sum    		75.0%	Easy	->>
+
 <<-338	Counting Bits    		70.0%	Medium	->>
 <<-337	House Robber III    		51.0%	Medium	->>
 <<-336	Palindrome Pairs    		34.2%	Hard	->>
@@ -8841,7 +8963,7 @@ add all left into stack, pop and add all right into stack.
 <<-94	Binary Tree Inorder Traversal    		64.8%	Medium	->>
 <<-93	Restore IP Addresses    		36.7%	Medium	->>
 <<-92	Reverse Linked List II    		39.8%	Medium	->>
-<<-91	Decode Ways    		25.5%	Medium	->>
+
 <<-90	Subsets II    		48.0%	Medium	->>
 <<-89	Gray Code    		49.7%	Medium	->>
 <<-88	Merge Sorted Array    		40.0%	Easy	->>
