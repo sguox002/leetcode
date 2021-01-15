@@ -3191,6 +3191,18 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
+<<-652	Find Duplicate Subtrees    		51.3%	Medium	
+postorder get the subtree's serialization and check hashmap.
+->>
+
+<<-655	Print Binary Tree    		55.4%	Medium	
+row number = height, col number shall be odd. even the node does not exist you need reserve space for it.
+->>
+<<-654	Maximum Binary Tree    		80.6%	Medium	
+root is the max. find the max divide into left and right.
+->>
+<<-653	Two Sum IV - Input is a BST    		55.9%	Easy	->>
+
 <<-662	Maximum Width of Binary Tree    		40.2%	Medium	
 width is the level width. (according to full tree definition)
 dfs with full tree index.
@@ -8196,10 +8208,8 @@ use the array second min method.
 <<-661	Image Smoother    		52.0%	Easy	->>
 <<-657	Robot Return to Origin    		73.4%	Easy	->>
 
-<<-655	Print Binary Tree    		55.4%	Medium	->>
-<<-654	Maximum Binary Tree    		80.6%	Medium	->>
-<<-653	Two Sum IV - Input is a BST    		55.9%	Easy	->>
-<<-652	Find Duplicate Subtrees    		51.3%	Medium	->>
+
+
 <<-651	4 Keys Keyboard    		52.8%	Medium	->>
 <<-650	2 Keys Keyboard    		49.6%	Medium	->>
 <<-649	Dota2 Senate    		39.2%	Medium	->>
