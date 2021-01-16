@@ -764,6 +764,14 @@ this can be done by shifting all numbers >=j by 1 (shift them to j+1...i), which
 ->>
 
 ### count number of ways
+
+<<-629	K Inverse Pairs Array    		31.4%	Hard	
+given 1 to n, find how many different permutations withe exactly K inverse pairs (i<j and A[i]>A[j])
+dp[n,k] represent the number of ways to have n elements k inverse pair
+when adding n: you can add it to 1 to n position and the number of inversed pairs:
+dp[n-1,k],dp[n-1,k-1]...
+->>
+
 <<-634	Find the Derangement of An Array    		40.3%	Medium	
 given n integers from 1 to n, derangement means no element is in its original position.
 find the number of derangement.
@@ -1317,6 +1325,28 @@ Take a greedy step and reduce to a smaller problem. Generally need some insights
 Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
+
+<<-621	Task Scheduler    		51.1%	Medium	
+different tasks A-Z. and can be arranged in any order. 
+n is the cooldown period. the time between two same tasks shall >=n.
+return the least number of time to finish the task.
+arrange the most frequent task in n spaced interval, then fill less frequent task. 
+- (maxfreq-1)*(n-1) 
+- number of maxfreq added.
+- if number of different task cannot fit in the n slots, tasks.size()
+->>
+
+<<-630	Course Schedule III    		33.6%	Hard	
+given n courses, each course has duration days and closing day. You will start on the 1st day, return max number of course taken.
+greedy: You can start a course <=closing-duration. take shorter courses will have more chances to take more courses, also we need take courses with smallest closing day first.
+- sort by closing day
+- tracking the start time.
+- add the duration into heap
+- if s+duration>closing, try to pop the longest course.
+key idea: to add current course, pop previous long course
+can also use dp. similar to longest increasing subsequence. (interval)
+knapsack:dp[i,time] max number of courses including ith course 
+->>
 
 <<-659	Split Array into Consecutive Subsequences    		44.0%	Medium	
 given a sorted array, see if you can split into 1 or more subsequence with consecutive integers with length>=3
@@ -2388,6 +2418,15 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+<<-210	Course Schedule II    		41.7%	Medium	
+given a list of prerquisite, return the ordering of course taken
+bfs: remove source nodes layer by layer.
+->>
+<<-207	Course Schedule    		43.8%	Medium	
+given a list of prerquisites, check if we you can finish all the courses.
+dfs: no cycle. detect if there is a cycle.
+->>
+
 <<-675	Cut Off Trees for Golf Event    		34.9%	Hard	->>
 
 <<-752	Open the Lock    		52.3%	Medium	
@@ -3288,6 +3327,16 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
+<<-617	Merge Two Binary Trees    		74.8%	Easy	
+overlapped add them together. do traverse at the same time.
+->>
+
+<<-623	Add One Row to Tree    		50.0%	Medium	
+add a row of nodes to depth d. original left subtree is still left, original right is still right.
+- bfs until d-1 layers (parent nodes) and then do the swaps.
+- dfs: add 1 layer, so that cd==d, then do the swap and return current search.
+->>
+
 <<-652	Find Duplicate Subtrees    		51.3%	Medium	
 postorder get the subtree's serialization and check hashmap.
 ->>
@@ -4101,6 +4150,12 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-624	Maximum Distance in Arrays    		39.2%	Medium	
+given m sorted array. pick two elements from two different array and get the distance=|a-b|. return the max distance.
+note: it is not a matrix. 
+get the min of the first col and max from the back of each row.
+->>
+
 <<-678 valid paenthesis string
 string include (*) * can represent left or right or empty.
 '*' as a left, we increase counter by 1
@@ -4688,6 +4743,13 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-625	Minimum Factorization    		32.8%	Medium	
+given integer n, find the smallest integer b whose digit product=a.
+if there is no answer return 0.
+factorization of n, and use these factors to form a number.
+to get smallest, we shall try largest factor 9 first and put it on the right.
+->>
+
 <<-633	Sum of Square Numbers    		32.2%	Medium	
 check if c=a^2+b^2, just do search.
 ->>
@@ -8342,37 +8404,23 @@ use the array second min method.
 <<-643	Maximum Average Subarray I    		41.7%	Easy	->>
 <<-641	Design Circular Deque    		54.5%	Medium	->>
 <<-637	Average of Levels in Binary Tree    		64.0%	Easy	->>
-
-
+<<-628	Maximum Product of Three Numbers    		47.0%	Easy	->>
+<<-627	Swap Salary    		76.6%	Easy	->>
 <<-631	Design Excel Sum Formula    		31.8%	Hard	
 excel function: 
 Excel(H,W), H 1-26, W A to Z.
 set(r,c) set the value
 sum(row,col,vector<string>) C[r,c]=sum of all the value represented by string
 A1 ->row 1 col A, A1:B2 means the top cell is A1 and bottom right cell is B2.
-
 ->>
-<<-630	Course Schedule III    		33.6%	Hard	->>
-<<-629	K Inverse Pairs Array    		31.4%	Hard	->>
-<<-628	Maximum Product of Three Numbers    		47.0%	Easy	->>
-<<-627	Swap Salary    		76.6%	Easy	->>
-<<-626	Exchange Seats    		64.1%	Medium	->>
-<<-625	Minimum Factorization    		32.8%	Medium	->>
-<<-624	Maximum Distance in Arrays    		39.2%	Medium	->>
-<<-623	Add One Row to Tree    		50.0%	Medium	->>
 <<-622	Design Circular Queue    		44.7%	Medium	->>
-<<-621	Task Scheduler    		51.1%	Medium	->>
-<<-620	Not Boring Movies    		68.8%	Easy	->>
-<<-619	Biggest Single Number    		44.0%	Easy	->>
-<<-618	Students Report By Geography    		57.7%	Hard	->>
-<<-617	Merge Two Binary Trees    		74.8%	Easy	->>
 
-<<-615	Average Salary: Departments VS Company    		50.0%	Hard	->>
-<<-614	Second Degree Follower    		31.6%	Medium	->>
-<<-613	Shortest Distance in a Line    		78.7%	Easy	->>
-<<-612	Shortest Distance in a Plane    		60.3%	Medium	->>
-
-<<-611	Valid Triangle Number    		48.8%	Medium	->>
+<<-611	Valid Triangle Number    		48.8%	Medium	
+given an array, find number of triplets which can make a triangle.
+a+b>c 
+- sort the array and  use two pointer i,j and find k using binary search O(N^2log(n))
+- 
+->>
 <<-610	Triangle Judgement    		67.3%	Easy	->>
 <<-609	Find Duplicate File in System    		60.6%	Medium	->>
 <<-608	Tree Node    		68.4%	Medium	->>
@@ -8839,10 +8887,9 @@ O(N) if we do not consider string compare.
 <<-212	Word Search II    		35.9%	Hard	->>
 
 <<-211	Design Add and Search Words Data Structure    		39.2%	Medium	->>
-<<-210	Course Schedule II    		41.7%	Medium	->>
 <<-209	Minimum Size Subarray Sum    		38.9%	Medium	->>
 <<-208	Implement Trie (Prefix Tree)    		50.9%	Medium	->>
-<<-207	Course Schedule    		43.8%	Medium	->>
+
 <<-206	Reverse Linked List    		64.1%	Easy	->>
 <<-205	Isomorphic Strings    		40.1%	Easy	->>
 <<-204	Count Primes    		31.9%	Easy	->>
