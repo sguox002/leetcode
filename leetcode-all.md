@@ -1431,6 +1431,13 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-484	Find Permutation    		63.9%	Medium	
+given "DI" string, return the lexi smallest permutation of 1 to n.
+for example "DI" this needs a permutation of 1,2,3. [2,1,3] is the smallest one.
+idea: starting from the smallest permutation of 1 to n. then we reverse all D.
+for example 'DI', we start from [1,2,3], then we reverse 1,2 ->[2,1,3]
+->>
+
 <<-502	IPO    		40.9%	Hard	
 at most finish k distinct projects. given a list of projects with profit[i] and min capital C[i] needed. Initially we have capital W. Once finished the project the profit is added to the capital.
 return the final max capital.
@@ -2280,6 +2287,28 @@ level: 5
 backtracking problem generally finds all sets required. It can also be used for counting.
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
+optimization in backtracking is very important.
+
+<<-488	Zuma Game    		39.2%	Hard	
+a row of balls with color RYBGW, and you have several balls in hand. 
+each time you can choose a ball at hand and put any place. If 3 or more consecutive you can remoe these balls.
+return the min balls insertion to empty all balls or -1 if impossible.
+dp intervals: insert a ball to form 3 or more consecutive, or waiting for connection, especially when you eliminate 3 and there is one more not eliminated. so greedy does not work.
+board<=16, hand<=5
+board="RRWWRRBBRR”， hand="WB"
+first put B, since put W will eliminate R and remaining R cannot clear.
+RRWWRRBBRR->RRWWRRBBRWR->RRWWRRBBBRWR->RRWWRRRWR->RRWWWR->RRR->""
+or do dfs/backtracking without memo.
+- which one to go first, m!
+- which position to insert n+1 positions
+prune: impossible case, remove balls not appeared in board. skip insert identical position.
+size>mn, return;
+TLE (adding hashset to store seen string will avoid TLE), and also gives wrong answer for:
+"WWRRBBWW"
+"WRBRW"
+even the accepted version is not correct since it does not follow the rule. It uses some greedy approach to use two balls and each time only eliminate 3 balls even it has 3 more such balls.
+
+->>
 
 <<-491	Increasing Subsequences    		46.9%	Medium	
 find all increasing subsequence with length>=2
@@ -2426,6 +2455,11 @@ a lot of cases can also be done via bfs, union find, backtracking.
 given robot API: move, turnLeft,turnRight, clean
 design algorithm to clean the entire room.
 simulate the dfs. from current position and goes one direction until blocked and then try other direction. going back one step.
+since we do not know the matrix, using hashmap to record visited cell
+- clean current cell and mark visited.
+- loop 4 directions
+- dfs to clean all cells along current direction.
+- back off one cell and try other directions.
 ->>
 
 <<-529	Minesweeper    		60.2%	Medium	
@@ -4135,6 +4169,12 @@ two pointer merge.
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+<<-485	Max Consecutive Ones    		53.5%	Easy	->>
+<<-487	Max Consecutive Ones II    		47.9%	Medium	
+you can flip 0 to 1 at most once. find the longest window of all 1.
+sliding window: record previous previous 0 position and update the length.
+->>
+
 <<-904	Fruit Into Baskets    		42.7%	Medium	
 you have two baskests, each basket holds one type of fruit. You start at any index of the array. if you cannot choose, stop. each tree you can pick one fruit.
 return max amount of fruits
@@ -4477,6 +4517,14 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-481	Magical String    		47.8%	Medium	
+s contains only 1 and 2. if we concat the number of contiguous digits and we get the same string of s.
+given a integer N, return the number of 1 in the first N digits in the magical string.
+odd: add 1, the char in s represent the number of digits to add.
+even: add 2
+->>
+
+
 <<-498	Diagonal Traverse    		48.9%	Medium	
 given a matrix, return the diagonal traverse, up and down...
 - can use hashmap and then reverse 
@@ -5100,6 +5148,11 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-483	Smallest Good Base    		36.0%	Hard	
+given integer n, fidn the smallest base so that n's digit is all 1.
+math: n=sum(b^i)=(b^(i+1)-1)/(b-1) just loop from 2 to log2(n).
+->>
+
 <<-497	Random Point in Non-overlapping Rectangles    		39.0%	Medium	
 first randomly choose a rect using the area as weight (using prefix sum)
 then randomly choose a point in the rect.
@@ -7979,6 +8032,12 @@ linear programming
 NP-hard: non-deterministic polynomial time hardness.
 
 some games especially zero-sum game
+
+<<-486	Predict the Winner    		48.3%	Medium	
+dp strategy game.
+pick one number from either end
+->> 
+
 <<-877	Stone Game    		66.0%	Medium	
 by turn take either end. dp problem.
 ->>
@@ -8915,26 +8974,22 @@ n=sum of its divisor (not including itself)
 most frequent one.
 ->>
 <<-500	Keyboard Row    		65.3%	Easy	->>
-
-
-## leetcode problem list
-
-
 <<-492	Construct the Rectangle    		49.9%	Easy	
 given area, find [l,w], L>=W and difference L-W is minimized.
 math, find the largest factor.
 ->>
-
-
-<<-488	Zuma Game    		39.2%	Hard	->>
-<<-487	Max Consecutive Ones II    		47.9%	Medium	->>
-<<-486	Predict the Winner    		48.3%	Medium	->>
-<<-485	Max Consecutive Ones    		53.5%	Easy	->>
-<<-484	Find Permutation    		63.9%	Medium	->>
-<<-483	Smallest Good Base    		36.0%	Hard	->>
 <<-482	License Key Formatting    		43.0%	Easy	->>
-<<-481	Magical String    		47.8%	Medium	->>
-<<-480	Sliding Window Median    		38.1%	Hard	->>
+
+
+## leetcode problem list
+
+<<-480	Sliding Window Median    		38.1%	Hard	
+fixed window size K. 
+using two heap, one max heap one min heap.
+if k is odd, keep left one more
+if k is even, keep both the same number.
+ 
+->>
 <<-479	Largest Palindrome Product    		29.3%	Hard	->>
 <<-478	Generate Random Point in a Circle    		38.8%	Medium	->>
 <<-477	Total Hamming Distance    		50.5%	Medium	->>
