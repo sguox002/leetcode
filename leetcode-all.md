@@ -282,6 +282,11 @@ dp: use two state inc,dec.
 
 ### knapsack
 put elements in two or three options.
+<<-494	Target Sum    		46.0%	Medium	
+given an array you can assign + and - to each of the elment, so that the sum=target. return number of ways.
+dp, knapsack P-N=target, P+N=tsum.
+dp[i,w]+=dp[i-1,w-c]
+->>
 
 <<-805	Split Array With Same Average    		26.5%	Hard	
 split array into two parts (not necessary in order) making the two arrays have the same average.
@@ -321,6 +326,11 @@ equivalent: knapsack to make positive sum >=tsum/2.
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
 floyd-warshal: find all pair node shortest distance using dp.
+
+<<-490	The Maze    		52.4%	Medium	
+check if we can reach the destination.
+bfs.
+->>
 
 <<-505	The Maze II    		48.1%	Medium	
 the ball will not stop until hit a wall. given start and destination position. 
@@ -2271,6 +2281,11 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 
+<<-491	Increasing Subsequences    		46.9%	Medium	
+find all increasing subsequence with length>=2
+backtracking: using hashset to avoid using it repeatedly. skip duplicates. (starting duplicate and goes right will get same sequence).
+->>
+
 <<-638	Shopping Offers    		52.1%	Medium	
 given a list offers [na,nb,price], and [pricea,priceb] if buy separately. and target number [Na,Nb]
 you can use offers repeatedly. return the min cost to buy exactly the numbers.
@@ -2406,6 +2421,12 @@ also a bitmask dp problem.
 - dfs for all paths
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
+
+<<-489	Robot Room Cleaner    		71.5%	Hard	
+given robot API: move, turnLeft,turnRight, clean
+design algorithm to clean the entire room.
+simulate the dfs. from current position and goes one direction until blocked and then try other direction. going back one step.
+->>
 
 <<-529	Minesweeper    		60.2%	Medium	
 given a 2d grid, 'M' unrevealed mine, 'E' unrevealed empty cell, 'B' revealed blank cell that has no ajacent mines (8 directions), digit '1' to '8' is number of mines adjacent. 'X' revealed mine.
@@ -2876,6 +2897,10 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
 
+<<-496	Next Greater Element I    		64.7%	Easy	
+given two array and find each number of A's greater element in B. A is a subset of B.
+monotonic stack: 
+->>
 <<-503	Next Greater Element II    		57.5%	Medium	
 the array is circular.
 using stack, extending the array. monotonic stack.
@@ -4236,7 +4261,13 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
-
+<<-493	Reverse Pairs    		26.0%	Hard	
+impotant reverse pair i<j, nums[i]>2*nums[j]
+return number of important reverse pairs.
+- using map to store previous visited elements, and binary search O(N^2) since the distance is O(N)
+- segment tree.
+- merge sort divide and conquer. divide into left and right part and then use two pointer to compare O(n/2)+O(n/4)+....
+->>
 
 <<-791	Custom Sort String    		65.8%	Medium	
 sort T using S's order.
@@ -4446,6 +4477,12 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-498	Diagonal Traverse    		48.9%	Medium	
+given a matrix, return the diagonal traverse, up and down...
+- can use hashmap and then reverse 
+- can use two pointer. rebounce back when hit the 4 walls.
+->>
+
 <<-525	Contiguous Array    		43.2%	Medium	
 binary array find the longest subarray with equal number of 0 and 1.
 change 0 to -1, and then use prefix sum to find longest subarray with sum=0;
@@ -5063,6 +5100,12 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-497	Random Point in Non-overlapping Rectangles    		39.0%	Medium	
+first randomly choose a rect using the area as weight (using prefix sum)
+then randomly choose a point in the rect.
+
+->>
+
 <<-519	Random Flip Matrix    		37.4%	Medium	
 given a 2d binary matrix initial all 0. 
 flip will randomly choose one 0 cell and flip its value.
@@ -8337,6 +8380,10 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-495	Teemo Attacking    		56.0%	Medium	
+interval merging
+->>
+
 <<-699	Falling Squares    		42.2%	Hard	
 a list of squares [xi,leni] with x position and side length. Touched squares will glue together.
 return a list of height at position i (left max).\
@@ -8864,25 +8911,21 @@ n=sum of its divisor (not including itself)
 <<-506	Relative Ranks    		50.9%	Easy	->>
 <<-504	Base 7    		46.4%	Easy	->>
 
-
-## leetcode problem list
-
-
 <<-501	Find Mode in Binary Search Tree    		42.9%	Easy	
 most frequent one.
 ->>
 <<-500	Keyboard Row    		65.3%	Easy	->>
 
-<<-498	Diagonal Traverse    		48.9%	Medium	->>
-<<-497	Random Point in Non-overlapping Rectangles    		39.0%	Medium	->>
-<<-496	Next Greater Element I    		64.7%	Easy	->>
-<<-495	Teemo Attacking    		56.0%	Medium	->>
-<<-494	Target Sum    		46.0%	Medium	->>
-<<-493	Reverse Pairs    		26.0%	Hard	->>
-<<-492	Construct the Rectangle    		49.9%	Easy	->>
-<<-491	Increasing Subsequences    		46.9%	Medium	->>
-<<-490	The Maze    		52.4%	Medium	->>
-<<-489	Robot Room Cleaner    		71.5%	Hard	->>
+
+## leetcode problem list
+
+
+<<-492	Construct the Rectangle    		49.9%	Easy	
+given area, find [l,w], L>=W and difference L-W is minimized.
+math, find the largest factor.
+->>
+
+
 <<-488	Zuma Game    		39.2%	Hard	->>
 <<-487	Max Consecutive Ones II    		47.9%	Medium	->>
 <<-486	Predict the Winner    		48.3%	Medium	->>
