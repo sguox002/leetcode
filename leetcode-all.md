@@ -47,6 +47,12 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-446	Arithmetic Slices II - Subsequence    		33.0%	Hard	
+given a list of numbers, find the number of arithmetic subsequence.
+dp: dp[i,diff] represent the length of arithmetic sequence ending with A[i] with the difference = diff.
+dp[i,diff]=dp[j,diff]+1, ans+=diff[i,diff]-2
+->>
+
 <<-467	Unique Substrings in Wraparound String    		35.9%	Medium	
 s is infinite repeat of a-z. given a string t, find the number of unique substring of t is present in s.
 we only need to find the longest substr satisfying the adjacent different is 1 or 25. ending with different char.
@@ -4205,6 +4211,10 @@ segment tree
 - cycle detection
 - traversal
 
+<<-445	Add Two Numbers II    		55.8%	Medium	
+reverse link-list and add then reverse.
+->>
+
 <<-708	Insert into a Sorted Circular Linked List    		32.2%	Medium	
 - empty list
 - traverse and find a proper position with prev<val<=cur.
@@ -4627,6 +4637,11 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-448	Find All Numbers Disappeared in an Array    		56.0%	Easy	
+given 1 to n, some appear twice others appear once. find all disappeared numbers.
+- sort 
+- use the number-1 as the index and mark seen as negative. those positives are seen twice.
+->>
 
 <<-475	Heaters    		33.4%	Medium	
 given a list of houses on a line and a list of heaters on the line.
@@ -5266,6 +5281,12 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-447	Number of Boomerangs    		52.2%	Medium	
+given a list of points on xy plane. D(i,j)=D(i,k) the order matters.
+- get all distance from one point to other points.
+- save into hashmap, dist occurrences. then choose 2 (P(n,2))
+->>
+
 <<-458	Poor Pigs    		54.2%	Hard	
 N buckets of liquid, and only 1 is poisonous. 
 mins_die: if take poisonous, it will die after mins_die
@@ -9218,11 +9239,16 @@ check if there is any cycle. movement shall be one direction.
 ->>
 
 
-<<-448	Find All Numbers Disappeared in an Array    		56.0%	Easy	->>
-<<-447	Number of Boomerangs    		52.2%	Medium	->>
-<<-446	Arithmetic Slices II - Subsequence    		33.0%	Hard	->>
-<<-445	Add Two Numbers II    		55.8%	Medium	->>
-<<-444	Sequence Reconstruction    		23.2%	Medium	->>
+<<-444	Sequence Reconstruction    		23.2%	Medium	
+the original array is a permutation of 1 to n. check if given a sequence if it is uniquely constructable using the sequence. (the only one sequence can be constructed)
+reconstruction means building a shortest common supersequence (all sequence is a subsequence of the supersequence).
+graph problem topology sort.
+- first, construct the dependency graph using seqs
+- try topological sorting on the dependency graph
+- during each step, check whether there is only one option to select the node
+if there is more than one options, return False directly
+- after getting the topological sorted node list, check whether its length is the same with number of distinct values and whether it's the same with org
+->>
 <<-443	String Compression    		42.4%	Medium	->>
 <<-442	Find All Duplicates in an Array    		68.4%	Medium	->>
 <<-441	Arranging Coins    		42.2%	Easy	->>
