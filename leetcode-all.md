@@ -47,6 +47,18 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-472	Concatenated Words    		44.9%	Hard	
+given a list of words, return words which can be concated by other words in the list.
+a problem of dp: with all shorter words ahead.
+
+->>
+
+<<-474	Ones and Zeroes    		43.3%	Medium	
+given a list of binary string, and two numbers m and n. return the largest subset such that there are at most m 0s and n 1s.
+dp: dp[i,j] represent the max length for i 0s and j 1s.
+dp[i,j]=dp[i-k0,j-k1]+1 k0 k1 is the current string number of 0s and number of 1s. Similar to LIS.
+->>
+
 <<-514	Freedom Trail    		44.6%	Hard	
 given a ring with given string on it, and another key to spell. You can rotate clockwise or counter-clockwise.
 if the char is rotated to 12:00 you need press button in the center. return the number of moves needed to spell the key.
@@ -2289,6 +2301,18 @@ generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
 
+<<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
+backtracking: since the length is small, we can use bitmask to indicate which one is used.
+complexity: will choose or not choose for one grouping. O(k2^n)
+can also do dp: dp[mask|(1<<i)]=dp[mask]+nums[i].
+->>
+<<-473	Matchsticks to Square    		37.9%	Medium	
+given a list of stick length, check if we can make a square using all the sticks.
+need divide 4 equal parts with sum=tsum/4.
+this is exactly the problem: 698 partion into k equal subset
+- dfs or backtracking using mask. do not forget the loop.
+->>
+
 <<-488	Zuma Game    		39.2%	Hard	
 a row of balls with color RYBGW, and you have several balls in hand. 
 each time you can choose a ball at hand and put any place. If 3 or more consecutive you can remoe these balls.
@@ -2321,11 +2345,8 @@ you can use offers repeatedly. return the min cost to buy exactly the numbers.
 backtracking: with vector operations, could use dp for memoization
 ->>
 
-<<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
-backtracking: since the length is small, we can use bitmask to indicate which one is used.
-complexity: will choose or not choose for one grouping. O(k2^n)
-can also do dp: dp[mask|(1<<i)]=dp[mask]+nums[i].
-->>
+
+
 
 <<-756	Pyramid Transition Matrix    		55.3%	Medium	
 given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
@@ -3192,6 +3213,21 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+
+<<-480	Sliding Window Median    		38.1%	Hard	
+fixed window size K. 
+using two heap, one max heap one min heap.
+the idea: store to left and right, hold the old value in heap if they are not on the top, using a hashmap to record those old values in heap (why we do not use index, since the old values having different index is the same, we only 
+need to expel the value, do not care its index)
+then we need carefully balance the two heap, finding out the old value in which side.
+- using multiset have more convenience since we can eliminate the old value easily in O(logK), and then find the median also in log(K)
+first build the multiset using first k elements, and pointer to the k/2
+add a new value, if current value < mid, then our pointer--, else no change
+delete old values. this is more concise and clear.
+many occassions set is more convenient than pq.
+->>
+
+
 <<-632	Smallest Range Covering Elements from K Lists    		53.3%	Hard	
 priority_queue do merge sort.
 ->>
@@ -4517,6 +4553,14 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+
+<<-475	Heaters    		33.4%	Medium	
+given a list of houses on a line and a list of heaters on the line.
+return the min radius of the heater so that each house is covered.
+- sort houses, sort heaters
+- for each house find the closest heater and get the max distance. (binary search)
+->>
+
 <<-481	Magical String    		47.8%	Medium	
 s contains only 1 and 2. if we concat the number of contiguous digits and we get the same string of s.
 given a integer N, return the number of 1 in the first N digits in the magical string.
@@ -5148,6 +5192,17 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-478	Generate Random Point in a Circle    		38.8%	Medium	
+area=pi*r^2, use sqrt(r) for random and angle random.
+->>
+
+<<-479	Largest Palindrome Product    		29.3%	Hard	
+find the largest palindrome made from the product of two n-digit number. mod 1337
+- product of n-digit number could be 2n digits or 2n-1 digits.
+- largest 999...9 smallest 10000..0
+- from largest to smallest, build palindrome. and then try to find a factor (the larger one)
+->>
+
 <<-483	Smallest Good Base    		36.0%	Hard	
 given integer n, fidn the smallest base so that n's digit is all 1.
 math: n=sum(b^i)=(b^(i+1)-1)/(b-1) just loop from 2 to log2(n).
@@ -8675,6 +8730,14 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+
+<<-477	Total Hamming Distance    		50.5%	Medium	
+number of bits which is different.
+find the total hamming distance between all pairs of numbers given an array.
+- brutal force O(N^2)
+- 32bits check bit by bit and split into two half n*m
+->>
+
 <<-898	Bitwise ORs of Subarrays    		34.0%	Medium	
 count number of possible values.
 - brutal force using hash to remove duplicates
@@ -8979,26 +9042,14 @@ given area, find [l,w], L>=W and difference L-W is minimized.
 math, find the largest factor.
 ->>
 <<-482	License Key Formatting    		43.0%	Easy	->>
-
+<<-476	Number Complement    		65.0%	Easy	->>
 
 ## leetcode problem list
 
-<<-480	Sliding Window Median    		38.1%	Hard	
-fixed window size K. 
-using two heap, one max heap one min heap.
-if k is odd, keep left one more
-if k is even, keep both the same number.
- 
+<<-471	Encode String with Shortest Length    		48.4%	Hard	
+encode the string: k[str] means str repeats k times. 
+idea:  
 ->>
-<<-479	Largest Palindrome Product    		29.3%	Hard	->>
-<<-478	Generate Random Point in a Circle    		38.8%	Medium	->>
-<<-477	Total Hamming Distance    		50.5%	Medium	->>
-<<-476	Number Complement    		65.0%	Easy	->>
-<<-475	Heaters    		33.4%	Medium	->>
-<<-474	Ones and Zeroes    		43.3%	Medium	->>
-<<-473	Matchsticks to Square    		37.9%	Medium	->>
-<<-472	Concatenated Words    		44.9%	Hard	->>
-<<-471	Encode String with Shortest Length    		48.4%	Hard	->>
 <<-470	Implement Rand10() Using Rand7()    		45.8%	Medium	->>
 <<-469	Convex Polygon    		37.2%	Medium	->>
 <<-468	Validate IP Address    		24.6%	Medium	->>
