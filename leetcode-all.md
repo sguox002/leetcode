@@ -47,6 +47,19 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-467	Unique Substrings in Wraparound String    		35.9%	Medium	
+s is infinite repeat of a-z. given a string t, find the number of unique substring of t is present in s.
+we only need to find the longest substr satisfying the adjacent different is 1 or 25. ending with different char.
+dp: ending with for unique substr.  
+->>
+
+<<-471	Encode String with Shortest Length    		48.4%	Hard	
+encode the string: k[str] means str repeats k times. 
+idea:  dp top down. 
+store the string s min length encoded string in hashmap.
+try each prefix and try to encode it and reduce to subproblem
+->>
+
 <<-472	Concatenated Words    		44.9%	Hard	
 given a list of words, return words which can be concated by other words in the list.
 a problem of dp: with all shorter words ahead.
@@ -2301,6 +2314,17 @@ generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
 
+<<-465	Optimal Account Balancing    		47.6%	Hard	
+given a list of transaction [x,y,z] person x gave person y $z.
+return the min number of transactioons to settle the debt.
+- graph problem
+- we can get each person's net balance from the list of transactions.
+debt>0, need to pay money, debt<0 need to collect money back.
+- Starting from first debt debt[0], we look for all other debts debt[i] (i>0) which have opposite sign to debt[0]. Then each such debt[i] can make one transaction debt[i] += debt[0] to clear the person with debt debt[0]. From now on, the person with debt debt[0] is dropped out of the problem and we recursively drop persons one by one until everyone's debt is cleared meanwhile updating the minimum number of transactions during DFS.
+- backtracking to get the min transaction: skip duplicates.
+->>
+
+
 <<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
 backtracking: since the length is small, we can use bitmask to indicate which one is used.
 complexity: will choose or not choose for one grouping. O(k2^n)
@@ -2952,6 +2976,12 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
 
+<<-456	132 Pattern    		30.5%	Medium	
+i<j<k and nums[i]<nums[k]<nums[j]
+stack: from right to left, keep the stack the largest in the right, so when we see current val > stack top, we assign s3=stack top. then we see a number < s3, we know curr<s3.
+
+->>
+
 <<-496	Next Greater Element I    		64.7%	Easy	
 given two array and find each number of A's greater element in B. A is a subset of B.
 monotonic stack: 
@@ -3344,6 +3374,21 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-454	4Sum II    		53.8%	Medium	
+give 4 arrays and find A[i]+B[j]+C[k]+D[l]=0
+first do A+B and then C+D, then do A+B vs C+D using hashmap two sum.
+->>
+
+<<-460	LFU Cache    		35.1%	Hard	
+LFUCache, get(key), put(key,val)
+least recently used key will be evicted.
+hashmap: key vs value + freq.
+hashmap: key to list iterator 
+hashmap: freq vs key list.
+get: freq++, update the list node in freq vs key list.
+put: modify, add new node. 
+->>
+
 <<-523	Continuous Subarray Sum    		24.6%	Medium	
 check if there is a subarray sum=n*K, n could be any positive integer. with subarray length >=2.
 pre[i]-pre[j]=n*K equivalent to: pre[i]%k=pre[j]%k
@@ -3628,6 +3673,15 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-450	Delete Node in a BST    		44.9%	Medium	
+if key<root, goes left, else goes right
+if key==root, we first sink the root to its right leftmost node, swap it, and delete the left most node.
+->>
+<<-449	Serialize and Deserialize BST    		53.5%	Medium	
+preorder: root left right .. and '# ' for null node.
+deserialization: also do preorder.
+->>
 
 <<-508	Most Frequent Subtree Sum    		58.6%	Medium	
 postorder sum + hashmap
@@ -4337,6 +4391,17 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-451	Sort Characters By Frequency    		63.8%	Medium	
+lambda with capture
+```
+        sort(begin(s),end(s),[&](char a,char b){
+            return mp[a]>mp[b] || (mp[a] == mp[b] && a < b);
+        });
+```
+note we need take care ==, otherwise they will not sort.	
+this is slower than using count sort.	
+->>
+
 <<-493	Reverse Pairs    		26.0%	Hard	
 impotant reverse pair i<j, nums[i]>2*nums[j]
 return number of important reverse pairs.
@@ -4403,6 +4468,15 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-459	Repeated Substring Pattern    		43.1%	Easy	
+- check 1 to n/2 length
+- or (s+s).substr(1,2n-2) contains str itself.
+->>
+
+<<-468	Validate IP Address    		24.6%	Medium	
+ipv4 vs ipv6. be careful of all the restrictions.
+->>
+
 <<-524	Longest Word in Dictionary through Deleting    		48.7%	Medium	
 given a list of dictionary word, and a string. we can delete some chars to get the dictionary word.
 return the longest word with the smallest lexi order.
@@ -5192,6 +5266,66 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-458	Poor Pigs    		54.2%	Hard	
+N buckets of liquid, and only 1 is poisonous. 
+mins_die: if take poisonous, it will die after mins_die
+mins_test: total time to test.
+you can choose to feed a pig with some chosen buckets instaneously.
+return the min number of pigs needed to figure out the poisonous one.
+
+for example: test time=60, min_die=15, we can test only 4 times.
+math base problem: let's take a smaller example: 10 samples with only 1 test allowed, what is the min number of pigs needed? let's assume 5 is poisonous.
+0000
+0001
+0010
+0011
+0100
+0101 (poisonous)
+0110
+0111
+1000
+1001
+first pig: feed all bit0=1 and died  bit0=1
+second pig: feed all bit1=1, and live, bit1=0
+third pig, feed all bit2=1, and died, bit2=1
+fourth pig, feed all bit3=1, and live, bit3=0, and we get 0101=5.
+equivalent: number of bits using base (T+1).
+->>
+
+<<-462	Minimum Moves to Equal Array Elements II    		54.1%	Medium	
+given an arra, find the min moves to make all elements the same. a move is to increase or decrease an element by 1.
+greedy: all moves to median (like meeting place). sort and use two pointer add the difference.
+->>
+
+<<-469	Convex Polygon    		37.2%	Medium	
+given a list of points, sequentially connected if forms a convex polygon.
+p0-p1, p1-p2, two vector cross product and shall have the same orientation.
+
+->>
+
+<<-470	Implement Rand10() Using Rand7()    		45.8%	Medium	
+rand7 generate random integer from 1 to 7. use it generate random in [1,10]
+Note that rand49() generates a uniform random integer in [1, 49], so any number in this range has the same probability to be generated. Suppose k is an integer in range [1, 40], P(rand49() = k) = 1/49.
+
+   P(result = k)
+= P(rand49() = k in the 1st iteration) +
+   P(rand49() > 40 in the 1st iteration) * P(rand49() = k in the 2nd iteration) +
+   P(rand49() > 40 in the 1st iteration) * P(rand49() > 40 in the 2nd iteration) * P(rand49() = k in the 3rd iteration) +
+   P(rand49() > 40 in the 1st iteration) * P(rand49() > 40 in the 2nd iteration) * P(rand49() > 40 in the 3rd iteration) * P(rand49() = k in the 4th iteration) +
+   ...
+= (1/49) + (9/49) * (1/49) + (9/49)^2 * (1/49) + (9/49)^3 * (1/49) + ...
+= (1/49) * [1 + (9/49) + (9/49)^2 + (9/49)^3 + ... ]
+= (1/49) * [1/(1-9/49)]
+= (1/49) * (49/40)
+= 1/40
+
+Implement randM() using randN() when M > N:
+Step 1: Use randN() to generate randX(), where X >= M. In this problem, I use 7 * (rand7() - 1) + (rand7() - 1) to generate rand49() - 1.
+Step 2: Use randX() to generate randM(). In this problem, I use rand49() to generate rand40() then generate rand10.
+
+Note: N^b * (randN() - 1) + N^(b - 1) * (randN() - 1) + N^(b - 2) * (randN() - 1) + ... + N^0 * (randN() - 1) generates randX() - 1, where X = N^(b + 1).
+->>
+
 <<-478	Generate Random Point in a Circle    		38.8%	Medium	
 area=pi*r^2, use sqrt(r) for random and angle random.
 ->>
@@ -8088,6 +8222,11 @@ NP-hard: non-deterministic polynomial time hardness.
 
 some games especially zero-sum game
 
+<<-464	Can I Win    		29.4%	Medium	
+given 1 to MaxN and desiredTotal, cannot reuse the integers. Who first causes the total >=desiredTotal wins. check if the first winner wins.
+backtracking or dp. store bitmask for win or lose for the first player. 
+->>
+
 <<-486	Predict the Winner    		48.3%	Medium	
 dp strategy game.
 pick one number from either end
@@ -8494,6 +8633,12 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-452	Minimum Number of Arrows to Burst Balloons    		49.7%	Medium	
+given a list of balloon with [start,end], return the min number of arrows to burst all balloons
+greedy: sort by end, hit the smallest end will eliminate all those balloons with start<=end.
+
+->>
+
 <<-495	Teemo Attacking    		56.0%	Medium	
 interval merging
 ->>
@@ -8654,6 +8799,17 @@ recursive approach.
 ->>
 
 ## two pointer
+<<-466	Count The Repetitions    		28.5%	Hard	
+S=[s,n] repeat s n times. 
+s1 is obtainable from s2, means that s1 is a subsequence of s2.
+given s1,n1,s2,n2 and S1=[s1,n1],S2=[s2,n2]
+find the max integer M so that [S2,M] is obtainable from S1.
+approach: 
+- you do not need to construct the string since n1 or n2 is very large
+- two pointer search s1*n1 in s2*n2 (using pointer go monotonically but use % for the char)
+- get the max repeat
+->>
+
 
 <<-713	Subarray Product Less Than K    		40.3%	Medium	
 return number of subarray
@@ -9043,36 +9199,25 @@ math, find the largest factor.
 ->>
 <<-482	License Key Formatting    		43.0%	Easy	->>
 <<-476	Number Complement    		65.0%	Easy	->>
+<<-461	Hamming Distance    		73.0%	Easy	->>
 
 ## leetcode problem list
 
-<<-471	Encode String with Shortest Length    		48.4%	Hard	
-encode the string: k[str] means str repeats k times. 
-idea:  
+<<-463	Island Perimeter    		66.3%	Easy	
+check its top and left for overlaps. dp, math.
 ->>
-<<-470	Implement Rand10() Using Rand7()    		45.8%	Medium	->>
-<<-469	Convex Polygon    		37.2%	Medium	->>
-<<-468	Validate IP Address    		24.6%	Medium	->>
-<<-467	Unique Substrings in Wraparound String    		35.9%	Medium	->>
-<<-466	Count The Repetitions    		28.5%	Hard	->>
-<<-465	Optimal Account Balancing    		47.6%	Hard	->>
-<<-464	Can I Win    		29.4%	Medium	->>
-<<-463	Island Perimeter    		66.3%	Easy	->>
-<<-462	Minimum Moves to Equal Array Elements II    		54.1%	Medium	->>
-
-<<-461	Hamming Distance    		73.0%	Easy	->>
-<<-460	LFU Cache    		35.1%	Hard	->>
-<<-459	Repeated Substring Pattern    		43.1%	Easy	->>
-<<-458	Poor Pigs    		54.2%	Hard	->>
-<<-457	Circular Array Loop    		29.7%	Medium	->>
-<<-456	132 Pattern    		30.5%	Medium	->>
 <<-455	Assign Cookies    		50.2%	Easy	->>
-<<-454	4Sum II    		53.8%	Medium	->>
 <<-453	Minimum Moves to Equal Array Elements    		50.5%	Easy	->>
-<<-452	Minimum Number of Arrows to Burst Balloons    		49.7%	Medium	->>
-<<-451	Sort Characters By Frequency    		63.8%	Medium	->>
-<<-450	Delete Node in a BST    		44.9%	Medium	->>
-<<-449	Serialize and Deserialize BST    		53.5%	Medium	->>
+
+<<-457	Circular Array Loop    		29.7%	Medium	
+circular array with positive and negative. postive goes forward and negative goes back.
+check if there is any cycle. movement shall be one direction.
+- if see 0, stop, not a cycle
+- along the path, mark visited if we see visited and detect a cycle.
+- modular for negative, positive.
+->>
+
+
 <<-448	Find All Numbers Disappeared in an Array    		56.0%	Easy	->>
 <<-447	Number of Boomerangs    		52.2%	Medium	->>
 <<-446	Arithmetic Slices II - Subsequence    		33.0%	Hard	->>
