@@ -2982,6 +2982,11 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
 
+<<-439	Ternary Expression Parser    		56.3%	Medium	
+T?2:3 F?1:T?4:5
+recursive stack 
+->>
+
 <<-456	132 Pattern    		30.5%	Medium	
 i<j<k and nums[i]<nums[k]<nums[j]
 stack: from right to left, keep the stack the largest in the right, so when we see current val > stack top, we assign s3=stack top. then we see a number < s3, we know curr<s3.
@@ -3680,6 +3685,11 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
+<<-437	Path Sum III    		47.7%	Medium	
+find number of path with sum=target, the path does not need from root to leaf, but any downpath is good.
+prefix sum with hashmap while dfs.
+->>
+
 <<-450	Delete Node in a BST    		44.9%	Medium	
 if key<root, goes left, else goes right
 if key==root, we first sink the root to its right leftmost node, swap it, and delete the left most node.
@@ -4269,6 +4279,10 @@ two pointer merge.
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+<<-438	Find All Anagrams in a String    		44.3%	Medium	
+fixed window size sliding + hashmap.
+->>
+
 <<-485	Max Consecutive Ones    		53.5%	Easy	->>
 <<-487	Max Consecutive Ones II    		47.9%	Medium	
 you can flip 0 to 1 at most once. find the longest window of all 1.
@@ -4478,6 +4492,11 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-443	String Compression    		42.4%	Medium	
+same char group. size=1, just use the char, otherwise char+repeat num.
+two pointer, one count, one modify in-place.
+->>
+
 <<-459	Repeated Substring Pattern    		43.1%	Easy	
 - check 1 to n/2 length
 - or (s+s).substr(1,2n-2) contains str itself.
@@ -4637,6 +4656,11 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-442	Find All Duplicates in an Array    		68.4%	Medium	
+elements are from 1 to n, some appear twice, other once, find all the elements appear twice.
+mark negative using as index. Same as 448.
+->>
+
 <<-448	Find All Numbers Disappeared in an Array    		56.0%	Easy	
 given 1 to n, some appear twice others appear once. find all disappeared numbers.
 - sort 
@@ -8502,6 +8526,22 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-444	Sequence Reconstruction    		23.2%	Medium	
+the original array is a permutation of 1 to n. check if given a sequence if it is uniquely constructable using the sequence. (the only one sequence can be constructed)
+reconstruction means building a shortest common supersequence (all sequence is a subsequence of the supersequence).
+graph problem topology sort.
+- first, construct the dependency graph using seqs
+- try topological sorting on the dependency graph
+- during each step, check whether there is only one option to select the node
+if there is more than one options, return False directly
+- after getting the topological sorted node list, check whether its length is the same with number of distinct values and whether it's the same with org
+- grpah shall keep all nodes
+- find source node and dest node. (bfs or dfs are both fine)
+please note given seq is not direct connection edge, but an order.
+so we can only use indegree.
+????
+->>
+
 <<-547	Friend Circles  (Number of provinces)  		59.5%	Medium	
 graph dfs. graph connection is given as a NxN matrix.
 for each node, we need do dfs on the row. 
@@ -8654,6 +8694,17 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-436	Find Right Interval    		48.2%	Medium	
+right interval is the start>=previous end, and the smallest one.
+find each intervals right index, if no return -1.
+sort interval by start with index.
+->>
+<<-435	Non-overlapping Intervals    		43.7%	Medium	
+return min number of intervals to remove to make them non-overlapping.
+equivalent to longest non-overlapped interval.
+greedy: always choose the one with smaller ending.
+->>
+
 <<-452	Minimum Number of Arrows to Burst Balloons    		49.7%	Medium	
 given a list of balloon with [start,end], return the min number of arrows to burst all balloons
 greedy: sort by end, hit the smallest end will eliminate all those balloons with start<=end.
@@ -9229,6 +9280,8 @@ check its top and left for overlaps. dp, math.
 ->>
 <<-455	Assign Cookies    		50.2%	Easy	->>
 <<-453	Minimum Moves to Equal Array Elements    		50.5%	Easy	->>
+<<-441	Arranging Coins    		42.2%	Easy	->>
+<<-434	Number of Segments in a String    		37.8%	Easy	->>
 
 <<-457	Circular Array Loop    		29.7%	Medium	
 circular array with positive and negative. postive goes forward and negative goes back.
@@ -9238,29 +9291,14 @@ check if there is any cycle. movement shall be one direction.
 - modular for negative, positive.
 ->>
 
-
-<<-444	Sequence Reconstruction    		23.2%	Medium	
-the original array is a permutation of 1 to n. check if given a sequence if it is uniquely constructable using the sequence. (the only one sequence can be constructed)
-reconstruction means building a shortest common supersequence (all sequence is a subsequence of the supersequence).
-graph problem topology sort.
-- first, construct the dependency graph using seqs
-- try topological sorting on the dependency graph
-- during each step, check whether there is only one option to select the node
-if there is more than one options, return False directly
-- after getting the topological sorted node list, check whether its length is the same with number of distinct values and whether it's the same with org
+<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
+from 1 to n, find the kth lexi smallest integer.
+similar to a tree.
 ->>
-<<-443	String Compression    		42.4%	Medium	->>
-<<-442	Find All Duplicates in an Array    		68.4%	Medium	->>
-<<-441	Arranging Coins    		42.2%	Easy	->>
-<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	->>
-<<-439	Ternary Expression Parser    		56.3%	Medium	->>
-<<-438	Find All Anagrams in a String    		44.3%	Medium	->>
-<<-437	Path Sum III    		47.7%	Medium	->>
-<<-436	Find Right Interval    		48.2%	Medium	->>
-<<-435	Non-overlapping Intervals    		43.7%	Medium	->>
-<<-434	Number of Segments in a String    		37.8%	Easy	->>
+
+
 <<-433	Minimum Genetic Mutation    		42.6%	Medium	->>
-<<-432	All O`one Data Structure    		32.9%	Hard	->>
+<<-432	All O(1) Data Structure    		32.9%	Hard	->>
 <<-431	Encode N-ary Tree to Binary Tree    		73.9%	Hard	->>
 <<-430	Flatten a Multilevel Doubly Linked List    		56.3%	Medium	->>
 <<-429	N-ary Tree Level Order Traversal    		65.9%	Medium	->>
@@ -9281,7 +9319,6 @@ if there is more than one options, return False directly
 <<-414	Third Maximum Number    		30.6%	Easy	->>
 <<-413	Arithmetic Slices    		58.3%	Medium	->>
 <<-412	Fizz Buzz    		63.4%	Easy	->>
-<<-	#	Title	Solution	Acceptance	Difficulty	Frequency  ->>
 <<-411	Minimum Unique Word Abbreviation    		36.8%	Hard	->>
 <<-410	Split Array Largest Sum    		45.7%	Hard	->>
 <<-409	Longest Palindrome    		52.0%	Easy	->>
