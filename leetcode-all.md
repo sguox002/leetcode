@@ -47,6 +47,11 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-413	Arithmetic Slices    		58.3%	Medium	
+- for subarray, if we find subarray length=L, the slices would be: 1+2+...+L-2
+- also can use dp, dp[i+1]=dp[i]+1 if 2*A[i-1]=A[i]+A[i-2]
+->>
+
 <<-446	Arithmetic Slices II - Subsequence    		33.0%	Hard	
 given a list of numbers, find the number of arithmetic subsequence.
 dp: dp[i,diff] represent the length of arithmetic sequence ending with A[i] with the difference = diff.
@@ -1462,6 +1467,18 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-397	Integer Replacement    		33.2%	Medium	
+if even /2, if odd +1 or -1.
+min number of move to reduce n to 1.
+- only +1 when it becomes 4 multiples (but 3 is different 3+1->4->2->1, 3-1->2->1
+->>
+
+<<-406	Queue Reconstruction by Height    		67.7%	Medium	
+given a list of people with height and number of people in front of him >=his height.
+greedy: sort decreasing order. we arrange highest first. 
+after that shorter one we know its exact position.
+->>
+
 <<-484	Find Permutation    		63.9%	Medium	
 given "DI" string, return the lexi smallest permutation of 1 to n.
 for example "DI" this needs a permutation of 1,2,3. [2,1,3] is the smallest one.
@@ -2119,6 +2136,20 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-378	Kth Smallest Element in a Sorted Matrix    		55.4%	Medium	
+rows and columns are sorted.
+- priority_queue to put neighboring into pq. (note we may add one element several times) not efficient
+- priority_queue add first column or row into pq. this we can avoid adding duplicate.
+- binary search: count number of less than target.
+
+->>
+
+<<-410	Split Array Largest Sum    		45.7%	Hard	
+split array into m parts (subarray), return the min the largest sum among the m parts.
+given max sum, check number of parts we can get.
+binary search.
+->>
+
 <<-540	Single Element in a Sorted Array    		57.9%	Medium	
 each element except one appears exactly twice. find the single element.
 -O(N) xor
@@ -2320,6 +2351,46 @@ generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
 
+<<-377	Combination Sum IV    		45.7%	Medium	
+input has no duplicates, find the  number of combinations that sum=target.
+- dp: dp[t]+=dp[t-num[i]]
+->>
+<<-216	Combination Sum III    		59.4%	Medium	
+input has duplicates, find all unique combinations
+- sort
+- skip same 
+- backtrack.
+->>
+<<-40	Combination Sum II    		49.4%	Medium	
+input is unique, each number can be used only once, return all combinations.
+backtrack.
+->>
+<<-39	Combination Sum    		58.1%	Medium	
+input is unique, each number can be reused. return all possible combination with sum==target.
+backtrack.
+->>
+
+<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
+from 1 to n, find the kth lexi smallest integer.
+similar to a tree.
+->>
+<<-386	Lexicographical Numbers    		52.8%	Medium	
+given an integer n generate the numbers in lexi order.
+backtracking.
+similar to 
+->>
+
+<<-425	Word Squares    		49.4%	Hard	
+kth row and column reads the same. 
+given a set of words, find all word squares you can build.
+(all words have the same length <=5)
+- backtracking: 
+- try each string at the first col/row. 
+- then 2nd col/row shall start with given str. similar for others -- this is what trie does.
+build a trie and do backtracking on it.
+
+->>
+
 <<-465	Optimal Account Balancing    		47.6%	Hard	
 given a list of transaction [x,y,z] person x gave person y $z.
 return the min number of transactioons to settle the debt.
@@ -2330,6 +2401,10 @@ debt>0, need to pay money, debt<0 need to collect money back.
 - backtracking to get the min transaction: skip duplicates.
 ->>
 
+<<-416	Partition Equal Subset Sum    		44.3%	Medium	
+- dfs for k=2.
+- dp knapsack: choose or not choose
+->>
 
 <<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
 backtracking: since the length is small, we can use bitmask to indicate which one is used.
@@ -2502,6 +2577,18 @@ also a bitmask dp problem.
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
 
+<<-403	Frog Jump    		40.6%	Hard	
+first jump is 1, if last jump is k, then next jump could be k-1,k,k+1.
+check if frog can land on the last stone.
+- bfs: put all possible position in queue
+- dfs: check if any works prune.
+- dp:  
+->>
+
+<<-417	Pacific Atlantic Water Flow    		41.9%	Medium	
+dfs with two states.
+->>
+
 <<-489	Robot Room Cleaner    		71.5%	Hard	
 given robot API: move, turnLeft,turnRight, clean
 design algorithm to clean the entire room.
@@ -2673,6 +2760,12 @@ dfs, hashmap
 - bfs with parent information
 - bfs with more than one state.
 - bfs with shortest distance problem
+
+<<-433	Minimum Genetic Mutation    		42.6%	Medium	
+a gene string is 8 char ACGT, mutation is one single char changed.
+given a bank of valid gene strings. given a start string, return the min number of permutation to change to the end string.
+bfs.
+->>
 
 <<-527	Word Abbreviation    		55.5%	Hard	
 given n strings, generate abbreviation for each word with min length
@@ -2982,6 +3075,26 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
 
+<<-385	Mini Parser    		34.2%	Medium	
+deserialize the nested integer with string.
+using stringstream to read
+- integer -> nestedInteger object
+- see '[' then it is a list, stop at ']'
+pretty trick.
+->>
+
+<<-394	Decode String    		51.8%	Medium	
+k[encode_str] the str is repeated k times.
+recursive stack.
+->>
+
+<<-402	Remove K Digits    		28.5%	Medium	
+remove k digits from the number so that the new number is the smallest.
+greedy: from left to right, remove the first peak digit.
+1432219->132219->12219->1219->119
+using stack.
+->>
+
 <<-439	Ternary Expression Parser    		56.3%	Medium	
 T?2:3 F?1:T?4:5
 recursive stack 
@@ -3254,7 +3367,11 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+<<-407	Trapping Rain Water II    		43.3%	Hard	
+idea: from the bounary and try the smallest height first.
+check its 4 neighbors, hold water max(maxh-h[x,y],0)
 
+->>
 <<-480	Sliding Window Median    		38.1%	Hard	
 fixed window size K. 
 using two heap, one max heap one min heap.
@@ -3385,6 +3502,31 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-379	Design Phone Directory    		47.4%	Medium	
+assign, recycle, check if number 
+hashmap using used and unused.
+->>
+
+<<-381	Insert Delete GetRandom O(1) - Duplicates allowed    		34.6%	Hard	
+using vector + hashmap value vs index.
+delete just swap to back and pop_back.
+->>
+<<-380	Insert Delete GetRandom O(1)    		48.2%	Medium	
+no duplicates
+->>
+
+<<-432	All O(1) Data Structure    		32.9%	Hard	
+inc(key): insert key with 1 or add existing key by 1
+dec(key): if key val=1, remove it, otherwise decrease it by 1, does not exist nothing
+GetMaxKey()
+GetMinKey()
+inc/dec using hashmap in O(1)
+GetMax and GetMin. in O(1):
+we can create a hashmap: value vs list of keys (linked list)
+to get O(1) for linked-list we needs use hashmap iterator.
+this creates a 2d matrix similar structure.
+->>
+
 <<-454	4Sum II    		53.8%	Medium	
 give 4 arrays and find A[i]+B[j]+C[k]+D[l]=0
 first do A+B and then C+D, then do A+B vs C+D using hashmap two sum.
@@ -3684,6 +3826,22 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-427	Construct Quad Tree    		62.0%	Medium	
+topleft,topright,bottLeft,bottRight
+if the cell has all the same value, then it is a leaf with value
+else we need to divide into 4 cells and recursively build them.
+->>
+
+<<-429	N-ary Tree Level Order Traversal    		65.9%	Medium	->>
+<<-428	Serialize and Deserialize N-ary Tree    		60.6%	Hard	
+serialization needs include number of children for each node.
+->>
+
+<<-431	Encode N-ary Tree to Binary Tree    		73.9%	Hard	
+idea: the first children as the left, all the other children connected as the right.,
+decode reverse the process.
+->>
 
 <<-437	Path Sum III    		47.7%	Medium	
 find number of path with sum=target, the path does not need from root to leaf, but any downpath is good.
@@ -4221,6 +4379,15 @@ segment tree
 - cycle detection
 - traversal
 
+<<-426	Convert Binary Search Tree to Sorted Doubly Linked List    		60.2%	Medium	
+inorder traversal do the transformation in place.
+- create a dummy node and prev node.
+->>
+
+<<-430	Flatten a Multilevel Doubly Linked List    		56.3%	Medium	
+linked list node with child pointer, recursively flatten the child and connect.
+->>
+
 <<-445	Add Two Numbers II    		55.8%	Medium	
 reverse link-list and add then reverse.
 ->>
@@ -4278,6 +4445,13 @@ two pointer merge.
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+
+<<-424	Longest Repeating Character Replacement    		47.7%	Medium	
+return the longest repeating subarray after performing at most k char replacement.
+sliding window with at most k different chars.
+- counting char
+- make sure in the subarray w-maxcnt>k 
+->>
 
 <<-438	Find All Anagrams in a String    		44.3%	Medium	
 fixed window size sliding + hashmap.
@@ -4492,6 +4666,21 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-388	Longest Absolute File Path    		42.1%	Medium	
+given path structure with \n and \t number of \t indicates the level of the path.
+return the length of the longest file path.
+- read line (eat the \n)
+- check number of \t to get the level
+- if level < current, pop the saved director level.
+- if a file name, get the length.
+->>
+
+<<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	
+each char in the substring appear >= K times.
+- divide and conquer: the char appear less than k times will not be a part of the solution, so we can divide it into several parts, and solve them independently.
+- 
+->>
+
 <<-443	String Compression    		42.4%	Medium	
 same char group. size=1, just use the char, otherwise char+repeat num.
 two pointer, one count, one modify in-place.
@@ -4656,6 +4845,11 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-419	Battleships in a Board    		70.6%	Medium	
+battle ship are horizontal or vertical, battleship are separated at least one empty cell.
+if we see empty + x horizontal or vertical we add one ship. 
+->>
+
 <<-442	Find All Duplicates in an Array    		68.4%	Medium	
 elements are from 1 to n, some appear twice, other once, find all the elements appear twice.
 mark negative using as index. Same as 448.
@@ -5305,6 +5499,78 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-384	Shuffle an Array    		53.5%	Medium	
+- using stl random_shuffle
+- swap current (which is similar to stl shuffle)
+ for (int i = 0;i < result.size();i++) {
+    int pos = rand()%(result.size()-i);
+    swap(result[i+pos], result[i]);
+  }
+->>
+
+<<-390	Elimination Game    		44.7%	Medium	
+from left to right, remove the first an every other element, then do it from right
+until only one is left. return the last number.
+the trick is we convert right to left to left to right equivalently so we jsut need to update our head and remaining elements.
+->>
+
+<<-391	Perfect Rectangle    		30.8%	Hard	
+given a list of rectange check if they form a perfect rectangle.
+- total area = covered rect area.
+- only 4 outside points appear once, inner all appear even times.
+->>
+
+<<-396	Rotate Function    		36.5%	Medium	
+f(0)=A[0]*0+A[1]*1+....+(n-1)*A[n-1]
+f(k)=A[k]*0+A[k+1]*1+....+(n-1)*A[(n-1+k)%n]
+f(k-1)=A[k-1]*0+A[k]*1+....+(n-1)*A[(n-1+k-1)%n]
+f(k)-f(k-1)=A[0]+A[1]+...+A[n-1]-(n-2)*A[(n-1+k)%n]
+->>
+
+<<-400	Nth Digit    		32.3%	Medium	
+find the nth digit of the infinite sequence 1,2,3....
+math: 0: 1 digit, 1-9: 9 digits, 10-99: 90....
+->>
+
+<<-382	Linked List Random Node    		52.4%	Medium	->>
+reservoir sampling:
+Choose k entries from n numbers. Make sure each number is selected with the probability of k/n
+Basic idea:
+Choose 1, 2, 3, ..., k first and put them into the reservoir.
+For k+1, pick it with a probability of k/(k+1), and randomly replace a number in the reservoir.
+For k+i, pick it with a probability of k/(k+i), and randomly replace a number in the reservoir.
+Repeat until k+i reaches n
+Proof:
+For k+i, the probability that it is selected and will replace a number in the reservoir is k/(k+i)
+For a number in the reservoir before (let's say X), the probability that it keeps staying in the reservoir is
+P(X was in the reservoir last time) × P(X is not replaced by k+i)
+= P(X was in the reservoir last time) × (1 - P(k+i is selected and replaces X))
+= k/(k+i-1) × （1 - k/(k+i) × 1/k）
+= k/(k+i)
+When k+i reaches n, the probability of each number staying in the reservoir is k/n
+Example
+Choose 3 numbers from [111, 222, 333, 444]. Make sure each number is selected with a probability of 3/4
+First, choose [111, 222, 333] as the initial reservior
+Then choose 444 with a probability of 3/4
+For 111, it stays with a probability of
+P(444 is not selected) + P(444 is selected but it replaces 222 or 333)
+= 1/4 + 3/4*2/3
+= 3/4
+The same case with 222 and 333
+Now all the numbers have the probability of 3/4 to be picked
+Similar problem: 398
+->>
+
+<<-398	Random Pick Index    		57.1%	Medium	
+reservoir sampling
+->>
+
+<<-423	Reconstruct Original Digits from English    		47.1%	Medium	
+english for digits are out of order. reconstruct the digits.
+0,2,4,6,8 has unique letter and use them for the count of these digits
+3: three, eight, cnt[h]-cnt[g] is the number of 3.
+->>
+
 <<-447	Number of Boomerangs    		52.2%	Medium	
 given a list of points on xy plane. D(i,j)=D(i,k) the order matters.
 - get all distance from one point to other points.
@@ -8526,6 +8792,11 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-399	Evaluate Division    		53.5%	Medium	
+given a list of division and return the query.
+dfs or graph. 
+->>
+
 <<-444	Sequence Reconstruction    		23.2%	Medium	
 the original array is a permutation of 1 to n. check if given a sequence if it is uniquely constructable using the sequence. (the only one sequence can be constructed)
 reconstruction means building a shortest common supersequence (all sequence is a subsequence of the supersequence).
@@ -8871,6 +9142,10 @@ recursive approach.
 ->>
 
 ## two pointer
+<<-418	Sentence Screen Fitting    		32.8%	Medium	
+we need add or delete a space, using two pointer, for sentence we add/remove a space, for screen we need %width.
+->>
+
 <<-466	Count The Repetitions    		28.5%	Hard	
 S=[s,n] repeat s n times. 
 s1 is obtainable from s2, means that s1 is a subsequence of s2.
@@ -8959,6 +9234,15 @@ using merge sort with two pointer. wait until we see identical number. choose th
 
 ## bit manipulation
 
+<<-393	UTF-8 Validation    		37.8%	Medium	
+utf8 can have 1,2,3,4 bytes
+one byte: 0xxxxxx
+two bytes: 110xxxxx 10xxxxxx
+three bytes: 1110xxxx,10xxxxxx,10xxxxxx
+four bytes: 11110xxx, 10xxxxxx,10xxxxxx,10xxxxxx
+using the unique head when we find it remaing bytes is known.
+->>
+
 <<-477	Total Hamming Distance    		50.5%	Medium	
 number of bits which is different.
 find the total hamming distance between all pairs of numbers given an array.
@@ -9032,6 +9316,23 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ->>
 
 ## trie
+<<-421	Maximum XOR of Two Numbers in an Array    		53.7%	Medium	
+- from MSB to LSB, each time to leave the bits, we only have one or two numbers. 
+- keep the max prefix to xor with the current bits (make sure the number exist)
+- trie. [8,10,2] binary [1000,1010,0010]
+       x
+     /   \
+    0     1  ->1
+   /     /
+  0     0    ->0
+   \   / \
+    1 0   1  ->1
+   / /   /
+  0 0   0    ->0
+then loop each element and see what's the max xor with the element and get the global max.
+O(32n)
+->>
+
 <<-588	Design In-Memory File System    		46.3%	Hard	
 simulate these functions:
 ls: list file or files under directory
@@ -9282,6 +9583,7 @@ check its top and left for overlaps. dp, math.
 <<-453	Minimum Moves to Equal Array Elements    		50.5%	Easy	->>
 <<-441	Arranging Coins    		42.2%	Easy	->>
 <<-434	Number of Segments in a String    		37.8%	Easy	->>
+<<-422	Valid Word Square    		38.0%	Easy	->>
 
 <<-457	Circular Array Loop    		29.7%	Medium	
 circular array with positive and negative. postive goes forward and negative goes back.
@@ -9290,99 +9592,24 @@ check if there is any cycle. movement shall be one direction.
 - along the path, mark visited if we see visited and detect a cycle.
 - modular for negative, positive.
 ->>
-
-<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
-from 1 to n, find the kth lexi smallest integer.
-similar to a tree.
-->>
-
-
-<<-433	Minimum Genetic Mutation    		42.6%	Medium	->>
-<<-432	All O(1) Data Structure    		32.9%	Hard	->>
-<<-431	Encode N-ary Tree to Binary Tree    		73.9%	Hard	->>
-<<-430	Flatten a Multilevel Doubly Linked List    		56.3%	Medium	->>
-<<-429	N-ary Tree Level Order Traversal    		65.9%	Medium	->>
-<<-428	Serialize and Deserialize N-ary Tree    		60.6%	Hard	->>
-<<-427	Construct Quad Tree    		62.0%	Medium	->>
-<<-426	Convert Binary Search Tree to Sorted Doubly Linked List    		60.2%	Medium	->>
-<<-425	Word Squares    		49.4%	Hard	->>
-<<-424	Longest Repeating Character Replacement    		47.7%	Medium	->>
-<<-423	Reconstruct Original Digits from English    		47.1%	Medium	->>
-<<-422	Valid Word Square    		38.0%	Easy	->>
-<<-421	Maximum XOR of Two Numbers in an Array    		53.7%	Medium	->>
 <<-420	Strong Password Checker    		13.7%	Hard	->>
-<<-419	Battleships in a Board    		70.6%	Medium	->>
-<<-418	Sentence Screen Fitting    		32.8%	Medium	->>
-<<-417	Pacific Atlantic Water Flow    		41.9%	Medium	->>
-<<-416	Partition Equal Subset Sum    		44.3%	Medium	->>
 <<-415	Add Strings    		47.9%	Easy	->>
 <<-414	Third Maximum Number    		30.6%	Easy	->>
-<<-413	Arithmetic Slices    		58.3%	Medium	->>
 <<-412	Fizz Buzz    		63.4%	Easy	->>
 <<-411	Minimum Unique Word Abbreviation    		36.8%	Hard	->>
-<<-410	Split Array Largest Sum    		45.7%	Hard	->>
 <<-409	Longest Palindrome    		52.0%	Easy	->>
 <<-408	Valid Word Abbreviation    		31.1%	Easy	->>
-<<-407	Trapping Rain Water II    		43.3%	Hard	->>
-<<-406	Queue Reconstruction by Height    		67.7%	Medium	->>
 <<-405	Convert a Number to Hexadecimal    		44.2%	Easy	->>
 <<-404	Sum of Left Leaves    		52.1%	Easy	->>
-<<-403	Frog Jump    		40.6%	Hard	->>
-<<-402	Remove K Digits    		28.5%	Medium	->>
 <<-401	Binary Watch    		48.1%	Easy	->>
-<<-400	Nth Digit    		32.3%	Medium	->>
-<<-399	Evaluate Division    		53.5%	Medium	->>
-<<-398	Random Pick Index    		57.1%	Medium	
-reservoir sampling
-->>
-<<-397	Integer Replacement    		33.2%	Medium	->>
-<<-396	Rotate Function    		36.5%	Medium	->>
-<<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	->>
-<<-394	Decode String    		51.8%	Medium	->>
-<<-393	UTF-8 Validation    		37.8%	Medium	->>
 <<-392	Is Subsequence    		49.4%	Easy	->>
-<<-391	Perfect Rectangle    		30.8%	Hard	->>
-<<-390	Elimination Game    		44.7%	Medium	->>
 <<-389	Find the Difference    		57.5%	Easy	->>
-<<-388	Longest Absolute File Path    		42.1%	Medium	->>
 <<-387	First Unique Character in a String    		53.6%	Easy	->>
-<<-386	Lexicographical Numbers    		52.8%	Medium	->>
-<<-385	Mini Parser    		34.2%	Medium	->>
-<<-384	Shuffle an Array    		53.5%	Medium	->>
 <<-383	Ransom Note    		53.2%	Easy	->>
-<<-382	Linked List Random Node    		52.4%	Medium	->>
-reservoir sampling:
-Choose k entries from n numbers. Make sure each number is selected with the probability of k/n
-Basic idea:
-Choose 1, 2, 3, ..., k first and put them into the reservoir.
-For k+1, pick it with a probability of k/(k+1), and randomly replace a number in the reservoir.
-For k+i, pick it with a probability of k/(k+i), and randomly replace a number in the reservoir.
-Repeat until k+i reaches n
-Proof:
-For k+i, the probability that it is selected and will replace a number in the reservoir is k/(k+i)
-For a number in the reservoir before (let's say X), the probability that it keeps staying in the reservoir is
-P(X was in the reservoir last time) × P(X is not replaced by k+i)
-= P(X was in the reservoir last time) × (1 - P(k+i is selected and replaces X))
-= k/(k+i-1) × （1 - k/(k+i) × 1/k）
-= k/(k+i)
-When k+i reaches n, the probability of each number staying in the reservoir is k/n
-Example
-Choose 3 numbers from [111, 222, 333, 444]. Make sure each number is selected with a probability of 3/4
-First, choose [111, 222, 333] as the initial reservior
-Then choose 444 with a probability of 3/4
-For 111, it stays with a probability of
-P(444 is not selected) + P(444 is selected but it replaces 222 or 333)
-= 1/4 + 3/4*2/3
-= 3/4
-The same case with 222 and 333
-Now all the numbers have the probability of 3/4 to be picked
-Similar problem: 398
 
-<<-381	Insert Delete GetRandom O(1) - Duplicates allowed    		34.6%	Hard	->>
-<<-380	Insert Delete GetRandom O(1)    		48.2%	Medium	->>
-<<-379	Design Phone Directory    		47.4%	Medium	->>
-<<-378	Kth Smallest Element in a Sorted Matrix    		55.4%	Medium	->>
-<<-377	Combination Sum IV    		45.7%	Medium	->>
+
+
+
 <<-376	Wiggle Subsequence    		39.9%	Medium	->>
 <<-375	Guess Number Higher or Lower II    		41.4%	Medium	->>
 <<-374	Guess Number Higher or Lower    		44.0%	Easy	->>
@@ -9395,8 +9622,8 @@ Similar problem: 398
 <<-367	Valid Perfect Square    		41.9%	Easy	->>
 <<-366	Find Leaves of Binary Tree    		71.3%	Medium	->>
 <<-365	Water and Jug Problem    		30.8%	Medium	->>
-
-<<-363	Max Sum of Rectangle No Larger Than K    		38.2%	Hard	->>
+<<-363	Max Sum of Rectangle No Larger Than K    		38.2%	Hard	
+->>
 <<-362	Design Hit Counter    		64.6%	Medium	->>
 
 <<-361	Bomb Enemy    		46.4%	Medium	->>
@@ -9575,7 +9802,7 @@ O(N) if we do not consider string compare.
 <<-219	Contains Duplicate II    		38.3%	Easy	->>
 <<-218	The Skyline Problem    		35.1%	Hard	->>
 <<-217	Contains Duplicate    		56.3%	Easy	->>
-<<-216	Combination Sum III    		59.4%	Medium	->>
+
 <<-215	Kth Largest Element in an Array    		56.9%	Medium	->>
 <<-214	Shortest Palindrome    		30.3%	Hard	->>
 <<-213	House Robber II    		37.2%	Medium	->>
@@ -9755,8 +9982,7 @@ add all left into stack, pop and add all right into stack.
 <<-43	Multiply Strings    		34.4%	Medium	->>
 <<-42	Trapping Rain Water    		50.1%	Hard	->>
 <<-41	First Missing Positive    		33.1%	Hard	->>
-<<-40	Combination Sum II    		49.4%	Medium	->>
-<<-39	Combination Sum    		58.1%	Medium	->>
+
 <<-38	Count and Say    		45.4%	Easy	->>
 <<-37	Sudoku Solver    		45.2%	Hard	->>
 <<-36	Valid Sudoku    		49.7%	Medium	->>
