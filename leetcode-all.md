@@ -46,6 +46,12 @@ common steps to solve dp problems
 - define subproblem and subproblem states
 - find the state transfer or recurrence relation
 - how to get the original problem.
+
+<<-322	Coin Change    		36.5%	Medium	
+you can reuse coin, return the min number of coins to make the amount. if not possible return -1.
+1d dp since we can reuse it dp[w]=min(dp[i-c]+1)
+->>
+
 <<-337	House Robber III    		51.0%	Medium	
 binary tree. 
 ->>
@@ -1523,6 +1529,13 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-321	Create Maximum Number    		27.3%	Hard	
+given two array of digits, the order shall be preserved. get the max number with length k.
+greedy: 
+- k=m+n, merge
+- k<m+n, try 0 to k numbers from A, try k to 0 from B. then merge.
+->>
+
 <<-397	Integer Replacement    		33.2%	Medium	
 if even /2, if odd +1 or -1.
 min number of move to reduce n to 1.
@@ -2192,6 +2205,14 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
+<<-327	Count of Range Sum    		35.7%	Hard	
+return the number of range sums in [L,R].
+prefix sum, and save in map: presum vs list of index.
+then use binary search to get the lowerbound and upperbound.
+other approach:
+merge sort: prefix sum and divide into two parts, count the right part - left part in the range.
+binary index tree:
+->>
 
 <<-410	Split Array Largest Sum    		45.7%	Hard	
 split array into m parts (subarray), return the min the largest sum among the m parts.
@@ -2399,6 +2420,14 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
+
+<<-332	Reconstruct Itinerary    		37.3%	Medium	
+giveb a list of tickets [from,to], reconstruct the itinerary in order start with JFK.
+if multiple, return the lexi smallest. You must use the ticket all and once.
+- sort the ticket (lexi order)
+- build a graph 
+- dfs starting from the smallest child. Need make sure one dfs will used all the tickets.
+->>
 
 <<-377	Combination Sum IV    		45.7%	Medium	
 input has no duplicates, find the  number of combinations that sum=target.
@@ -2625,6 +2654,11 @@ also a bitmask dp problem.
 - dfs for all paths
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
+
+<<-329	Longest Increasing Path in a Matrix    		44.0%	Hard	
+do dfs and save longest path in dp.
+->>
+
 <<-341	Flatten Nested List Iterator    		53.7%	Medium	
 dfs to flatten the nested integer. leaf is integer.
 ->>
@@ -2988,6 +3022,10 @@ need store position and direction also, the visited array.
 - union find with path compression O(1)
 - use vector to store parent
 - use hashmap to store parent
+
+<<-323	Number of Connected Components in an Undirected Graph    		56.9%	Medium	
+union-find.
+->>
 
 <<-685	Redundant Connection II    		32.8%	Hard	
 a rooted tree. given a list of directed edges node from 0 to n-1. return an edge that can be removed to that the resulting graph is a rooted tree of n nodes. if there are multiple answers, remove the last one.
@@ -3594,6 +3632,11 @@ approach:
 ->>
 
 ## hashset, hashmap
+
+<<-325	Maximum Size Subarray Sum Equals k    		47.0%	Medium	
+prefix sum and using hashmap. only need to store the first index.
+->>
+
 <<-353	Design Snake Game    		34.9%	Medium	
 given a grid. the snake is initially at (0,0) with length=1.
 given an array of food at (ri,ci). snake eat the food, get one point and increase length by 1.
@@ -3949,6 +3992,21 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-331	Verify Preorder Serialization of a Binary Tree    		40.7%	Medium	
+serialization uses '#' for null node. 
+each node has two children (counting '#')
+- each node has one incoming, 2 outcoming.
+- root has zero incoming
+- '#' has no outcoming
+if we count diff=out-in. the diff will always >=0 and will be 0 at the end. (just similar to valid parenthesis)
+->>
+
+<<-333	Largest BST Subtree    		36.7%	Medium	
+find the subtree which is a BST with largest number of nodes.
+postorder: count the nodes and get the lmax and rmin to make sure it is a bst
+O(N) complexity.
+->>
 
 <<-173	Binary Search Tree Iterator    		58.2%	Medium	
 binary tree inorder traversal iterative approach using stack.
@@ -4512,6 +4570,11 @@ segment tree
 - cycle detection
 - traversal
 
+<<-328	Odd Even Linked List    		56.5%	Medium	
+group odd value nodes followed by the even list.
+create two lists and then connect them.
+->>
+
 <<-426	Convert Binary Search Tree to Sorted Doubly Linked List    		60.2%	Medium	
 inorder traversal do the transformation in place.
 - create a dummy node and prev node.
@@ -4724,6 +4787,21 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 - sort makes things easier.
 - sort using given order
 
+<<-324	Wiggle Sort II    		30.4%	Medium	
+idea: we shall find the median and divide them into smaller and larger.
+brutal force: we arrange left right left right ...
+virtual index: this is hard.
+->>
+<<-280	Wiggle Sort    		64.3%	Medium	
+do it inplace. this allows >= and <=
+sort and swap neighboring.
+->>
+<<-215	Kth Largest Element in an Array    		56.9%	Medium	
+partitioning
+nth_element 
+priority_queue.
+->>
+
 <<-451	Sort Characters By Frequency    		63.8%	Medium	
 lambda with capture
 ```
@@ -4801,6 +4879,15 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-161. One Edit Distance
+insert exactly one char into s and get t.
+del exactly one char from s and get t.
+replace one char in s and get t.
+- the length shall differ <=1.
+- swap s and t if s is shorter than t. (no dp)
+- choose delete or replace (insert is converted)
+->>
+
 <<-388	Longest Absolute File Path    		42.1%	Medium	
 given path structure with \n and \t number of \t indicates the level of the path.
 return the length of the longest file path.
@@ -5652,6 +5739,13 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-330	Patching Array    		34.8%	Hard	
+given a sorted array, add/patch elements to the array such that any number in [1,n] can be formed by the sum of some elements in the array, return min number of patches required.
+        //the fastest way to go to n without leaving out any number
+        //if the smaller subproblem  solves from 1 to m, then add a number m+1, it solves the problem from 1 to 2m+1
+        //the greedy choice is the smaller subproblem's sum+1
+->>
+
 <<-335	Self Crossing    		28.5%	Hard	
 you are given an array distance to go counter-clockwise. first at (0,0) facing north.
 check if the path cross itself.
@@ -8676,13 +8770,6 @@ sort and then use two pointer to match.
 simple, using string as stack
 ->>
 
-<<-161. One Edit Distance
-insert exactly one char into s and get t.
-del exactly one char from s and get t.
-replace one char in s and get t.
-- the length shall differ <=1.
-- swap s and t if s is shorter than t. (no dp)
-->>
 <<-1672. Richest customer wealth
 trivial
 level: 1
@@ -9865,19 +9952,6 @@ deque->>
 ## leetcode problem list
 
 
-<<-333	Largest BST Subtree    		36.7%	Medium	->>
-<<-332	Reconstruct Itinerary    		37.3%	Medium	->>
-<<-331	Verify Preorder Serialization of a Binary Tree    		40.7%	Medium	->>
-<<-330	Patching Array    		34.8%	Hard	->>
-<<-329	Longest Increasing Path in a Matrix    		44.0%	Hard	->>
-<<-328	Odd Even Linked List    		56.5%	Medium	->>
-<<-327	Count of Range Sum    		35.7%	Hard	->>
-
-<<-325	Maximum Size Subarray Sum Equals k    		47.0%	Medium	->>
-<<-324	Wiggle Sort II    		30.4%	Medium	->>
-<<-323	Number of Connected Components in an Undirected Graph    		56.9%	Medium	->>
-<<-322	Coin Change    		36.5%	Medium	->>
-<<-321	Create Maximum Number    		27.3%	Hard	->>
 <<-320	Generalized Abbreviation    		52.9%	Medium	->>
 <<-319	Bulb Switcher    		45.2%	Medium	->>
 <<-318	Maximum Product of Word Lengths    		51.8%	Medium	->>
@@ -9919,7 +9993,7 @@ deque->>
 <<-283	Move Zeroes    		58.2%	Easy	->>
 <<-282	Expression Add Operators    		36.2%	Hard	->>
 <<-281	Zigzag Iterator    		59.0%	Medium	->>
-<<-280	Wiggle Sort    		64.3%	Medium	->>
+
 <<-279	Perfect Squares    		48.2%	Medium	->>
 <<-278	First Bad Version    		36.7%	Easy	->>
 <<-277	Find the Celebrity    		42.7%	Medium	->>
@@ -9981,7 +10055,7 @@ deque->>
 <<-218	The Skyline Problem    		35.1%	Hard	->>
 <<-217	Contains Duplicate    		56.3%	Easy	->>
 
-<<-215	Kth Largest Element in an Array    		56.9%	Medium	->>
+
 <<-214	Shortest Palindrome    		30.3%	Hard	->>
 
 <<-212	Word Search II    		35.9%	Hard	->>
