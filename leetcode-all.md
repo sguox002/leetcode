@@ -47,6 +47,19 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the original problem.
 
+<<-368	Largest Divisible Subset    		38.1%	Medium	
+in the subset, every pair satisfy a[i]%a[j]=0 or a[j]%a[i]=0
+equivalent: they shall have a gcd. or this is a geometric series.
+sort and then use dp. with parent information
+->>
+
+<<-375	Guess Number Higher or Lower II    		41.4%	Medium	
+number from 1 to n. You guess a number if correct, you win. otherwise, you guess x and pay x. return the min money to guarantee win.
+min of the max money for the choice. ie. assume each time you guess wrong.
+minmax problem.
+dp, minmax.
+->>
+<<-374	Guess Number Higher or Lower    		44.0%	Easy	->>
 <<-413	Arithmetic Slices    		58.3%	Medium	
 - for subarray, if we find subarray length=L, the slices would be: 1+2+...+L-2
 - also can use dp, dp[i+1]=dp[i]+1 if 2*A[i-1]=A[i]+A[i-2]
@@ -274,6 +287,11 @@ if egg does not break, we can check dp[m-1,k] floors
 ->>
 
 ### two state interlace
+<<-376	Wiggle Subsequence    		39.9%	Medium	
+return the longest length of wiggle subsequence
+dp two states: up and down, up is the max length so far, down is the max length so far.
+->>
+
 <<-600	Non-negative Integers without Consecutive Ones    		34.3%	Hard	
 given n, find the number of integers without consecutive ones.
 dp: convert n to binary. previous is 1, then current need to be 0, previous 0, current one can be 1/0
@@ -362,6 +380,20 @@ equivalent: knapsack to make positive sum >=tsum/2.
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
 floyd-warshal: find all pair node shortest distance using dp.
+
+<<-245	Shortest Word Distance III    		55.6%	Medium	
+similar to 244, but the input words could be the same and represent different positions.
+using hashmap to store indices for each word, but need check two cases.
+->>
+<<-244	Shortest Word Distance II    		53.0%	Medium	
+similar to 243, but will be called many times with different parameters
+using hashmap to record the indices for each word.
+->>
+<<-243	Shortest Word Distance    		61.4%	Easy	
+given two words find the distance (shortest)
+one pass: keep updating two indices and find the difference.
+O(N) if we do not consider string compare.
+->>
 
 <<-490	The Maze    		52.4%	Medium	
 check if we can reach the destination.
@@ -2136,13 +2168,6 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
-<<-378	Kth Smallest Element in a Sorted Matrix    		55.4%	Medium	
-rows and columns are sorted.
-- priority_queue to put neighboring into pq. (note we may add one element several times) not efficient
-- priority_queue add first column or row into pq. this we can avoid adding duplicate.
-- binary search: count number of less than target.
-
-->>
 
 <<-410	Split Array Largest Sum    		45.7%	Hard	
 split array into m parts (subarray), return the min the largest sum among the m parts.
@@ -3367,6 +3392,20 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+
+<<-373	Find K Pairs with Smallest Sums    		37.2%	Medium	
+two sorted array, find the pair k smallest (u,v) u from A, and v from B, sum sorted.
+using heap to store the first row or column.
+->>
+
+<<-378	Kth Smallest Element in a Sorted Matrix    		55.4%	Medium	
+rows and columns are sorted.
+- priority_queue to put neighboring into pq. (note we may add one element several times) not efficient
+- priority_queue add first column or row into pq. this we can avoid adding duplicate.
+- binary search: count number of less than target.
+
+->>
+
 <<-407	Trapping Rain Water II    		43.3%	Hard	
 idea: from the bounary and try the smallest height first.
 check its 4 neighbors, hold water max(maxh-h[x,y],0)
@@ -3826,6 +3865,16 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-173	Binary Search Tree Iterator    		58.2%	Medium	
+binary tree inorder traversal iterative approach using stack.
+add all left into stack, pop and add all right into stack.
+->>
+
+<<-366	Find Leaves of Binary Tree    		71.3%	Medium	
+find leaves and then remove, until no nodes left.
+postorder: leaf depth=0, and upper level is 1...
+->>
 
 <<-427	Construct Quad Tree    		62.0%	Medium	
 topleft,topright,bottLeft,bottRight
@@ -4845,6 +4894,10 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-363	Max Sum of Rectangle No Larger Than K    		38.2%	Hard	
+idea: get all possible submatrices and reduce to 1d array, and then find max subarray sum <=k.
+->>
+
 <<-419	Battleships in a Board    		70.6%	Medium	
 battle ship are horizontal or vertical, battleship are separated at least one empty cell.
 if we see empty + x horizontal or vertical we add one ship. 
@@ -5499,6 +5552,18 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-365	Water and Jug Problem    		30.8%	Medium	
+fermat theorem.
+        //number theory: coprime: can get any number
+        //has a gcd, then it can only get any number of N*gcd
+        //for example 5,3: 5-3=2, 5-(3-2)=1
+
+->>
+
+<<-372	Super Pow    		36.5%	Medium	
+binary exponential. this can use base 10 log10
+->>
+
 <<-384	Shuffle an Array    		53.5%	Medium	
 - using stl random_shuffle
 - swap current (which is similar to stl shuffle)
@@ -5601,6 +5666,7 @@ second pig: feed all bit1=1, and live, bit1=0
 third pig, feed all bit2=1, and died, bit2=1
 fourth pig, feed all bit3=1, and live, bit3=0, and we get 0101=5.
 equivalent: number of bits using base (T+1).
+this is also a minmax problem, suppose we all miss.
 ->>
 
 <<-462	Minimum Moves to Equal Array Elements II    		54.1%	Medium	
@@ -8965,6 +9031,23 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-253	Meeting Rooms II    		46.3%	Medium	
+problem: given a list of intervals, find the min required room.
+idea: overlapped intervals need separate room. so to find max overlapped intervals.
+approach: intervals, using map to mark start and ending of an event. prefix sum
+->>
+<<-252	Meeting Rooms    		55.1%	Easy	
+check if intervals have overlaps.
+approach: intervals, sort with begin and check begin with previous end.
+O(N)
+level: 2
+->>
+
+<<-370	Range Addition    		63.2%	Medium	
+given a list of range to add [i,j,inc]. return the final array.
+interval add/remove event.
+->>
+
 <<-436	Find Right Interval    		48.2%	Medium	
 right interval is the start>=previous end, and the smallest one.
 find each intervals right index, if no return -1.
@@ -9233,6 +9316,12 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+
+<<-371	Sum of Two Integers    		50.6%	Medium	
+cannot use +/-. 
+carry a&b, result a^b.
+getsum((a&b)<<1,a^b)
+->>
 
 <<-393	UTF-8 Validation    		37.8%	Medium	
 utf8 can have 1,2,3,4 bytes
@@ -9573,9 +9662,6 @@ math, find the largest factor.
 <<-482	License Key Formatting    		43.0%	Easy	->>
 <<-476	Number Complement    		65.0%	Easy	->>
 <<-461	Hamming Distance    		73.0%	Easy	->>
-
-## leetcode problem list
-
 <<-463	Island Perimeter    		66.3%	Easy	
 check its top and left for overlaps. dp, math.
 ->>
@@ -9606,25 +9692,17 @@ check if there is any cycle. movement shall be one direction.
 <<-389	Find the Difference    		57.5%	Easy	->>
 <<-387	First Unique Character in a String    		53.6%	Easy	->>
 <<-383	Ransom Note    		53.2%	Easy	->>
-
-
-
-
-<<-376	Wiggle Subsequence    		39.9%	Medium	->>
-<<-375	Guess Number Higher or Lower II    		41.4%	Medium	->>
-<<-374	Guess Number Higher or Lower    		44.0%	Easy	->>
-<<-373	Find K Pairs with Smallest Sums    		37.2%	Medium	->>
-<<-372	Super Pow    		36.5%	Medium	->>
-<<-371	Sum of Two Integers    		50.6%	Medium	->>
-<<-370	Range Addition    		63.2%	Medium	->>
 <<-369	Plus One Linked List    		58.5%	Medium	->>
-<<-368	Largest Divisible Subset    		38.1%	Medium	->>
-<<-367	Valid Perfect Square    		41.9%	Easy	->>
-<<-366	Find Leaves of Binary Tree    		71.3%	Medium	->>
-<<-365	Water and Jug Problem    		30.8%	Medium	->>
-<<-363	Max Sum of Rectangle No Larger Than K    		38.2%	Hard	
+<<-367	Valid Perfect Square    		41.9%	Easy	
+do not use sqrt, n^2=1+3+5+...
 ->>
-<<-362	Design Hit Counter    		64.6%	Medium	->>
+
+## leetcode problem list
+
+<<-362	Design Hit Counter    		64.6%	Medium	
+count number of hits in the past 5 mins.
+map and binary search, but we need loop to get the sum. could use optimization.
+->>
 
 <<-361	Bomb Enemy    		46.4%	Medium	->>
 <<-360	Sort Transformed Array    		49.3%	Medium	->>
@@ -9737,44 +9815,12 @@ check if there is any cycle. movement shall be one direction.
 <<-256	Paint House    		52.7%	Medium	->>
 <<-255	Verify Preorder Sequence in Binary Search Tree    		45.9%	Medium	->>
 <<-254	Factor Combinations    		47.0%	Medium	->>
-<<-253	Meeting Rooms II    		46.3%	Medium	
-problem: given a list of intervals, find the min required room.
-idea: overlapped intervals need separate room. so to find max overlapped intervals.
-approach: intervals, using map to mark start and ending of an event. prefix sum
-->>
-<<-252	Meeting Rooms    		55.1%	Easy	
-check if intervals have overlaps.
-approach: intervals, sort with begin and check begin with previous end.
-O(N)
-level: 2
-->>
-
-<<-375. guess number higher or lower II
-number from 1 to n. You guess a number if correct, you win. otherwise, you guess x and pay x. return the min money to guarantee win.
-min of the max money for the choice. ie. assume each time you guess wrong.
-minmax problem.
-->>
-
 <<-251	Flatten 2D Vector    		46.0%	Medium	->>
 <<-250	Count Univalue Subtrees    		52.7%	Medium	->>
 <<-249	Group Shifted Strings    		56.9%	Medium	->>
 <<-248	Strobogrammatic Number III    		39.9%	Hard	->>
 <<-247	Strobogrammatic Number II    		48.1%	Medium	->>
 <<-246	Strobogrammatic Number    		45.4%	Easy	->>
-<<-245	Shortest Word Distance III    		55.6%	Medium	
-similar to 244, but the input words could be the same and represent different positions.
-using hashmap to store indices for each word, but need check two cases.
->>>>>>> 4fefd426ed4862ab98184f1adf470a7a82162b95
-->>
-<<-244	Shortest Word Distance II    		53.0%	Medium	
-similar to 243, but will be called many times with different parameters
-using hashmap to record the indices for each word.
-->>
-<<-243	Shortest Word Distance    		61.4%	Easy	
-given two words find the distance (shortest)
-one pass: keep updating two indices and find the difference.
-O(N) if we do not consider string compare.
-->>
 
 <<-242	Valid Anagram    		57.6%	Easy	->>
 <<-241	Different Ways to Add Parentheses    		56.5%	Medium	->>
@@ -9845,10 +9891,6 @@ O(N) if we do not consider string compare.
 <<-176	Second Highest Salary    		32.6%	Easy	->>
 <<-175	Combine Two Tables    		62.6%	Easy	->>
 <<-174	Dungeon Game    		32.9%	Hard	->>
-<<-173	Binary Search Tree Iterator    		58.2%	Medium	
-binary tree inorder traversal iterative approach using stack.
-add all left into stack, pop and add all right into stack.
-->>
 <<-172	Factorial Trailing Zeroes    		38.1%	Easy	->>
 <<-171	Excel Sheet Column Number    		56.5%	Easy	->>
 <<-170	Two Sum III - Data structure design    		34.5%	Easy	->>
