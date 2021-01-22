@@ -46,6 +46,25 @@ common steps to solve dp problems
 - define subproblem and subproblem states
 - find the state transfer or recurrence relation
 - how to get the original problem.
+<<-337	House Robber III    		51.0%	Medium	
+binary tree. 
+->>
+<<-213	House Robber II    		37.2%	Medium	
+a circle.
+->>
+<<-198	House Robber    		42.6%	Easy	
+array.
+->>
+
+<<-338	Counting Bits    		70.0%	Medium	
+from 0 to n, calculate the number of set bits in each number.
+dp: dp[i]=dp[i/2]+i&1
+->>
+
+<<-343	Integer Break    		50.8%	Medium	
+break into at least two positive interger and max the products.
+dp: dp[i]=max(dp[i],dp[j]*(i/j),j*i/j)
+->>
 
 <<-368	Largest Divisible Subset    		38.1%	Medium	
 in the subset, every pair satisfy a[i]%a[j]=0 or a[j]%a[i]=0
@@ -1337,6 +1356,11 @@ len=3, [4,5,6], so tail[2]=6.
         return piles.size();
     }
 ```	
+
+<<-354	Russian Doll Envelopes    		35.8%	Hard	
+LIS.
+->>
+
 <<-646	Maximum Length of Pair Chain    		52.4%	Medium	
 given a list of intervals, (a,b) (c,d) can be chained if b<c.
 return the length of longest chain.
@@ -2601,6 +2625,23 @@ also a bitmask dp problem.
 - dfs for all paths
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
+<<-341	Flatten Nested List Iterator    		53.7%	Medium	
+dfs to flatten the nested integer. leaf is integer.
+->>
+<<-351	Android Unlock Patterns    		49.1%	Medium	
+android locks using a 3x3 grid. No jump is allowed. 
+however you can jump if the point is selected before.
+given m and n, your lock must involves at least m points and at most n points.
+pattern is unique if there is a dot not in other or the order is different.
+- symmetric: 1,3,7,9 are symmetric (starting point), 2,4,5,8 are symmetric
+so we only consider start from 1,2,5.
+- start from 1, it can go to 2,5,4 only, reduce on step.
+- start from 2, it can go to 1,3,4,5,6 only, reduce one step.
+- start from 5, it can go to 1,2,3,4,6,7,8,9, reduce one step.
+- you can skip 1<->3 skip 2, 1<->7 skip 4, 7-9 skip 8, 3-9 skip 6, 3-7 skip 5, 4-6 skip 5...
+actually the skip matrix is enough and we can try all 9 positions.
+dp or dfs.
+->>
 
 <<-403	Frog Jump    		40.6%	Hard	
 first jump is 1, if last jump is k, then next jump could be k-1,k,k+1.
@@ -3125,6 +3166,11 @@ T?2:3 F?1:T?4:5
 recursive stack 
 ->>
 
+<<-334	Increasing Triplet Subsequence    		39.9%	Medium	
+check if there exist i<j<k and A[i]<A[j]<A[k]
+similar to 132 pattern. s1 to be the left min.
+->>
+
 <<-456	132 Pattern    		30.5%	Medium	
 i<j<k and nums[i]<nums[k]<nums[j]
 stack: from right to left, keep the stack the largest in the right, so when we see current val > stack top, we assign s3=stack top. then we see a number < s3, we know curr<s3.
@@ -3392,6 +3438,13 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+<<-347	Top K Frequent Elements    		61.9%	Medium	->>
+<<-358	Rearrange String k Distance Apart    		35.4%	Hard	
+rearrange the string so that identical char are at least k distance.
+hashmap to get the frequency
+then use heap to arrange highest freq char first.
+arrange k chars, (pop) and then update the frequency and put back to heap.
+->>
 
 <<-373	Find K Pairs with Smallest Sums    		37.2%	Medium	
 two sorted array, find the pair k smallest (u,v) u from A, and v from B, sum sorted.
@@ -3541,6 +3594,37 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-353	Design Snake Game    		34.9%	Medium	
+given a grid. the snake is initially at (0,0) with length=1.
+given an array of food at (ri,ci). snake eat the food, get one point and increase length by 1.
+the food appears one by one, will appear after the one is eaten.
+the game is over if it cannot move.
+SnakeGame(w,h,food)
+move(direction): return the score.
+snake grow on the tail, use deque represent the snake.
+use hashset to store the snake's body position.
+->>
+
+<<-355	Design Twitter    		30.8%	Medium	
+postTweet
+getNewsFeed: retrieve the 10 most recent tweet ids in the user's news feed. ordered from most recent to least recent.
+follow
+unfollow.
+shall maintain:
+followed tweetIDs for each user, hashmap user vs list of followed ids.
+postTreet: each user shall maintain a list of tweets he posted user vs list of treets
+getNewFeed: get treets from himself and followed and get the top 10.
+keep an array to store the most recent tweets. 
+we can go to each followed id and get the most recent 10 posts and put into heap. expel the old posts.
+
+store the tweet: can also use link-list, it is easy to store and only need the head pointer to access.
+->>
+
+<<-359	Logger Rate Limiter    		71.5%	Easy	
+message with time stamp comes in chrono order. Each unique message should only be printed at most every 10 seconds.
+hashmap message vs next timestamp to print.
+->>
+
 <<-379	Design Phone Directory    		47.4%	Medium	
 assign, recycle, check if number 
 hashmap using used and unused.
@@ -4494,7 +4578,9 @@ two pointer merge.
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
-
+<<-340	Longest Substring with At Most K Distinct Characters    		44.7%	Hard	
+two pointer, when hashmap size >k, keep shrinking the left.
+->>
 <<-424	Longest Repeating Character Replacement    		47.7%	Medium	
 return the longest repeating subarray after performing at most k char replacement.
 sliding window with at most k different chars.
@@ -4894,6 +4980,20 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-360	Sort Transformed Array    		49.3%	Medium	
+given array and apply ax%2+bx+c to it. return the array in sorted order.
+depending on a, it could be a parabolic curve upside or downside.
+a==0, check b.
+a!=0, using two pointer.
+->>
+
+<<-361	Bomb Enemy    		46.4%	Medium	
+given a 2 d grid, 'W' wall, 'E' enemy, '0' empty.
+a bomb will kill enemies on the row and column until blocked by wall.
+return max enemies killed by one bomb.
+try each empty cell and count number of enemies killed.
+->>
+
 <<-363	Max Sum of Rectangle No Larger Than K    		38.2%	Hard	
 idea: get all possible submatrices and reduce to 1d array, and then find max subarray sum <=k.
 ->>
@@ -5552,6 +5652,28 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-335	Self Crossing    		28.5%	Hard	
+you are given an array distance to go counter-clockwise. first at (0,0) facing north.
+check if the path cross itself.
+only 3 scenario:
+i cross with i-3 (vertical horizaontal)
+i cross with i-4 (overlap same direction)
+i cross with i-5 (vertical horizontal)
+->>
+
+<<-356	Line Reflection    		32.3%	Medium	
+given n points on xy plane. find if there is a line parellel to y-axis, so that all points are symmetric.
+- if symmetric the y shall be paired the same.
+- the x shall be the mid point of the leftmost and rightmost point.
+- for each y, keep the x in sorted order and then check pair sum==2*mid.
+
+->>
+
+<<-357	Count Numbers with Unique Digits    		48.6%	Medium	
+count numbers in range [0,10^n] given n with unique digits.
+combination: n digits, the first digit 9 choices, second 9 choices, 8,7...
+->>
+
 <<-365	Water and Jug Problem    		30.8%	Medium	
 fermat theorem.
         //number theory: coprime: can get any number
@@ -9031,6 +9153,11 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-352	Data Stream as Disjoint Intervals    		48.1%	Hard	
+represent the data stream as a list of disjoint interval.
+interval merge: add a data mp[n]++, mp[n+1]-- and then using prefix sum.
+->>
+
 <<-253	Meeting Rooms II    		46.3%	Medium	
 problem: given a list of intervals, find the min required room.
 idea: overlapped intervals need separate room. so to find max overlapped intervals.
@@ -9316,7 +9443,16 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
-
+<<-231	Power of Two    		43.8%	Easy	
+n&(n-1)->>
+<<-326	Power of Three    		42.0%	Easy	
+only have factor 3, max3%n==0
+->>
+<<-342	Power of Four    		41.4%	Easy	
+only 0,2,4,6... is set 1. 
+& 0xaaaaaaa to check odd bits if set.
+num&(num-1) check if it is not 2^n.
+->>
 <<-371	Sum of Two Integers    		50.6%	Medium	
 cannot use +/-. 
 carry a&b, result a^b.
@@ -9405,6 +9541,13 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ->>
 
 ## trie
+<<-336	Palindrome Pairs    		34.2%	Hard	
+given a list of words, return all the pairs so that word[i]+word[j] is palindrome.
+- brutal force.
+- trie: add reversed string into trie. 
+since a suffix match cannot guarantee the concat to be palindrome, so we need to also check curremt to end if a palindrome.
+->>
+
 <<-421	Maximum XOR of Two Numbers in an Array    		53.7%	Medium	
 - from MSB to LSB, each time to leave the bits, we only have one or two numbers. 
 - keep the max prefix to xor with the current bits (make sure the number exist)
@@ -9696,43 +9839,32 @@ check if there is any cycle. movement shall be one direction.
 <<-367	Valid Perfect Square    		41.9%	Easy	
 do not use sqrt, n^2=1+3+5+...
 ->>
-
-## leetcode problem list
-
 <<-362	Design Hit Counter    		64.6%	Medium	
 count number of hits in the past 5 mins.
 map and binary search, but we need loop to get the sum. could use optimization.
 ->>
-
-<<-361	Bomb Enemy    		46.4%	Medium	->>
-<<-360	Sort Transformed Array    		49.3%	Medium	->>
-<<-359	Logger Rate Limiter    		71.5%	Easy	->>
-<<-358	Rearrange String k Distance Apart    		35.4%	Hard	->>
-<<-357	Count Numbers with Unique Digits    		48.6%	Medium	->>
-<<-356	Line Reflection    		32.3%	Medium	->>
-<<-355	Design Twitter    		30.8%	Medium	->>
-<<-354	Russian Doll Envelopes    		35.8%	Hard	->>
-<<-353	Design Snake Game    		34.9%	Medium	->>
-<<-352	Data Stream as Disjoint Intervals    		48.1%	Hard	->>
-<<-351	Android Unlock Patterns    		49.1%	Medium	->>
-<<-350	Intersection of Two Arrays II    		51.7%	Easy	->>
-<<-349	Intersection of Two Arrays    		63.8%	Easy	->>
-<<-348	Design Tic-Tac-Toe    		55.0%	Medium	->>
-<<-794	Valid Tic-Tac-Toe State    		33.6%	Medium	->>
-<<-347	Top K Frequent Elements    		61.9%	Medium	->>
-<<-346	Moving Average from Data Stream    		72.4%	Easy	->>
+<<-350	Intersection of Two Arrays II    		51.7%	Easy	
+count in A, and loop on B, if see one, decrease the map.
+->>
+<<-349	Intersection of Two Arrays    		63.8%	Easy	
+->>
+<<-348	Design Tic-Tac-Toe    		55.0%	Medium	
+zero sum game, use +1 for play A, and -1 for player B.
+->>
+<<-794	Valid Tic-Tac-Toe State    		33.6%	Medium	
+'X' is first hand. so the number of X>=number of O.
+check win status.
+if A win, Nx>Ny
+if B win, Nx==Ny
+->>
+<<-346	Moving Average from Data Stream    		72.4%	Easy	
+deque->>
 <<-345	Reverse Vowels of a String    		44.6%	Easy	->>
 <<-344	Reverse String    		69.5%	Easy	->>
-<<-343	Integer Break    		50.8%	Medium	->>
-<<-342	Power of Four    		41.4%	Easy	->>
-<<-341	Flatten Nested List Iterator    		53.7%	Medium	->>
-<<-340	Longest Substring with At Most K Distinct Characters    		44.7%	Hard	->>
 
-<<-338	Counting Bits    		70.0%	Medium	->>
-<<-337	House Robber III    		51.0%	Medium	->>
-<<-336	Palindrome Pairs    		34.2%	Hard	->>
-<<-335	Self Crossing    		28.5%	Hard	->>
-<<-334	Increasing Triplet Subsequence    		39.9%	Medium	->>
+## leetcode problem list
+
+
 <<-333	Largest BST Subtree    		36.7%	Medium	->>
 <<-332	Reconstruct Itinerary    		37.3%	Medium	->>
 <<-331	Verify Preorder Serialization of a Binary Tree    		40.7%	Medium	->>
@@ -9740,7 +9872,7 @@ map and binary search, but we need loop to get the sum. could use optimization.
 <<-329	Longest Increasing Path in a Matrix    		44.0%	Hard	->>
 <<-328	Odd Even Linked List    		56.5%	Medium	->>
 <<-327	Count of Range Sum    		35.7%	Hard	->>
-<<-326	Power of Three    		42.0%	Easy	->>
+
 <<-325	Maximum Size Subarray Sum Equals k    		47.0%	Medium	->>
 <<-324	Wiggle Sort II    		30.4%	Medium	->>
 <<-323	Number of Connected Components in an Undirected Graph    		56.9%	Medium	->>
@@ -9833,7 +9965,7 @@ map and binary search, but we need loop to get the sum. could use optimization.
 <<-234	Palindrome Linked List    		39.9%	Easy	->>
 <<-233	Number of Digit One    		31.5%	Hard	->>
 <<-232	Implement Queue using Stacks    		51.0%	Easy	->>
-<<-231	Power of Two    		43.8%	Easy	->>
+
 <<-230	Kth Smallest Element in a BST    		61.6%	Medium	->>
 <<-229	Majority Element II    		38.1%	Medium	->>
 <<-228	Summary Ranges    		41.7%	Easy	->>
@@ -9851,7 +9983,7 @@ map and binary search, but we need loop to get the sum. could use optimization.
 
 <<-215	Kth Largest Element in an Array    		56.9%	Medium	->>
 <<-214	Shortest Palindrome    		30.3%	Hard	->>
-<<-213	House Robber II    		37.2%	Medium	->>
+
 <<-212	Word Search II    		35.9%	Hard	->>
 
 <<-211	Design Add and Search Words Data Structure    		39.2%	Medium	->>
@@ -9866,7 +9998,7 @@ map and binary search, but we need loop to get the sum. could use optimization.
 <<-201	Bitwise AND of Numbers Range    		39.5%	Medium	->>
 <<-200	Number of Islands    		47.9%	Medium	->>
 <<-199	Binary Tree Right Side View    		55.2%	Medium	->>
-<<-198	House Robber    		42.6%	Easy	->>
+
 <<-197	Rising Temperature    		39.2%	Easy	->>
 <<-196	Delete Duplicate Emails    		43.3%	Easy	->>
 <<-195	Tenth Line    		32.9%	Easy	->>
