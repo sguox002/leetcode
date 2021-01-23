@@ -46,6 +46,30 @@ common steps to solve dp problems
 - define subproblem and subproblem states
 - find the state transfer or recurrence relation
 - how to get the original problem.
+<<-309	Best Time to Buy and Sell Stock with Cooldown    		47.8%	Medium	->>
+<<-188	Best Time to Buy and Sell Stock IV    		28.8%	Hard	
+at most k transactions.
+->>
+<<-123	Best Time to Buy and Sell Stock III    		39.3%	Hard	
+at most two transactions
+->>
+<<-122	Best Time to Buy and Sell Stock II    		57.9%	Easy	
+many transactions
+->>
+<<-121	Best Time to Buy and Sell Stock    		51.1%	Easy	
+perform at most one time.
+->>
+
+<<-313	Super Ugly Number    		45.6%	Medium	
+given a list of prime factors, return the nth superugly number (who's prime factors are only in the list).
+dp: with k pointers, ind, check each pointer and advance (multiple advance to avoid duplicates)
+->>
+<<-264	Ugly Number II    		42.5%	Medium	
+find the nth ugly number, with factor 2,3,5.
+->>
+<<-263	Ugly Number    		41.7%	Easy	
+check if it only has factor 2,3,5.
+->>
 
 <<-322	Coin Change    		36.5%	Medium	
 you can reuse coin, return the min number of coins to make the amount. if not possible return -1.
@@ -1363,6 +1387,8 @@ len=3, [4,5,6], so tail[2]=6.
     }
 ```	
 
+<<-300	Longest Increasing Subsequence    		43.0%	Medium	->>
+
 <<-354	Russian Doll Envelopes    		35.8%	Hard	
 LIS.
 ->>
@@ -2205,14 +2231,6 @@ level: 3
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
 
-<<-327	Count of Range Sum    		35.7%	Hard	
-return the number of range sums in [L,R].
-prefix sum, and save in map: presum vs list of index.
-then use binary search to get the lowerbound and upperbound.
-other approach:
-merge sort: prefix sum and divide into two parts, count the right part - left part in the range.
-binary index tree:
-->>
 
 <<-410	Split Array Largest Sum    		45.7%	Hard	
 split array into m parts (subarray), return the min the largest sum among the m parts.
@@ -2420,6 +2438,13 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
+
+<<-320	Generalized Abbreviation    		52.9%	Medium	
+take any substr and replace with its length.
+return all possible abbreviations.
+backtracking: use current char or not for abbreviation.
+if previous is already num, then we shall take it as char.
+->>
 
 <<-332	Reconstruct Itinerary    		37.3%	Medium	
 giveb a list of tickets [from,to], reconstruct the itinerary in order start with JFK.
@@ -2655,6 +2680,12 @@ also a bitmask dp problem.
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
 
+<<-302	Smallest Rectangle Enclosing Black Pixels    		52.1%	Hard	
+given a binary grid, 0 white, 1 black.
+black pixels are connected and only one region. return the smallest rect enclosed all black pixel.
+get the xmin,xmax,ymin,ymax of the pixel region
+->>
+
 <<-329	Longest Increasing Path in a Matrix    		44.0%	Hard	
 do dfs and save longest path in dp.
 ->>
@@ -2861,6 +2892,15 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+<<-317	Shortest Distance from All Buildings    		42.1%	Hard	
+given a grid, 0 means empty, 1 building,2 obstacle.
+find an empty cell which has the shortest distance sum to all building.
+bfs from all other building and add the distance for each empty cell.
+- can do bfs for each building, simpler
+- do bfs all, we need to have n (if visited n times, no more visit)
+optimization: if one cell is not reachable from any building, do not consider it.
+->>
+
 <<-433	Minimum Genetic Mutation    		42.6%	Medium	
 a gene string is 8 char ACGT, mutation is one single char changed.
 given a bank of valid gene strings. given a start string, return the min number of permutation to change to the end string.
@@ -3023,6 +3063,11 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-305	Number of Islands II    		39.8%	Hard	
+grid is initally all water, given a list of positions to add land. return number of island for each move.
+union-find.
+->>
+
 <<-323	Number of Connected Components in an Undirected Graph    		56.9%	Medium	
 union-find.
 ->>
@@ -3179,6 +3224,23 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
 
+<<-316	Remove Duplicate Letters    		38.5%	Medium
+remove duplicates so that each letter only appear once.
+return the lexi smallest string.
+- stack + hashmap
+- if current char < back, and back char still have in right, then replace it with current char
+for exampe "acbacdcbc"
+see 'a' ->"a"
+see 'c' ->"ac"
+see 'b' ->"ab",
+see 'a' ->"aa" ->"a"
+see 'c' ->"ac"
+see "d" ->"acd"
+see "c" there is no 'd' in the right ->"acd"
+see "b" ->"acdb"
+see "c" ->"acdb" 
+need a counter map, a visited array.
+->>
 <<-385	Mini Parser    		34.2%	Medium	
 deserialize the nested integer with string.
 using stringstream to read
@@ -3476,6 +3538,12 @@ just simulate the deque
 
 ## heap: priority-queue, set, map
 heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+<<-295	Find Median from Data Stream    		45.8%	Hard	
+keep left and right, left max heap, right min heap.
+left.size-right.size()<=1
+
+->>
+
 <<-347	Top K Frequent Elements    		61.9%	Medium	->>
 <<-358	Rearrange String k Distance Apart    		35.4%	Hard	
 rearrange the string so that identical char are at least k distance.
@@ -3632,6 +3700,13 @@ approach:
 ->>
 
 ## hashset, hashmap
+
+<<-299	Bulls and Cows    		44.0%	Medium	
+given secret string and guess string.
+number of bulls: digits in the correct position
+number of cows: digits in guess but in wrong position
+hashmap: get secret hashmap does not include bulls.
+->>
 
 <<-325	Maximum Size Subarray Sum Equals k    		47.0%	Medium	
 prefix sum and using hashmap. only need to store the first index.
@@ -3992,6 +4067,17 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-297	Serialize and Deserialize Binary Tree    		48.8%	Hard	->>
+
+<<-298	Binary Tree Longest Consecutive Sequence    		47.6%	Medium	
+path shall follow parent child, ascending order.
+dfs: if root!=parent+1, then reset the length otherwise =parent.length+1
+->>
+
+<<-314	Binary Tree Vertical Order Traversal    		46.3%	Medium	
+dfs and sort. (with same position, sorted order)
+->>
 
 <<-331	Verify Preorder Serialization of a Binary Tree    		40.7%	Medium	
 serialization uses '#' for null node. 
@@ -4557,6 +4643,44 @@ level: 4
 
 ### segment tree or binary index tree
 see the appendix for binary index tree.
+<<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	
+a string of digits, you are allowed to swap two adjacent digits, at most k operations are allowed. return the min string you can obtain.
+greedy: bubble sort, k>n*(n+1)/2 it is sort. 
+from 0 to 9, find its first index and try to move to top (less equal to k) and leave a subproblem. TLE
+segment tree or binary index tree to reduce to O(nlogn)
+->>
+<<-1409. Queries on a permutation with key ***
+query[i] move the element at query[i] to the beginning 
+- approach 1: brutal force using vector as hashmap to record value vs index 
+- approach 2: binary index tree.
+tag: array, value vs index, hashmap
+->>
+
+<<-327	Count of Range Sum    		35.7%	Hard	
+return the number of range sums in [L,R].
+prefix sum, and save in map: presum vs list of index.
+then use binary search to get the lowerbound and upperbound.
+other approach:
+merge sort: prefix sum and divide into two parts, count the right part - left part in the range.
+binary index tree:
+->>
+
+<<-308	Range Sum Query 2D - Mutable    		36.7%	Hard	
+update an element.
+sum region
+prefix sum using similar dp.
+binary index tree.
+->>
+<<-307	Range Sum Query - Mutable    		36.0%	Medium	
+array, instead of 2d matrix.
+binary index tree.
+->>
+<<-304	Range Sum Query 2D - Immutable    		39.7%	Medium	
+prefix sum. 2d.
+->>
+<<-303	Range Sum Query - Immutable    		46.3%	Easy	
+prefix sum. 1d.
+->>
 
 <<-1649	Create Sorted Array through Instructions    		42.0%	Hard	
 segment tree 
@@ -4786,6 +4910,11 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 ## sort
 - sort makes things easier.
 - sort using given order
+<<-315	Count of Smaller Numbers After Self    		42.3%	Hard	
+- from right to left and store the elements in sorted order then we can use binary search. to count, it is still O(N^2) will TLE.
+- merge sort: divide and conquer, count right smaller than left.
+- binary tree: from right to left, build a BST. Since we may have duplicates, add a field to count the duplicates. when we insert a new value, all its left subtree are smaller than it. We use prefix sum to count the sum of duplicates under the subtree.
+->>
 
 <<-324	Wiggle Sort II    		30.4%	Medium	
 idea: we shall find the median and divide them into smaller and larger.
@@ -4879,6 +5008,13 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-306	Additive Number    		29.5%	Medium	
+actually check the string can be partitioned to a fib series.
+once we determine the first two elements, the whole array is determined.
+try all combinations, the first can goes to half, second can also go to half.
+string add.
+->>
+
 <<-161. One Edit Distance
 insert exactly one char into s and get t.
 del exactly one char from s and get t.
@@ -5739,6 +5875,19 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-296	Best Meeting Point    		57.9%	Hard	
+given a 2d grid with some people on grid, find the meeting point to minimize the total distance.
+all x's median and all y's median.
+->>
+<<-311	Sparse Matrix Multiplication    		63.1%	Medium	->>
+<<-319	Bulb Switcher    		45.2%	Medium	
+n bulbs initially off. turn every 2,3,4,5...
+return the number of bulbs that are on after n rounds.
+even times restore to initial state
+odd times on.
+it is like to get rid of the factors, only square number has odd number of factors.
+->>
+
 <<-330	Patching Array    		34.8%	Hard	
 given a sorted array, add/patch elements to the array such that any number in [1,n] can be formed by the sum of some elements in the array, return min number of patches required.
         //the fastest way to go to n without leaving out any number
@@ -6884,12 +7033,7 @@ sorted along row and col direction.
 - approach 2: for each line using binary search O(MlogN)
 ->>
 
-<<-1409. Queries on a permutation with key ***
-query[i] move the element at query[i] to the beginning 
-- approach 1: brutal force using vector as hashmap to record value vs index 
-- approach 2: binary index tree.
-tag: array, value vs index, hashmap
-->>
+
 
 <<-381. insert delete getRandom O(1), duplicate allowed. ***
 - store value vs indices in hashmap. (vector will not work since it will not be sorted after the operations)
@@ -9067,6 +9211,10 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+<<-310	Minimum Height Trees    		34.3%	Medium	
+bfs to remove leaf nodes layer by layer.
+->>
+
 <<-399	Evaluate Division    		53.5%	Medium	
 given a list of division and return the query.
 dfs or graph. 
@@ -9530,6 +9678,11 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+<<-318	Maximum Product of Word Lengths    		51.8%	Medium	
+word[i] and word[j] shares no common letters.
+using char as bit and then do bit manipulations.
+->>
+
 <<-231	Power of Two    		43.8%	Easy	
 n&(n-1)->>
 <<-326	Power of Three    		42.0%	Easy	
@@ -9775,12 +9928,6 @@ binary format n = (n+1) and remove the MSB.
 <<-1360	Number of Days Between Two Dates    		47.4%	Easy	
 use a reference date and count days using leap year.
 ->>
-<<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	
-a string of digits, you are allowed to swap two adjacent digits, at most k operations are allowed. return the min string you can obtain.
-greedy: bubble sort, k>n*(n+1)/2 it is sort. 
-from 0 to 9, find its first index and try to move to top (less equal to k) and leave a subproblem. TLE
-segment tree or binary index tree to reduce to O(nlogn)
-->>
 
 <<-1420	Build Array Where You Can Find The Maximum Exactly K Comparisons    		64.4%	Hard	
 given n, m, k, build the array with n elements:
@@ -9949,36 +10096,21 @@ deque->>
 <<-345	Reverse Vowels of a String    		44.6%	Easy	->>
 <<-344	Reverse String    		69.5%	Easy	->>
 
+
+
 ## leetcode problem list
 
 
-<<-320	Generalized Abbreviation    		52.9%	Medium	->>
-<<-319	Bulb Switcher    		45.2%	Medium	->>
-<<-318	Maximum Product of Word Lengths    		51.8%	Medium	->>
-<<-317	Shortest Distance from All Buildings    		42.1%	Hard	->>
-<<-316	Remove Duplicate Letters    		38.5%	Medium	->>
-<<-315	Count of Smaller Numbers After Self    		42.3%	Hard	->>
-<<-314	Binary Tree Vertical Order Traversal    		46.3%	Medium	->>
-<<-313	Super Ugly Number    		45.6%	Medium	->>
-<<-312	Burst Balloons    		52.9%	Hard	->>
 
-<<-311	Sparse Matrix Multiplication    		63.1%	Medium	->>
-<<-310	Minimum Height Trees    		34.3%	Medium	->>
-<<-309	Best Time to Buy and Sell Stock with Cooldown    		47.8%	Medium	->>
-<<-308	Range Sum Query 2D - Mutable    		36.7%	Hard	->>
-<<-307	Range Sum Query - Mutable    		36.0%	Medium	->>
-<<-306	Additive Number    		29.5%	Medium	->>
-<<-305	Number of Islands II    		39.8%	Hard	->>
-<<-304	Range Sum Query 2D - Immutable    		39.7%	Medium	->>
-<<-303	Range Sum Query - Immutable    		46.3%	Easy	->>
-<<-302	Smallest Rectangle Enclosing Black Pixels    		52.1%	Hard	->>
-<<-301	Remove Invalid Parentheses    		44.1%	Hard	->>
-<<-300	Longest Increasing Subsequence    		43.0%	Medium	->>
-<<-299	Bulls and Cows    		44.0%	Medium	->>
-<<-298	Binary Tree Longest Consecutive Sequence    		47.6%	Medium	->>
-<<-297	Serialize and Deserialize Binary Tree    		48.8%	Hard	->>
-<<-296	Best Meeting Point    		57.9%	Hard	->>
-<<-295	Find Median from Data Stream    		45.8%	Hard	->>
+<<-301	Remove Invalid Parentheses    		44.1%	Hard	
+remove min number of parenthesis to make it valid, return all possible combinations.
+backtracking: ???
+bfs: if we find the first invalid, we shall stop adding stuff into queue.
+try remove each ( or ). slower than backtracking.
+->>
+
+
+
 <<-294	Flip Game II    		50.4%	Medium	->>
 <<-293	Flip Game    		61.0%	Easy	->>
 <<-292	Nim Game    		54.9%	Easy	->>
@@ -10009,8 +10141,6 @@ deque->>
 <<-267	Palindrome Permutation II    		36.9%	Medium	->>
 <<-266	Palindrome Permutation    		62.3%	Easy	->>
 <<-265	Paint House II    		45.2%	Hard	->>
-<<-264	Ugly Number II    		42.5%	Medium	->>
-<<-263	Ugly Number    		41.7%	Easy	->>
 <<-262	Trips and Users    		34.6%	Hard	->>
 
 <<-261	Graph Valid Tree    		42.7%	Medium	->>
@@ -10054,16 +10184,11 @@ deque->>
 <<-219	Contains Duplicate II    		38.3%	Easy	->>
 <<-218	The Skyline Problem    		35.1%	Hard	->>
 <<-217	Contains Duplicate    		56.3%	Easy	->>
-
-
 <<-214	Shortest Palindrome    		30.3%	Hard	->>
-
 <<-212	Word Search II    		35.9%	Hard	->>
-
 <<-211	Design Add and Search Words Data Structure    		39.2%	Medium	->>
 <<-209	Minimum Size Subarray Sum    		38.9%	Medium	->>
 <<-208	Implement Trie (Prefix Tree)    		50.9%	Medium	->>
-
 <<-206	Reverse Linked List    		64.1%	Easy	->>
 <<-205	Isomorphic Strings    		40.1%	Easy	->>
 <<-204	Count Primes    		31.9%	Easy	->>
@@ -10072,7 +10197,6 @@ deque->>
 <<-201	Bitwise AND of Numbers Range    		39.5%	Medium	->>
 <<-200	Number of Islands    		47.9%	Medium	->>
 <<-199	Binary Tree Right Side View    		55.2%	Medium	->>
-
 <<-197	Rising Temperature    		39.2%	Easy	->>
 <<-196	Delete Duplicate Emails    		43.3%	Easy	->>
 <<-195	Tenth Line    		32.9%	Easy	->>
@@ -10082,7 +10206,6 @@ deque->>
 <<-191	Number of 1 Bits    		51.3%	Easy	->>
 <<-190	Reverse Bits    		41.0%	Easy	->>
 <<-189	Rotate Array    		36.1%	Medium	->>
-<<-188	Best Time to Buy and Sell Stock IV    		28.8%	Hard	->>
 <<-187	Repeated DNA Sequences    		40.9%	Medium	->>
 <<-186	Reverse Words in a String II    		44.5%	Medium	->>
 <<-185	Department Top Three Salaries    		36.9%	Hard	->>
@@ -10108,7 +10231,6 @@ deque->>
 <<-164	Maximum Gap    		36.3%	Hard	->>
 <<-163	Missing Ranges    		25.1%	Easy	->>
 <<-162	Find Peak Element    		43.6%	Medium	->>
-
 <<-161	One Edit Distance    		32.5%	Medium	->>
 <<-160	Intersection of Two Linked Lists    		42.0%	Easy	->>
 <<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	->>
@@ -10147,9 +10269,6 @@ deque->>
 <<-126	Word Ladder II    		23.0%	Hard	->>
 <<-125	Valid Palindrome    		37.5%	Easy	->>
 <<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	->>
-<<-123	Best Time to Buy and Sell Stock III    		39.3%	Hard	->>
-<<-122	Best Time to Buy and Sell Stock II    		57.9%	Easy	->>
-<<-121	Best Time to Buy and Sell Stock    		51.1%	Easy	->>
 <<-120	Triangle    		45.0%	Medium	->>
 <<-119	Pascal's Triangle II    		51.4%	Easy	->>
 <<-118	Pascal's Triangle    		53.8%	Easy	->>
@@ -10230,7 +10349,6 @@ deque->>
 <<-43	Multiply Strings    		34.4%	Medium	->>
 <<-42	Trapping Rain Water    		50.1%	Hard	->>
 <<-41	First Missing Positive    		33.1%	Hard	->>
-
 <<-38	Count and Say    		45.4%	Easy	->>
 <<-37	Sudoku Solver    		45.2%	Hard	->>
 <<-36	Valid Sudoku    		49.7%	Medium	->>
