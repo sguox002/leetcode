@@ -46,6 +46,37 @@ common steps to solve dp problems
 - define subproblem and subproblem states
 - find the state transfer or recurrence relation
 - how to get the original problem.
+
+<<-132	Palindrome Partitioning II    		30.7%	Hard	
+min cuts to partition the string into palindrome strings.
+dp[i] represent the min cuts to make the string with length i to be palindrome.
+we try every position and grows 
+-odd length: 
+- even length 
+->>
+<<-131	Palindrome Partitioning    		49.2%	Medium	
+return all possible palindrome partition.
+backtracking: 
+->>
+
+<<-135	Candy    		32.4%	Hard	
+distribute candy according to rating.
+dp: left to right and right to left.
+->>
+
+<<-140	Word Break II    		33.7%	Hard	
+return all possible break using the dictionary words.
+dp- record the break position and then traceback using dfs.
+->>
+<<-139	Word Break    		41.0%	Medium	
+check if it is breakable.
+->>
+
+<<-152	Maximum Product Subarray    		32.4%	Medium	
+subarray with max product.
+- we need keep min and max at the same time since negative will change min/max
+- need to attach to previous or start a new one (when there is 0)
+->>
 <<-174	Dungeon Game    		32.9%	Hard	->>
 <<-221	Maximal Square    		38.1%	Medium	
 dp: check row by row, and we only need keep two rows height.
@@ -1591,6 +1622,13 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-161	One Edit Distance    		32.5%	Medium	
+insert/delete/replace exactly one char to make s==t.
+insert/delete: length +-1 so swap to convert insert to delete
+- find the first mismatch: if length the same compare others, if not remove the char.
+->>
+
+
 <<-179	Largest Number    		30.1%	Medium	
 rearrange a list of number to get the max number
 greedy: which one goes first using string compare
@@ -2272,6 +2310,14 @@ level: 3
 - keep invariant condition when shrinking the range.
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
+<<-154	Find Minimum in Rotated Sorted Array II    		41.8%	Hard	->>
+<<-153	Find Minimum in Rotated Sorted Array    		45.6%	Medium	->>
+
+<<-162	Find Peak Element    		43.6%	Medium	
+peak greater than its left and right neighbor.
+- O(N)
+- binary search: compare with right, if larger goes to left, else goes to right.
+->>
 
 <<-240	Search a 2D Matrix II    		43.6%	Medium	
 rows and columns are sorted. search for target.
@@ -3348,6 +3394,10 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
 
+<<-150	Evaluate Reverse Polish Notation    		37.2%	Medium	
+operator follows the operands. using stack.
+->>
+
 <<-224	Basic Calculator    		37.7%	Hard	
 include +-*/() and space.
 recursive stack.
@@ -3641,6 +3691,11 @@ recursive stack. syntax parser.
 ## queue & deque
 - monotonic deque
 
+<<-158	Read N Characters Given Read4 II - Call multiple times    		35.5%	Hard	
+using a deque to store the read data.
+->>
+<<-157	Read N Characters Given Read4    		36.4%	Easy	->>
+
 <<-239	Sliding Window Maximum    		44.1%	Hard	
 deque monotonic.
 ->>
@@ -3838,6 +3893,20 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-133	Clone Graph    		37.5%	Medium	->>
+
+<<-138	Copy List with Random Pointer    		38.5%	Medium	
+hashmap node vs node.
+->>
+
+<<-146	LRU Cache    		34.6%	Medium	
+least recently used.
+list, hashmap, list iterator hashmap.
+->>
+
+<<-149	Max Points on a Line    		17.1%	Hard	
+using gcd(dx,dy) as the key. but need to take care of duplicated points.
+->>
 <<-220	Contains Duplicate III    		21.3%	Medium	
 abs(nums[i]-nums[j])<=t and abs(i-j)<=k.
 to keep index diff<=k, we can use sliding window to pop out of window elements.
@@ -4230,6 +4299,21 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-145	Binary Tree Postorder Traversal    		56.4%	Medium	->>
+<<-144	Binary Tree Preorder Traversal    		56.7%	Medium	->>
+
+<<-156	Binary Tree Upside Down    		55.6%	Medium	
+- left child becomes the new root
+- root becomes the new right child
+- right becomes the new left child
+goes left and get the leftmost leaf node, and get the new root.
+this is similar to reverse linked list. not very intuitive.
+root->left becomes the new root.
+root itself becomes the right child root->left->right=root
+original right becomes the left child root->left->left=root->right.
+->>
+
 <<-199	Binary Tree Right Side View    		55.2%	Medium	->>
 <<-222	Count Complete Tree Nodes    		48.1%	Medium	
 1+2+4+...->2^(h+1)-1 check depth diff.
@@ -4900,6 +4984,12 @@ segment tree
 - list is the base for hash table.
 - cycle detection
 - traversal
+<<-143	Reorder List    		39.7%	Medium	
+l0->ln->l1->Ln-1--
+break into two, reverse one and merge.
+->>
+<<-142	Linked List Cycle II    		38.9%	Medium	->>
+<<-141	Linked List Cycle    		41.9%	Easy	->>
 
 <<-328	Odd Even Linked List    		56.5%	Medium	
 group odd value nodes followed by the even list.
@@ -4972,6 +5062,10 @@ two pointer merge.
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+
+<<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	
+using hashmap+sliding window.
+->>
 
 <<-209	Minimum Size Subarray Sum    		38.9%	Medium	
 find the min length subarray sum >=target.
@@ -5123,6 +5217,14 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 ## sort
 - sort makes things easier.
 - sort using given order
+
+<<-147	Insertion Sort List    		43.8%	Medium	
+similar to array insertion sort. insert list node one by one.
+->>
+
+<<-148	Sort List    		45.2%	Medium	
+merge sort!
+->>
 
 <<-164	Maximum Gap    		36.3%	Hard	
 unsorted array find the max difference between ajacent elements in its sorted form.
@@ -10004,6 +10106,15 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+<<-137	Single Number II     		53.2%	Medium	
+every number appear 3 times except one.
+- bits: do bit by bit and sum each bit %3 and that is the bit appear once.
+- using true type table to get a counter reset to 0 when goes to 3.
+->>
+<<-136	Single Number    		66.1%	Easy	
+each number appear twice except one. xor.
+->>
+
 <<-318	Maximum Product of Word Lengths    		51.8%	Medium	
 word[i] and word[j] shares no common letters.
 using char as bit and then do bit manipulations.
@@ -10465,9 +10576,6 @@ turn a list of numbers into ranges.
 <<-204	Count Primes    		31.9%	Easy	->>
 <<-203	Remove Linked List Elements    		38.9%	Easy	->>
 <<-202	Happy Number    		50.9%	Easy	->>
-
-## leetcode problem list
-
 <<-191	Number of 1 Bits    		51.3%	Easy	->>
 <<-190	Reverse Bits    		41.0%	Easy	->>
 
@@ -10476,8 +10584,6 @@ find repeated 10-letter dna sequence
 'A': 0x41, 'C': 0x43, 'G'=0x47, 'T'=0x54. or just convert digits.
 hashmap.
 ->>
-
-
 <<-172	Factorial Trailing Zeroes    		38.1%	Easy	->>
 <<-171	Excel Sheet Column Number    		56.5%	Easy	->>
 <<-170	Two Sum III - Data structure design    		34.5%	Easy	->>
@@ -10486,58 +10592,29 @@ hashmap.
 <<-166	Fraction to Recurring Decimal    		22.0%	Medium	->>
 <<-165	Compare Version Numbers    		29.7%	Medium	->>
 <<-163	Missing Ranges    		25.1%	Easy	->>
-<<-162	Find Peak Element    		43.6%	Medium	
-
-->>
-<<-161	One Edit Distance    		32.5%	Medium	->>
 <<-160	Intersection of Two Linked Lists    		42.0%	Easy	->>
-<<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	->>
-<<-158	Read N Characters Given Read4 II - Call multiple times    		35.5%	Hard	->>
-<<-157	Read N Characters Given Read4    		36.4%	Easy	->>
-<<-156	Binary Tree Upside Down    		55.6%	Medium	->>
 <<-155	Min Stack    		45.5%	Easy	->>
-<<-154	Find Minimum in Rotated Sorted Array II    		41.8%	Hard	->>
-<<-153	Find Minimum in Rotated Sorted Array    		45.6%	Medium	->>
-<<-152	Maximum Product Subarray    		32.4%	Medium	->>
-<<-151	Reverse Words in a String    		22.8%	Medium	->>
-<<-150	Evaluate Reverse Polish Notation    		37.2%	Medium	->>
-<<-149	Max Points on a Line    		17.1%	Hard	->>
-<<-148	Sort List    		45.2%	Medium	->>
-<<-147	Insertion Sort List    		43.8%	Medium	->>
-<<-146	LRU Cache    		34.6%	Medium	->>
-<<-145	Binary Tree Postorder Traversal    		56.4%	Medium	->>
-<<-144	Binary Tree Preorder Traversal    		56.7%	Medium	->>
-<<-143	Reorder List    		39.7%	Medium	->>
-<<-142	Linked List Cycle II    		38.9%	Medium	->>
-<<-141	Linked List Cycle    		41.9%	Easy	->>
-<<-140	Word Break II    		33.7%	Hard	->>
-<<-139	Word Break    		41.0%	Medium	->>
-<<-138	Copy List with Random Pointer    		38.5%	Medium	->>
-<<-137	Single Number II     		53.2%	Medium	->>
-<<-136	Single Number    		66.1%	Easy	->>
-<<-135	Candy    		32.4%	Hard	->>
-<<-134	Gas Station    		40.5%	Medium	->>
-<<-133	Clone Graph    		37.5%	Medium	->>
-<<-132	Palindrome Partitioning II    		30.7%	Hard	->>
-<<-131	Palindrome Partitioning    		49.2%	Medium	->>
-<<-130	Surrounded Regions    		28.8%	Medium	->>
-<<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
-<<-128	Longest Consecutive Sequence    		45.7%	Hard	->>
-<<-127	Word Ladder    		30.7%	Medium	->>
-<<-126	Word Ladder II    		23.0%	Hard	->>
+
+
+## leetcode problem list
+
+<<-134	Gas Station    		40.5%	Medium	
+n gas station along a circular route. ith station with gas[i] and it cost cost[i] from station i to i+1.
+you begin with empty gas. return the starting index that you can finish the whole route. (clockwise)
+- sliding window with n. net gas= gas[i]-cost[i] at any time shall >=0
+- unfold the circular array to 2N array.
+->>
+
 <<-125	Valid Palindrome    		37.5%	Easy	->>
-<<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	->>
-<<-120	Triangle    		45.0%	Medium	->>
 <<-119	Pascal's Triangle II    		51.4%	Easy	->>
 <<-118	Pascal's Triangle    		53.8%	Easy	->>
-<<-117	Populating Next Right Pointers in Each Node II    		40.3%	Medium	->>
-<<-116	Populating Next Right Pointers in Each Node    		47.7%	Medium	->>
-<<-115	Distinct Subsequences    		39.1%	Hard	->>
-<<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	->>
-<<-113	Path Sum II    		48.0%	Medium	->>
-<<-112	Path Sum    		41.8%	Easy	->>
 
 <<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
+<<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
+<<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	->>
+<<-117	Populating Next Right Pointers in Each Node II    		40.3%	Medium	->>
+<<-116	Populating Next Right Pointers in Each Node    		47.7%	Medium	->>
+<<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	->>
 <<-110	Balanced Binary Tree    		44.0%	Easy	->>
 <<-109	Convert Sorted List to Binary Search Tree    		49.2%	Medium	->>
 <<-108	Convert Sorted Array to Binary Search Tree    		59.3%	Easy	->>
@@ -10551,13 +10628,21 @@ hashmap.
 <<-100	Same Tree    		53.8%	Easy	->>
 <<-99	Recover Binary Search Tree    		41.7%	Hard	->>
 <<-98	Validate Binary Search Tree    		28.2%	Medium	->>
-<<-97	Interleaving String    		32.2%	Hard	->>
 <<-96	Unique Binary Search Trees    		53.8%	Medium	->>
 <<-95	Unique Binary Search Trees II    		41.6%	Medium	->>
 <<-94	Binary Tree Inorder Traversal    		64.8%	Medium	->>
+
+<<-130	Surrounded Regions    		28.8%	Medium	->>
+<<-128	Longest Consecutive Sequence    		45.7%	Hard	->>
+<<-127	Word Ladder    		30.7%	Medium	->>
+<<-126	Word Ladder II    		23.0%	Hard	->>
+<<-120	Triangle    		45.0%	Medium	->>
+<<-115	Distinct Subsequences    		39.1%	Hard	->>
+<<-113	Path Sum II    		48.0%	Medium	->>
+<<-112	Path Sum    		41.8%	Easy	->>
+<<-97	Interleaving String    		32.2%	Hard	->>
 <<-93	Restore IP Addresses    		36.7%	Medium	->>
 <<-92	Reverse Linked List II    		39.8%	Medium	->>
-
 <<-90	Subsets II    		48.0%	Medium	->>
 <<-89	Gray Code    		49.7%	Medium	->>
 <<-88	Merge Sorted Array    		40.0%	Easy	->>
