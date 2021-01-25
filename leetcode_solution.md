@@ -27201,4 +27201,85 @@ dp:
 an important optimization: eliminate the loop of finding max in k window.
 
 	
+1735. Count Ways to Make Array With Product
+<em>
+ou are given a 2D integer array, queries. For each queries[i], where queries[i] = [ni, ki], find the number of different ways you can place positive integers into an array of size ni such that the product of the integers is ki. As the number of ways may be too large, the answer to the ith query is the number of ways modulo 109 + 7.
 
+Return an integer array answer where answer.length == queries.length, and answer[i] is the answer to the ith query.
+</em>
+
+prime factorization and then calculate the permutation.
+assume prod=p1^n1*....*pm^nm m prime factors.
+the choice is we can take Ni from each prime factors (Ni from 0 to ni), the remaining shall be combined all together. (but this over count since we might get same result).
+
+- we only need to calculate the number of ways to construct non-1 factors (all other space can fill 1)
+- use m identical elements in n positions, the number is C(n,m).
+
+- use approach in 254 factor combinations (does not include 1 and n itself)
+- for the prod itself, add n to it.
+- for the factor combinations, calculate the combinations
+- combination will overflow, have to use modinv.
+
+```cpp
+    int mod=1e9+7;
+    vector<int> waysToFillArray(vector<vector<int>>& queries) {
+        vector<int> ans;
+        for(auto q:queries){
+            ans.push_back(numWays(q[1],2,{},q[0])+(q[1]==1?1:q[0]));
+        }
+        return ans;
+    }
+    //using backtrack to generate all the factor combinations
+    int numWays(int n,int start,unordered_map<int,int> mp,int size){
+        if(n<start){ //now we get one answer
+            return ways(mp,size)%mod;
+        }
+        long ans=0;//use the number itself
+        for(int i=start;i*i<=n;i++){
+            if(n%i==0){
+                mp[i]++,mp[n/i]++;
+                ans+=ways(mp,size)%mod;ans%=mod;
+                mp[n/i]--;
+                ans+=numWays(n/i,i,mp,size)%mod;ans%=mod;
+                mp[i]--;
+            }
+        }
+        //cout<<ans;
+        return ans;
+    }
+    int ways(unordered_map<int,int>& mp,int sz){
+        //for(auto t: mp) cout<<"["<<t.first<<" "<<t.second<<"] ";cout<<endl;
+        int sum=0;
+        for(auto t: mp) sum+=t.second>0;
+        if(sum>sz || sum==0) return 0;
+        //C(n,m)
+        long ans=1;
+        for(auto t: mp){
+            ans*=comb(sz,t.second);
+            sz-=t.second;
+            ans%=mod;
+        }
+        //treat each group as a single element
+        //ans*=comb(sz,sum);ans%=mod;
+        return ans;
+    }
+    int comb(int n,int m){
+        long ans=1;
+        for(int i=1;i<=m;i++){
+            ans=ans*(n-i+1)%mod*modinv(i,mod-2,mod);
+            ans%=mod;
+        }
+        return ans;
+    }
+    long modinv(int a,int n,int p){ //calculate a^-1%p -->a^(p-2)%p
+        if(n==0) return 1;
+        if(n%2) return a*modinv((long)a*a%p,n/2,p)%p;
+        return modinv((long)a*a%p,n/2,p)%p;
+    }        
+```
+
+still TLE, need optimize:
+
+precalculate the modinv and use reference for the hashmap will effectively improve the efficiency.
+
+	
