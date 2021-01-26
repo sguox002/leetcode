@@ -46,6 +46,46 @@ common steps to solve dp problems
 - define subproblem and subproblem states
 - find the state transfer or recurrence relation
 - how to get the original problem.
+<<-5	Longest Palindromic Substring    		29.9%	Medium	->>
+<<-10	Regular Expression Matching    		27.1%	Hard	->>
+<<-44	Wildcard Matching    		25.1%	Hard	->>
+<<-53	Maximum Subarray    		47.2%	Easy	
+connect or not.
+->>
+
+<<-64	Minimum Path Sum    		55.4%	Medium	
+2d grid
+->>
+<<-63	Unique Paths II    		35.0%	Medium	
+with obstacles in the grid from top left to bottom right.
+->>
+<<-62	Unique Paths    		55.1%	Medium	
+2d grid, dp or simple math problem. with m down and n right.
+->>
+
+<<-72	Edit Distance    		45.9%	Hard	->>
+<<-87	Scramble String    		34.2%	Hard	
+randomly choose an index and swap them. 
+check if s1 is a scrambled string of s2.
+just similar to tree swap problem. we can recursively check left vs left + right vs right, left vs right + right vs left. 
+dp or recursive approach.
+->>
+
+<<-97	Interleaving String    		32.2%	Hard	
+check if s3 can be interleaved from s1 and s2.
+dp: s3[i+j-1]==s1[i-1] case, s3[i+j-1]==s2[j-1] case and both equal case.
+->>
+
+<<-115	Distinct Subsequences    		39.1%	Hard	
+find the number of distinct subsequence of s equals t.
+dp[i,j] represent the number of distinct sequence for s length i and t length j.
+if s[i-1]!=t[j-1] dp[i,j]=dp[i-1,j] (need delete the char in s.)
+else we can keep or delete this char: dp[i,j]=dp[i-1,j-1]+dp[i-1,j]
+->>
+
+<<-120	Triangle    		45.0%	Medium	
+min path sum from top to bottom. dp from bottom to top is more simpler.
+->>
 
 <<-132	Palindrome Partitioning II    		30.7%	Hard	
 min cuts to partition the string into palindrome strings.
@@ -1622,6 +1662,8 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-31	Next Permutation    		33.0%	Medium	->>
+
 <<-161	One Edit Distance    		32.5%	Medium	
 insert/delete/replace exactly one char to make s==t.
 insert/delete: length +-1 so swap to convert insert to delete
@@ -2310,6 +2352,9 @@ level: 3
 - keep invariant condition when shrinking the range.
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
+<<-4	Median of Two Sorted Arrays    		30.4%	Hard	->>
+<<-33	Search in Rotated Sorted Array    		35.3%	Medium	->>
+<<-81	Search in Rotated Sorted Array II    		33.3%	Medium	->>
 <<-154	Find Minimum in Rotated Sorted Array II    		41.8%	Hard	->>
 <<-153	Find Minimum in Rotated Sorted Array    		45.6%	Medium	->>
 
@@ -2539,6 +2584,43 @@ backtracking problem generally finds all sets required. It can also be used for 
 generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
+
+<<-22	Generate Parentheses    		64.2%	Medium	->>
+<<-47	Permutations II    		48.4%	Medium	
+all permutation of array with duplicates.
+sort and skip duplicates
+permutation by swap 
+->>
+<<-46	Permutations    		65.2%	Medium	
+using next permutation or backtracking.
+->>
+
+<<-52	N-Queens II    		59.1%	Hard	
+place n queens on nxn chessboard. return the number of distinct solutions.
+- the first row choice will affect the next row. - backtracking
+- also can use bitsets to represent the place.
+
+->>
+<<-51	N-Queens    		48.2%	Hard	
+return all distinct solutions
+backtracking.
+->>
+
+<<-77	Combinations    		56.2%	Medium	
+given 1 to n, return all possible combination of k numbers. 
+backtracking with k.
+->>
+
+<<-90	Subsets II    		48.0%	Medium	
+array contains duplicates, return all possible subsets (power set)
+must not contain duplicate subsets
+- sort so that we can skip duplicate elements
+- each element can be chosen or not chosen
+backtracking.
+->>
+<<-78	Subsets    		63.7%	Medium	
+no duplicates. no need sort and skip duplicates.
+->>
 
 <<-248	Strobogrammatic Number III    		39.9%	Hard	
 a strobogrammtic number looks the same when rotated 180 degree.
@@ -2826,6 +2908,13 @@ also a bitmask dp problem.
 - dfs for all paths
 - dfs with rank to detect cycles.
 a lot of cases can also be done via bfs, union find, backtracking.
+
+<<-17	Letter Combinations of a Phone Number    		48.0%	Medium	->>
+
+<<-130	Surrounded Regions    		28.8%	Medium	
+dfs (connected to boundary are not counted)
+->>
+
 <<-200	Number of Islands    		47.9%	Medium	->>
 <<-212	Word Search II    		35.9%	Hard	
 given a board with char, and a list of dictionary words. find all the words in the board. (4 direction connected).
@@ -3003,6 +3092,12 @@ given an array you are at index start. At i, you can jump to i+A[i] or i-A[i].
 check if you can jump to any position with value 0.
 dfs using visited hashtable.
 ->>
+<<-55	Jump Game    		34.9%	Medium	
+you are at the first element, each element represents the max step you can jump.
+determine if you are able to reach the last index.
+bfs similar: update the max i+nums[i] 
+->>
+
 
 <<-1377	Frog Position After T Seconds    		34.2%	Hard	
 given an undirected tree with n vertices from 1 to n. Starts at 1, it can jump to direct connected vertices, cannot go back to visited nodes. It randomly jump to its neighbors with same probability. 
@@ -3048,6 +3143,15 @@ dfs, hashmap
 - bfs with parent information
 - bfs with more than one state.
 - bfs with shortest distance problem
+
+<<-127	Word Ladder    		30.7%	Medium	
+shortest change from one string to other string in dictionary
+bfs.
+->>
+<<-126	Word Ladder II    		23.0%	Hard	
+find all possible transform with shortest path.
+need parent information to trace back using bfs.
+->>
 
 <<-286	Walls and Gates    		55.5%	Medium	
 given a grid, -1: a wall, 0,a gate, inf: empty room.
@@ -3233,6 +3337,12 @@ need store position and direction also, the visited array.
 - use vector to store parent
 - use hashmap to store parent
 
+<<-128	Longest Consecutive Sequence    		45.7%	Hard	
+unsorted array find the length of the longest consecutive elements.
+- union find O(N)
+- sort O(nlogn)
+->>
+
 <<-305	Number of Islands II    		39.8%	Hard	
 grid is initally all water, given a list of positions to add land. return number of island for each move.
 union-find.
@@ -3393,6 +3503,18 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+
+<<-32	Longest Valid Parentheses    		28.9%	Hard	
+using stack to store index and eliminate valid pairs.
+->>
+
+<<-42	Trapping Rain Water    		50.1%	Hard	
+monotonic stack: decreasing, when we see a larger one we get the water.
+->>
+
+<<-71	Simplify Path    		33.3%	Medium	
+../ go upper ./ current , stack.
+->>
 
 <<-150	Evaluate Reverse Polish Notation    		37.2%	Medium	
 operator follows the operands. using stack.
@@ -3564,8 +3686,12 @@ So the problem is equivalent to find next larger integer in its left or right.
 And this can be solved using stack.
 ->>
 
+<<-85	Maximal Rectangle    		38.7%	Hard	
+row by row check histogram.
+->>
+
 <<-84	Largest Rectangle in Histogram    		36.0%	Hard	
-find the largest rectange
+find the largest rectange (think sorted, we need check each one as the lowest bar)
 idea: area is min(height(i..j)*(j-i+1))
 thinking process: 
 - there are only n possible candidates since the largest rect has to be one of the height.
@@ -3893,6 +4019,16 @@ approach:
 ->>
 
 ## hashset, hashmap
+<<-3	Longest Substring Without Repeating Characters    		30.9%	Medium	
+no need use hashmap, hashset is fine, if contains current char, just shrink from left side.
+->>
+
+<<-30	Substring with Concatenation of All Words    		25.8%	Hard	
+dict words are the same size. 
+fixed window size and 
+->>
+
+<<-49	Group Anagrams    		58.2%	Medium	->>
 <<-133	Clone Graph    		37.5%	Medium	->>
 
 <<-138	Copy List with Random Pointer    		38.5%	Medium	
@@ -4299,6 +4435,55 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - algorithm in array applied in tree.
 - tree is a special graph.
 - binary tree, BST, n-ary tree
+
+<<-112	Path Sum    		41.8%	Easy	
+check if there is a path sum=target.
+->>
+<<-113	Path Sum II    		48.0%	Medium	
+return all root to leaf path with sum=target.
+dfs or backtracking.
+->>
+<<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
+<<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
+<<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	
+a path may pass or not pass the root.
+- get the subtree max path sum, left and right including root max path sum
+- the including root left/right path sum is similar to 1d array max subarray sum. (connecting or discard)
+- post order.
+->>
+<<-117	Populating Next Right Pointers in Each Node II    		40.3%	Medium	->>
+<<-116	Populating Next Right Pointers in Each Node    		47.7%	Medium	->>
+<<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	
+right root left order 
+->>
+<<-110	Balanced Binary Tree    		44.0%	Easy	->>
+<<-109	Convert Sorted List to Binary Search Tree    		49.2%	Medium	
+similar to array find the mid and divide into two parts.
+->>
+<<-108	Convert Sorted Array to Binary Search Tree    		59.3%	Easy	->>
+<<-107	Binary Tree Level Order Traversal II    		54.4%	Easy	->>
+<<-106	Construct Binary Tree from Inorder and Postorder Traversal    		48.5%	Medium	->>
+<<-105	Construct Binary Tree from Preorder and Inorder Traversal    		50.5%	Medium	->>
+<<-104	Maximum Depth of Binary Tree    		66.9%	Easy	->>
+<<-103	Binary Tree Zigzag Level Order Traversal    		49.3%	Medium	->>
+<<-102	Binary Tree Level Order Traversal    		55.7%	Medium	->>
+<<-101	Symmetric Tree    		47.6%	Easy	->>
+<<-100	Same Tree    		53.8%	Easy	->>
+<<-99	Recover Binary Search Tree    		41.7%	Hard	
+two nodes of the BST was swapped. 
+inorder traversal, similar to 1d array, it will create one pair or two pairs of disorder.
+->>
+<<-98	Validate Binary Search Tree    		28.2%	Medium	
+use min/max recursively. or O(N) in order traversal.
+->>
+<<-96	Unique Binary Search Trees    		53.8%	Medium	
+return number of unique BST using nodes 1 to n.
+dp: dp[i] represent the number of unique BST for i nodes. dp[i]+=dp[j-1]*dp[i-j]
+->>
+<<-95	Unique Binary Search Trees II    		41.6%	Medium	
+generate all trees. divide and conquer, or recursive.
+->>
+<<-94	Binary Tree Inorder Traversal    		64.8%	Medium	->>
 
 <<-145	Binary Tree Postorder Traversal    		56.4%	Medium	->>
 <<-144	Binary Tree Preorder Traversal    		56.7%	Medium	->>
@@ -4984,6 +5169,31 @@ segment tree
 - list is the base for hash table.
 - cycle detection
 - traversal
+<<-19	Remove Nth Node From End of List    		35.4%	Medium	->>
+<<-25	Reverse Nodes in k-Group    		43.5%	Hard	->>
+<<-24	Swap Nodes in Pairs    		51.6%	Medium	->>
+<<-23	Merge k Sorted Lists    		41.4%	Hard	->>
+
+<<-61	Rotate List    		31.3%	Medium	
+rotate by k places. find the length and k%=n, and then do the rotation.
+->>
+<<-82	Remove Duplicates from Sorted List II    		37.6%	Medium	
+delete one nodes that have duplicate numbers, leaving only the distinct ones.
+similar to a stack. but need keep prev.
+->>
+<<-80	Remove Duplicates from Sorted Array II    		44.7%	Medium	
+duplicates only allows 2 times. two pointer, check nums[i] with nums[i-2]
+->>
+
+<<-86	Partition List    		42.5%	Medium	
+give a value x, parition so that all nodes less than x comes before node >=x.
+two list and merge.
+->>
+
+<<-92	Reverse Linked List II    		39.8%	Medium	
+reverse from position m to n. do it in place.
+->>
+
 <<-143	Reorder List    		39.7%	Medium	
 l0->ln->l1->Ln-1--
 break into two, reverse one and merge.
@@ -5062,6 +5272,12 @@ two pointer merge.
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+
+<<-76	Minimum Window Substring    		35.4%	Hard	
+min window substring which contains all the characters in t.
+- we can ignore chars not in t and maintain hashset 
+- sliding window: (this string is not limited to lowercase letters)
+->>
 
 <<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	
 using hashmap+sliding window.
@@ -5331,6 +5547,11 @@ sort using lambda function with a parameter or customized compare function
 ->>
 
 ## string
+<<-93	Restore IP Addresses    		36.7%	Medium	
+ip address missing all dots.
+just try all possibles !!
+->>
+
 <<-214	Shortest Palindrome    		30.3%	Hard	
 given a string, you can add chars in front of it to make it palindrome. return the shortest palindrome.
 - equiv find the longest palindrome starting with the first char. try longest first. (TLE)
@@ -5532,6 +5753,7 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-48	Rotate Image    		58.5%	Medium	->>
 <<-189	Rotate Array    		36.1%	Medium	
 - using reverse
 - using stl
@@ -6223,6 +6445,22 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
+<<-29	Divide Two Integers    		16.5%	Medium	->>
+<<-43	Multiply Strings    		34.4%	Medium	->>
+<<-50	Pow(x, n)    		30.7%	Medium	
+binary exponential.
+->>
+
+<<-60	Permutation Sequence    		39.0%	Hard	
+find the kth permutation using 1 to n.
+determine the first digit k%(n-1)!
+for example n=3, k=3
+the first: k%(2!)=1 so the first one is 2. k is updated with 1
+k%(1!)=0, so the second one is 1. k is updated with 0
+remaining shall be sorted.
+->>
+
+
 <<-201	Bitwise AND of Numbers Range    		39.5%	Medium	
 get the lowest bit and then shrink the range by 2 to get higher bits.
 ->>
@@ -9791,6 +10029,9 @@ try all combination states (using bitmask) and calculate the distance in the sub
 ->>
 
 ## intervals
+<<-57	Insert Interval    		34.5%	Medium	->>
+<<-56	Merge Intervals    		40.2%	Medium	->>
+
 <<-218	The Skyline Problem    		35.1%	Hard	
 binary index tree (query and update)
 linesweeping: 
@@ -10002,6 +10243,29 @@ recursive approach.
 ->>
 
 ## two pointer
+<<-11	Container With Most Water    		51.8%	Medium	
+two pointer: water determined by the min height * the width.
+->>
+
+<<-18	4Sum    		34.3%	Medium	->>
+<<-16	3Sum Closest    		46.2%	Medium	->>
+<<-15	3Sum    		27.4%	Medium	->>
+<<-1	Two Sum    		45.8%	Easy	->>
+
+<<-68	Text Justification    		28.7%	Hard	
+given a list of words, and maxWidth, padding space so that each line is exactly maxWidth.
+extra space shall be distributed evenly. if not divisiable, the left will be assigned more.
+each line: starting word and last word has no spaces. When a word cannot add to the line, goes to next line
+two pointer: pay attention to the last line. It is not that easy.
+
+->>
+<<-75	Sort Colors    		48.4%	Medium	
+only 3 colors
+- count sort
+- approach 2: three pointers, i for 0, j for 1 and k for 2.
+i<j<k. i grows from left and k grows from right to left. 
+->>
+
 <<-251	Flatten 2D Vector    		46.0%	Medium	
 similar to nested integer, implement next and hasNext
 using two pointer: i for inside vector, j for vector elements.
@@ -10106,6 +10370,10 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+<<-89	Gray Code    		49.7%	Medium	
+gray code is gnerated using i^(i>>1)
+->>
+
 <<-137	Single Number II     		53.2%	Medium	
 every number appear 3 times except one.
 - bits: do bit by bit and sum each bit %3 and that is the bit appear once.
@@ -10594,7 +10862,28 @@ hashmap.
 <<-163	Missing Ranges    		25.1%	Easy	->>
 <<-160	Intersection of Two Linked Lists    		42.0%	Easy	->>
 <<-155	Min Stack    		45.5%	Easy	->>
-
+<<-125	Valid Palindrome    		37.5%	Easy	->>
+<<-119	Pascal's Triangle II    		51.4%	Easy	->>
+<<-118	Pascal's Triangle    		53.8%	Easy	->>
+<<-88	Merge Sorted Array    		40.0%	Easy	->>
+<<-73	Set Matrix Zeroes    		43.8%	Medium	->>
+<<-70	Climbing Stairs    		48.3%	Easy	->>
+<<-69	Sqrt(x)    		34.5%	Easy	binary search!->>
+<<-67	Add Binary    		46.2%	Easy	->>
+<<-66	Plus One    		42.8%	Easy	->>
+<<-58	Length of Last Word    		33.3%	Easy	->>
+<<-14	Longest Common Prefix    		35.8%	Easy	->>
+<<-38	Count and Say    		45.4%	Easy	->>
+<<-7	Reverse Integer    		25.8%	Easy	->>
+<<-2	Add Two Numbers    		34.6%	Medium	->>
+<<-35	Search Insert Position    		42.7%	Easy	->>
+<<-34	Find First and Last Position of Element in Sorted Array    		36.7%	Medium	->>
+<<-28	Implement strStr()    		34.9%	Easy	->>
+<<-27	Remove Element    		48.8%	Easy	->>
+<<-26	Remove Duplicates from Sorted Array    		
+<<-9	Palindrome Number    		49.1%	Easy	->>
+<<-21	Merge Two Sorted Lists    		54.8%	Easy	->>
+<<-20	Valid Parentheses    		39.4%	Easy	->>
 
 ## leetcode problem list
 
@@ -10605,132 +10894,22 @@ you begin with empty gas. return the starting index that you can finish the whol
 - unfold the circular array to 2N array.
 ->>
 
-<<-125	Valid Palindrome    		37.5%	Easy	->>
-<<-119	Pascal's Triangle II    		51.4%	Easy	->>
-<<-118	Pascal's Triangle    		53.8%	Easy	->>
+<<-65	Valid Number    		15.6%	Hard	
+a lot of corner cases.
+->>
 
-<<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
-<<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
-<<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	->>
-<<-117	Populating Next Right Pointers in Each Node II    		40.3%	Medium	->>
-<<-116	Populating Next Right Pointers in Each Node    		47.7%	Medium	->>
-<<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	->>
-<<-110	Balanced Binary Tree    		44.0%	Easy	->>
-<<-109	Convert Sorted List to Binary Search Tree    		49.2%	Medium	->>
-<<-108	Convert Sorted Array to Binary Search Tree    		59.3%	Easy	->>
-<<-107	Binary Tree Level Order Traversal II    		54.4%	Easy	->>
-<<-106	Construct Binary Tree from Inorder and Postorder Traversal    		48.5%	Medium	->>
-<<-105	Construct Binary Tree from Preorder and Inorder Traversal    		50.5%	Medium	->>
-<<-104	Maximum Depth of Binary Tree    		66.9%	Easy	->>
-<<-103	Binary Tree Zigzag Level Order Traversal    		49.3%	Medium	->>
-<<-102	Binary Tree Level Order Traversal    		55.7%	Medium	->>
-<<-101	Symmetric Tree    		47.6%	Easy	->>
-<<-100	Same Tree    		53.8%	Easy	->>
-<<-99	Recover Binary Search Tree    		41.7%	Hard	->>
-<<-98	Validate Binary Search Tree    		28.2%	Medium	->>
-<<-96	Unique Binary Search Trees    		53.8%	Medium	->>
-<<-95	Unique Binary Search Trees II    		41.6%	Medium	->>
-<<-94	Binary Tree Inorder Traversal    		64.8%	Medium	->>
-
-<<-130	Surrounded Regions    		28.8%	Medium	->>
-<<-128	Longest Consecutive Sequence    		45.7%	Hard	->>
-<<-127	Word Ladder    		30.7%	Medium	->>
-<<-126	Word Ladder II    		23.0%	Hard	->>
-<<-120	Triangle    		45.0%	Medium	->>
-<<-115	Distinct Subsequences    		39.1%	Hard	->>
-<<-113	Path Sum II    		48.0%	Medium	->>
-<<-112	Path Sum    		41.8%	Easy	->>
-<<-97	Interleaving String    		32.2%	Hard	->>
-<<-93	Restore IP Addresses    		36.7%	Medium	->>
-<<-92	Reverse Linked List II    		39.8%	Medium	->>
-<<-90	Subsets II    		48.0%	Medium	->>
-<<-89	Gray Code    		49.7%	Medium	->>
-<<-88	Merge Sorted Array    		40.0%	Easy	->>
-<<-87	Scramble String    		34.2%	Hard	->>
-<<-86	Partition List    		42.5%	Medium	->>
-<<-85	Maximal Rectangle    		38.7%	Hard	->>
-<<-82	Remove Duplicates from Sorted List II    		37.6%	Medium	->>
-<<-81	Search in Rotated Sorted Array II    		33.3%	Medium	->>
-<<-80	Remove Duplicates from Sorted Array II    		44.7%	Medium	->>
-
-<<-78	Subsets    		63.7%	Medium	->>
-<<-77	Combinations    		56.2%	Medium	->>
-<<-76	Minimum Window Substring    		35.4%	Hard	->>
-<<-75	Sort Colors    		48.4%	Medium	->>
-
-<<-73	Set Matrix Zeroes    		43.8%	Medium	->>
-<<-72	Edit Distance    		45.9%	Hard	->>
-<<-71	Simplify Path    		33.3%	Medium	->>
-<<-70	Climbing Stairs    		48.3%	Easy	->>
-<<-69	Sqrt(x)    		34.5%	Easy	->>
-<<-68	Text Justification    		28.7%	Hard	->>
-<<-67	Add Binary    		46.2%	Easy	->>
-<<-66	Plus One    		42.8%	Easy	->>
-<<-65	Valid Number    		15.6%	Hard	->>
-<<-64	Minimum Path Sum    		55.4%	Medium	->>
-<<-63	Unique Paths II    		35.0%	Medium	->>
-<<-62	Unique Paths    		55.1%	Medium	->>
-
-<<-61	Rotate List    		31.3%	Medium	->>
-<<-60	Permutation Sequence    		39.0%	Hard	->>
-<<-59	Spiral Matrix II    		55.3%	Medium	->>
-<<-58	Length of Last Word    		33.3%	Easy	->>
-<<-57	Insert Interval    		34.5%	Medium	->>
-<<-56	Merge Intervals    		40.2%	Medium	->>
-<<-55	Jump Game    		34.9%	Medium	->>
-<<-54	Spiral Matrix    		34.9%	Medium	->>
-<<-53	Maximum Subarray    		47.2%	Easy	->>
-<<-52	N-Queens II    		59.1%	Hard	->>
-<<-51	N-Queens    		48.2%	Hard	->>
-<<-50	Pow(x, n)    		30.7%	Medium	->>
-<<-49	Group Anagrams    		58.2%	Medium	->>
-<<-48	Rotate Image    		58.5%	Medium	->>
-<<-47	Permutations II    		48.4%	Medium	->>
-<<-46	Permutations    		65.2%	Medium	->>
-<<-45	Jump Game II    		31.1%	Hard	->>
-<<-44	Wildcard Matching    		25.1%	Hard	->>
-<<-43	Multiply Strings    		34.4%	Medium	->>
-<<-42	Trapping Rain Water    		50.1%	Hard	->>
 <<-41	First Missing Positive    		33.1%	Hard	->>
-<<-38	Count and Say    		45.4%	Easy	->>
 <<-37	Sudoku Solver    		45.2%	Hard	->>
 <<-36	Valid Sudoku    		49.7%	Medium	->>
-<<-35	Search Insert Position    		42.7%	Easy	->>
-<<-34	Find First and Last Position of Element in Sorted Array    		36.7%	Medium	->>
-<<-33	Search in Rotated Sorted Array    		35.3%	Medium	->>
-<<-32	Longest Valid Parentheses    		28.9%	Hard	->>
-<<-31	Next Permutation    		33.0%	Medium	->>
-<<-30	Substring with Concatenation of All Words    		25.8%	Hard	->>
-<<-29	Divide Two Integers    		16.5%	Medium	->>
-<<-28	Implement strStr()    		34.9%	Easy	->>
-<<-27	Remove Element    		48.8%	Easy	->>
-<<-26	Remove Duplicates from Sorted Array    		46.0%	Easy	->>
-<<-25	Reverse Nodes in k-Group    		43.5%	Hard	->>
-<<-24	Swap Nodes in Pairs    		51.6%	Medium	->>
-<<-23	Merge k Sorted Lists    		41.4%	Hard	->>
-<<-22	Generate Parentheses    		64.2%	Medium	->>
-<<-21	Merge Two Sorted Lists    		54.8%	Easy	->>
-<<-20	Valid Parentheses    		39.4%	Easy	->>
-<<-19	Remove Nth Node From End of List    		35.4%	Medium	->>
-<<-18	4Sum    		34.3%	Medium	->>
-<<-17	Letter Combinations of a Phone Number    		48.0%	Medium	->>
-<<-16	3Sum Closest    		46.2%	Medium	->>
-<<-15	3Sum    		27.4%	Medium	->>
-<<-14	Longest Common Prefix    		35.8%	Easy	->>
+
 <<-13	Roman to Integer    		56.2%	Easy	->>
 <<-12	Integer to Roman    		55.6%	Medium	->>
 
-<<-11	Container With Most Water    		51.8%	Medium	->>
-<<-10	Regular Expression Matching    		27.1%	Hard	->>
-<<-9	Palindrome Number    		49.1%	Easy	->>
 <<-8	String to Integer (atoi)    		15.5%	Medium	->>
-<<-7	Reverse Integer    		25.8%	Easy	->>
 <<-6	ZigZag Conversion    		37.2%	Medium	->>
-<<-5	Longest Palindromic Substring    		29.9%	Medium	->>
-<<-4	Median of Two Sorted Arrays    		30.4%	Hard	->>
-<<-3	Longest Substring Without Repeating Characters    		30.9%	Medium	->>
-<<-2	Add Two Numbers    		34.6%	Medium	->>
-<<-1	Two Sum    		45.8%	Easy	->>
+
+
+
 
 ### common small tricks:
 
