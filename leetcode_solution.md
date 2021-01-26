@@ -264,7 +264,6 @@ Range Sum of Sorted Subarray Sums4
 Minimum Difference Between Largest and Smallest Value in Three Moves5
 Stone Game IV
 
-
 ## contest 196
 
 1502. Can Make Arithmetic Progression From Sequence (straightfoward, *)
@@ -427,6 +426,351 @@ bfs: layer=r+c.
 heap + dp, (sliding window max) ****
 
 # solutions
+
+## contest 225
+
+1736. Latest Time by Replacing Hidden Digits
+<em>
+You are given a string time in the form of hh:mm, where some of the digits in the string are hidden (represented by ?).
+
+The valid times are those inclusively between 00:00 and 23:59.
+
+Return the latest valid time you can get from time by replacing the hidden digits.
+</em>
+```
+    string maximumTime(string time) {
+        string ans;
+        int hr=0,min=0;
+        if(time[0]=='?'){
+            if(time[1]=='?') time[0]='2',time[1]='3';
+            else {
+                if(time[1]>'3') time[0]='1';//="1"+time[1]+":";
+                else time[0]='2';
+            }
+        }
+        else {
+            if(time[1]=='?'){
+                if(time[0]<'2') time[1]='9';else time[1]='3';
+            }
+        }
+        if(time[3]=='?'){
+            if(time[4]=='?') time[3]='5',time[4]='9';
+            else time[3]='5';
+        }
+        if(time[4]=='?') time[4]='9';
+        time[2]=':';
+        return time;
+    }
+```
+
+This is too lengthy and use much more time than an easy problem takes.
+
+
+1737. Change Minimum Characters to Satisfy One of Three Conditions
+<em>
+You are given two strings a and b that consist of lowercase letters. In one operation, you can change any character in a or b to any lowercase letter.
+
+Your goal is to satisfy one of the following three conditions:
+
+Every letter in a is strictly less than every letter in b in the alphabet.
+Every letter in b is strictly less than every letter in a in the alphabet.
+Both a and b consist of only one distinct letter.
+Return the minimum number of operations needed to achieve your goal.
+</em>
+
+
+My idea: choose a char to be the max char in string a if a<b or in string b if b<a
+
+    int minCharacters(string a, string b) {
+        //every letter in a < every letter in b, or vice versa
+        vector<int> cnta(26),cntb(26);
+        int mxa=0,mxb=0,nca=0,ncb=0;
+        for(char c: a) cnta[c-'a']++,mxa=max(mxa,cnta[c-'a']);
+        for(char c: b) cntb[c-'a']++,mxb=max(mxb,cntb[c-'a']);
+
+        //let a<b: we need change less char in b and greater char in a
+        //how? only need to worry about the overlap
+        //assume the separate char
+        int nmove=INT_MAX;
+        for(int i=1;i<26;i++){ //assume the separate char
+            int aa=0;
+            for(int j=0;j<26;j++){
+                if(cnta[j] && j>=i) aa+=cnta[j];
+                if(cntb[j] && j<i) aa+=cntb[j];
+            }
+            nmove=min(aa,nmove);
+        }
+        
+        for(int i=1;i<26;i++){ //assume the separate char
+            int aa=0;
+            for(int j=0;j<26;j++){
+                if(cntb[j] && j>=i) aa+=cntb[j];
+                if(cnta[j] && j<i) aa+=cnta[j];
+            }
+            nmove=min(aa,nmove);
+        }
+        //cout<<mxa<<" "<<mxb<<endl;
+        return min({nmove,(int)a.size()-mxa+(int)b.size()-mxb});
+    }	
+```
+
+1738. Find Kth Largest XOR Coordinate Value
+<em>
+
+You are given a 2D matrix of size m x n, consisting of non-negative integers. You are also given an integer k.
+
+The value of coordinate (a, b) of the matrix is the XOR of all matrix[i][j] where 0 <= i <= a < m and 0 <= j <= b < n (0-indexed).
+
+Find the kth largest value (1-indexed) of all the coordinates of matrix.
+</em>
+
+dp approach + priority_queue
+
+```cpp
+    int kthLargestValue(vector<vector<int>>& matrix, int k) {
+        priority_queue<int,vector<int>,greater<int>> pq;
+        //prefix xor
+        int m=matrix.size(),n=matrix[0].size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1));
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                dp[i+1][j+1]=dp[i][j+1]^dp[i+1][j]^dp[i][j]^matrix[i][j];
+                pq.push(dp[i+1][j+1]);
+                if(pq.size()>k) pq.pop();
+            }
+        }
+        return pq.top();
+    }
+};
+```
+
+1739. Building Boxes
+<em>
+You have a cubic storeroom where the width, length, and height of the room are all equal to n units. You are asked to place n boxes in this room where each box is a cube of unit side length. There are however some rules to placing the boxes:
+
+You can place the boxes anywhere on the floor.
+If box x is placed on top of the box y, then each side of the four vertical sides of the box y must either be adjacent to another box or to a wall.
+Given an integer n, return the minimum possible number of boxes touching the floor.
+</em>
+
+math series
+height    bottom
+1         1
+2         1 + 2 = 3
+3         1 + 2 + 3 = 6
+4         1 + 2 + 3 + 4 = 10
+5         1 + 2 + 3 + 4 + 5 = 15
+...
+bottom(h) = (1 + h) * h / 2
+bottom(1) = 1
+
+total(h) = total(h - 1) + bottom(h)
+total(1) = 1
+
+```cpp
+    int minimumBoxes(int n) {
+        int cur = 0, i = 0, j = 0;
+        while(cur < n) {
+            ++j;
+            i += j;
+            cur += i;
+        }
+        if(cur == n) return i;
+        cur -= i;
+        i -= j;
+        j = 0;
+        while(cur < n) {
+            ++j;
+            cur += j;
+        }
+        return i+j;
+    }
+```
+
+## biweek 44
+
+1732. Find the Highest Altitude
+<em>There is a biker going on a road trip. The road trip consists of n + 1 points at different altitudes. The biker starts his trip on point 0 with altitude equal 0.
+
+You are given an integer array gain of length n where gain[i] is the net gain in altitude between points i​​​​​​ and i + 1 for all (0 <= i < n). Return the highest altitude of a point.
+</em>
+```
+    int largestAltitude(vector<int>& gain) {
+        int ans=0,pre=0;
+        for(int i: gain){
+            ans=max(ans,pre+=i);
+        }
+        return ans;
+    }
+```
+
+1733. Minimum Number of People to Teach
+<em>
+On a social network consisting of m users and some friendships between users, two users can communicate with each other if they know a common language.
+
+You are given an integer n, an array languages, and an array friendships where:
+
+There are n languages numbered 1 through n,
+languages[i] is the set of languages the i​​​​​​th​​​​ user knows, and
+friendships[i] = [u​​​​​​i​​​, v​​​​​​i] denotes a friendship between the users u​​​​​​​​​​​i​​​​​ and vi.
+You can choose one language and teach it to some users so that all friends can communicate with each other. Return the minimum number of users you need to teach.
+
+Note that friendships are not transitive, meaning if x is a friend of y and y is a friend of z, this doesn't guarantee that x is a friend of z
+</em>
+
+correct understand the question is critical
+go over all edges and discard those can talk
+
+```
+    int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
+        //understand the problem is important, only one language is taught so that friends can communicate
+        //if friends can talk, just ignore them
+        //cannot talk, find the language by most people
+        unordered_map<int,int> mp;
+        int m=languages.size();
+        vector<bool> v(m);
+        for(auto e: friendships){
+            if(!cantalk(languages[e[0]-1],languages[e[1]-1])){ //cannot talk
+                v[e[0]-1]=v[e[1]-1]=1;
+            }
+        }
+        int mx=0,nuser=0;
+        for(int i=0;i<m;i++){
+            if(v[i]){
+                nuser+=1;
+                for(int l: languages[i]) {
+                    mx=max(mx,++mp[l]);
+                }
+            }
+        }
+        //cout<<nuser<<" "<<mx<<endl;
+        return nuser-mx;
+        
+    }
+    
+    bool cantalk(vector<int>& a,vector<int>& b){
+        unordered_set<int> ms(begin(a),end(a));
+        for(int i:b) if(ms.count(i)) return 1;
+        return 0;
+    }
+```
+
+1734. Decode XORed Permutation
+<em>
+There is an integer array perm that is a permutation of the first n positive integers, where n is always odd.
+
+It was encoded into another integer array encoded of length n - 1, such that encoded[i] = perm[i] XOR perm[i + 1]. For example, if perm = [1,3,2], then encoded = [2,1].
+
+Given the encoded array, return the original array perm. It is guaranteed that the answer exists and is unique.
+</em>
+
+math derive.
+```
+    vector<int> decode(vector<int>& A) {
+        //odd length? 1-n
+        //the encoded max = i^j it will not exceed i+j
+        //a1,a2,....an, ->a1,(a2^a3=A[1]),(a3^a4=A3)....
+        //a1^A[1]^A[3]^...=a1^a2^...^an
+        //1^2^...^n^a1^a2^...an=0  -->a1=1^2^...n^A[1]^A[3]^...
+        int n = A.size() + 1, a = 0;
+        for (int i = 0; i <= n; ++i) {
+            a ^= i;
+            if (i < n && i % 2 == 1) {
+                a ^= A[i];
+            }
+        }
+        vector<int> res = {a};
+        for (int a: A) {
+            res.push_back(res.back() ^ a);
+        }
+        return res;
+    }        
+```
+
+1735. Count Ways to Make Array With Product
+<em>
+ou are given a 2D integer array, queries. For each queries[i], where queries[i] = [ni, ki], find the number of different ways you can place positive integers into an array of size ni such that the product of the integers is ki. As the number of ways may be too large, the answer to the ith query is the number of ways modulo 109 + 7.
+
+Return an integer array answer where answer.length == queries.length, and answer[i] is the answer to the ith query.
+</em>
+
+prime factorization and then calculate the permutation.
+assume prod=p1^n1*....*pm^nm m prime factors.
+the choice is we can take Ni from each prime factors (Ni from 0 to ni), the remaining shall be combined all together. (but this over count since we might get same result).
+
+- we only need to calculate the number of ways to construct non-1 factors (all other space can fill 1)
+- use m identical elements in n positions, the number is C(n,m).
+
+- use approach in 254 factor combinations (does not include 1 and n itself)
+- for the prod itself, add n to it.
+- for the factor combinations, calculate the combinations
+- combination will overflow, have to use modinv.
+
+```cpp
+    int mod=1e9+7;
+    vector<int> waysToFillArray(vector<vector<int>>& queries) {
+        vector<int> ans;
+        for(auto q:queries){
+            ans.push_back(numWays(q[1],2,{},q[0])+(q[1]==1?1:q[0]));
+        }
+        return ans;
+    }
+    //using backtrack to generate all the factor combinations
+    int numWays(int n,int start,unordered_map<int,int> mp,int size){
+        if(n<start){ //now we get one answer
+            return ways(mp,size)%mod;
+        }
+        long ans=0;//use the number itself
+        for(int i=start;i*i<=n;i++){
+            if(n%i==0){
+                mp[i]++,mp[n/i]++;
+                ans+=ways(mp,size)%mod;ans%=mod;
+                mp[n/i]--;
+                ans+=numWays(n/i,i,mp,size)%mod;ans%=mod;
+                mp[i]--;
+            }
+        }
+        //cout<<ans;
+        return ans;
+    }
+    int ways(unordered_map<int,int>& mp,int sz){
+        //for(auto t: mp) cout<<"["<<t.first<<" "<<t.second<<"] ";cout<<endl;
+        int sum=0;
+        for(auto t: mp) sum+=t.second>0;
+        if(sum>sz || sum==0) return 0;
+        //C(n,m)
+        long ans=1;
+        for(auto t: mp){
+            ans*=comb(sz,t.second);
+            sz-=t.second;
+            ans%=mod;
+        }
+        //treat each group as a single element
+        //ans*=comb(sz,sum);ans%=mod;
+        return ans;
+    }
+    int comb(int n,int m){
+        long ans=1;
+        for(int i=1;i<=m;i++){
+            ans=ans*(n-i+1)%mod*modinv(i,mod-2,mod);
+            ans%=mod;
+        }
+        return ans;
+    }
+    long modinv(int a,int n,int p){ //calculate a^-1%p -->a^(p-2)%p
+        if(n==0) return 1;
+        if(n%2) return a*modinv((long)a*a%p,n/2,p)%p;
+        return modinv((long)a*a%p,n/2,p)%p;
+    }        
+```
+
+still TLE, need optimize:
+
+precalculate the modinv and use reference for the hashmap will effectively improve the efficiency.
+
+	
+	
+
 
 ## biweek 1
 
@@ -27199,87 +27543,5 @@ dp:
     }
 ```
 an important optimization: eliminate the loop of finding max in k window.
-
-	
-1735. Count Ways to Make Array With Product
-<em>
-ou are given a 2D integer array, queries. For each queries[i], where queries[i] = [ni, ki], find the number of different ways you can place positive integers into an array of size ni such that the product of the integers is ki. As the number of ways may be too large, the answer to the ith query is the number of ways modulo 109 + 7.
-
-Return an integer array answer where answer.length == queries.length, and answer[i] is the answer to the ith query.
-</em>
-
-prime factorization and then calculate the permutation.
-assume prod=p1^n1*....*pm^nm m prime factors.
-the choice is we can take Ni from each prime factors (Ni from 0 to ni), the remaining shall be combined all together. (but this over count since we might get same result).
-
-- we only need to calculate the number of ways to construct non-1 factors (all other space can fill 1)
-- use m identical elements in n positions, the number is C(n,m).
-
-- use approach in 254 factor combinations (does not include 1 and n itself)
-- for the prod itself, add n to it.
-- for the factor combinations, calculate the combinations
-- combination will overflow, have to use modinv.
-
-```cpp
-    int mod=1e9+7;
-    vector<int> waysToFillArray(vector<vector<int>>& queries) {
-        vector<int> ans;
-        for(auto q:queries){
-            ans.push_back(numWays(q[1],2,{},q[0])+(q[1]==1?1:q[0]));
-        }
-        return ans;
-    }
-    //using backtrack to generate all the factor combinations
-    int numWays(int n,int start,unordered_map<int,int> mp,int size){
-        if(n<start){ //now we get one answer
-            return ways(mp,size)%mod;
-        }
-        long ans=0;//use the number itself
-        for(int i=start;i*i<=n;i++){
-            if(n%i==0){
-                mp[i]++,mp[n/i]++;
-                ans+=ways(mp,size)%mod;ans%=mod;
-                mp[n/i]--;
-                ans+=numWays(n/i,i,mp,size)%mod;ans%=mod;
-                mp[i]--;
-            }
-        }
-        //cout<<ans;
-        return ans;
-    }
-    int ways(unordered_map<int,int>& mp,int sz){
-        //for(auto t: mp) cout<<"["<<t.first<<" "<<t.second<<"] ";cout<<endl;
-        int sum=0;
-        for(auto t: mp) sum+=t.second>0;
-        if(sum>sz || sum==0) return 0;
-        //C(n,m)
-        long ans=1;
-        for(auto t: mp){
-            ans*=comb(sz,t.second);
-            sz-=t.second;
-            ans%=mod;
-        }
-        //treat each group as a single element
-        //ans*=comb(sz,sum);ans%=mod;
-        return ans;
-    }
-    int comb(int n,int m){
-        long ans=1;
-        for(int i=1;i<=m;i++){
-            ans=ans*(n-i+1)%mod*modinv(i,mod-2,mod);
-            ans%=mod;
-        }
-        return ans;
-    }
-    long modinv(int a,int n,int p){ //calculate a^-1%p -->a^(p-2)%p
-        if(n==0) return 1;
-        if(n%2) return a*modinv((long)a*a%p,n/2,p)%p;
-        return modinv((long)a*a%p,n/2,p)%p;
-    }        
-```
-
-still TLE, need optimize:
-
-precalculate the modinv and use reference for the hashmap will effectively improve the efficiency.
 
 	
