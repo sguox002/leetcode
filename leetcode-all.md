@@ -39,112 +39,42 @@ problems are classified according to the most important classification. we focus
 
 ## algorithm focused Problems
 
+major algorithms:
+- recursive, backtracking, dfs
+- bfs
+- greedy,
+- dp
+- divide and conquer.
+- search
+- sort.
+
 ## dp
 common steps to solve dp problems
 - identity it is a dp problem: overlap subproblems, using memoization to avoid repetitive recursive calls, polynomial complexity
-- identify base bases
+- identify base cases.
 - define subproblem and subproblem states
 - find the state transfer or recurrence relation
-- how to get the original problem.
-<<-5	Longest Palindromic Substring    		29.9%	Medium	->>
-<<-10	Regular Expression Matching    		27.1%	Hard	->>
-<<-44	Wildcard Matching    		25.1%	Hard	->>
-<<-53	Maximum Subarray    		47.2%	Easy	
-connect or not.
-->>
+- how to get the answer for the original problem.
 
-<<-64	Minimum Path Sum    		55.4%	Medium	
-2d grid
-->>
-<<-63	Unique Paths II    		35.0%	Medium	
-with obstacles in the grid from top left to bottom right.
-->>
-<<-62	Unique Paths    		55.1%	Medium	
-2d grid, dp or simple math problem. with m down and n right.
-->>
-
-<<-72	Edit Distance    		45.9%	Hard	->>
-<<-87	Scramble String    		34.2%	Hard	
-randomly choose an index and swap them. 
-check if s1 is a scrambled string of s2.
-just similar to tree swap problem. we can recursively check left vs left + right vs right, left vs right + right vs left. 
-dp or recursive approach.
-->>
-
-<<-97	Interleaving String    		32.2%	Hard	
-check if s3 can be interleaved from s1 and s2.
-dp: s3[i+j-1]==s1[i-1] case, s3[i+j-1]==s2[j-1] case and both equal case.
-->>
-
-<<-115	Distinct Subsequences    		39.1%	Hard	
-find the number of distinct subsequence of s equals t.
-dp[i,j] represent the number of distinct sequence for s length i and t length j.
-if s[i-1]!=t[j-1] dp[i,j]=dp[i-1,j] (need delete the char in s.)
-else we can keep or delete this char: dp[i,j]=dp[i-1,j-1]+dp[i-1,j]
-->>
-
-<<-120	Triangle    		45.0%	Medium	
-min path sum from top to bottom. dp from bottom to top is more simpler.
-->>
-
-<<-132	Palindrome Partitioning II    		30.7%	Hard	
-min cuts to partition the string into palindrome strings.
-dp[i] represent the min cuts to make the string with length i to be palindrome.
-we try every position and grows 
--odd length: 
-- even length 
-->>
-<<-131	Palindrome Partitioning    		49.2%	Medium	
-return all possible palindrome partition.
-backtracking: 
-->>
-
-<<-135	Candy    		32.4%	Hard	
-distribute candy according to rating.
-dp: left to right and right to left.
-->>
-
-<<-140	Word Break II    		33.7%	Hard	
-return all possible break using the dictionary words.
-dp- record the break position and then traceback using dfs.
-->>
-<<-139	Word Break    		41.0%	Medium	
-check if it is breakable.
-->>
-
-<<-152	Maximum Product Subarray    		32.4%	Medium	
-subarray with max product.
-- we need keep min and max at the same time since negative will change min/max
-- need to attach to previous or start a new one (when there is 0)
-->>
-<<-174	Dungeon Game    		32.9%	Hard	->>
-<<-221	Maximal Square    		38.1%	Medium	
-dp: check row by row, and we only need keep two rows height.
-->>
-
-<<-276	Paint Fence    		38.7%	Easy	
-n posts, k colors, no more than two adjacent posts have the same color.
-return the total number of ways to paint the fence.
-dp use same and diff.
-->>
 
 <<-279	Perfect Squares    		48.2%	Medium	
 given n, return the least number of perfect square number that sum to n.
 dp[i]=min(dp[i-j*j]+1)
-
 ->>
-<<-309	Best Time to Buy and Sell Stock with Cooldown    		47.8%	Medium	->>
+
+<<-309	Best Time to Buy and Sell Stock with Cooldown    		47.8%	Medium
+->>
 <<-188	Best Time to Buy and Sell Stock IV    		28.8%	Hard	
-at most k transactions.
+at most k transactions. based on previous transactions.
 ->>
 <<-123	Best Time to Buy and Sell Stock III    		39.3%	Hard	
-at most two transactions
+at most two transactions. based on previous transactions
 ->>
 <<-122	Best Time to Buy and Sell Stock II    		57.9%	Easy	
-many transactions
+many transactions as possible.
 ->>
 <<-121	Best Time to Buy and Sell Stock    		51.1%	Easy	
-perform at most one time.
+perform at most one time. curr-lmin. all stock problems are based on this. top down is more understandable.
 ->>
 
 <<-313	Super Ugly Number    		45.6%	Medium	
@@ -156,6 +86,7 @@ find the nth ugly number, with factor 2,3,5.
 ->>
 <<-263	Ugly Number    		41.7%	Easy	
 check if it only has factor 2,3,5.
+key idea: need advance each pointer if it is multiple of more than one factors
 ->>
 
 <<-322	Coin Change    		36.5%	Medium	
@@ -186,7 +117,7 @@ dp: dp[i]=max(dp[i],dp[j]*(i/j),j*i/j)
 <<-368	Largest Divisible Subset    		38.1%	Medium	
 in the subset, every pair satisfy a[i]%a[j]=0 or a[j]%a[i]=0
 equivalent: they shall have a gcd. or this is a geometric series.
-sort and then use dp. with parent information
+sort and then use dp. with parent information to traceback.
 ->>
 
 <<-375	Guess Number Higher or Lower II    		41.4%	Medium	
@@ -196,6 +127,7 @@ minmax problem.
 dp, minmax.
 ->>
 <<-374	Guess Number Higher or Lower    		44.0%	Easy	->>
+
 <<-413	Arithmetic Slices    		58.3%	Medium	
 - for subarray, if we find subarray length=L, the slices would be: 1+2+...+L-2
 - also can use dp, dp[i+1]=dp[i]+1 if 2*A[i-1]=A[i]+A[i-2]
@@ -204,13 +136,13 @@ dp, minmax.
 <<-446	Arithmetic Slices II - Subsequence    		33.0%	Hard	
 given a list of numbers, find the number of arithmetic subsequence.
 dp: dp[i,diff] represent the length of arithmetic sequence ending with A[i] with the difference = diff.
-dp[i,diff]=dp[j,diff]+1, ans+=diff[i,diff]-2
+dp[i,diff]=dp[j,diff]+1, ans+=diff[i,diff]-2 ->hashmap for dp array.
 ->>
 
 <<-467	Unique Substrings in Wraparound String    		35.9%	Medium	
 s is infinite repeat of a-z. given a string t, find the number of unique substring of t is present in s.
 we only need to find the longest substr satisfying the adjacent different is 1 or 25. ending with different char.
-dp: ending with for unique substr.  
+dp: ending with for unique substr. common trick to do unique problems (ending with different elements and length) 
 ->>
 
 <<-471	Encode String with Shortest Length    		48.4%	Hard	
@@ -223,7 +155,6 @@ try each prefix and try to encode it and reduce to subproblem
 <<-472	Concatenated Words    		44.9%	Hard	
 given a list of words, return words which can be concated by other words in the list.
 a problem of dp: with all shorter words ahead.
-
 ->>
 
 <<-474	Ones and Zeroes    		43.3%	Medium	
@@ -421,8 +352,34 @@ if egg breaks we can check dp[m-1,k-1] floors
 if egg does not break, we can check dp[m-1,k] floors
  
 ->>
+### two strings or arrays
+palindrome often is one string, but treated with two arrays.
+
+<<-5	Longest Palindromic Substring    		29.9%	Medium	
+- odd/even growing at all index.
+- dp[i,j] represent the length for substr i,j, dp[i,j]=dp[i+1,j-1]+2
+->>
+<<-10	Regular Expression Matching    		27.1%	Hard	
+'.' match any single char, '*' match 0 or more preceding elements
+->>
+<<-44	Wildcard Matching    		25.1%	Hard	
+'?' match any single char, '*' match 0 or more characters (not preceding)
+->>
+<<-72	Edit Distance    		45.9%	Hard	->>
+<<-87	Scramble String    		34.2%	Hard	
+randomly choose an index and swap them. 
+check if s1 is a scrambled string of s2.
+just similar to tree swap problem. we can recursively check left vs left + right vs right, left vs right + right vs left. (check all index)
+dp or recursive approach.
+->>
 
 ### two state interlace
+<<-276	Paint Fence    		38.7%	Easy	
+n posts, k colors, no more than two adjacent posts have the same color.
+return the total number of ways to paint the fence.
+dp use same color and different color. two states transfer.
+->>
+
 <<-376	Wiggle Subsequence    		39.9%	Medium	
 return the longest length of wiggle subsequence
 dp two states: up and down, up is the max length so far, down is the max length so far.
@@ -684,6 +641,41 @@ idea: choose i as the last balloon to burst and its left and right are virtual b
 
 ### dp dealing with array partitions
 generally dealing with subsequence or subarray and divide into k groups to get max/min scores.
+
+
+<<-140	Word Break II    		33.7%	Hard	
+return all possible break using the dictionary words.
+dp- record the break position and then traceback using dfs.
+(similar to 132/131)
+->>
+
+<<-139	Word Break    		41.0%	Medium	
+check if it is breakable.
+->>
+
+<<-132	Palindrome Partitioning II    		30.7%	Hard	
+min cuts to partition the string into palindrome strings.
+dp[i] represent the min cuts to make the string with length i to be palindrome.
+we try every position and grows. (more like a array partition problem or dfs approach)
+- odd length: 
+- even length 
+cut[i]=min(cut[i],cut[j]+1) (i,j) is a palindrome.
+->>
+
+<<-131	Palindrome Partitioning    		49.2%	Medium	
+return all possible palindrome partition.
+backtracking: 
+->>
+
+<<-53	Maximum Subarray    		47.2%	Easy	
+connect or not.
+->>
+
+<<-152	Maximum Product Subarray    		32.4%	Medium	
+subarray with max product.
+- we need keep min and max at the same time since negative will change min/max
+- need to attach to previous or start a new one (when there is 0)
+->>
 
 <<-813	Largest Sum of Averages    		50.6%	Medium	
 partition the array into at most K groups. the score is sum of group average.
@@ -1053,6 +1045,13 @@ this can be done by shifting all numbers >=j by 1 (shift them to j+1...i), which
 
 ### count number of ways
 
+<<-115	Distinct Subsequences    		39.1%	Hard	
+find the number of distinct subsequence of s equals t.
+dp[i,j] represent the number of distinct sequence for s length i and t length j.
+if s[i-1]!=t[j-1] dp[i,j]=dp[i-1,j] (need delete the char in s.)
+else we can keep or delete this char: dp[i,j]=dp[i-1,j-1]+dp[i-1,j]
+->>
+
 <<-518	Coin Change 2    		51.0%	Medium	
 cions can be reused, number of ways to reach up the total money
 reusable -> 1d dp reduced money total. dp[w]+=dp[w-c] for all c.
@@ -1304,6 +1303,36 @@ two options: use j column or not use it.
 generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
 - in some cases to save space, we need to store previous row and previous column.
 - in some cases we need only keep the previous whole n elements.
+
+<<-135	Candy    		32.4%	Hard	
+distribute candy according to rating.
+dp: left to right and right to left. simple version for 2d matrix similar problems.
+->>
+
+<<-174	Dungeon Game    		32.9%	Hard	->>
+
+<<-221	Maximal Square    		38.1%	Medium	
+dp: check row by row, and we only need keep two rows height.
+->>
+
+<<-120	Triangle    		45.0%	Medium	
+min path sum from top to bottom. dp from bottom to top is more simpler.
+->>
+
+<<-97	Interleaving String    		32.2%	Hard	
+check if s3 can be interleaved from s1 and s2.
+dp: s3[i+j-1]==s1[i-1] case, s3[i+j-1]==s2[j-1] case and both equal case.
+->>
+
+<<-64	Minimum Path Sum    		55.4%	Medium	
+2d grid
+->>
+<<-63	Unique Paths II    		35.0%	Medium	
+with obstacles in the grid from top left to bottom right.
+->>
+<<-62	Unique Paths    		55.1%	Medium	
+2d grid, dp or simple math problem. with m down and n right.
+->>
 
 <<-542	01 Matrix    		40.3%	Medium	
 find the distance for each element to the nearest 0.
