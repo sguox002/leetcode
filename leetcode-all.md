@@ -76,6 +76,7 @@ many transactions as possible.
 <<-121	Best Time to Buy and Sell Stock    		51.1%	Easy	
 perform at most one time. curr-lmin. all stock problems are based on this. top down is more understandable.
 ->>
+<<-714	Best Time to Buy and Sell Stock with Transaction Fee    		55.4%	Medium	->>
 
 <<-313	Super Ugly Number    		45.6%	Medium	
 given a list of prime factors, return the nth superugly number (who's prime factors are only in the list).
@@ -126,7 +127,9 @@ min of the max money for the choice. ie. assume each time you guess wrong.
 minmax problem.
 dp, minmax.
 ->>
-<<-374	Guess Number Higher or Lower    		44.0%	Easy	->>
+<<-374	Guess Number Higher or Lower    		44.0%	Easy	
+give direction of guess, binary search.
+->>
 
 <<-413	Arithmetic Slices    		58.3%	Medium	
 - for subarray, if we find subarray length=L, the slices would be: 1+2+...+L-2
@@ -141,37 +144,10 @@ dp[i,diff]=dp[j,diff]+1, ans+=diff[i,diff]-2 ->hashmap for dp array.
 
 <<-467	Unique Substrings in Wraparound String    		35.9%	Medium	
 s is infinite repeat of a-z. given a string t, find the number of unique substring of t is present in s.
+
 we only need to find the longest substr satisfying the adjacent different is 1 or 25. ending with different char.
+
 dp: ending with for unique substr. common trick to do unique problems (ending with different elements and length) 
-->>
-
-<<-471	Encode String with Shortest Length    		48.4%	Hard	
-encode the string: k[str] means str repeats k times. 
-idea:  dp top down. 
-store the string s min length encoded string in hashmap.
-try each prefix and try to encode it and reduce to subproblem
-->>
-
-<<-472	Concatenated Words    		44.9%	Hard	
-given a list of words, return words which can be concated by other words in the list.
-a problem of dp: with all shorter words ahead.
-->>
-
-<<-474	Ones and Zeroes    		43.3%	Medium	
-given a list of binary string, and two numbers m and n. return the largest subset such that there are at most m 0s and n 1s.
-dp: dp[i,j] represent the max length for i 0s and j 1s.
-dp[i,j]=dp[i-k0,j-k1]+1 k0 k1 is the current string number of 0s and number of 1s. Similar to LIS.
-->>
-
-<<-514	Freedom Trail    		44.6%	Hard	
-given a ring with given string on it, and another key to spell. You can rotate clockwise or counter-clockwise.
-if the char is rotated to 12:00 you need press button in the center. return the number of moves needed to spell the key.
-- spell the key one char by one char.
-- there could be multiple chars on the ring matching our key char. select one will affect our later spelling.
-- using hashmap to record each char's index
-- we try all the index for the key char. 
-- dp[i,j] represent the min steps to rotate jth key with ith char at 12:00
-dp[i,j]=min(d+dp[ind[i],j+1]+1)
 ->>
 
 <<-517	Super Washing Machines    		38.4%	Hard	
@@ -180,10 +156,7 @@ return the min number of operations to make all the machines to have the same nu
 - subtract the average and our target is 0
 - from left to right, we shall pass all our prefix sum to right.
 - the single element max also shall be reduced to 0.
-
 ->>
-
-
 
 <<-568	Maximum Vacation Days    		41.2%	Hard	
 - you are in city 0 on Monday, can only travels among cities [0,n-1]
@@ -228,13 +201,6 @@ to get the lexi smallest path, we need smaller index if tie, thus from right to 
 very good question!
 ->>
 
-<<-673	Number of Longest Increasing Subsequence    		38.2%	Medium	
-return the number of LIS.
-two dp problem: LIS and number of LIS ending with nums[i]
-- if len(i)==len(j)+1, cnt[i]+=cnt[j]
-then we add all len=maxlen, cnt
-->>
-
 <<-691	Stickers to Spell Word    		43.5%	Hard	
 given a list of stickers (can reuse) to spell a target string. return the min number of stickers.
 - convert target string and stickers into hashmap (no order needed)
@@ -244,7 +210,6 @@ given a list of stickers (can reuse) to spell a target string. return the min nu
 - bottom up dp: dp[string] using hashmap representing min stickers for string s. dp[string]=1+min(dp[string-sticki])
 ->>
 
-<<-714	Best Time to Buy and Sell Stock with Transaction Fee    		55.4%	Medium	->>
 
 <<-740	Delete and Earn    		48.9%	Medium	
 delete num[i] and get score num[i] and delete all elements=nums[i]-1 or nums[i]+1
@@ -260,7 +225,7 @@ dp. dp[i]=min(dp[i-2],dp[i-1])+cost[i], note this is the cost to reach i+1 or i+
 <<-790	Domino and Tromino Tiling    		39.7%	Medium	
 return the number of ways to reach 2xN tile.
 dp: two kind of shapes to reach final status. L shape and I shape.
-
+final anwer shall be I shape with n length.
 ->>
 
 <<-795	Number of Subarrays with Bounded Maximum    		46.9%	Medium	
@@ -277,6 +242,7 @@ A[i]>R, dp[i]=0;
 <<-799	Champagne Tower    		43.8%	Medium	
 dp: next row dp[i+1,j]=dp[i+1,j+1]=(dp[i,j]-1)/2
 ->>
+
 <<-801	Minimum Swaps To Make Sequences Increasing    		39.0%	Medium	
 two array A and B at the same size, you can swap A[i] vs B[i] so that A and B are both strictly increasing.
 return the min number of swaps.
@@ -284,7 +250,6 @@ return the min number of swaps.
 A[i-1]<A[i] && B[i-1]<B[i], swap both or do not swap either
 A[i-1]<B[i] && B[i-1]<A[i], swap i-1 or swap i.
 ->>
-
 
 <<-808	Soup Servings    		40.5%	Medium	
 given N of each two soup. 4 operations:
@@ -306,7 +271,8 @@ go back 1 to n-1 steps to get the min number of steps.
 given a list of integers, and each number can be used any number of times. Each non-leaf node's value shall equal to the product of their children.
 return number of binary trees can make.
 if a number as the root and it has factor i and j.
-then dp[n]=dp[i]*dp[j]
+then dp[n]=dp[i]*dp[j], dp[n] represent the number of trees with root=n.
+left and right shall be inside the set.
 ->>
 
 <<-828	Count Unique Characters of All Substrings of a Given String    		46.5%	Hard	
@@ -350,8 +316,8 @@ if we convert to dp[m,k] reprenting the max floor we can check using m move and 
 dp[m,k]=dp[m-1,k-1]+dp[m-1,k]+1
 if egg breaks we can check dp[m-1,k-1] floors
 if egg does not break, we can check dp[m-1,k] floors
+ ->>
  
-->>
 ### two strings or arrays
 palindrome often is one string, but treated with two arrays.
 
@@ -556,6 +522,20 @@ two words, use each word as the end and get the shortest distance.
 
 ### memoization
 
+<<-471	Encode String with Shortest Length    		48.4%	Hard	
+encode the string: k[str] means str repeats k times. 
+
+Input: s = "abbbabbbcabbbabbbc"
+Output: "2[2[abbb]c]"
+
+idea:  dp top down: try all prefix and check number of repetition and then divide into prefix repeat and suffix two subproblems
+repeat 1: s1+sub(suffix)
+repeat k>1: k[Subprefix]+SubSuffix. memoization.
+store the string s min length encoded string in hashmap.
+try each prefix and try to encode it and reduce to subproblem.
+level: 5
+->>
+
 <<-241	Different Ways to Add Parentheses    		56.5%	Medium	
 add () to the expression and evaluate all possible results. operator only include +-*
 - parentheis appear the digit and after the digit.
@@ -642,6 +622,12 @@ idea: choose i as the last balloon to burst and its left and right are virtual b
 ### dp dealing with array partitions
 generally dealing with subsequence or subarray and divide into k groups to get max/min scores.
 
+<<-472	Concatenated Words    		44.9%	Hard	
+given a list of words, return words which can be concated by other words in the list.
+a problem of dp: with all shorter words ahead (sort by length). and reduce to problem: a string can be concat by dictionary words (try prefix).
+similar: word break.
+level: 5
+->>
 
 <<-140	Word Break II    		33.7%	Hard	
 return all possible break using the dictionary words.
@@ -968,6 +954,17 @@ Note that 4 here is the number of operations from 1000 to become 1110, which is 
 ->>
 
 ### state transfer
+
+<<-514	Freedom Trail    		44.6%	Hard	
+given a ring with given string on it, and another key to spell. You can rotate clockwise or counter-clockwise.
+if the char is rotated to 12:00 you need press button in the center. return the number of moves needed to spell the key.
+- spell the key one char by one char.
+- there could be multiple chars on the ring matching our key char. select one will affect our later spelling.
+- using hashmap to record each char's index
+- we try all the index for the key char. 
+- dp[i,j] represent the min steps to rotate jth key with ith char at 12:00
+dp[i,j]=min(d+dp[ind[i],j+1]+1)
+->>
 
 <<-1230	Toss Strange Coins    		49.3%	Medium	
 n coins, each coin given probability facing up. return the prob for target coins up.
@@ -1522,6 +1519,18 @@ len=3, [4,5,6], so tail[2]=6.
         return piles.size();
     }
 ```	
+<<-673	Number of Longest Increasing Subsequence    		38.2%	Medium	
+return the number of LIS.
+two dp problem: LIS and number of LIS ending with nums[i]
+- if len(i)==len(j)+1, cnt[i]+=cnt[j]
+then we add all len=maxlen, cnt
+->>
+
+<<-474	Ones and Zeroes    		43.3%	Medium	
+given a list of binary string, and two numbers m and n. return the largest subset such that there are at most m 0s and n 1s.
+dp: dp[i,j] represent the max length for i 0s and j 1s.
+dp[i,j]=dp[i-k0,j-k1]+1 k0 k1 is the current string number of 0s and number of 1s. Similar to LIS.
+->>
 
 <<-300	Longest Increasing Subsequence    		43.0%	Medium	->>
 
