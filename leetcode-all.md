@@ -210,7 +210,6 @@ given a list of stickers (can reuse) to spell a target string. return the min nu
 - bottom up dp: dp[string] using hashmap representing min stickers for string s. dp[string]=1+min(dp[string-sticki])
 ->>
 
-
 <<-740	Delete and Earn    		48.9%	Medium	
 delete num[i] and get score num[i] and delete all elements=nums[i]-1 or nums[i]+1
 bucket sort and then we can apply house robbing dp algorthm
@@ -239,18 +238,6 @@ A[i]>R, dp[i]=0;
 [L,R]: can combine with all previous after the previous invalid.
 ->>
 
-<<-799	Champagne Tower    		43.8%	Medium	
-dp: next row dp[i+1,j]=dp[i+1,j+1]=(dp[i,j]-1)/2
-->>
-
-<<-801	Minimum Swaps To Make Sequences Increasing    		39.0%	Medium	
-two array A and B at the same size, you can swap A[i] vs B[i] so that A and B are both strictly increasing.
-return the min number of swaps.
-- dp approach: using swap noswap 
-A[i-1]<A[i] && B[i-1]<B[i], swap both or do not swap either
-A[i-1]<B[i] && B[i-1]<A[i], swap i-1 or swap i.
-->>
-
 <<-808	Soup Servings    		40.5%	Medium	
 given N of each two soup. 4 operations:
 100A0B, 75A25B,50A50B,25A75B
@@ -276,7 +263,7 @@ left and right shall be inside the set.
 ->>
 
 <<-828	Count Unique Characters of All Substrings of a Given String    		46.5%	Hard	
-return the sum of all substring's unique number
+return the sum of all substring's unique number. for example "leetcode" unique number is "ltcod"=5
 - brutal force: try all substring and add the unique count.
 - for ith char we get its left and right and its contribution is L[i]*R[i]
 - dp: instead of calculating substrings, we count each char. 
@@ -287,7 +274,7 @@ if we see this char at j, we add (i-j+1)
 dp[i]=dp[i-1]+(i-f)-(f-s) f: the first index, s the second index. (from right to left)
 because we have (i-f) more unique chars, (f-s) less unique chars.
 - previous have 2 same char at j and k, k<j, dp[i-]1 includes extra substring from [k+1,i-1]
-
+level: *****
 ->>
 
 <<-837	New 21 Game    		35.2%	Medium	
@@ -318,28 +305,98 @@ if egg breaks we can check dp[m-1,k-1] floors
 if egg does not break, we can check dp[m-1,k] floors
  ->>
  
-### two strings or arrays
+### two strings or arrays， edit distance (similar to 2d matrix walk)
 palindrome often is one string, but treated with two arrays.
+generally involves two strings or arrays, sometimes the string and the reverse string.
+dp pattern is generally more obvious and use 2d dp approach.
+treat like a 2d matrix walk, generally involves only previous col or row. (for space optimization)
+
+<<-1682. Longest palindromic subsequence II
+problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
+dp[i,j,k] using 26 chars.
+->>
+
+<<-516	Longest Palindromic Subsequence    		54.4%	Medium	
+equivalent to:
+- longest common subsequence (LCS) (s and reversed s).
+- min deletion edit distance (s and reversed s).
+- dp[i,j] represent to max length for substr(i...j). 
+s[i]==s[j] dp[i,j]=dp[i+1,j-1]+2
+else dp[i,j]=max(dp[i+1,j],dp[i,j-1])
+->>
+
+<<-5. Longest Palindromic Substring
+for substring, 
+- dp: dp[i,j] s[i]==s[j] and inner side s[i+1..j-1] must also be a pal-string.
+- non-dp: for all possible position, expand and update max size.
+->>
+
+<<-72. Edit Distance
+min operation to convert string 1 to string 2 using ins,del,replace.
+dp[i,j] represent the min operations converting s1 length i to s2 with length j.
+s[i]==s[j], dp[i,j]=dp[i-1,j-1]
+s[i]!=s[j]: 
+replace: dp[i-1,j-1]+1
+insert: dp[i,j-1]+1
+delete: dp[i-1,j]+1
+->>
+
+<<-583. Delete operation for two strings
+min deletions to make two strings equal. You can delete either strings.
+dp[i,j].
+if s[i]!=t[j]: you have two options:
+delete s[i]: dp[i,j-1]+1
+delete t[j]: dp[i-1,j]+1
+->>
+
+<<-712. Minimum ASCII delete sum for two strings
+find the lowest ascii sum of deleted chars to make two strings equal.
+edit distance variation
+->>
 
 <<-5	Longest Palindromic Substring    		29.9%	Medium	
 - odd/even growing at all index.
 - dp[i,j] represent the length for substr i,j, dp[i,j]=dp[i+1,j-1]+2
 ->>
+
 <<-10	Regular Expression Matching    		27.1%	Hard	
 '.' match any single char, '*' match 0 or more preceding elements
 ->>
+
 <<-44	Wildcard Matching    		25.1%	Hard	
 '?' match any single char, '*' match 0 or more characters (not preceding)
 ->>
-<<-72	Edit Distance    		45.9%	Hard	->>
+
 <<-87	Scramble String    		34.2%	Hard	
-randomly choose an index and swap them. 
-check if s1 is a scrambled string of s2.
+randomly choose an index and swap them. check if s1 is a scrambled string of s2.
 just similar to tree swap problem. we can recursively check left vs left + right vs right, left vs right + right vs left. (check all index)
 dp or recursive approach.
+****
 ->>
 
 ### two state interlace
+this generally onvolves limit number of elements with same color et al, or up down..
+and you have two options generally. although you can have 2d dp, but using two state transfer would be more understandable.
+
+<<-1186	Maximum Subarray Sum with One Deletion    		38.3%	Medium	
+with at most one deletion.
+- delete only occurs with negative number
+- delete one will help connect left and right to make sum larger.
+dp: del[i] and nodel[i] represent the max subarray sum deleting one or not delete one (not necessary i)
+del[0]=0,notdel=A[0]
+notdel[i]=max(A[i],notdel[i-1]+A[i]), connect to previous or start a new group
+del[i]=max(notdel[i-1],del[i-1]+A[i],A[i]) delete i, not delete i, i start a new group
+problem pattern: two options interlace. 
+->>
+
+<<-801	Minimum Swaps To Make Sequences Increasing    		39.0%	Medium	
+two array A and B at the same size, you can swap A[i] vs B[i] so that A and B are both strictly increasing.
+return the min number of swaps.
+- dp approach: using swap noswap 
+A[i-1]<A[i] && B[i-1]<B[i], swap both or do not swap either
+A[i-1]<B[i] && B[i-1]<A[i], swap i-1 or swap i.
+->>
+
 <<-276	Paint Fence    		38.7%	Easy	
 n posts, k colors, no more than two adjacent posts have the same color.
 return the total number of ways to paint the fence.
@@ -394,11 +451,13 @@ dp: use two state inc,dec.
 ->>
 
 ### knapsack
-put elements in two or three options.
+put elements in two or three options, to reach a target sum or max/min the sum with bound et al.
+many times, you need convert to equivalent knapsack problem.
+
 <<-494	Target Sum    		46.0%	Medium	
 given an array you can assign + and - to each of the elment, so that the sum=target. return number of ways.
 dp, knapsack P-N=target, P+N=tsum.
-dp[i,w]+=dp[i-1,w-c]
+dp[i,w]+=dp[i-1,w-c] c is the element weight.
 ->>
 
 <<-805	Split Array With Same Average    		26.5%	Hard	
@@ -436,7 +495,7 @@ equivalent: knapsack to make positive sum >=tsum/2.
 ->>
 
 ### shortest distance problem
-dijkstra: using priority_queue, src node to all other nodes with non-negative weight.
+dijkstra: using priority_queue, src node to all other nodes with non-negative weight (similar to bfs with visited array to terminate when reach the target).
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
 floyd-warshal: find all pair node shortest distance using dp.
 
@@ -533,7 +592,8 @@ repeat 1: s1+sub(suffix)
 repeat k>1: k[Subprefix]+SubSuffix. memoization.
 store the string s min length encoded string in hashmap.
 try each prefix and try to encode it and reduce to subproblem.
-level: 5
+similar to divide and conquer.
+level: *****
 ->>
 
 <<-241	Different Ways to Add Parentheses    		56.5%	Medium	
@@ -543,6 +603,7 @@ add () to the expression and evaluate all possible results. operator only includ
 - () only changes the calculation order, we do not need to do the addition actually.
 - we see +-*, and we divide into left and right and combine
 - using memoization to record the results - dp.
+- divide and conquer using the operators.
 ->>
 
 <<-1387	Sort Integers by The Power Value    		70.6%	Medium	
@@ -566,7 +627,7 @@ for example k=5 (0b101), we first get 2^0's parent, and then get parent's 2^2 pa
 
 ### dp dealing with subarray or intervals
 
-removing a subarray and then left and right connected. Extremely hard to track the array changes or no good data structure to do it.
+removing a subarray and then left and right connected. Extremely hard to track the array changes or no good data structure to do it. This is one of the difficulty dp subject.
 
 <<-546	Remove Boxes    		43.7%	Hard	
 remove box with same color and get k*k points (k is the number of boxes removed)
@@ -653,6 +714,12 @@ return all possible palindrome partition.
 backtracking: 
 ->>
 
+<<-1278	Palindrome Partitioning III    		60.2%	Hard	
+return the min number of characters to replace so that string can be split into k palindrome substr.
+dp[i,k] represent the min cost for length i and k parts.
+dp[i,k]=min(dp[j,k-1]+cost(j,i))
+->>
+
 <<-53	Maximum Subarray    		47.2%	Easy	
 connect or not.
 ->>
@@ -683,12 +750,6 @@ very similar to min difficulty in job scheduling.
 <<-1105	Filling Bookcase Shelves    		57.9%	Medium	
 given book height and width in order, and bookshelf width. find the min height.
 dp, either start a new layer or attach to previous layer.
-->>
-
-<<-1278	Palindrome Partitioning III    		60.2%	Hard	
-return the min number of characters to replace so that string can be split into k palindrome substr.
-dp[i,k] represent the min cost for length i and k parts.
-dp[i,k]=min(dp[j,k-1]+cost(j,i))
 ->>
 
 <<-1335	Minimum Difficulty of a Job Schedule    		58.5%	Hard	
@@ -738,17 +799,6 @@ return the min score sum.
 dp[i,j] represent the min score for trianglize i to j (clockwise) and connect i,j.
 dp[i,j]=min(dp[i,j],dp[i,k]+dp[k,j]+A[i]*A[j]*A[k]) i<k<j.
 since k>i. we need loop i reversely.
-->>
-
-<<-1186	Maximum Subarray Sum with One Deletion    		38.3%	Medium	
-with at most one deletion.
-- delete only occurs with negative number
-- delete one will help connect left and right to make sum larger.
-dp: del[i] and nodel[i] represent the max subarray sum deleting one or not delete one (not necessary i)
-del[0]=0,notdel=A[0]
-notdel[i]=max(A[i],notdel[i-1]+A[i]), connect to previous or start a new group
-del[i]=max(notdel[i-1],del[i-1]+A[i],A[i]) delete i, not delete i, i start a new group
-problem pattern: two options interlace. 
 ->>
 
 <<-1191	K-Concatenation Maximum Sum    		25.4%	Medium	
@@ -841,6 +891,7 @@ if there is no way, return "0".
 - number of digits prefer the digit. (longer length larger number)
 - after length is fixed, find number of each digit.
 - knapsack with repetition, the number never changes, but the target gets smaller when we make a choice. 1d knapsack.
+
 ```cpp
 string dp[5001] = {};
 string largestNumber(vector<int>& cost, int t) {
@@ -1301,6 +1352,10 @@ generally current value only depends on the [i,j-1],[i-1,j] and [i-1,j-1].
 - in some cases to save space, we need to store previous row and previous column.
 - in some cases we need only keep the previous whole n elements.
 
+<<-799	Champagne Tower    		43.8%	Medium	
+dp: next row dp[i+1,j]=dp[i+1,j+1]=(dp[i,j]-1)/2
+->>
+
 <<-135	Candy    		32.4%	Hard	
 distribute candy according to rating.
 dp: left to right and right to left. simple version for 2d matrix similar problems.
@@ -1409,55 +1464,6 @@ pattern: 2d matrix.
 given k and mat[i,j] is the sum of all rows [i-k,i+k] and columns [j-k,j+k]
 - brutal force
 - dp: dp[i,j]=dp[i-1,j]+dp[i,j-1]-dp[i-1,j-1]+mat[i,j]
-->>
-
-
-### dp: edit distance (similar to 2d matrix walk)
-generally involves two strings or arrays, sometimes the string and the reverse string.
-
-<<-712	Minimum ASCII Delete Sum for Two Strings    		59.0%	Medium	->>
-
-<<-1682. Longest palindromic subsequence II
-problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
-dp[i,j,k] using 26 chars.
-->>
-
-<<-516	Longest Palindromic Subsequence    		54.4%	Medium	
-equivalent to:
-- longest common subsequence (LCS) (s and reversed s).
-- min deletion edit distance (s and reversed s).
-- dp[i,j] represent to max length for substr(i...j). 
-s[i]==s[j] dp[i,j]=dp[i+1,j-1]+2
-else dp[i,j]=max(dp[i+1,j],dp[i,j-1])
-->>
-
-<<-5. Longest Palindromic Substring
-for substring, 
-- dp: dp[i,j] s[i]==s[j] and inner side s[i+1..j-1] must also be a pal-string.
-- non-dp: for all possible position, expand and update max size.
-->>
-
-<<-72. Edit Distance
-min operation to convert string 1 to string 2 using ins,del,replace.
-dp[i,j] represent the min operations converting s1 length i to s2 with length j.
-s[i]==s[j], dp[i,j]=dp[i-1,j-1]
-s[i]!=s[j]: 
-replace: dp[i-1,j-1]+1
-insert: dp[i,j-1]+1
-delete: dp[i-1,j]+1
-->>
-
-<<-583. Delete operation for two strings
-min deletions to make two strings equal. You can delete either strings.
-dp[i,j].
-if s[i]!=t[j]: you have two options:
-delete s[i]: dp[i,j-1]+1
-delete t[j]: dp[i-1,j]+1
-->>
-
-<<-712. Minimum ASCII delete sum for two strings
-find the lowest ascii sum of deleted chars to make two strings equal.
-edit distance variation
 ->>
 
 ### longest common subsequence
@@ -2390,6 +2396,7 @@ level: 3
 - keep invariant condition when shrinking the range.
 - left biased and right biased.
 - convert problem to binary search if brutal force checking all range works.
+
 <<-4	Median of Two Sorted Arrays    		30.4%	Hard	->>
 <<-33	Search in Rotated Sorted Array    		35.3%	Medium	->>
 <<-81	Search in Rotated Sorted Array II    		33.3%	Medium	->>
@@ -2820,16 +2827,13 @@ you can use offers repeatedly. return the min cost to buy exactly the numbers.
 backtracking: with vector operations, could use dp for memoization
 ->>
 
-
-
-
 <<-756	Pyramid Transition Matrix    		55.3%	Medium	
 given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
 backtracking: 
 - the first two as the key and build a list of 3rd chars.
 - try all these combinations.
-
 ->>
+
 <<-784	Letter Case Permutation    		65.7%	Medium	
 string of letter and digits, you can change to lowercase or uppercase
 return all combination
@@ -2959,6 +2963,7 @@ given a board with char, and a list of dictionary words. find all the words in t
 - build the trie using the list of words
 - dfs on the board and find in the trie.
 ->>
+
 <<-79	Word Search    		36.2%	Medium	
 given a board and a string, check if the string exist in board
 plain dfs.
@@ -3043,6 +3048,7 @@ we see x, sum=x,
 then we see y, sum+=flatsum+y->2x+y, 
 we see z: sum+=sum+z ->2x+y+x+y+z, ie we get the flat sum and keep adding. 
 ->>
+
 <<-688	Knight Probability in Chessboard    		49.6%	Medium	
 dfs
 ->>
@@ -3054,6 +3060,7 @@ dfs calculate the number of nodes in each set.
 <<-694	Number of Distinct Islands    		56.8%	Medium	
 only need to remove the reference.
 ->>
+
 <<-711	Number of Distinct Islands II    		48.6%	Hard	
 supports rotation (90,180,270 degrees) or reflections
 for each set we save the points with 8 different format and convert to string and push into hashset.
@@ -3091,6 +3098,7 @@ dfs to two groups.
 <<-959	Regions Cut By Slashes    		66.6%	Medium	
 upscale 3 by 3 and do bfs/dfs.
 ->>
+
 <<- 1706. Where will the ball fall
 the grid with / and \,
 upscale the grid by 3, and then use bfs or dfs to find which one to go. bfs is better (for implementation)
@@ -3110,7 +3118,6 @@ dfs
 <<-1034	Coloring A Border    		45.1%	Medium	
 same value and connected. border has at least a neighboring cell which is not the connected group.
 dfs to mark negative as visited and then check all negatives and see if they have a cell not in the group.
-
 ->>
 
 <<-1219	Path with Maximum Gold    		65.6%	Medium	
@@ -3130,12 +3137,12 @@ given an array you are at index start. At i, you can jump to i+A[i] or i-A[i].
 check if you can jump to any position with value 0.
 dfs using visited hashtable.
 ->>
+
 <<-55	Jump Game    		34.9%	Medium	
 you are at the first element, each element represents the max step you can jump.
 determine if you are able to reach the last index.
 bfs similar: update the max i+nums[i] 
 ->>
-
 
 <<-1377	Frog Position After T Seconds    		34.2%	Hard	
 given an undirected tree with n vertices from 1 to n. Starts at 1, it can jump to direct connected vertices, cannot go back to visited nodes. It randomly jump to its neighbors with same probability. 
@@ -3248,7 +3255,6 @@ bfs. you can rotate clockwise or counterclockwise.
 <<-773	Sliding Puzzle    		60.2%	Hard	
 given 2x3 board with 1-5, return min number of moves to solve the board.
 bfs: define the possible direction to go.
-
 ->>
 
 <<-815	Bus Routes    		43.0%	Hard	
@@ -3369,6 +3375,7 @@ need store position and direction also, the visited array.
 ->>
 
 ## union-find
+
 - union-find with nothing, O(n)
 - union find with rank O(logn)
 - union find with path compression O(1)
@@ -3423,7 +3430,6 @@ a brick is stable if:
 given a list of hit which removes the brick. Those unstable brick will fall.
 return the number of bricks falling for each hit.
 union-find: all stable bricks are connected to top. we can do reversely, adding the hit how many can add.
-
 ->>
 
 <<-827	Making A Large Island    		46.4%	Hard	
@@ -3533,6 +3539,535 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - each group same value elements are assigned the group max +1
 ->>
 
+## divide and conquer
+merge sort, recursion et al often involves in divide and conquer.
+
+## sliding window
+
+sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+
+<<-134	Gas Station    		40.5%	Medium	
+n gas station along a circular route. ith station with gas[i] and it cost cost[i] from station i to i+1.
+you begin with empty gas. return the starting index that you can finish the whole route. (clockwise)
+- sliding window with n. net gas= gas[i]-cost[i] at any time shall >=0
+- unfold the circular array to 2N array.
+->>
+
+<<-76	Minimum Window Substring    		35.4%	Hard	
+min window substring which contains all the characters in t.
+- we can ignore chars not in t and maintain hashset 
+- sliding window: (this string is not limited to lowercase letters)
+->>
+
+<<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	
+using hashmap+sliding window.
+->>
+
+<<-209	Minimum Size Subarray Sum    		38.9%	Medium	
+find the min length subarray sum >=target.
+hashmap or sliding window.
+->>
+
+<<-340	Longest Substring with At Most K Distinct Characters    		44.7%	Hard	
+two pointer, when hashmap size >k, keep shrinking the left.
+->>
+<<-424	Longest Repeating Character Replacement    		47.7%	Medium	
+return the longest repeating subarray after performing at most k char replacement.
+sliding window with at most k different chars.
+- counting char
+- make sure in the subarray w-maxcnt>k 
+->>
+
+<<-438	Find All Anagrams in a String    		44.3%	Medium	
+fixed window size sliding + hashmap.
+->>
+
+<<-485	Max Consecutive Ones    		53.5%	Easy	->>
+<<-487	Max Consecutive Ones II    		47.9%	Medium	
+you can flip 0 to 1 at most once. find the longest window of all 1.
+sliding window: record previous previous 0 position and update the length.
+->>
+
+<<-904	Fruit Into Baskets    		42.7%	Medium	
+you have two baskests, each basket holds one type of fruit. You start at any index of the array. if you cannot choose, stop. each tree you can pick one fruit.
+return max amount of fruits
+equivalent find the longest subarray with only two types of fruit. 
+sliding window + hashmap.
+->>
+
+<<-992	Subarrays with K Different Integers    		49.9%	Hard	
+sliding window with hashmap
+->>
+
+<<-1004	Max Consecutive Ones III    		60.1%	Medium	
+change 0 to 1 for at most k time.
+equivalent: find the longest window containing at most k 0s. 
+->>
+
+<<-1033	Moving Stones Until Consecutive    		42.6%	Easy	
+3 stones only.
+->>
+
+<<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	
+min move and max move
+sliding window for min: find the window with length=n with min empty slots or max filled.
+greedy for max: move the leftmost to next right available position or rightmost to left available slot.
+->>
+<<-1052	Grumpy Bookstore Owner    		55.5%	Medium	
+sliding window to find the max grumpy 
+->>
+
+<<-1100	Find K-Length Substrings With No Repeated Characters    		73.4%	Medium	
+find number of substrings. hashmap sliding window.
+->>
+
+<<-1151	Minimum Swaps to Group All 1's Together    		58.7%	Medium	
+equivalent to find the window with most 1s. window size=total number of 1s.
+->>
+
+<<-1156	Swap For Longest Repeated Character Substring    		47.7%	Medium	
+equivalent: find the longest window with only one char different from the other one. You need has at least one outside the group.
+try each index as the repeat char and expand the window.
+->>
+
+<<-1163	Last Substring in Lexicographical Order    		35.7%	Hard	
+or the max substring.
+a string is larger: prefix is larger or it is longer.
+is the first largest char suffix string the last string?
+not really, for example "cacacb", the max is "cb"
+build a trie and the rightmost brnach is the answer.
+- the answer is the suffix string with max char as the first char. (so we can get rid of those starting char not the max char, but worse case will not improve)
+- if we compare the n suffix string, we will get O(N^2)
+- using two pointer: 
+i the best candidate position,
+j loop over following chars
+k: the length or following chars.
+if s[j+k]>s[i+k] then i is not best, move to j.
+->>
+
+<<-1176	Diet Plan Performance    		53.9%	Easy	
+for k days, if the sum <L, get -1, if sum>R get 1, otherwise get 0.
+fixed size sliding window.
+->>
+
+<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
+two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
+given a maxcost, and find the longest substring <=maxcost.
+sliding window.
+->>
+
+<<-1248	Count Number of Nice Subarrays    		56.6%	Medium	
+find number of subarrays with k odd number inside.
+sliding window: only keep the odd numbers with fixed k window.
+->>
+
+<<-1343	Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold    		64.3%	Medium	
+fix size sliding window.
+->>
+
+<<-1352	Product of the Last K Numbers    		42.6%	Medium	
+sliding window product using prefix product
+->>
+
+<<-1358	Number of Substrings Containing All Three Characters    		60.0%	Medium	
+a string consists of only a,b,c. find number of strings containing all 3 chars.
+- we only need to find the smallest window containing the 3 chars. and all previous including the window are all valid substrings.
+sliding window to find the min window containing abc.
+->>
+
+<<-1703. Min adjacent swaps for k consecutive ones.
+sliding window with some tricks
+- if we slide window on original array, we need binary search to find the size first.
+- if we only slide window on the one's index, then it is fixed k size sliding window.
+- then the price is to move all 1 to the median position. we are looking for the min.
+all left ones move to left median and all right ones move to right median (left or right could be the same for odd length k)
+why? this is similar to best meeting point. for two, any between point will get the same cost. for 3, keep the median unchanged and two moves to the median position)
+however, we do not need to move to the median position and that is why we need subtract the extra
+which is k*(k+1)/2/2.
+->>
+
+<<-1423	Maximum Points You Can Obtain from Cards    		45.1%	Medium	
+take cards from either end, return the max points taking k cards.
+equivalent: sliding window to get min sum using n-k.
+->>
+
+<<-1456	Maximum Number of Vowels in a Substring of Given Length    		53.5%	Medium	
+a substring of length k, return the max number of vowels.
+sliding window with size k.
+->>
+
+<<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	
+k=2，00，01，10，11.
+so using sliding window to get the number and set the flag.
+->>
+
+<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
+sliding window with at most one 0 inside. record previous 0 position.
+->>
+
+<<-1695. Maximum Erasure value.
+given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the subarray.
+using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
+->>
+
+## sort
+- sort makes things easier.
+- sort using given order
+
+<<-147	Insertion Sort List    		43.8%	Medium	
+similar to array insertion sort. insert list node one by one.
+->>
+
+<<-148	Sort List    		45.2%	Medium	
+merge sort!
+->>
+
+<<-164	Maximum Gap    		36.3%	Hard	
+unsorted array find the max difference between ajacent elements in its sorted form.
+do it in O(N).
+bucket sort: arrange it in n buckets and we only need to store min/max in each bucket.
+->>
+
+
+<<-315	Count of Smaller Numbers After Self    		42.3%	Hard	
+- from right to left and store the elements in sorted order then we can use binary search. to count, it is still O(N^2) will TLE.
+- merge sort: divide and conquer, count right smaller than left.
+- binary tree: from right to left, build a BST. Since we may have duplicates, add a field to count the duplicates. when we insert a new value, all its left subtree are smaller than it. We use prefix sum to count the sum of duplicates under the subtree.
+->>
+
+<<-324	Wiggle Sort II    		30.4%	Medium	
+idea: we shall find the median and divide them into smaller and larger.
+brutal force: we arrange left right left right ...
+virtual index: this is hard.
+->>
+<<-280	Wiggle Sort    		64.3%	Medium	
+do it inplace. this allows >= and <=
+sort and swap neighboring.
+->>
+<<-215	Kth Largest Element in an Array    		56.9%	Medium	
+partitioning
+nth_element 
+priority_queue.
+->>
+
+<<-451	Sort Characters By Frequency    		63.8%	Medium	
+lambda with capture
+```
+        sort(begin(s),end(s),[&](char a,char b){
+            return mp[a]>mp[b] || (mp[a] == mp[b] && a < b);
+        });
+```
+note we need take care ==, otherwise they will not sort.	
+this is slower than using count sort.	
+->>
+
+<<-493	Reverse Pairs    		26.0%	Hard	
+impotant reverse pair i<j, nums[i]>2*nums[j]
+return number of important reverse pairs.
+- using map to store previous visited elements, and binary search O(N^2) since the distance is O(N)
+- segment tree.
+- merge sort divide and conquer. divide into left and right part and then use two pointer to compare O(n/2)+O(n/4)+....
+->>
+
+<<-791	Custom Sort String    		65.8%	Medium	
+sort T using S's order.
+- count sort.
+- use lambda function s.find(a)<s.find(b)
+->>
+<<-899	Orderly Queue    		52.8%	Hard	
+given a string and integer k. each time choose the one of the first k letters and move to the end of string. return the smallest string we can get.
+k=1, rotation
+k>1, sort, you have a buffer >1 and can swap any pair.
+->>
+
+<<-912	Sort an Array    		64.1%	Medium	
+implement qsort or merge sort.
+->>
+
+<<-969	Pancake Sorting    		68.4%	Medium	
+you can choose the prefix with k (k can be any length) length and reverse it.
+sort the array and gives the array of k.
+greedy: find the max element and flip to the first, and then reverse to the last. max 2n operations.
+since the input is the permutation of 1 to n, so we do not need find max.
+->>
+
+<<-1030	Matrix Cells in Distance Order    		66.9%	Easy	
+distance to reference (r0,c0)
+->>
+<<-1122	Relative Sort Array    		67.7%	Easy	
+given two arrays A and B, sort A according to B, elements not in B shall go after in sorted order.
+using map and do count sort.
+->>
+
+<<-1333	Filter Restaurants by Vegan-Friendly, Price and Distance    		56.9%	Medium	
+restaurants[i] = [idi, ratingi, veganFriendlyi, pricei, distancei]
+filter them by veganfriendly=true or false, and max price and max distance, first by rating, then by id.
+filter and then sort.
+->>
+
+<<-1337	The K Weakest Rows in a Matrix    		69.5%	Easy	
+weakness = (number of 1s in row && row index)
+stable sort.
+->>
+
+<<-1366	Rank Teams by Votes    		54.5%	Medium	
+each voter votes the rank for all teams. for example "ABC",the voter's ranking is A>B>C.
+if tie, then see next position votes.....
+if tried every position, then rank by team's name.
+lambda or customized sorting.
+->>
+
+<<-1451	Rearrange Words in a Sentence    		58.4%	Medium	
+rearrange by length, if tie, keep original order.
+using stable_sort.
+->>
+
+<<-1471	The k Strongest Values in an Array    		58.3%	Medium	
+sort using lambda function with a parameter or customized compare function
+->>
+
+## two pointer
+<<-11	Container With Most Water    		51.8%	Medium	
+two pointer: water determined by the min height * the width.
+->>
+
+<<-18	4Sum    		34.3%	Medium	->>
+<<-16	3Sum Closest    		46.2%	Medium	->>
+<<-15	3Sum    		27.4%	Medium	->>
+<<-1	Two Sum    		45.8%	Easy	->>
+
+<<-68	Text Justification    		28.7%	Hard	
+given a list of words, and maxWidth, padding space so that each line is exactly maxWidth.
+extra space shall be distributed evenly. if not divisiable, the left will be assigned more.
+each line: starting word and last word has no spaces. When a word cannot add to the line, goes to next line
+two pointer: pay attention to the last line. It is not that easy.
+->>
+<<-75	Sort Colors    		48.4%	Medium	
+only 3 colors
+- count sort
+- approach 2: three pointers, i for 0, j for 1 and k for 2.
+i<j<k. i grows from left and k grows from right to left. 
+->>
+
+<<-251	Flatten 2D Vector    		46.0%	Medium	
+similar to nested integer, implement next and hasNext
+using two pointer: i for inside vector, j for vector elements.
+
+->>
+
+<<-259	3Sum Smaller    		48.4%	Medium	
+find the number of triplet that sum < target.
+sort and then use 3 pointer.
+>=target k--
+<target ans+=k-j, j++ (fix i, and solve the two pointer problem)
+->>
+
+<<-418	Sentence Screen Fitting    		32.8%	Medium	
+we need add or delete a space, using two pointer, for sentence we add/remove a space, for screen we need %width.
+->>
+
+<<-466	Count The Repetitions    		28.5%	Hard	
+S=[s,n] repeat s n times. 
+s1 is obtainable from s2, means that s1 is a subsequence of s2.
+given s1,n1,s2,n2 and S1=[s1,n1],S2=[s2,n2]
+find the max integer M so that [S2,M] is obtainable from S1.
+approach: 
+- you do not need to construct the string since n1 or n2 is very large
+- two pointer search s1*n1 in s2*n2 (using pointer go monotonically but use % for the char)
+- get the max repeat
+->>
+
+
+<<-713	Subarray Product Less Than K    		40.3%	Medium	
+return number of subarray
+to avoid overflow, we have to use sliding window using two pointer.
+->>
+
+<<-727	Minimum Window Subsequence    		42.1%	Hard	
+given S and T, find the min size substr of S so that T is a subsequence of it.
+a very good question:
+approach 1: two pointer: i for S, and j for T. 
+first find one match, and from right to left we get the smallest length for this one
+then we proceed from next char and find next match
+for example: abcdebdde match against bde
+we first find "bcde" and from right to left get the smallest length is 4
+then we start from c: "cdebdde" and we find "bdde".
+- dp approach: dp[i,j] stores the starting index of S[0..i] and T[0...j].
+if S[i-1]==T[j-1] then the index no change.
+else dp[i,j-1] (since we only matched j-1 chars)
+invalid put -1.
+->>
+
+<<-777	Swap Adjacent in LR String    		35.1%	Medium	
+string of 'L','R','X', you can replace XL to LX or RX to XR.
+check if we can convert A to B.
+XL->LX we push L to left
+RX->XR we push R to right
+L cannot pass right R, R cannot pass left L.
+check one by one: 
+- first they shall one by one equal ignoring x. (two pointer)
+- L's index in L(B)>=L(A), R(B)<=R(A)
+to make it easier first return -1 for invalid cases.
+->>
+
+<<-809	Expressive Words    		46.7%	Medium	
+two pointer compare.
+->>
+
+<<-844	Backspace String Compare    		46.7%	Easy	
+string with # to backspace previous char. return two string equal.
+two pointer from right to count.
+->>
+
+<<-905	Sort Array By Parity    		74.9%	Easy	
+even first.
+two pointer: i for current position, j for even number position
+->>
+
+<<-948	Bag of Tokens    		46.2%	Medium	
+given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
+- if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
+- you can lose 1 point and get token[i]
+return the max score.
+greedy approach: use the point to get the max power. losing min power to get 1 point.
+using two pointer to do it from min and max side.
+->>
+
+<<-1023	Camelcase Matching    		57.1%	Medium	
+given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
+- capital shall match exactly.
+- using two pointer matching. if capital does not match, return false.
+->>
+
+<<-1055	Shortest Way to Form String    		57.2%	Medium	
+given string src and target, return the min number of subsequence used to reach target string.
+two pointer, with one using mod.
+->>
+
+<<-1537	Get the Maximum Score    		36.1%	Hard	
+two sorted array, a valid path (at the same value you can switch to the other array) return the max path sum.
+- path can begin from nums1 or nums2, end at nums1 or nums2.
+- choose the max sum branch.
+- need to find the common segments.
+using merge sort with two pointer. wait until we see identical number. choose the previous max.
+->>
+
+## bit manipulation
+<<-89	Gray Code    		49.7%	Medium	
+gray code is gnerated using i^(i>>1)
+->>
+
+<<-137	Single Number II     		53.2%	Medium	
+every number appear 3 times except one.
+- bits: do bit by bit and sum each bit %3 and that is the bit appear once.
+- using true type table to get a counter reset to 0 when goes to 3.
+->>
+<<-136	Single Number    		66.1%	Easy	
+each number appear twice except one. xor.
+->>
+
+<<-318	Maximum Product of Word Lengths    		51.8%	Medium	
+word[i] and word[j] shares no common letters.
+using char as bit and then do bit manipulations.
+->>
+
+<<-231	Power of Two    		43.8%	Easy	
+n&(n-1)->>
+<<-326	Power of Three    		42.0%	Easy	
+only have factor 3, max3%n==0
+->>
+<<-342	Power of Four    		41.4%	Easy	
+only 0,2,4,6... is set 1. 
+& 0xaaaaaaa to check odd bits if set.
+num&(num-1) check if it is not 2^n.
+->>
+<<-371	Sum of Two Integers    		50.6%	Medium	
+cannot use +/-. 
+carry a&b, result a^b.
+getsum((a&b)<<1,a^b)
+->>
+
+<<-393	UTF-8 Validation    		37.8%	Medium	
+utf8 can have 1,2,3,4 bytes
+one byte: 0xxxxxx
+two bytes: 110xxxxx 10xxxxxx
+three bytes: 1110xxxx,10xxxxxx,10xxxxxx
+four bytes: 11110xxx, 10xxxxxx,10xxxxxx,10xxxxxx
+using the unique head when we find it remaing bytes is known.
+->>
+
+<<-477	Total Hamming Distance    		50.5%	Medium	
+number of bits which is different.
+find the total hamming distance between all pairs of numbers given an array.
+- brutal force O(N^2)
+- 32bits check bit by bit and split into two half n*m
+->>
+
+<<-898	Bitwise ORs of Subarrays    		34.0%	Medium	
+count number of possible values.
+- brutal force using hash to remove duplicates
+- optimization: add more number into OR will not decrease number of 1s. we can only use current element to or the previous result and add new results into hashset. O(N).
+also we can remove duplicates in the input.
+->>
+
+<<-1009	Complement of Base 10 Integer    		61.5%	Easy	->>
+
+<<-1238	Circular Permutation in Binary Representation    		65.4%	Medium	
+gray code ans[i]=start^i^(i>>1)
+->>
+
+<<-1255	Maximum Score Words Formed by Letters    		69.6%	Hard	
+a-z has different score given, and a list of dictionary word, and a list of usable characters.
+use the characters to form any dictionary words with max score.
+- convert given chars to hashmap.
+- using bitmask to represent all combinations and check if they are valid combinations
+->>
+
+<<-1310	XOR Queries of a Subarray    		68.9%	Medium	
+xor is similar to sum, using prefix xor.
+->>
+
+<<-1318	Minimum Flips to Make a OR b Equal to c    		63.5%	Medium	
+straightforward.
+->>
+
+<<-1371	Find the Longest Substring Containing Vowels in Even Counts    		61.4%	Medium	
+the exact count does not matter. each vowel shall be even.
+so use bit to indicate aeiou's odd even. then use hashmap to find the same status.
+->>
+
+<<-1386	Cinema Seat Allocation    		35.2%	Medium	
+n rows, each row has 8 seats in 3,4,3 separated by isle with reserved seats. family of 4 shall sit adjacent. one case with isle is 2 people on each side is consider adjacent.
+since the first and last cannot seat family member, so discard them.
+using bit + hashmap
+
+->>
+
+<<-1442	Count Triplets That Can Form Two Arrays of Equal XOR    		70.5%	Medium	
+find i,j,k, such that A[i]^..A[j-1]==A[j]^...A[k]
+prefix xor.
+it is equivalent to A[i]^...A[k]=0, and j=i+1 to k-1 with k-i-1 combinations.
+using prefix and hashmap, this is to find same xor with region>=3.
+->>
+
+<<-1452	People Whose List of Favorite Companies Is Not a Subset of Another List    		54.3%	Medium	
+the key is to collect all company and convert company to bit and then each person's list converts to a int or a bit vector.
+->>
+
+<<-1486	XOR Operation in an Array    		84.0%	Easy	
+bums[i]=start+2*i, return xor of the array.
+- brutal force O(n)
+- optimization O(1): forget the start, if the length is even, the LSB is 0 otherwise, LSB is 1 and then we right shift one bit. (start+2*i)^(start+2*i+2)
+->>
+
+<<-1521	Find a Value of a Mysterious Function Closest to Target    		43.7%	Hard	
+func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to target.
+- bit and will get decreased result, never goes up.
+- AND_VAL[i,j]=A[i] & AND_VAL(i+1,j-1] starting at ith element with length j.
+- do it from right to left.
+- limited number of AND_VAL using hashset to eliminate duplicates.
+->>
+
 
 ## data structure focused problems
 
@@ -3541,13 +4076,13 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
+- string, array can also be used as stack if only using pop_back.
 
+understand why we need use monotonic stack is very important. Among them find next smaller/greater is the base problem.
+
+### general stack operations.
 <<-32	Longest Valid Parentheses    		28.9%	Hard	
 using stack to store index and eliminate valid pairs.
-->>
-
-<<-42	Trapping Rain Water    		50.1%	Hard	
-monotonic stack: decreasing, when we see a larger one we get the water.
 ->>
 
 <<-71	Simplify Path    		33.3%	Medium	
@@ -3558,46 +4093,6 @@ monotonic stack: decreasing, when we see a larger one we get the water.
 operator follows the operands. using stack.
 ->>
 
-<<-224	Basic Calculator    		37.7%	Hard	
-include +-*/() and space.
-recursive stack.
-->>
-
-<<-227	Basic Calculator II    		37.6%	Medium	
-expression only include numbers +-*/
-using stack.
-->>
-
-<<-316	Remove Duplicate Letters    		38.5%	Medium
-remove duplicates so that each letter only appear once.
-return the lexi smallest string.
-- stack + hashmap
-- if current char < back, and back char still have in right, then replace it with current char
-for exampe "acbacdcbc"
-see 'a' ->"a"
-see 'c' ->"ac"
-see 'b' ->"ab",
-see 'a' ->"aa" ->"a"
-see 'c' ->"ac"
-see "d" ->"acd"
-see "c" there is no 'd' in the right ->"acd"
-see "b" ->"acdb"
-see "c" ->"acdb" 
-need a counter map, a visited array.
-->>
-<<-385	Mini Parser    		34.2%	Medium	
-deserialize the nested integer with string.
-using stringstream to read
-- integer -> nestedInteger object
-- see '[' then it is a list, stop at ']'
-pretty trick.
-->>
-
-<<-394	Decode String    		51.8%	Medium	
-k[encode_str] the str is repeated k times.
-recursive stack.
-->>
-
 <<-402	Remove K Digits    		28.5%	Medium	
 remove k digits from the number so that the new number is the smallest.
 greedy: from left to right, remove the first peak digit.
@@ -3605,44 +4100,16 @@ greedy: from left to right, remove the first peak digit.
 using stack.
 ->>
 
-<<-439	Ternary Expression Parser    		56.3%	Medium	
-T?2:3 F?1:T?4:5
-recursive stack 
-->>
-
-<<-334	Increasing Triplet Subsequence    		39.9%	Medium	
-check if there exist i<j<k and A[i]<A[j]<A[k]
-similar to 132 pattern. s1 to be the left min.
-->>
-
-<<-456	132 Pattern    		30.5%	Medium	
-i<j<k and nums[i]<nums[k]<nums[j]
-stack: from right to left, keep the stack the largest in the right, so when we see current val > stack top, we assign s3=stack top. then we see a number < s3, we know curr<s3.
-
-->>
-
-<<-496	Next Greater Element I    		64.7%	Easy	
-given two array and find each number of A's greater element in B. A is a subset of B.
-monotonic stack: 
-->>
-<<-503	Next Greater Element II    		57.5%	Medium	
-the array is circular.
-using stack, extending the array. monotonic stack.
-->>
-
 <<-636	Exclusive Time of Functions    		53.2%	Medium	
 single threaded: given string: "id:start:time" and "id:end:time"
 using stack: subtract the eliminated time in stack.
 ->>
+
 <<-735	Asteroid Collision    		43.0%	Medium	
 given a list of numbers, negative means going left, positive goes right.
 two meet, the less heavier will explode, same size both will explode.
+fill out the states after all collision done.
 using stack. (abs)
-->>
-
-<<-739	Daily Temperatures    		64.1%	Medium	
-given a list of temperature each day, return number of days to wait for a warmer day
-stack find next greater element
 ->>
 
 <<-856	Score of Parentheses    		61.8%	Medium	
@@ -3655,7 +4122,89 @@ push
 pop: pop the most frequent element in the stack.
 hashmap to record each element's frequency
 for each frequency, maintain a stack map<int,stack<int>>
+->>
 
+<<-921	Minimum Add to Make Parentheses Valid    		74.4%	Medium	
+using stack. right mismatch just record, left mismatch still in the stack.
+->>
+
+<<-1249	Minimum Remove to Make Valid Parentheses    		63.2%	Medium	
+using stack to store unpaired (, and array to store unpaired ). remove paired ones.
+->>
+
+<<-946	Validate Stack Sequences    		63.1%	Medium	
+two arrays one is pushed values, one is popped values
+simulate the stack.
+->>
+
+<<-1209	Remove All Adjacent Duplicates in String II    		57.4%	Medium	
+keep in stack the char and repeat times.
+->>
+
+<<-1221	Split a String in Balanced Strings    		83.8%	Easy	
+similar to parenthesis. using stack or counter. if 0 we found a pair.
+->>
+
+<<-1309	Decrypt String from Alphabet to Integer Mapping    		77.3%	Easy	
+mapping 1-9 maps to ['a'-'i'],10#-26# maps to ['j'-'z']
+backward checking #
+->>
+
+<<-1381	Design a Stack With Increment Operation    		75.9%	Medium	
+push/pop/maxsize/inc inc the bottom k elements in the stack
+using two stack for this
+->>
+
+<<-1441	Build an Array With Stack Operations    		69.3%	Easy	
+simulate stack.
+->>
+
+<<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	
+expression tree: leaf nodes are numbers, inner nodes are +-*/.
+infix expression: in order traversal of the binary tree
+given an input string with (), produce a expression tree with equal infix (omitting the ())
+typical syntax analysis using stack.
+using vector to store the node* is better for processing.
+->>
+
+<<-1628	Design an Expression Tree With Evaluate Function    		86.0%	Medium	
+given an virtual class interface and postfix string, build the tree and evaluate it.
+class design and oop and tree evaluations
+- build the tree: [4,5,7,2,+,-,*] it is stack form 4*(5-(7+2))
+- use a stack to store the generated treenode.
+- inherit a class from the virtual class.
+subject: tree, stack, OOP, polymorphism
+->>
+
+### monotonic stack
+
+<<-42	Trapping Rain Water    		50.1%	Hard	
+monotonic stack: decreasing, when we see a larger one we get the water.
+->>
+
+<<-334	Increasing Triplet Subsequence    		39.9%	Medium	
+check if there exist i<j<k and A[i]<A[j]<A[k]
+similar to 132 pattern. s1 to be the left min.
+->>
+
+<<-456	132 Pattern    		30.5%	Medium	
+i<j<k and nums[i]<nums[k]<nums[j]
+stack: from right to left, keep the stack the largest in the right, so when we see current val > stack top, we assign s3=stack top. then we see a number < s3, we know curr<s3.
+->>
+
+<<-496	Next Greater Element I    		64.7%	Easy	
+given two array and find each number of A's greater element in B. A is a subset of B.
+monotonic stack: 
+->>
+
+<<-503	Next Greater Element II    		57.5%	Medium	
+the array is circular.
+using stack, extending the array. monotonic stack.
+->>
+
+<<-739	Daily Temperatures    		64.1%	Medium	
+given a list of temperature each day, return number of days to wait for a warmer day
+stack find next greater element
 ->>
 
 <<-901	Online Stock Span    		60.9%	Medium	
@@ -3668,14 +4217,6 @@ sum of all subarray min.
 each element can be min. using stack find previous larger and next larger to get the range. if left length is L: we can have L*A[i]
 ->>
 
-<<-921	Minimum Add to Make Parentheses Valid    		74.4%	Medium	
-using stack. right mismatch just record, left mismatch still in the stack.
-->>
-
-<<-946	Validate Stack Sequences    		63.1%	Medium	
-two arrays one is pushed values, one is popped values
-simulate the stack.
-->>
 
 <<-1003	Check If Word Is Valid After Substitutions    		55.6%	Medium	
 given a string s, with only 'a','b','c'. check if you can build t by adding "abc" any times.
@@ -3701,6 +4242,24 @@ monotonic increasing stack.
 <<-1081	Smallest Subsequence of Distinct Characters    		53.3%	Medium	
 given a string, find the smallest subsequence with distinct characters.
 using monotonic increasing stack, when we see a smaller char behind we pop from stack (if the char has no more behind we cannot pop it)
+->>
+
+<<-316	Remove Duplicate Letters    		38.5%	Medium
+remove duplicates so that each letter only appear once.
+return the lexi smallest string.
+- stack + hashmap
+- if current char < back, and back char still have in right, then replace it with current char
+for exampe "acbacdcbc"
+see 'a' ->"a"
+see 'c' ->"ac"
+see 'b' ->"ab",
+see 'a' ->"aa" ->"a"
+see 'c' ->"ac"
+see "d" ->"acd"
+see "c" there is no 'd' in the right ->"acd"
+see "b" ->"acdb"
+see "c" ->"acdb" 
+need a counter map, a visited array.
 ->>
 
 <<-1124	Longest Well-Performing Interval    		33.0%	Medium	
@@ -3747,57 +4306,46 @@ add 5: now we know next right is 7. pop 7, get area 7
 the idea:each bar can be the height of some rect, and we are looking for previous smaller and next smaller. so element increasing is fine, using monotonic increasing stack.
 ->>
 
-<<-1209	Remove All Adjacent Duplicates in String II    		57.4%	Medium	
-keep in stack the char and repeat times.
-->>
-
-<<-1221	Split a String in Balanced Strings    		83.8%	Easy	
-similar to parenthesis. using stack or counter. if 0 we found a pair.
-->>
-
-<<-1249	Minimum Remove to Make Valid Parentheses    		63.2%	Medium	
-using stack to store unpaired (, and array to store unpaired ). remove paired ones.
-->>
-
-<<-1309	Decrypt String from Alphabet to Integer Mapping    		77.3%	Easy	
-mapping 1-9 maps to ['a'-'i'],10#-26# maps to ['j'-'z']
-backward checking #
-->>
-
-<<-1381	Design a Stack With Increment Operation    		75.9%	Medium	
-push/pop/maxsize/inc inc the bottom k elements in the stack
-using two stack for this
-->>
-<<-1441	Build an Array With Stack Operations    		69.3%	Easy	
-simulate stack.
-->>
 <<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	
 if you buy prices[i] you can get discount at price[j] where j>i and prices[j]<prices[i], j shall be minimized.
 stack: find next smaller.
 ->>
 
-<<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	
-expression tree: leaf nodes are numbers, inner nodes are +-*/.
-infix expression: in order traversal of the binary tree
-given an input string with (), produce a expression tree with equal infix (omitting the ())
-typical syntax analysis using stack.
-using vector to store the node* is better for processing.
-->>
-
-<<-1628	Design an Expression Tree With Evaluate Function    		86.0%	Medium	
-given an virtual class interface and postfix string, build the tree and evaluate it.
-class design and oop and tree evaluations
-- build the tree: [4,5,7,2,+,-,*] it is stack form 4*(5-(7+2))
-- use a stack to store the generated treenode.
-- inherit a class from the virtual class.
-subject: tree, stack, OOP, polymorphism
-->>
-
 ### recursive stack
+
+<<-439	Ternary Expression Parser    		56.3%	Medium	
+T?2:3 F?1:T?4:5
+recursive stack 
+->>
+
+<<-224	Basic Calculator    		37.7%	Hard	
+expression include +-*/() and space.
+recursive stack.
+->>
+
+<<-227	Basic Calculator II    		37.6%	Medium	
+expression only include numbers +-*/
+using stack.
+->>
+
+<<-385	Mini Parser    		34.2%	Medium	
+deserialize the nested integer with string.
+using stringstream to read
+- integer -> nestedInteger object
+- see '[' then it is a list, stop at ']'
+pretty trick.
+->>
+
+<<-394	Decode String    		51.8%	Medium	
+k[encode_str] the str is repeated k times.
+recursive stack.
+->>
+
 <<-536	Construct Binary Tree from String    		49.7%	Medium	
 node val followed by one () or two () for the children.
 build the tree recursively. recusive stack.
 ->>
+
 <<-591	Tag Validator    		34.5%	Hard	
 <tagnam>Tag_content</tagname> is valid if tag name and tag_content are both valid.
 tag name only contains 1-9 upper case letters
@@ -3815,6 +4363,7 @@ equation contains number +-= and x and its coefficient.
 atom name: Capital+0 or more lowercase.
 include ()
 ->>
+
 <<-736	Parse Lisp Expression    		49.8%	Hard	
 string parser using recursive stack.
 operator: add,mult,let
@@ -3853,16 +4402,14 @@ recursive stack. syntax parser.
 ->>
 
 ## queue & deque
-- monotonic deque
+- monotonic deque for sliding window min/max/median..
+- queue is mainly for bfs.
 
 <<-158	Read N Characters Given Read4 II - Call multiple times    		35.5%	Hard	
 using a deque to store the read data.
 ->>
-<<-157	Read N Characters Given Read4    		36.4%	Easy	->>
 
-<<-239	Sliding Window Maximum    		44.1%	Hard	
-deque monotonic.
-->>
+<<-157	Read N Characters Given Read4    		36.4%	Easy	->>
 
 <<-649	Dota2 Senate    		39.2%	Medium	
 two parties, randiant and dire. Voting is a round based procedure:
@@ -3871,12 +4418,6 @@ two parties, randiant and dire. Voting is a round based procedure:
 The round-based procedure starts from the first senator to the last senator in the given order. This procedure will last until the end of voting. All the senators who have lost their rights will be skipped during the procedure.
 strategy game: greedy: ban the senator from other party next to him, then move himself to the end.
 use two queues (use the index)
-->>
-
-<<-862	Shortest Subarray with Sum at Least K    		24.9%	Hard	
-find the length.
-- prefix sum and record its index and sorted in map then binary search. O(nlogn)
-- use deque to get O(N). monotonic decreasing deque (larger and old value are discarded)
 ->>
 
 <<-950	Reveal Cards In Increasing Order    		75.0%	Medium	
@@ -3893,15 +4434,28 @@ each student has a prefer of lunch, if current lunch is not preferred, back to t
 just simulate the deque
 ->>
 
+<<-239	Sliding Window Maximum    		44.1%	Hard	
+deque monotonic.
+->>
+
+<<-862	Shortest Subarray with Sum at Least K    		24.9%	Hard	
+find the length.
+- prefix sum and record its index and sorted in map then binary search. O(nlogn)
+- use deque to get O(N). monotonic decreasing deque (larger and old value are discarded)
+->>
+
+
 ## heap: priority-queue, set, map
-heap is tree based. priority_queue uses array to represent a tree structure (complete tree)
+heap is tree based. priority_queue uses array to represent a tree structure (complete tree).
+priority_queue can only access the top, however set/map can access any elements.
+
 <<-295	Find Median from Data Stream    		45.8%	Hard	
 keep left and right, left max heap, right min heap.
 left.size-right.size()<=1
-
 ->>
 
 <<-347	Top K Frequent Elements    		61.9%	Medium	->>
+
 <<-358	Rearrange String k Distance Apart    		35.4%	Hard	
 rearrange the string so that identical char are at least k distance.
 hashmap to get the frequency
@@ -3919,14 +4473,13 @@ rows and columns are sorted.
 - priority_queue to put neighboring into pq. (note we may add one element several times) not efficient
 - priority_queue add first column or row into pq. this we can avoid adding duplicate.
 - binary search: count number of less than target.
-
 ->>
 
 <<-407	Trapping Rain Water II    		43.3%	Hard	
 idea: from the bounary and try the smallest height first.
 check its 4 neighbors, hold water max(maxh-h[x,y],0)
-
 ->>
+
 <<-480	Sliding Window Median    		38.1%	Hard	
 fixed window size K. 
 using two heap, one max heap one min heap.
@@ -3939,7 +4492,6 @@ add a new value, if current value < mid, then our pointer--, else no change
 delete old values. this is more concise and clear.
 many occassions set is more convenient than pq.
 ->>
-
 
 <<-632	Smallest Range Covering Elements from K Lists    		53.3%	Hard	
 priority_queue do merge sort.
@@ -4057,6 +4609,8 @@ approach:
 ->>
 
 ## hashset, hashmap
+hashmap is a generallized array allowing random access. It is often used to reduce complexity.
+
 <<-3	Longest Substring Without Repeating Characters    		30.9%	Medium	
 no need use hashmap, hashset is fine, if contains current char, just shrink from left side.
 ->>
@@ -4205,7 +4759,6 @@ pair (A[i],A[j]) different index but duplicate value is not unique.
 long url convert to 6 char length tiny url.
 build a hash from long url to tiny url.
 assign a unique id to url, and then use the id to build a tiny url. each char from 62 chars, up to 62^6
-
 ->>
 
 <<-560	Subarray Sum Equals K    		43.9%	Medium	
@@ -4477,10 +5030,12 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 <<-112	Path Sum    		41.8%	Easy	
 check if there is a path sum=target.
 ->>
+
 <<-113	Path Sum II    		48.0%	Medium	
 return all root to leaf path with sum=target.
 dfs or backtracking.
 ->>
+
 <<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
 <<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
 <<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	
@@ -4489,6 +5044,7 @@ a path may pass or not pass the root.
 - the including root left/right path sum is similar to 1d array max subarray sum. (connecting or discard)
 - post order.
 ->>
+
 <<-117	Populating Next Right Pointers in Each Node II    		40.3%	Medium	->>
 <<-116	Populating Next Right Pointers in Each Node    		47.7%	Medium	->>
 <<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	
@@ -5157,12 +5713,14 @@ level: 4
 
 ### segment tree or binary index tree
 see the appendix for binary index tree.
+
 <<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	
 a string of digits, you are allowed to swap two adjacent digits, at most k operations are allowed. return the min string you can obtain.
 greedy: bubble sort, k>n*(n+1)/2 it is sort. 
 from 0 to 9, find its first index and try to move to top (less equal to k) and leave a subproblem. TLE
 segment tree or binary index tree to reduce to O(nlogn)
 ->>
+
 <<-1409. Queries on a permutation with key ***
 query[i] move the element at query[i] to the beginning 
 - approach 1: brutal force using vector as hashmap to record value vs index 
@@ -5185,10 +5743,12 @@ sum region
 prefix sum using similar dp.
 binary index tree.
 ->>
+
 <<-307	Range Sum Query - Mutable    		36.0%	Medium	
 array, instead of 2d matrix.
 binary index tree.
 ->>
+
 <<-304	Range Sum Query 2D - Immutable    		39.7%	Medium	
 prefix sum. 2d.
 ->>
@@ -5207,6 +5767,12 @@ segment tree
 - list is the base for hash table.
 - cycle detection
 - traversal
+
+- linked list is very mistake prone since it easily will produce infinite loop.
+- often resursive approach can be applied to most linked-list problem
+- linked list is inside data structure for hashmap et al
+- list iterator with hashamp often can be used to reduce complexity.
+
 <<-19	Remove Nth Node From End of List    		35.4%	Medium	->>
 <<-25	Reverse Nodes in k-Group    		43.5%	Hard	->>
 <<-24	Swap Nodes in Pairs    		51.6%	Medium	->>
@@ -5307,282 +5873,6 @@ node has coefficient and power.
 two pointer merge.
 ->>
 
-## sliding window
-
-sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
-
-<<-76	Minimum Window Substring    		35.4%	Hard	
-min window substring which contains all the characters in t.
-- we can ignore chars not in t and maintain hashset 
-- sliding window: (this string is not limited to lowercase letters)
-->>
-
-<<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	
-using hashmap+sliding window.
-->>
-
-<<-209	Minimum Size Subarray Sum    		38.9%	Medium	
-find the min length subarray sum >=target.
-hashmap or sliding window.
-->>
-
-<<-340	Longest Substring with At Most K Distinct Characters    		44.7%	Hard	
-two pointer, when hashmap size >k, keep shrinking the left.
-->>
-<<-424	Longest Repeating Character Replacement    		47.7%	Medium	
-return the longest repeating subarray after performing at most k char replacement.
-sliding window with at most k different chars.
-- counting char
-- make sure in the subarray w-maxcnt>k 
-->>
-
-<<-438	Find All Anagrams in a String    		44.3%	Medium	
-fixed window size sliding + hashmap.
-->>
-
-<<-485	Max Consecutive Ones    		53.5%	Easy	->>
-<<-487	Max Consecutive Ones II    		47.9%	Medium	
-you can flip 0 to 1 at most once. find the longest window of all 1.
-sliding window: record previous previous 0 position and update the length.
-->>
-
-<<-904	Fruit Into Baskets    		42.7%	Medium	
-you have two baskests, each basket holds one type of fruit. You start at any index of the array. if you cannot choose, stop. each tree you can pick one fruit.
-return max amount of fruits
-equivalent find the longest subarray with only two types of fruit. 
-sliding window + hashmap.
-->>
-
-<<-992	Subarrays with K Different Integers    		49.9%	Hard	
-sliding window with hashmap
-->>
-
-<<-1004	Max Consecutive Ones III    		60.1%	Medium	
-change 0 to 1 for at most k time.
-equivalent: find the longest window containing at most k 0s. 
-->>
-
-<<-1033	Moving Stones Until Consecutive    		42.6%	Easy	
-3 stones only.
-->>
-
-<<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	
-min move and max move
-sliding window for min: find the window with length=n with min empty slots or max filled.
-greedy for max: move the leftmost to next right available position or rightmost to left available slot.
-->>
-<<-1052	Grumpy Bookstore Owner    		55.5%	Medium	
-sliding window to find the max grumpy 
-->>
-
-<<-1100	Find K-Length Substrings With No Repeated Characters    		73.4%	Medium	
-find number of substrings. hashmap sliding window.
-->>
-
-<<-1151	Minimum Swaps to Group All 1's Together    		58.7%	Medium	
-equivalent to find the window with most 1s. window size=total number of 1s.
-->>
-
-<<-1156	Swap For Longest Repeated Character Substring    		47.7%	Medium	
-equivalent: find the longest window with only one char different from the other one. You need has at least one outside the group.
-try each index as the repeat char and expand the window.
-->>
-
-<<-1163	Last Substring in Lexicographical Order    		35.7%	Hard	
-or the max substring.
-a string is larger: prefix is larger or it is longer.
-is the first largest char suffix string the last string?
-not really, for example "cacacb", the max is "cb"
-build a trie and the rightmost brnach is the answer.
-- the answer is the suffix string with max char as the first char. (so we can get rid of those starting char not the max char, but worse case will not improve)
-- if we compare the n suffix string, we will get O(N^2)
-- using two pointer: 
-i the best candidate position,
-j loop over following chars
-k: the length or following chars.
-if s[j+k]>s[i+k] then i is not best, move to j.
-->>
-
-<<-1176	Diet Plan Performance    		53.9%	Easy	
-for k days, if the sum <L, get -1, if sum>R get 1, otherwise get 0.
-fixed size sliding window.
-->>
-
-<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
-two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
-given a maxcost, and find the longest substring <=maxcost.
-sliding window.
-->>
-
-<<-1248	Count Number of Nice Subarrays    		56.6%	Medium	
-find number of subarrays with k odd number inside.
-sliding window: only keep the odd numbers with fixed k window.
-->>
-
-<<-1343	Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold    		64.3%	Medium	
-fix size sliding window.
-->>
-
-<<-1352	Product of the Last K Numbers    		42.6%	Medium	
-sliding window product using prefix product
-->>
-
-<<-1358	Number of Substrings Containing All Three Characters    		60.0%	Medium	
-a string consists of only a,b,c. find number of strings containing all 3 chars.
-- we only need to find the smallest window containing the 3 chars. and all previous including the window are all valid substrings.
-sliding window to find the min window containing abc.
-->>
-
-<<-1703. Min adjacent swaps for k consecutive ones.
-sliding window with some tricks
-- if we slide window on original array, we need binary search to find the size first.
-- if we only slide window on the one's index, then it is fixed k size sliding window.
-- then the price is to move all 1 to the median position. we are looking for the min.
-all left ones move to left median and all right ones move to right median (left or right could be the same for odd length k)
-why? this is similar to best meeting point. for two, any between point will get the same cost. for 3, keep the median unchanged and two moves to the median position)
-however, we do not need to move to the median position and that is why we need subtract the extra
-which is k*(k+1)/2/2.
-->>
-
-<<-1423	Maximum Points You Can Obtain from Cards    		45.1%	Medium	
-take cards from either end, return the max points taking k cards.
-equivalent: sliding window to get min sum using n-k.
-->>
-
-<<-1456	Maximum Number of Vowels in a Substring of Given Length    		53.5%	Medium	
-a substring of length k, return the max number of vowels.
-sliding window with size k.
-->>
-
-<<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	
-k=2，00，01，10，11.
-so using sliding window to get the number and set the flag.
-->>
-
-<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
-sliding window with at most one 0 inside. record previous 0 position.
-->>
-
-<<-1695. Maximum Erasure value.
-given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the subarray.
-using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
-->>
-
-## sort
-- sort makes things easier.
-- sort using given order
-
-<<-147	Insertion Sort List    		43.8%	Medium	
-similar to array insertion sort. insert list node one by one.
-->>
-
-<<-148	Sort List    		45.2%	Medium	
-merge sort!
-->>
-
-<<-164	Maximum Gap    		36.3%	Hard	
-unsorted array find the max difference between ajacent elements in its sorted form.
-do it in O(N).
-bucket sort: arrange it in n buckets and we only need to store min/max in each bucket.
-->>
-
-
-<<-315	Count of Smaller Numbers After Self    		42.3%	Hard	
-- from right to left and store the elements in sorted order then we can use binary search. to count, it is still O(N^2) will TLE.
-- merge sort: divide and conquer, count right smaller than left.
-- binary tree: from right to left, build a BST. Since we may have duplicates, add a field to count the duplicates. when we insert a new value, all its left subtree are smaller than it. We use prefix sum to count the sum of duplicates under the subtree.
-->>
-
-<<-324	Wiggle Sort II    		30.4%	Medium	
-idea: we shall find the median and divide them into smaller and larger.
-brutal force: we arrange left right left right ...
-virtual index: this is hard.
-->>
-<<-280	Wiggle Sort    		64.3%	Medium	
-do it inplace. this allows >= and <=
-sort and swap neighboring.
-->>
-<<-215	Kth Largest Element in an Array    		56.9%	Medium	
-partitioning
-nth_element 
-priority_queue.
-->>
-
-<<-451	Sort Characters By Frequency    		63.8%	Medium	
-lambda with capture
-```
-        sort(begin(s),end(s),[&](char a,char b){
-            return mp[a]>mp[b] || (mp[a] == mp[b] && a < b);
-        });
-```
-note we need take care ==, otherwise they will not sort.	
-this is slower than using count sort.	
-->>
-
-<<-493	Reverse Pairs    		26.0%	Hard	
-impotant reverse pair i<j, nums[i]>2*nums[j]
-return number of important reverse pairs.
-- using map to store previous visited elements, and binary search O(N^2) since the distance is O(N)
-- segment tree.
-- merge sort divide and conquer. divide into left and right part and then use two pointer to compare O(n/2)+O(n/4)+....
-->>
-
-<<-791	Custom Sort String    		65.8%	Medium	
-sort T using S's order.
-- count sort.
-- use lambda function s.find(a)<s.find(b)
-->>
-<<-899	Orderly Queue    		52.8%	Hard	
-given a string and integer k. each time choose the one of the first k letters and move to the end of string. return the smallest string we can get.
-k=1, rotation
-k>1, sort, you have a buffer >1 and can swap any pair.
-->>
-
-<<-912	Sort an Array    		64.1%	Medium	
-implement qsort or merge sort.
-->>
-
-<<-969	Pancake Sorting    		68.4%	Medium	
-you can choose the prefix with k (k can be any length) length and reverse it.
-sort the array and gives the array of k.
-greedy: find the max element and flip to the first, and then reverse to the last. max 2n operations.
-since the input is the permutation of 1 to n, so we do not need find max.
-->>
-
-<<-1030	Matrix Cells in Distance Order    		66.9%	Easy	
-distance to reference (r0,c0)
-->>
-<<-1122	Relative Sort Array    		67.7%	Easy	
-given two arrays A and B, sort A according to B, elements not in B shall go after in sorted order.
-using map and do count sort.
-->>
-
-<<-1333	Filter Restaurants by Vegan-Friendly, Price and Distance    		56.9%	Medium	
-restaurants[i] = [idi, ratingi, veganFriendlyi, pricei, distancei]
-filter them by veganfriendly=true or false, and max price and max distance, first by rating, then by id.
-filter and then sort.
-->>
-
-<<-1337	The K Weakest Rows in a Matrix    		69.5%	Easy	
-weakness = (number of 1s in row && row index)
-stable sort.
-->>
-
-<<-1366	Rank Teams by Votes    		54.5%	Medium	
-each voter votes the rank for all teams. for example "ABC",the voter's ranking is A>B>C.
-if tie, then see next position votes.....
-if tried every position, then rank by team's name.
-lambda or customized sorting.
-->>
-
-<<-1451	Rearrange Words in a Sentence    		58.4%	Medium	
-rearrange by length, if tie, keep original order.
-using stable_sort.
-->>
-
-<<-1471	The k Strongest Values in an Array    		58.3%	Medium	
-sort using lambda function with a parameter or customized compare function
-->>
 
 ## string
 <<-93	Restore IP Addresses    		36.7%	Medium	
@@ -10280,250 +10570,10 @@ find the kth bit in Nth binary string.
 recursive approach.
 ->>
 
-## two pointer
-<<-11	Container With Most Water    		51.8%	Medium	
-two pointer: water determined by the min height * the width.
-->>
-
-<<-18	4Sum    		34.3%	Medium	->>
-<<-16	3Sum Closest    		46.2%	Medium	->>
-<<-15	3Sum    		27.4%	Medium	->>
-<<-1	Two Sum    		45.8%	Easy	->>
-
-<<-68	Text Justification    		28.7%	Hard	
-given a list of words, and maxWidth, padding space so that each line is exactly maxWidth.
-extra space shall be distributed evenly. if not divisiable, the left will be assigned more.
-each line: starting word and last word has no spaces. When a word cannot add to the line, goes to next line
-two pointer: pay attention to the last line. It is not that easy.
-
-->>
-<<-75	Sort Colors    		48.4%	Medium	
-only 3 colors
-- count sort
-- approach 2: three pointers, i for 0, j for 1 and k for 2.
-i<j<k. i grows from left and k grows from right to left. 
-->>
-
-<<-251	Flatten 2D Vector    		46.0%	Medium	
-similar to nested integer, implement next and hasNext
-using two pointer: i for inside vector, j for vector elements.
-
-->>
-
-<<-259	3Sum Smaller    		48.4%	Medium	
-find the number of triplet that sum < target.
-sort and then use 3 pointer.
->=target k--
-<target ans+=k-j, j++ (fix i, and solve the two pointer problem)
-->>
-
-<<-418	Sentence Screen Fitting    		32.8%	Medium	
-we need add or delete a space, using two pointer, for sentence we add/remove a space, for screen we need %width.
-->>
-
-<<-466	Count The Repetitions    		28.5%	Hard	
-S=[s,n] repeat s n times. 
-s1 is obtainable from s2, means that s1 is a subsequence of s2.
-given s1,n1,s2,n2 and S1=[s1,n1],S2=[s2,n2]
-find the max integer M so that [S2,M] is obtainable from S1.
-approach: 
-- you do not need to construct the string since n1 or n2 is very large
-- two pointer search s1*n1 in s2*n2 (using pointer go monotonically but use % for the char)
-- get the max repeat
-->>
-
-
-<<-713	Subarray Product Less Than K    		40.3%	Medium	
-return number of subarray
-to avoid overflow, we have to use sliding window using two pointer.
-->>
-
-<<-727	Minimum Window Subsequence    		42.1%	Hard	
-given S and T, find the min size substr of S so that T is a subsequence of it.
-a very good question:
-approach 1: two pointer: i for S, and j for T. 
-first find one match, and from right to left we get the smallest length for this one
-then we proceed from next char and find next match
-for example: abcdebdde match against bde
-we first find "bcde" and from right to left get the smallest length is 4
-then we start from c: "cdebdde" and we find "bdde".
-- dp approach: dp[i,j] stores the starting index of S[0..i] and T[0...j].
-if S[i-1]==T[j-1] then the index no change.
-else dp[i,j-1] (since we only matched j-1 chars)
-invalid put -1.
-->>
-
-<<-777	Swap Adjacent in LR String    		35.1%	Medium	
-string of 'L','R','X', you can replace XL to LX or RX to XR.
-check if we can convert A to B.
-XL->LX we push L to left
-RX->XR we push R to right
-L cannot pass right R, R cannot pass left L.
-check one by one: 
-- first they shall one by one equal ignoring x. (two pointer)
-- L's index in L(B)>=L(A), R(B)<=R(A)
-to make it easier first return -1 for invalid cases.
-->>
-
-<<-809	Expressive Words    		46.7%	Medium	
-two pointer compare.
-->>
-
-<<-844	Backspace String Compare    		46.7%	Easy	
-string with # to backspace previous char. return two string equal.
-two pointer from right to count.
-->>
-
-<<-905	Sort Array By Parity    		74.9%	Easy	
-even first.
-two pointer: i for current position, j for even number position
-->>
-
-<<-948	Bag of Tokens    		46.2%	Medium	
-given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
-- if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
-- you can lose 1 point and get token[i]
-return the max score.
-greedy approach: use the point to get the max power. losing min power to get 1 point.
-using two pointer to do it from min and max side.
-->>
-
-<<-1023	Camelcase Matching    		57.1%	Medium	
-given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
-- capital shall match exactly.
-- using two pointer matching. if capital does not match, return false.
-->>
-
-<<-1055	Shortest Way to Form String    		57.2%	Medium	
-given string src and target, return the min number of subsequence used to reach target string.
-two pointer, with one using mod.
-->>
-
-<<-1537	Get the Maximum Score    		36.1%	Hard	
-two sorted array, a valid path (at the same value you can switch to the other array) return the max path sum.
-- path can begin from nums1 or nums2, end at nums1 or nums2.
-- choose the max sum branch.
-- need to find the common segments.
-using merge sort with two pointer. wait until we see identical number. choose the previous max.
-->>
-
-## bit manipulation
-<<-89	Gray Code    		49.7%	Medium	
-gray code is gnerated using i^(i>>1)
-->>
-
-<<-137	Single Number II     		53.2%	Medium	
-every number appear 3 times except one.
-- bits: do bit by bit and sum each bit %3 and that is the bit appear once.
-- using true type table to get a counter reset to 0 when goes to 3.
-->>
-<<-136	Single Number    		66.1%	Easy	
-each number appear twice except one. xor.
-->>
-
-<<-318	Maximum Product of Word Lengths    		51.8%	Medium	
-word[i] and word[j] shares no common letters.
-using char as bit and then do bit manipulations.
-->>
-
-<<-231	Power of Two    		43.8%	Easy	
-n&(n-1)->>
-<<-326	Power of Three    		42.0%	Easy	
-only have factor 3, max3%n==0
-->>
-<<-342	Power of Four    		41.4%	Easy	
-only 0,2,4,6... is set 1. 
-& 0xaaaaaaa to check odd bits if set.
-num&(num-1) check if it is not 2^n.
-->>
-<<-371	Sum of Two Integers    		50.6%	Medium	
-cannot use +/-. 
-carry a&b, result a^b.
-getsum((a&b)<<1,a^b)
-->>
-
-<<-393	UTF-8 Validation    		37.8%	Medium	
-utf8 can have 1,2,3,4 bytes
-one byte: 0xxxxxx
-two bytes: 110xxxxx 10xxxxxx
-three bytes: 1110xxxx,10xxxxxx,10xxxxxx
-four bytes: 11110xxx, 10xxxxxx,10xxxxxx,10xxxxxx
-using the unique head when we find it remaing bytes is known.
-->>
-
-<<-477	Total Hamming Distance    		50.5%	Medium	
-number of bits which is different.
-find the total hamming distance between all pairs of numbers given an array.
-- brutal force O(N^2)
-- 32bits check bit by bit and split into two half n*m
-->>
-
-<<-898	Bitwise ORs of Subarrays    		34.0%	Medium	
-count number of possible values.
-- brutal force using hash to remove duplicates
-- optimization: add more number into OR will not decrease number of 1s. we can only use current element to or the previous result and add new results into hashset. O(N).
-also we can remove duplicates in the input.
-->>
-
-<<-1009	Complement of Base 10 Integer    		61.5%	Easy	->>
-
-<<-1238	Circular Permutation in Binary Representation    		65.4%	Medium	
-gray code ans[i]=start^i^(i>>1)
-->>
-
-<<-1255	Maximum Score Words Formed by Letters    		69.6%	Hard	
-a-z has different score given, and a list of dictionary word, and a list of usable characters.
-use the characters to form any dictionary words with max score.
-- convert given chars to hashmap.
-- using bitmask to represent all combinations and check if they are valid combinations
-->>
-
-<<-1310	XOR Queries of a Subarray    		68.9%	Medium	
-xor is similar to sum, using prefix xor.
-->>
-
-<<-1318	Minimum Flips to Make a OR b Equal to c    		63.5%	Medium	
-straightforward.
-->>
-
-<<-1371	Find the Longest Substring Containing Vowels in Even Counts    		61.4%	Medium	
-the exact count does not matter. each vowel shall be even.
-so use bit to indicate aeiou's odd even. then use hashmap to find the same status.
-->>
-
-<<-1386	Cinema Seat Allocation    		35.2%	Medium	
-n rows, each row has 8 seats in 3,4,3 separated by isle with reserved seats. family of 4 shall sit adjacent. one case with isle is 2 people on each side is consider adjacent.
-since the first and last cannot seat family member, so discard them.
-using bit + hashmap
-
-->>
-
-<<-1442	Count Triplets That Can Form Two Arrays of Equal XOR    		70.5%	Medium	
-find i,j,k, such that A[i]^..A[j-1]==A[j]^...A[k]
-prefix xor.
-it is equivalent to A[i]^...A[k]=0, and j=i+1 to k-1 with k-i-1 combinations.
-using prefix and hashmap, this is to find same xor with region>=3.
-->>
-
-<<-1452	People Whose List of Favorite Companies Is Not a Subset of Another List    		54.3%	Medium	
-the key is to collect all company and convert company to bit and then each person's list converts to a int or a bit vector.
-->>
-
-<<-1486	XOR Operation in an Array    		84.0%	Easy	
-bums[i]=start+2*i, return xor of the array.
-- brutal force O(n)
-- optimization O(1): forget the start, if the length is even, the LSB is 0 otherwise, LSB is 1 and then we right shift one bit. (start+2*i)^(start+2*i+2)
-->>
-
-<<-1521	Find a Value of a Mysterious Function Closest to Target    		43.7%	Hard	
-func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to target.
-- bit and will get decreased result, never goes up.
-- AND_VAL[i,j]=A[i] & AND_VAL(i+1,j-1] starting at ith element with length j.
-- do it from right to left.
-- limited number of AND_VAL using hashset to eliminate duplicates.
-->>
-
 ## trie
+trie is essentially the n-arry tree. generally used for prefix or suffix string.
+bits are often using trie for xor, and...
+
 <<-208	Implement Trie (Prefix Tree)    		50.9%	Medium	->>
 <<-211	Design Add and Search Words Data Structure    		39.2%	Medium	->>
 
@@ -10619,12 +10669,12 @@ a valid word: it contains the first letter of the puzzle word. all letters shall
    - puzzle searches: does not match, goes next, first must match.
 - bitmask: we can convert each string to a number. if a word is valid  (w&p)==w and w[first]==1
 complexity would be O(N^2)
-
 ->>
 
 <<-1268	Search Suggestions System    		64.4%	Medium	
 classical trie problem.
 ->>
+
 <<-1707. Maximum XOR with an element from array.
 given num and mi, find the max xor using num to xor with the element in array <=mi.
 using Trie to build a 32 bit trie.
@@ -10641,6 +10691,10 @@ first cd is counted, second cd shall be discarded.
 ...
 ->>
 
+### quad tree
+quad tree is widely used in geoinfo or map applications.
+
+
 ## misc
 <<-869	Reordered Power of 2    		53.9%	Medium	
 if we can reorder the digit to get power of 2. only 32 candidates.
@@ -10654,6 +10708,7 @@ leap year, count days
 <<-1236	Web Crawler    		64.3%	Medium	
 multithreading cpp.
 ->>
+
 <<-1237	Find Positive Integer Solution for a Given Equation    		69.6%	Easy	->>
 
 <<-1244	Design A Leaderboard    		64.6%	Medium	->>
@@ -10696,7 +10751,8 @@ from right to left.
 <<-705	Design HashSet    		64.5%	Easy	->>
 <<-704	Binary Search    		53.7%	Easy	->>
 <<-703	Kth Largest Element in a Stream    		50.2%	Easy	
-heap->>
+heap
+->>
 <<-682	Baseball Game    		65.2%	Easy	
 simple stack operation
 ->>
@@ -10925,13 +10981,6 @@ hashmap.
 
 ## leetcode problem list
 
-<<-134	Gas Station    		40.5%	Medium	
-n gas station along a circular route. ith station with gas[i] and it cost cost[i] from station i to i+1.
-you begin with empty gas. return the starting index that you can finish the whole route. (clockwise)
-- sliding window with n. net gas= gas[i]-cost[i] at any time shall >=0
-- unfold the circular array to 2N array.
-->>
-
 <<-65	Valid Number    		15.6%	Hard	
 a lot of corner cases.
 ->>
@@ -10945,7 +10994,6 @@ a lot of corner cases.
 
 <<-8	String to Integer (atoi)    		15.5%	Medium	->>
 <<-6	ZigZag Conversion    		37.2%	Medium	->>
-
 
 
 
@@ -10994,6 +11042,7 @@ next bigger number with same number of set bits
         return a*b/div;
     }
 ```	
+
 dijkstra and shortest path problem
 dijkstra find the shortest path between two nodes, trying the shortest edge first. non-negative weight.
 - one source to all other nodes, shortest path tree.
@@ -11024,7 +11073,9 @@ if we keep top layer is half of bottom layer, then we get log(n) complexity.
 some subjects on algorithm
 
 ## base problem (number position system)
+
 ### balance base-3 problem
+
 using -1,1,0 to represent a number
 n=sum(Ai*3^i), then Ai would be 0, 1, 2.
 we have to change 2 to -1 using 2=3-1 (3-1)*3^i=3^(i+1)-3^i. that is we need add a carry flag to the next when the digit is 2.
@@ -12118,219 +12169,4 @@ erase O(logn)
 build O(n) for sorted, O(nlogn) for unsorted
 union(T1,T2) O(Mlog(N/M)) removing duplicates
 intersect(T1,T2) O(Mlog(N/M))
-
-# C++ data structure
-
-## vector
--. automatic growing. it grows or shrink by a factor of two
-	- cannot rely on its position (pointers)
-	- adding to back is amortized O(1)
-	- insert is O(n) (has to shift down)
-	- delete is O(n) (has to shift up)
--. push_back is O(1)
--. random access is O(1)
-constructor:
-	{} to enclose a list of elements
-	another vector using itertor start and end
-iterator: begin, end, rbegin,rend
-push_back/pop_back
-swap
-assign
-insert/erase
-clear
-emplace
-empty
-
-1d/2d/3d
-does not have to be the same size. it supports much more flexible data structure than the regular c array
-
-other sequential container
-stack, queue, deque are generally used for 1d sequential container
-## stack: 
-only operates on the back, sometimes, string or vector can act as stack. but using stack is more clear.
-FILO
-top
-push/pop
-clear
-empty
-
-## queue:
-push in the back, remove in the front
-FIFO
-size
-empty
-front()
-back()
-push
-pop
-
-## deque:
-double ended queue. can add/remove from both ends.
-## deque is more similar to vector, but it is segment contiguous in memory
-begin/end
-rbegin/rend
-size/empty/resize
-[]/at
-front/back
-assign
-push_back/push_front
-pop_back/pop_front
-insert/erase
-swap/clear
-deque can be considered as a list of vectors. 
-
-## list
-c++ only supports doubly linked list.
-list: memory flexible
-acess front and back in O(1)
-insert/delete is O(1)
-find is O(n)
-combined with iterator can access the list node in O(1)
-begin/end
-rbegin/rend
-empty/size
-front/back
-assign
-push_front/pop_front
-push_back/pop_back
-insert/erase
-swap
-clear
-
-list related operations:
-splice: connect two lists
-remove: remove elements with given value
-remove_if: remove elements with condition
-unique: remove duplicate values
-merge: merge sorted list
-sort: sort elements in container
-reverse: reverse the order of elements
-
-actually we can make a library to work with singly linked list too.
-
-## hashset: unordered_set/unordered_multiset
-hashset using hashvalue for direct access
-collision: using list for each node to connect the keys with same hash value
-- access/insert/delete is in average O(1)
-- not all types are supported since hash is not easily found
-- allows or allows not duplicates
-empty/size
-begin/end
-find/count
-equal_range: get range of elements with a specific keys
-insert/erase
-clear
-swap
-emplace
-bucket_count
-bucket_size
-
-## hashmap: unordered_map/unordered_multimap
-similar to hash set, but have pairs---dictionary.
-
-non-sequential containers
-## Heap:
-set/multiset: minheap default, can support maxheap
-map/multimap: minheap default, can support maxheap
-priority_queue: maxheap default, can support minheap (but its function is very limited)
-
-above containers all sort the elements in some efficient way.
-set: use binary tree as the heap
-maxheap:
-it is a binary tree, root is always the largest one among its two children, recursively.
-access the root: O(1)
-add a node: attach it to any leaf and sift up, O(logn)
-pop the root: replace the root with any leaf and sift down O(logn)
-change priority: change and sift up/down O(logn)
-remove: change the priority to inf and pop the root. O(logn)
-
-Priority_queue is a special heap using a complete binary tree in array format.
-a complete binary tree:
--. depth at most logn
--. can store as array, the parent-child relation is defined by the index
-parent index=i, its child 2*i and 2*i+1
-insert a node: add to the leftmost leaf node and sift up
-pop the root: replace the root with the last leaf node and sift down
-so pq is space efficient and stable O(logn) efficiency
-
-heapsort: keeps popping the root and we get O(nlogn) stable efficiency.
-so pq is stable and set is more versatile.
-
-set<class T,class compare> we often need to define our own compare class
-priority_queue<class T,class container, class compare>, pq also needs to define storage method.
-pq is an adapter
-set is a container
-
-set: 
-size/empty/resize
-insert/erase
-swap
-clear
-emplace
-
-find/count
-lower_bound/upper_bound/equal_range
-
-pq:
-empty/size
-top
-push/pop
-
-## disjoint set (union find)
-disjoint set using tree as its underlie data structure
-operations include:
-makeset
-find
-merge
-
-## binary tree
-
-## trie
-usually used for string pattern matching (a lot of pattern matching)
-often used with google search hints
-no built-in data structure
-
-## graph
-no built-in data structure
-
-## string
-very similar to vector.
-begin/end
-rbegin/rend
-size/length
-empty
-clear
-back
-front
-push_back/pop_back
-insert/delete
-assign
-replace
-swap
-c_str
-data
-copy
-find/rfind
-find_first_of/find_last_of
-find_first_not_of/find_last_not_of
-substr
-compare
-npos
-
-# algorithm
-divide and conquer
-recursion
-dfs
-bfs
-backtracking
-binary search
-dynamic programming
-two pointers
-sliding window
-greedy
-design
-sort
-
-
-
 
