@@ -1549,6 +1549,7 @@ given a list of intervals, (a,b) (c,d) can be chained if b<c.
 return the length of longest chain.
 longest increasing sequence: dp[i] is the max length ending ith pair.
 ->>
+
 <<-960	Delete Columns to Make Sorted III    		54.0%	Hard	
 a list of word, (can treat as a 2d matrix) return the min number of columns to delete making every row sorted.
 LIS problem.
@@ -1560,6 +1561,7 @@ check column: if column is not sorted, it shall be deleted. if equal found, we s
 <<-944	Delete Columns to Make Sorted    		70.9%	Easy	
 after deletion, each column is sorted. return the min number of deletion.
 ->>
+
 <<-1027	Longest Arithmetic Subsequence    		50.4%	Medium	
 each element can bind with previous one with a different difference, since d varies, we shall use array of hashmap for the dp.  
 LIS.
@@ -1706,61 +1708,8 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
-<<-31	Next Permutation    		33.0%	Medium	->>
-
-<<-161	One Edit Distance    		32.5%	Medium	
-insert/delete/replace exactly one char to make s==t.
-insert/delete: length +-1 so swap to convert insert to delete
-- find the first mismatch: if length the same compare others, if not remove the char.
-->>
-
-
-<<-179	Largest Number    		30.1%	Medium	
-rearrange a list of number to get the max number
-greedy: which one goes first using string compare
-->>
-
-<<-321	Create Maximum Number    		27.3%	Hard	
-given two array of digits, the order shall be preserved. get the max number with length k.
-greedy: 
-- k=m+n, merge
-- k<m+n, try 0 to k numbers from A, try k to 0 from B. then merge.
-->>
-
-<<-397	Integer Replacement    		33.2%	Medium	
-if even /2, if odd +1 or -1.
-min number of move to reduce n to 1.
-- only +1 when it becomes 4 multiples (but 3 is different 3+1->4->2->1, 3-1->2->1
-->>
-
-<<-406	Queue Reconstruction by Height    		67.7%	Medium	
-given a list of people with height and number of people in front of him >=his height.
-greedy: sort decreasing order. we arrange highest first. 
-after that shorter one we know its exact position.
-->>
-
-<<-484	Find Permutation    		63.9%	Medium	
-given "DI" string, return the lexi smallest permutation of 1 to n.
-for example "DI" this needs a permutation of 1,2,3. [2,1,3] is the smallest one.
-idea: starting from the smallest permutation of 1 to n. then we reverse all D.
-for example 'DI', we start from [1,2,3], then we reverse 1,2 ->[2,1,3]
-->>
-
-<<-502	IPO    		40.9%	Hard	
-at most finish k distinct projects. given a list of projects with profit[i] and min capital C[i] needed. Initially we have capital W. Once finished the project the profit is added to the capital.
-return the final max capital.
-- combine capital + profit (discard zero profit projects)
-- sort by capital
-- add all projects with <current capital into heap
-- choose the one with max profit.
-
-->>
-
-<<-555	Split Concatenated Strings    		42.6%	Medium	
-given a list of strings, and concat them together into a loop. Each string you can choose to reverse or not. find the largest string after cut the loop.
-you need to connect using the given order.
-idea: connect them in ascending (each word) order, the other way is connected them in descending order.
-loop and use ith string for the cut position, and get the global max.
+<<-31	Next Permutation    		33.0%	Medium	
+next larger : find from right the first A[i]<A[i+1] and swap it and then reverse the right part.
 ->>
 
 <<-556	Next Greater Element III    		31.9%	Medium	
@@ -1773,49 +1722,29 @@ next_permutation:
 - reverse the right to make it sorted. 124654->125644->125446
 ->>
 
-
-<<-575	Distribute Candies    		61.6%	Easy	
-given n candies candy[i] is the candy type. Only eat n/2 candies, return the max number of types she can eat. (n is even)
-min(n/2,type.size())
+<<-484	Find Permutation    		63.9%	Medium	
+given "DI" string, return the lexi smallest permutation of 1 to n.
+for example "DI" this needs a permutation of 1,2,3. [2,1,3] is the smallest one.
+idea: starting from the smallest permutation of 1 to n. then we reverse all D.
+for example 'DI', we start from [1,2,3], then we reverse 1,2 ->[2,1,3]
 ->>
 
-<<-621	Task Scheduler    		51.1%	Medium	
-different tasks A-Z. and can be arranged in any order. 
-n is the cooldown period. the time between two same tasks shall >=n.
-return the least number of time to finish the task.
-arrange the most frequent task in n spaced interval, then fill less frequent task. 
-- (maxfreq-1)*(n-1) 
-- number of maxfreq added.
-- if number of different task cannot fit in the n slots, tasks.size()
+<<-161	One Edit Distance    		32.5%	Medium	
+insert/delete/replace exactly one char to make s==t.
+insert/delete: length +-1 so swap to convert insert to delete
+- find the first mismatch: if length the same compare others, if not remove the char.
 ->>
 
-<<-630	Course Schedule III    		33.6%	Hard	
-given n courses, each course has duration days and closing day. You will start on the 1st day, return max number of course taken.
-greedy: You can start a course <=closing-duration. take shorter courses will have more chances to take more courses, also we need take courses with smallest closing day first.
-- sort by closing day
-- tracking the start time.
-- add the duration into heap
-- if s+duration>closing, try to pop the longest course.
-key idea: to add current course, pop previous long course
-can also use dp. similar to longest increasing subsequence. (interval)
-knapsack:dp[i,time] max number of courses including ith course 
+<<-179	Largest Number    		30.1%	Medium	
+rearrange a list of number to get the max number
+greedy: which one goes first using string compare
 ->>
 
-<<-659	Split Array into Consecutive Subsequences    		44.0%	Medium	
-given a sorted array, see if you can split into 1 or more subsequence with consecutive integers with length>=3
-- the highest frequency number determines number of sequence we shall divide
-- since it is sorted we can loop over the array
-for example [1,2,3,3,4,5]: frequency 1:1,2:1,3:2,4:1,5:1
-we see 1, and we need 2 and 3, 1:0,2:0,3:1,4:1,5:1 need[4]=1
-we see 2: skip since it is used.
-we see 3: skipped
-we see 3: and we need 4 and 5, 1:0,2:0,3:0,4:0,5:0
-greedy+hashmap
-->>
-
-<<-667	Beautiful Arrangement II    		54.7%	Medium	
-given 1 to n, arrange so that adjacent absolute difference has exactly k distinct numbers.
-arrange like this 1,k,2,k-1..... l=1, r=k+1, until they meet.
+<<-321	Create Maximum Number    		27.3%	Hard	
+given two array of digits, the order shall be preserved. get the max number with length k.
+greedy: 
+- k=m+n, merge
+- k<m+n, try 0 to k numbers from A, try k to 0 from B. then merge.
 ->>
 
 <<-670	Maximum Swap    		44.5%	Medium	
@@ -1832,7 +1761,50 @@ greedy: from right to left, replace current with the next larger digit available
 <<-738	Monotone Increasing Digits    		45.1%	Medium	
 give a number N, find the largest number with monotone increasing digits. (<=)
 idea: 12321->12299 from right to left find the last position increase stops.
-for this one, ends at 3. we reduce it by 1
+for this one, ends at 3. we reduce it by 1, and right replaced by '9'
+->>
+
+<<-870	Advantage Shuffle    		46.1%	Medium	
+A[i]>B[i] to maximize number of advantage (permutation of A)
+greedy: sort A and use the min greater element for A (since it asks for ordering B cannot sort).
+->>
+
+<<-397	Integer Replacement    		33.2%	Medium	
+if even /2, if odd +1 or -1.
+min number of move to reduce n to 1.
+- only +1 when it becomes 4 multiples (but 3 is different 3+1->4->2->1, 3-1->2->1
+->>
+
+<<-861	Score After Flipping Matrix    		73.1%	Medium	
+choose any row or column and toggle the row or column. Each row is interpret as a binary number. return the largest sum of all row numbers.
+greedy: toggle each row MSB to 1. then choose columnwise, to make majority to 1.
+->>
+
+<<-406	Queue Reconstruction by Height    		67.7%	Medium	
+given a list of people with height and number of people in front of him >=his height.
+greedy: sort decreasing order. we arrange highest first. and then insert shorter ones.
+after that shorter one we know its exact position.
+->>
+
+<<-575	Distribute Candies    		61.6%	Easy	
+given n candies candy[i] is the candy type. Only eat n/2 candies, return the max number of types she can eat. (n is even)
+min(n/2,type.size())
+->>
+
+<<-621	Task Scheduler    		51.1%	Medium	
+different tasks A-Z. and can be arranged in any order. 
+n is the cooldown period. the time between two same tasks shall >=n.
+return the least number of time to finish the task.
+arrange the most frequent task in n spaced interval, then fill less frequent task. 
+- (maxfreq-1)*(n-1) 
+- number of maxfreq added.
+- if number of different task cannot fit in the n slots, tasks.size()
+->>
+
+<<-667	Beautiful Arrangement II    		54.7%	Medium	
+given 1 to n, arrange so that adjacent absolute difference has exactly k distinct numbers.
+arrange like this 1,k,2,k-1..... l=1, r=k+1, until they meet.
+two pointer.
 ->>
 
 <<-765	Couples Holding Hands    		55.0%	Hard	
@@ -1841,6 +1813,93 @@ greedy:
 - divide by 2 and couple has the same id.
 - swap can eliminate one or two mismatch.
 union-find.
+->>
+
+<<-881	Boats to Save People    		47.4%	Medium	
+given array of people weight, boat has limit of max weight and most 2 people.
+return the min number of boats
+greedy: two pointer carray the max + min.
+->>
+
+<<-908	Smallest Range I    		65.9%	Easy	
+You can add any number in range [-K,K]
+greedy: if max-min>2K, otherwise get 0.
+->>
+
+<<-910	Smallest Range II    		27.0%	Medium	
+add K or -K to each element, return the smallest range obtained.
+greedy: sort first, left shall add k, and right shall -k, the problem is where is the separation position.
+suppose add k at ith element, A[i]+K may become a new max, A[i+1]-k and it may becomes a new min (right bigger elements cannot be min). still need to compare with A[n-1]-k and A[0]+k.
+->>
+
+<<-1041	Robot Bounded In Circle    		54.4%	Medium	
+G: go forward by 1, L: turn left, R: turn right.
+greedy: repeat the instructions for 4 times and see if repeat. (why 4 times?)
+->>
+
+<<-502	IPO    		40.9%	Hard	
+at most finish k distinct projects. given a list of projects with profit[i] and min capital C[i] needed. Initially we have capital W. Once finished the project the profit is added to the capital.
+return the final max capital.
+- combine capital + profit (discard zero profit projects)
+- sort by capital
+- add all projects with <current capital into heap
+- choose the one with max profit.
+->>
+
+<<-555	Split Concatenated Strings    		42.6%	Medium	
+given a list of strings, and concat them together into a loop. Each string you can choose to reverse or not. find the largest string after cut the loop.
+you need to connect using the given order.
+idea: connect them in ascending (each word) order, the other way is connected them in descending order.
+loop and use ith string for the cut position, and get the global max.
+->>
+
+<<-630	Course Schedule III    		33.6%	Hard	
+given n courses, each course has duration days and closing day. You will start on the 1st day, return max number of course taken.
+greedy: You can start a course <=closing-duration. take shorter courses will have more chances to take more courses, also we need take courses with smallest closing day first.
+- sort by closing day
+- tracking the start time.
+- add the duration into heap
+- if s+duration>closing, try to pop the longest course.
+key idea: to add current course, pop previous longest course (using priority_queue)
+can also use dp. similar to longest increasing subsequence. (interval)
+knapsack:dp[i,time] max number of courses including ith course 
+->>
+
+<<-659	Split Array into Consecutive Subsequences    		44.0%	Medium	
+given a sorted array, see if you can split into 1 or more subsequence with consecutive integers with length>=3
+- the highest frequency number determines number of sequence we shall divide
+- since it is sorted we can loop over the array, key idea: the smallest must be the start.
+there is something not solved yet if we need continue to extend our sequence.
+cnt: the frequency map
+tail[i]: the number of sequence >=3 ending with i.
+```cpp
+bool isPossible(vector<int>& nums) {
+        unordered_map<int,int> cnt, tails;
+        for(int &i : nums) cnt[i]++;
+        for(int &i : nums){
+            if(!cnt[i]) continue;
+            cnt[i]--;
+            if(tails[i-1] > 0){ //if we see previous i-1 we connect it.
+                tails[i-1]--;
+                tails[i]++;
+            }
+            else if(cnt[i+1] && cnt[i+2]){ //no previous i-1, start a new group
+                cnt[i+1]--;
+                cnt[i+2]--;
+                tails[i+2]++;
+            }
+            else return false; //cannot add to previous or start a new group
+        }
+        return true;
+    }
+```
+for example [1,2,3,3,4,5]: frequency [1:1,2:1,3:2,4:1,5:1]
+we see 1, and we need 2 and 3, 1:0,2:0,3:1,4:1,5:1 tail[3]=1
+we see 2: skip since it is used.
+we see 3: skipped since it is used.
+we see 3: there is no sequence ending with 2, so start a new one [3,4,5]
+
+greedy+hashmap, this is pretty trick.
 ->>
 
 <<-826	Most Profit Assigning Work    		38.8%	Medium	
@@ -1867,61 +1926,35 @@ greedy:
 often seen optimization problem which one to choose first with adding new and kicking out old.
 ->>
 
-<<-861	Score After Flipping Matrix    		73.1%	Medium	
-choose any row or column and toggle the row or column. Each row is interpret as a binary number. return the largest sum of all row numbers.
-greedy: toggle each row MSB to 1. then choose columnwise, to make majority to 1.
-->>
-
-<<-870	Advantage Shuffle    		46.1%	Medium	
-A[i]>B[i] to maximize number of advantage (permutation of A)
-greedy: sort A and use the min greater element for A (since it asks for ordering B cannot sort).
-->>
-
 <<-871	Minimum Number of Refueling Stops    		31.8%	Hard	
 given a list of station with position and gas amount, the car starts at 0 with initial fuel. return the min number of refuel to reach target.
 can be approached using greedy or dp.
 greedy: put all reachable gas into pq, and choose the max. when there is no gas to add, return -1.
 dp: convert to equivalent problem dp[t] represent longest distance using t refuels. 
-->>
-
-<<-881	Boats to Save People    		47.4%	Medium	
-given array of people weight, boat has limit of max weight and most 2 people.
-return the min number of boats
-greedy: two pointer carray the max + min.
+this kind of greedy is often seen using priority_queue. sort it, add it, pop the worst one.
 ->>
 
 <<-891	Sum of Subsequence Widths    		32.7%	Hard	
-sequence width = max-min.
-return the sum of width of all subsequences.
+sequence width = max-min. return the sum of width of all subsequences.
 - a fixed max and min pair can have a lot of sequences (with other elements each has 2 options)
 - single element does not contribute max-min=0;
 - sort it will solve our dilema since we do not care what the sequence will be.
-->>
-
-<<-908	Smallest Range I    		65.9%	Easy	
-You can add any number in range [-K,K]
-greedy: if max-min>2K, otherwise get 0.
-->>
-
-<<-910	Smallest Range II    		27.0%	Medium	
-add K or -K to each element, return the smallest range obtained.
-greedy: sort first, left shall add k, and right shall -k, the problem is where is the separation position.
-suppose add k at ith element, A[i]+K may become a new max, A[i+1]-k and it may becomes a new min (right bigger elements cannot be min). still need to compare with A[n-1]-k and A[0]+k.
+- A[i] as the max, all left choose or not choose 2^left. A[i] as min all right choose or not chosen, 2^right.
 ->>
 
 <<-936	Stamping The Sequence    		46.8%	Hard	
 given a stamp string and a target string. The next stamp will replace the old one at the same place.
-do it reversely, remove the stamp string and replace with ?. 
+do it reversely, remove the stamp string and replace with ?. find the order of printing.
 greedy: find one match and replace
 ->>
 
 <<-945	Minimum Increment to Make Array Unique    		46.5%	Medium	
 each time you can choose to increase one element by 1. 
-greedy: sort and them increase the next one. (increase previous will cost more)
+greedy: sort and then increase the next one. (increase previous will cost more)
 ->>
 
 <<-954	Array of Doubled Pairs    		35.4%	Medium	
-length is even, if we can reorder A[2i+1]=2*A[i].
+length is even, check if we can reorder A[2i+1]=2*A[i].
 use hashmap to get each number's occurrence, sort by the abs value and then start from the smallest and remove the 2x. greedy approach.
 ->>
 
@@ -1952,6 +1985,7 @@ priority_queue: negate the smallest one first. When all becomes positive, we rep
 <<-1024	Video Stitching    		49.3%	Medium	
 a list of video each with start and end. find the min number of clip that cover [0,T].
 greedy on interval: sort with start, for those satifying the start requirement, choose the one with largest end.
+subject: interval, greedy.
 ->>
 
 <<-1029	Two City Scheduling    		57.1%	Medium	
@@ -1959,11 +1993,6 @@ given 2n people flying to A or B. half to A and half to B, cost for each person 
 return the min cost.
 [a0,b0],[a1,b1], if we choose a0,b1, then a0+b1>b0+a1, a0-a1>b0-b1 sort by the difference.
 greedy.
-->>
-
-<<-1041	Robot Bounded In Circle    		54.4%	Medium	
-G: go forward by 1, L: turn left, R: turn right.
-greedy: repeat the instructions for 4 times and see if repeat. (why 4 times?)
 ->>
 
 <<-1058	Minimize Rounding Error to Meet Target    		42.7%	Medium	
@@ -1975,6 +2004,7 @@ if yes, return the smallest rounding error. rounding error=sum(|round(p)-p|.
 proof: we need use m=(target-min) ceil so the error would be mCeil+(n-m)Floor=m(ceil-Floor)+nFloor
 nFloor is constant and we can ignore, so min m(ceil-Floor) ie we need take the smallest ceil-floor.
 this is very similar to Amazon OA five star. 
+- priority_queue with first choose.
 ->>
 
 <<-1111	Maximum Nesting Depth of Two Valid Parentheses Strings    		72.3%	Medium	
@@ -1985,12 +2015,12 @@ greedy.
 <<-1121	Divide Array Into Increasing Sequences    		57.6%	Hard	
 given a sorted array, and k. find out if this array can be divided one or more dijoint increasing subsequence of length >=k.
 - get the histogram, the highest frequency indicates number of parts we shall divide.
-- greedy: decrease the all the number with maxfreq by 1 (if less than k, we need keep going until we have k.
+- greedy: decrease the all the number with maxfreq by 1 (if less than k, we need keep going until we have k. (similar to 659	Split Array into Consecutive Subsequences)
 ->>
 
 <<-1147	Longest Chunked Palindrome Decomposition    		59.1%	Hard	
 problem: decompose into parts and the parts form a palindrome pattern.
-greedy: find the shortest prefix = the suffix and do recusion.
+greedy: find the shortest prefix = the suffix and do recursion.
 try to prove the approach is correct.
 ->>
 
