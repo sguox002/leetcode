@@ -2412,7 +2412,7 @@ level: 4
 
 <<-1663	Smallest string with a given numeric value
 problem: a-z represent 1-26, the sum of all chars is the numeric value. given k (value) and n (length), return the smallest string
-approach: greedy, based on all 'a' and replace from right as much as 'z'to 'a'
+approach: greedy, based on all 'a' and replace from right as much as 'z'to 'a'. first k-=n, and then do one by one.
 level: 3
 ->>
 
@@ -2660,17 +2660,39 @@ backtracking problem generally finds all sets required. It can also be used for 
 - generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
+- backtracking is similar to dfs, push/pop is simulating the dfs (when reach leaf node, it back one step)
+- value passing and reference passing. passing a big array is extra overhead.
 
-<<-22	Generate Parentheses    		64.2%	Medium	->>
+
+<<-22	Generate Parentheses    		64.2%	Medium	
+value passing can be more concise, but more time.
+need keep left>=right at any time.
+->>
 
 <<-47	Permutations II    		48.4%	Medium	
 all permutation of array with duplicates.
 sort and skip duplicates - ie do not start with the same element, but permutation can include duplicates.
-permutation by swap 
+- permutation by swap., tricky.
+- sort and skip duplicate with a separate vector, easier.
+- using hashmap, this is least to make mistakes.
+*****
 ->>
 
 <<-46	Permutations    		65.2%	Medium	
 using next permutation or backtracking.
+backtracking: loop swap i to start, and go start+1. It is not trivial.
+to avoid mistakes, use a separate array and visited array.
+->>
+
+<<-90	Subsets II    		48.0%	Medium	
+array contains duplicates, return all possible subsets (power set)
+must not contain duplicate subsets
+- sort so that we can skip duplicate elements
+- each element can be chosen or not chosen
+backtracking.
+->>
+<<-78	Subsets    		63.7%	Medium	
+no duplicates. no need sort and skip duplicates.
 ->>
 
 <<-52	N-Queens II    		59.1%	Hard	
@@ -2689,16 +2711,7 @@ given 1 to n, return all possible combination of k numbers.
 backtracking with k. (start from 1 k-1)
 ->>
 
-<<-90	Subsets II    		48.0%	Medium	
-array contains duplicates, return all possible subsets (power set)
-must not contain duplicate subsets
-- sort so that we can skip duplicate elements
-- each element can be chosen or not chosen
-backtracking.
-->>
-<<-78	Subsets    		63.7%	Medium	
-no duplicates. no need sort and skip duplicates.
-->>
+
 
 <<-248	Strobogrammatic Number III    		39.9%	Hard	
 a strobogrammtic number looks the same when rotated 180 degree.
@@ -5253,11 +5266,7 @@ find leaves and then remove, until no nodes left.
 postorder: leaf depth=0, and upper level is 1...
 ->>
 
-<<-427	Construct Quad Tree    		62.0%	Medium	
-topleft,topright,bottLeft,bottRight
-if the cell has all the same value, then it is a leaf with value
-else we need to divide into 4 cells and recursively build them.
-->>
+
 
 <<-429	N-ary Tree Level Order Traversal    		65.9%	Medium	->>
 <<-428	Serialize and Deserialize N-ary Tree    		60.6%	Hard	
@@ -5327,14 +5336,6 @@ longest path with consecutive sequence (either increasing or decreasing).
 - postorder to get the two results: longest increasing, longest decreasing sequence
 {inc,dec}, longest=max(longest,inc+dec-1);
 - preorder: need parent information.
-->>
-<<-558	Logical OR of Two Binary Grids Represented as Quad-Trees    		45.1%	Medium	
-quad tree with 4 children: topleft,topright,bottLeft,bottRight, val,isLeaf.
-given two quad trees representing two binary matrices, return a quad tree representing the bit OR of the two quad trees.
-quad tree is often used for geoinfo system. It is used to get adaptive resolution for a grid cell.
-if cell is leaf node, then subcell will all be 1 (if we divide into smaller cells)
-- case 1: q1 or q2 is leaf: with all 1, then the q1 or q2 will get a all 1 cell (subcell is merged), with all 0, then use the other node.
-- case 2: q1 and q2 are both non-leaf nodes: recursive do it. return a leaf node or non-leaf node.
 ->>
 
 <<-563	Binary Tree Tilt    		52.2%	Easy	
@@ -7966,7 +7967,6 @@ just discard all those edges involved in a cycle.
 we first mark the node being visited an max n.
 - if the node is visited, return its rank, this rank <= assigned rank. so it is a cycle
 - mark the node in a cycle to n so you don't need to visit it again and again.
-
 ->>
 
 <<-1203	Sort Items by Groups Respecting Dependencies    		48.6%	Hard	
@@ -8269,6 +8269,7 @@ recursive approach.
 ## trie
 trie is essentially the n-arry tree. generally used for prefix or suffix string.
 bits are often using trie for xor, and...
+trie is important since it is the base data structure for recommendation system such as google search, amazon recommendation et al.
 
 <<-208	Implement Trie (Prefix Tree)    		50.9%	Medium	->>
 <<-211	Design Add and Search Words Data Structure    		39.2%	Medium	->>
@@ -8388,6 +8389,19 @@ first cd is counted, second cd shall be discarded.
 ->>
 
 ### quad tree
-quad tree is widely used in geoinfo or map applications.
+quad tree is widely used in geoinfo or map applications. used in google maps, uber et al.
 
+<<-427	Construct Quad Tree    		62.0%	Medium	
+topleft,topright,bottLeft,bottRight
+if the cell has all the same value, then it is a leaf with value
+else we need to divide into 4 cells and recursively build them.
+->>
 
+<<-558	Logical OR of Two Binary Grids Represented as Quad-Trees    		45.1%	Medium	
+quad tree with 4 children: topleft,topright,bottLeft,bottRight, val,isLeaf.
+given two quad trees representing two binary matrices, return a quad tree representing the bit OR of the two quad trees.
+quad tree is often used for geoinfo system. It is used to get adaptive resolution for a grid cell.
+if cell is leaf node, then subcell will all be 1 (if we divide into smaller cells)
+- case 1: q1 or q2 is leaf: with all 1, then the q1 or q2 will get a all 1 cell (subcell is merged), with all 0, then use the other node.
+- case 2: q1 and q2 are both non-leaf nodes: recursive do it. return a leaf node or non-leaf node.
+->>
