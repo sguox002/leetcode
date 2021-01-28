@@ -25632,6 +25632,7 @@ To avoid this, we can use binary search approach:
         return ans;
     }
 ```	
+
 ### 1675. Minimize Deviation in Array
 <em>
 You are given an array nums of n positive integers.

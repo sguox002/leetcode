@@ -596,15 +596,7 @@ similar to divide and conquer.
 level: *****
 ->>
 
-<<-241	Different Ways to Add Parentheses    		56.5%	Medium	
-add () to the expression and evaluate all possible results. operator only include +-*
-- parentheis appear the digit and after the digit.
-- shall keep left>=right.
-- () only changes the calculation order, we do not need to do the addition actually.
-- we see +-*, and we divide into left and right and combine
-- using memoization to record the results - dp.
-- divide and conquer using the operators.
-->>
+
 
 <<-1387	Sort Integers by The Power Value    		70.6%	Medium	
 power of x is the step to transform to 1: even x/2, odd 3*x+1. need do a range.
@@ -1901,6 +1893,14 @@ we see 3: there is no sequence ending with 2, so start a new one [3,4,5]
 
 greedy+hashmap, this is pretty trick.
 ->>
+<<-846	Hand of Straights    		55.0%	Medium	
+reorder the cards in groups, each group with consecutive number and with size W.
+greedy: from the smallest. same as 1296.
+->>
+
+<<-1296	Divide Array in Sets of K Consecutive Numbers    		54.9%	Medium	
+greedy: start from the smallest and then change the hashmap. The smallest has to be the start.
+->>
 
 <<-826	Most Profit Assigning Work    		38.8%	Medium	
 given n jobs with difficulty[i] and profit[i]. given a list of workers with worker[i] is the worker's max difficulty level. 
@@ -2106,14 +2106,6 @@ return the groups with all its members.
 greedy: combine size and id, sort using size then fill one group by one group. fill smaller group first since large group has a lot more choices.
 ->>
 
-<<-846	Hand of Straights    		55.0%	Medium	
-reorder the cards in groups, each group with consecutive number and with size W.
-greedy: from the smallest. same as 1296
-->>
-
-<<-1296	Divide Array in Sets of K Consecutive Numbers    		54.9%	Medium	
-greedy: start from the smallest and then change the hashmap. The smallest has to be the start.
-->>
 
 <<-1297	Maximum Number of Occurrences of a Substring    		48.9%	Medium	
 substr: unique letters in substr <=maxLetters, substr length [minSize,maxSize]
@@ -2257,7 +2249,7 @@ math, greedy
 
 <<-1551	Minimum Operations to Make Array Equal    		77.8%	Medium	
 given array with a[i]=2*i+1. each time you can choose a pair of index and add 1 to one and -1 to the other. return the min operations to make the array all the same
-greedy: sorted array, and min operation to make the arry go to median.
+greedy: sorted array, and min operation to make the array go to median.
 ->>
 
 <<-1558	Minimum Numbers of Function Calls to Make Target Array    		62.4%	Medium	
@@ -2266,7 +2258,6 @@ from all 0 to target array by:
 - *2 for all element
 equivalent to: minus 1 if odd, /2 if even from target array to all zero.
 ->>
-
 
 <<-1576	Replace All ?'s to Avoid Consecutive Repeating Characters    		48.0%	Easy	
 greedy: try each ? from 'a' to 'z' so that it is not the same as left and right.
@@ -2289,12 +2280,12 @@ return the max number of boxes can be pushed in.
 greedy: 
 - from left to right, get the min height minh[i] minh is monotonically decreasing.
 - sort box.
-- from right to left, push the smallest box to the right. 
+- from right to left, push the smallest box to the right (fill right first). 
 ->>
 
 <<-1580	Put Boxes Into the Warehouse II    		63.0%	Medium
 given a list of boxes with heights, and a list of warehouses with height from left to right.
-- you can push from left or right.
+- you can push from left or right (both sides).
 - you can change box order.
 return max number of boxes you can push into the warehouse.
 greedy: higher box is hard to arrange, so try higher first.
@@ -2348,7 +2339,6 @@ then we erase all 0's from both s and t.
 		}
 		return 1;
 	}
-	
 ```
 starting from '9' does not work:
 for example 891 vs 198. 9 satisfy the condition, after removing 9, 8 satisfy the condition, but actually not since 8 cannot go beyond 9.
@@ -2428,8 +2418,12 @@ level: 3
 - convert problem to binary search if brutal force checking all range works.
 
 <<-4	Median of Two Sorted Arrays    		30.4%	Hard	->>
-<<-33	Search in Rotated Sorted Array    		35.3%	Medium	->>
-<<-81	Search in Rotated Sorted Array II    		33.3%	Medium	->>
+<<-33	Search in Rotated Sorted Array    		35.3%	Medium	
+find the rotated index and then do binary search.
+->>
+<<-81	Search in Rotated Sorted Array II    		33.3%	Medium	
+with duplicates. revised binary search if ==.
+->>
 <<-154	Find Minimum in Rotated Sorted Array II    		41.8%	Hard	->>
 <<-153	Find Minimum in Rotated Sorted Array    		45.6%	Medium	->>
 
@@ -2443,6 +2437,7 @@ peak greater than its left and right neighbor.
 rows and columns are sorted. search for target.
 from bottom left, treat it like a tree. O(M+N)
 ->>
+
 <<-74	Search a 2D Matrix    		37.1%	Medium	
 sorted actually in 1d, binary search.
 ->>
@@ -2450,6 +2445,7 @@ sorted actually in 1d, binary search.
 <<-278	First Bad Version    		36.7%	Easy	
 binary search.
 ->>
+
 <<-275	H-Index II    		36.1%	Medium	->>
 <<-274	H-Index    		36.3%	Medium	->>
 
@@ -2461,10 +2457,9 @@ binary search.
 
 <<-540	Single Element in a Sorted Array    		57.9%	Medium	
 each element except one appears exactly twice. find the single element.
--O(N) xor
--log(N): binary search: if mid is single, return.
+- O(N) xor
+- log(N): binary search: if mid is single, return.
 if mid is not single, and check the index and determine if it is on left or right
-
 ->>
 
 <<-635	Design Log Storage System    		59.0%	Medium	
@@ -2490,6 +2485,7 @@ To check if the array can get more or less than target average:
 - Sum(Ai-target) can be achieved using prefix sum.
 - we keep the 0 to i-k minimum sum and prefix sum. If prefix sum>min sum, then we know we can get average > target.
 ->>
+
 <<-642 Maximum Average Subarray I
 fixed window size k. trivial
 ->>
@@ -2523,7 +2519,7 @@ given n gas stations in position[i]. add k more stations so that the max distanc
 ->>
 
 <<-778	Swim in Rising Water    		54.0%	Hard	
-binary search
+convert to binary search equivalent problem.
 ->>
 
 <<-875	Koko Eating Bananas    		53.0%	Medium	
@@ -2587,7 +2583,6 @@ get the max of all the min.
 binary search: given the min sweetness and to see how many parts we can get.
 ->>
 
-
 <<-1283	Find the Smallest Divisor Given a Threshold    		48.9%	Medium	
 min divisor, sum(A/divisor)<=threshold.
 binary search.
@@ -2648,24 +2643,27 @@ binary search the ball volume until we flatten all high volume ball.
 ->>
 
 <<-1674. Min moves to make array complimentary
-problem: A[i]+A[n-1-i] are all the same. using [1,limit] to replace any number, and find the number of replace. (note all elements <=limit and >=1, this is a critical information), very hard question!
+problem: given an array and make every A[i]+A[n-1-i] all the same using [1,limit] to replace any number, and find the min number of replace. (note all elements <=limit and >=1, this is a critical information), very hard question!
 Analysis: from brutal force (we need do each pair for all the targets, and then we can use optimization using difference array to reduce O(n) to O(1) (the curve is always 2s,1s,0s,1s,2s, using difference we only need to record 5 changing point). also binary search can also do it with less memory requirement.
 subject: difference array and prefix sum.
 level: 5
 ->>
 
 ### backtracking
-backtracking problem generally finds all sets required. It can also be used for counting.
-generally some prune is needed to avoid invalid search.
+backtracking problem generally finds all sets required. It can also be used for counting. 
+- it is base for some dp problems.
+- generally some prune is needed to avoid invalid search.
 backtracking is similar to dfs, but it generally include put in and take out.
 optimization in backtracking is very important.
 
 <<-22	Generate Parentheses    		64.2%	Medium	->>
+
 <<-47	Permutations II    		48.4%	Medium	
 all permutation of array with duplicates.
-sort and skip duplicates
+sort and skip duplicates - ie do not start with the same element, but permutation can include duplicates.
 permutation by swap 
 ->>
+
 <<-46	Permutations    		65.2%	Medium	
 using next permutation or backtracking.
 ->>
@@ -2674,8 +2672,8 @@ using next permutation or backtracking.
 place n queens on nxn chessboard. return the number of distinct solutions.
 - the first row choice will affect the next row. - backtracking
 - also can use bitsets to represent the place.
-
 ->>
+
 <<-51	N-Queens    		48.2%	Hard	
 return all distinct solutions
 backtracking.
@@ -2683,7 +2681,7 @@ backtracking.
 
 <<-77	Combinations    		56.2%	Medium	
 given 1 to n, return all possible combination of k numbers. 
-backtracking with k.
+backtracking with k. (start from 1 k-1)
 ->>
 
 <<-90	Subsets II    		48.0%	Medium	
@@ -2706,23 +2704,25 @@ so we need use two pointer to pair them.
 ->>
 <<-247	Strobogrammatic Number II    		48.1%	Medium	
 find all the numbers of length n.
-need pair. 
+need pair. 1xxx1,6xx9,9xx6,8xxx8
 ->>
 <<-246	Strobogrammatic Number    		45.4%	Easy	->>
 
 <<-254	Factor Combinations    		47.0%	Medium	
-return all possible combination of its factors.
+return all possible combination of its factors. (no duplicate combinations)
 backtrack: for n: add i n/i to complete a candidate, then use n/i for the subproblem.
 see 1735 count ways to make array with product, which limit the number of factors.
 ->>
 
 <<-267	Palindrome Permutation II    		36.9%	Medium	
-return all possible palindrome permutation.
-only need get the prefix.
+given a string s, return all possible palindrome permutation (without duplicates).
+- only need get the prefix. 
+- get the hashmap and divide by 2. 
+- and then the combination is similar to 254.
 backtracking: 
 ->>
 <<-266	Palindrome Permutation    		62.3%	Easy	
-if the permutation can form a palinrdome- counting.
+check if the permutation can form a palinrdome- counting.
 ->>
 
 <<-282	Expression Add Operators    		36.2%	Hard	
@@ -2737,10 +2737,12 @@ given a pattern and a string, check if s matches the pattern.
 mapping relation: each char in pattern can match a string in s.
 one way is to try all possibilities.
 - pattern must contain duplicates, otherwise we can always map true.
+- char to str map, str to char map and they cannot change.
+- try all prefix to the first char match.
 backtracking + hashmap.
 ->>
 <<-290	Word Pattern    		38.1%	Easy	
-string separated by space, mapping is simple.
+string separated by space, mapping is simple. just check mutual mapping.
 ->>
 
 <<-320	Generalized Abbreviation    		52.9%	Medium	
@@ -2770,10 +2772,10 @@ input has duplicates, find all unique combinations
 ->>
 <<-40	Combination Sum II    		49.4%	Medium	
 input is unique, each number can be used only once, return all combinations.
-backtrack.
+backtrack. advance pointer.
 ->>
 <<-39	Combination Sum    		58.1%	Medium	
-input is unique, each number can be reused. return all possible combination with sum==target.
+input is unique, each number can be reused. return all possible combination with sum==target. do not need to advance pointer.
 backtrack.
 ->>
 
@@ -2781,6 +2783,7 @@ backtrack.
 from 1 to n, find the kth lexi smallest integer.
 similar to a tree.
 ->>
+
 <<-386	Lexicographical Numbers    		52.8%	Medium	
 given an integer n generate the numbers in lexi order.
 backtracking.
@@ -2795,7 +2798,6 @@ given a set of words, find all word squares you can build.
 - try each string at the first col/row. 
 - then 2nd col/row shall start with given str. similar for others -- this is what trie does.
 build a trie and do backtracking on it.
-
 ->>
 
 <<-465	Optimal Account Balancing    		47.6%	Hard	
@@ -2843,7 +2845,6 @@ TLE (adding hashset to store seen string will avoid TLE), and also gives wrong a
 "WWRRBBWW"
 "WRBRW"
 even the accepted version is not correct since it does not follow the rule. It uses some greedy approach to use two balls and each time only eliminate 3 balls even it has 3 more such balls.
-
 ->>
 
 <<-491	Increasing Subsequences    		46.9%	Medium	
@@ -2874,6 +2875,7 @@ backtracking: no change or change to upper/lower.
 given a directed acyclic graph with n node from 0 to n-1. find all possible path from 0 to n-1.
 backtracking or dfs.
 ->>
+
 <<-816	Ambiguous Coordinates    		47.6%	Medium	
 (x,y) the . and comma are missing. return all possible pairs of coordinates
 backtracking: separate first into two strings and do backtracking by adding .
@@ -2917,16 +2919,17 @@ given a list of synonymous pairs, return all possible sentences in sorted order.
 ->>
 
 <<-1286	Iterator for Combination    		70.7%	Medium	
-given string, length, return the the next combination of length L.
+given string, length k, return the the next combination of length k.
 backtrack
 ->>
 
 <<-1291	Sequential Digits    		57.4%	Medium	
-digit[i]=digit[i-1]+1
+digit[i]=digit[i-1]+1. return all integers in range [L,R].
 backtrack.
 ->>
 
 <<-1307	Verbal Arithmetic Puzzle    		37.6%	Hard	
+each character represents a digit from 0 to 9. and given an equation, check if it is solvable.
 a 2d backtracking problem with rows and cols.
 - using hashmap or vector to record letter digit mapping and used digits.
 - reverse each row so that addition is more convenient.
@@ -2988,6 +2991,7 @@ dfs (connected to boundary are not counted)
 ->>
 
 <<-200	Number of Islands    		47.9%	Medium	->>
+
 <<-212	Word Search II    		35.9%	Hard	
 given a board with char, and a list of dictionary words. find all the words in the board. (4 direction connected).
 - build the trie using the list of words
@@ -3012,6 +3016,7 @@ do dfs and save longest path in dp.
 <<-341	Flatten Nested List Iterator    		53.7%	Medium	
 dfs to flatten the nested integer. leaf is integer.
 ->>
+
 <<-351	Android Unlock Patterns    		49.1%	Medium	
 android locks using a 3x3 grid. No jump is allowed. 
 however you can jump if the point is selected before.
@@ -3067,6 +3072,7 @@ simiar to dfs, use visited array and dfs.
 <<-339	Nested List Weight Sum    		75.0%	Easy
 do dfs and depth*element
 ->>
+
 <<-364	Nested List Weight Sum II    		63.1%	Medium	
 now changed to bottom level depth is 1.
 approach 1: 
@@ -3088,7 +3094,7 @@ dfs calculate the number of nodes in each set.
 ->>
 
 <<-694	Number of Distinct Islands    		56.8%	Medium	
-only need to remove the reference.
+only need to remove the reference. translation only.
 ->>
 
 <<-711	Number of Distinct Islands II    		48.6%	Hard	
@@ -3434,6 +3440,7 @@ two cases:
 - two parents
 - a cycle is formed.
 ->>
+
 <<-684	Redundant Connection    		58.3%	Medium	
 undirected gaph. so parent information is not clear from the edges.
 the edge forms the cycle. using union find.
@@ -3571,6 +3578,53 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 
 ## divide and conquer
 merge sort, recursion et al often involves in divide and conquer.
+divide into two subproblem recursively and then combine two small problem to get the larger problem answer.
+
+<<-315	Count of Smaller Numbers After Self    		42.3%	Hard	
+- from right to left and store the elements in sorted order then we can use binary search. to count, it is still O(N^2) will TLE.
+- merge sort: divide and conquer, count right smaller than left.
+- binary tree: from right to left, build a BST. Since we may have duplicates, add a field to count the duplicates. when we insert a new value, all its left subtree are smaller than it. We use prefix sum to count the sum of duplicates under the subtree.
+->>
+
+<<-493	Reverse Pairs    		26.0%	Hard	
+impotant reverse pair i<j, nums[i]>2*nums[j]
+return number of important reverse pairs.
+- using map to store previous visited elements, and binary search O(N^2) since the distance is O(N)
+- segment tree.
+- merge sort divide and conquer. divide into left and right part and then use two pointer to compare O(n/2)+O(n/4)+....
+->>
+
+<<-95	Unique Binary Search Trees II    		41.6%	Medium	
+generate all trees. divide and conquer, or recursive.
+->>
+
+<<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	
+each char in the substring appear >= K times.
+- divide and conquer: the char appear less than k times will not be a part of the solution, so we can divide it into several parts, and solve them independently.
+->>
+
+<<-932	Beautiful Array    		60.9%	Medium	
+given permutation of 1 to n. rearrange so that for every i<j there is no k i<k<j with 2*A[k]=A[i]+A[j]
+idea: A[i]+A[j] must be odd. keep the odd and even separated. If the odd is beautiful then the even follow the same pattern is also beautiful.
+- divide and conquer
+- first step: divide into odd and even
+- further divide.
+another approach:
+if A is beautiful, then 2A, 2A+1, 2A-1 is also beautiful.
+[1], 2*i-1 ->1 2i->2 [1,2]
+[1,2] 2*A-1->[1,3], 2i->[2,4] -->[1,3,2,4]
+This is also reverse thinking. If it is hard to rearrange, why not build it from beginning.
+->>
+
+<<-241	Different Ways to Add Parentheses    		56.5%	Medium	
+add () to the expression and evaluate all possible results. operator only include +-*
+- parentheis appear the digit and after the digit.
+- shall keep left>=right.
+- () only changes the calculation order, we do not need to do the addition actually.
+- we see +-*, and we divide into left and right and combine
+- using memoization to record the results - dp.
+- divide and conquer using the operators.
+->>
 
 ## sliding window
 
@@ -3758,13 +3812,6 @@ do it in O(N).
 bucket sort: arrange it in n buckets and we only need to store min/max in each bucket.
 ->>
 
-
-<<-315	Count of Smaller Numbers After Self    		42.3%	Hard	
-- from right to left and store the elements in sorted order then we can use binary search. to count, it is still O(N^2) will TLE.
-- merge sort: divide and conquer, count right smaller than left.
-- binary tree: from right to left, build a BST. Since we may have duplicates, add a field to count the duplicates. when we insert a new value, all its left subtree are smaller than it. We use prefix sum to count the sum of duplicates under the subtree.
-->>
-
 <<-324	Wiggle Sort II    		30.4%	Medium	
 idea: we shall find the median and divide them into smaller and larger.
 brutal force: we arrange left right left right ...
@@ -3774,6 +3821,7 @@ virtual index: this is hard.
 do it inplace. this allows >= and <=
 sort and swap neighboring.
 ->>
+
 <<-215	Kth Largest Element in an Array    		56.9%	Medium	
 partitioning
 nth_element 
@@ -3791,19 +3839,12 @@ note we need take care ==, otherwise they will not sort.
 this is slower than using count sort.	
 ->>
 
-<<-493	Reverse Pairs    		26.0%	Hard	
-impotant reverse pair i<j, nums[i]>2*nums[j]
-return number of important reverse pairs.
-- using map to store previous visited elements, and binary search O(N^2) since the distance is O(N)
-- segment tree.
-- merge sort divide and conquer. divide into left and right part and then use two pointer to compare O(n/2)+O(n/4)+....
-->>
-
 <<-791	Custom Sort String    		65.8%	Medium	
 sort T using S's order.
 - count sort.
 - use lambda function s.find(a)<s.find(b)
 ->>
+
 <<-899	Orderly Queue    		52.8%	Hard	
 given a string and integer k. each time choose the one of the first k letters and move to the end of string. return the smallest string we can get.
 k=1, rotation
@@ -3822,8 +3863,9 @@ since the input is the permutation of 1 to n, so we do not need find max.
 ->>
 
 <<-1030	Matrix Cells in Distance Order    		66.9%	Easy	
-distance to reference (r0,c0)
+distance to reference (r0,c0), lambda function with capture.
 ->>
+
 <<-1122	Relative Sort Array    		67.7%	Easy	
 given two arrays A and B, sort A according to B, elements not in B shall go after in sorted order.
 using map and do count sort.
@@ -3861,10 +3903,14 @@ sort using lambda function with a parameter or customized compare function
 two pointer: water determined by the min height * the width.
 ->>
 
-<<-18	4Sum    		34.3%	Medium	->>
+<<-18	4Sum    		34.3%	Medium	
+to use two pointer, must sort first.
+->>
 <<-16	3Sum Closest    		46.2%	Medium	->>
 <<-15	3Sum    		27.4%	Medium	->>
-<<-1	Two Sum    		45.8%	Easy	->>
+<<-1	Two Sum    		45.8%	Easy	
+hashmap for O(N)
+->>
 
 <<-68	Text Justification    		28.7%	Hard	
 given a list of words, and maxWidth, padding space so that each line is exactly maxWidth.
@@ -3872,6 +3918,7 @@ extra space shall be distributed evenly. if not divisiable, the left will be ass
 each line: starting word and last word has no spaces. When a word cannot add to the line, goes to next line
 two pointer: pay attention to the last line. It is not that easy.
 ->>
+
 <<-75	Sort Colors    		48.4%	Medium	
 only 3 colors
 - count sort
@@ -3882,7 +3929,6 @@ i<j<k. i grows from left and k grows from right to left.
 <<-251	Flatten 2D Vector    		46.0%	Medium	
 similar to nested integer, implement next and hasNext
 using two pointer: i for inside vector, j for vector elements.
-
 ->>
 
 <<-259	3Sum Smaller    		48.4%	Medium	
@@ -3906,7 +3952,6 @@ approach:
 - two pointer search s1*n1 in s2*n2 (using pointer go monotonically but use % for the char)
 - get the max repeat
 ->>
-
 
 <<-713	Subarray Product Less Than K    		40.3%	Medium	
 return number of subarray
@@ -3983,6 +4028,7 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+
 <<-89	Gray Code    		49.7%	Medium	
 gray code is gnerated using i^(i>>1)
 ->>
@@ -3992,6 +4038,7 @@ every number appear 3 times except one.
 - bits: do bit by bit and sum each bit %3 and that is the bit appear once.
 - using true type table to get a counter reset to 0 when goes to 3.
 ->>
+
 <<-136	Single Number    		66.1%	Easy	
 each number appear twice except one. xor.
 ->>
@@ -4006,11 +4053,13 @@ n&(n-1)->>
 <<-326	Power of Three    		42.0%	Easy	
 only have factor 3, max3%n==0
 ->>
+
 <<-342	Power of Four    		41.4%	Easy	
 only 0,2,4,6... is set 1. 
 & 0xaaaaaaa to check odd bits if set.
 num&(num-1) check if it is not 2^n.
 ->>
+
 <<-371	Sum of Two Integers    		50.6%	Medium	
 cannot use +/-. 
 carry a&b, result a^b.
@@ -4070,7 +4119,6 @@ so use bit to indicate aeiou's odd even. then use hashmap to find the same statu
 n rows, each row has 8 seats in 3,4,3 separated by isle with reserved seats. family of 4 shall sit adjacent. one case with isle is 2 people on each side is consider adjacent.
 since the first and last cannot seat family member, so discard them.
 using bit + hashmap
-
 ->>
 
 <<-1442	Count Triplets That Can Form Two Arrays of Equal XOR    		70.5%	Medium	
@@ -5104,9 +5152,7 @@ use min/max recursively. or O(N) in order traversal.
 return number of unique BST using nodes 1 to n.
 dp: dp[i] represent the number of unique BST for i nodes. dp[i]+=dp[j-1]*dp[i-j]
 ->>
-<<-95	Unique Binary Search Trees II    		41.6%	Medium	
-generate all trees. divide and conquer, or recursive.
-->>
+
 <<-94	Binary Tree Inorder Traversal    		64.8%	Medium	->>
 
 <<-145	Binary Tree Postorder Traversal    		56.4%	Medium	->>
@@ -5941,12 +5987,6 @@ return the length of the longest file path.
 - if a file name, get the length.
 ->>
 
-<<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	
-each char in the substring appear >= K times.
-- divide and conquer: the char appear less than k times will not be a part of the solution, so we can divide it into several parts, and solve them independently.
-- 
-->>
-
 <<-443	String Compression    		42.4%	Medium	
 same char group. size=1, just use the char, otherwise char+repeat num.
 two pointer, one count, one modify in-place.
@@ -6422,18 +6462,7 @@ binary array, find the index i,j divide into 3 equal parts.
 count 1's pattern, leading zero does not matter, but trailing matters.
 ->>
 
-<<-932	Beautiful Array    		60.9%	Medium	
-given permutation of 1 to n. rearrange so that for every i<j there is no k i<k<j with 2*A[k]=A[i]+A[j]
-idea: A[i]+A[j] must be odd. keep the odd and even separated. If the odd is beautiful then the even follow the same pattern is also beautiful.
-- divide and conquer
-- first step: divide into odd and even
-- further divide.
-another approach:
-if A is beautiful, then 2A, 2A+1, 2A-1 is also beautiful.
-[1], 2*i-1 ->1 2i->2 [1,2]
-[1,2] 2*A-1->[1,3], 2i->[2,4] -->[1,3,2,4]
-This is also reverse thinking. If it is hard to rearrange, why not build it from beginning.
-->>
+
 
 <<-942	DI String Match    		73.2%	Easy	->>
 <<-941	Valid Mountain Array    		32.3%	Easy	
