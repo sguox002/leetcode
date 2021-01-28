@@ -75,6 +75,7 @@ many transactions as possible.
 ->>
 <<-121	Best Time to Buy and Sell Stock    		51.1%	Easy	
 perform at most one time. curr-lmin. all stock problems are based on this. top down is more understandable.
+all the stock problem can be solved using the same trick price[i]-lmin.
 ->>
 <<-714	Best Time to Buy and Sell Stock with Transaction Fee    		55.4%	Medium	->>
 
@@ -92,7 +93,7 @@ key idea: need advance each pointer if it is multiple of more than one factors
 
 <<-322	Coin Change    		36.5%	Medium	
 you can reuse coin, return the min number of coins to make the amount. if not possible return -1.
-1d dp since we can reuse it dp[w]=min(dp[i-c]+1)
+1d dp since we can reuse it. dp[w]=min(dp[i-c]+1)
 ->>
 
 <<-337	House Robber III    		51.0%	Medium	
@@ -118,37 +119,20 @@ dp: dp[i]=max(dp[i],dp[j]*(i/j),j*i/j)
 <<-368	Largest Divisible Subset    		38.1%	Medium	
 in the subset, every pair satisfy a[i]%a[j]=0 or a[j]%a[i]=0
 equivalent: they shall have a gcd. or this is a geometric series.
-sort and then use dp. with parent information to traceback.
+sort and then use dp LIS. with parent information to traceback.
+pay attention to edge case: empty or mxlen=1 case.
 ->>
 
 <<-375	Guess Number Higher or Lower II    		41.4%	Medium	
 number from 1 to n. You guess a number if correct, you win. otherwise, you guess x and pay x. return the min money to guarantee win.
 min of the max money for the choice. ie. assume each time you guess wrong.
 minmax problem.
-dp, minmax.
+dp, minmax. top down or bottom up.
 ->>
 <<-374	Guess Number Higher or Lower    		44.0%	Easy	
 give direction of guess, binary search.
 ->>
 
-<<-413	Arithmetic Slices    		58.3%	Medium	
-- for subarray, if we find subarray length=L, the slices would be: 1+2+...+L-2
-- also can use dp, dp[i+1]=dp[i]+1 if 2*A[i-1]=A[i]+A[i-2]
-->>
-
-<<-446	Arithmetic Slices II - Subsequence    		33.0%	Hard	
-given a list of numbers, find the number of arithmetic subsequence.
-dp: dp[i,diff] represent the length of arithmetic sequence ending with A[i] with the difference = diff.
-dp[i,diff]=dp[j,diff]+1, ans+=diff[i,diff]-2 ->hashmap for dp array.
-->>
-
-<<-467	Unique Substrings in Wraparound String    		35.9%	Medium	
-s is infinite repeat of a-z. given a string t, find the number of unique substring of t is present in s.
-
-we only need to find the longest substr satisfying the adjacent different is 1 or 25. ending with different char.
-
-dp: ending with for unique substr. common trick to do unique problems (ending with different elements and length) 
-->>
 
 <<-517	Super Washing Machines    		38.4%	Hard	
 given n washmachine in a line. you can pick any machines and pass one address to its left or right at the same time.
@@ -156,6 +140,7 @@ return the min number of operations to make all the machines to have the same nu
 - subtract the average and our target is 0
 - from left to right, we shall pass all our prefix sum to right.
 - the single element max also shall be reduced to 0.
+*****
 ->>
 
 <<-568	Maximum Vacation Days    		41.2%	Hard	
@@ -166,6 +151,7 @@ return the min number of operations to make all the machines to have the same nu
 return the max vacation days you can take during k weeks.
 dp[w,n] max vacation days to stay at city n on wth week.
 dp[w,n]-previous week at city j. max(dp[w-1,j]+days[j,i]) the key is to derive the relation.
+*****
 ->>
 
 <<-651	4 Keys Keyboard    		52.8%	Medium	
@@ -199,6 +185,7 @@ given n elements A[i] is the cost to step on i. You can jump forward 1 to B step
 dp from right to left (left to right is also fine) dp with path information
 to get the lexi smallest path, we need smaller index if tie, thus from right to left is more convenient.
 very good question!
+*****
 ->>
 
 <<-691	Stickers to Spell Word    		43.5%	Hard	
@@ -225,17 +212,6 @@ dp. dp[i]=min(dp[i-2],dp[i-1])+cost[i], note this is the cost to reach i+1 or i+
 return the number of ways to reach 2xN tile.
 dp: two kind of shapes to reach final status. L shape and I shape.
 final anwer shall be I shape with n length.
-->>
-
-<<-795	Number of Subarrays with Bounded Maximum    		46.9%	Medium	
-return number of subarrays whose max is in the range [L,R].
-- each element can be a max of some subarray. so we discard those elements not in the range
-- to get the range for A[i] as max, we need to get previous greater and next greater which can be done using monotonic stack.
-approach 2: use two pointer to define valid region left and right.
-approach 3: dp, dp[i] represents the max number of subarray ending with A[i].
-A[i]<L, append to previous dp[i]=dp[i-1]
-A[i]>R, dp[i]=0;
-[L,R]: can combine with all previous after the previous invalid.
 ->>
 
 <<-808	Soup Servings    		40.5%	Medium	
@@ -287,7 +263,8 @@ sliding window + dp
 ->>
 
 <<-873	Length of Longest Fibonacci Subsequence    		47.9%	Medium	
-for current element, we can bind with previous element to form a fib pair
+for current element, we can bind with previous element to form a fib pair.
+first choice and then try next. typical dp pattern.
 dp[i,j] the max length for the pair with ith and jth element as the ending two elements in fib series
 good practice on dp why we need 2d dp.
 ->>
@@ -306,15 +283,11 @@ if egg does not break, we can check dp[m-1,k] floors
  ->>
  
 ### two strings or arrays， edit distance (similar to 2d matrix walk)
-palindrome often is one string, but treated with two arrays.
-generally involves two strings or arrays, sometimes the string and the reverse string.
-dp pattern is generally more obvious and use 2d dp approach.
-treat like a 2d matrix walk, generally involves only previous col or row. (for space optimization)
+- palindrome often is one string, but treated with two arrays.
+- generally involves two strings or arrays, sometimes the string and the reverse string.
+- dp pattern is generally more obvious and use 2d dp approach.
+- treat like a 2d matrix walk, generally involves only previous col or row. (for space optimization)
 
-<<-1682. Longest palindromic subsequence II
-problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
-dp[i,j,k] using 26 chars.
-->>
 
 <<-516	Longest Palindromic Subsequence    		54.4%	Medium	
 equivalent to:
@@ -375,7 +348,7 @@ dp or recursive approach.
 ->>
 
 ### two state interlace
-this generally onvolves limit number of elements with same color et al, or up down..
+- this generally onvolves limit number of elements with same color et al, or up down..
 and you have two options generally. although you can have 2d dp, but using two state transfer would be more understandable.
 
 <<-1186	Maximum Subarray Sum with One Deletion    		38.3%	Medium	
@@ -451,7 +424,7 @@ dp: use two state inc,dec.
 ->>
 
 ### knapsack
-put elements in two or three options, to reach a target sum or max/min the sum with bound et al.
+- put elements in two or three options, to reach a target sum or max/min the sum with bound et al.
 many times, you need convert to equivalent knapsack problem.
 
 <<-494	Target Sum    		46.0%	Medium	
@@ -595,8 +568,6 @@ try each prefix and try to encode it and reduce to subproblem.
 similar to divide and conquer.
 level: *****
 ->>
-
-
 
 <<-1387	Sort Integers by The Power Value    		70.6%	Medium	
 power of x is the step to transform to 1: even x/2, odd 3*x+1. need do a range.
@@ -1069,7 +1040,32 @@ note the left and right end cannot serve as a cut position.
 ->>
 
 ### ending with 
+<<-1682. Longest palindromic subsequence II
+problem: palindromic subsequence needs to be even length, neighboring chars cannot be the same (except the mid pair).
+dp[i,j,k] using 26 chars.
+->>
 
+<<-413	Arithmetic Slices    		58.3%	Medium	
+- for subarray, if we find subarray length=L, the slices would be: 1+2+...+L-2
+- also can use dp, dp[i+1]=dp[i]+1 if 2*A[i-1]=A[i]+A[i-2]
+->>
+
+<<-446	Arithmetic Slices II - Subsequence    		33.0%	Hard	
+given a list of numbers, find the number of arithmetic subsequence.
+dp: dp[i,diff] represent the length of arithmetic sequence ending with A[i] with the difference = diff.
+dp[i,diff]=dp[j,diff]+1, ans+=diff[i,diff]-2 ->hashmap for dp array.
+->>
+
+<<-795	Number of Subarrays with Bounded Maximum    		46.9%	Medium	
+return number of subarrays whose max is in the range [L,R].
+- each element can be a max of some subarray. so we discard those elements not in the range
+- to get the range for A[i] as max, we need to get previous greater and next greater which can be done using monotonic stack.
+approach 2: use two pointer to define valid region left and right.
+approach 3: dp, dp[i] represents the max number of subarray ending with A[i].
+A[i]<L, append to previous dp[i]=dp[i-1]
+A[i]>R, dp[i]=0;
+[L,R]: can combine with all previous after the previous invalid.
+->>
 <<-903	Valid Permutations for DI Sequence    		53.8%	Hard	
 given a DI string, return number of permuation using 0 to n.
 dp:
@@ -1081,6 +1077,14 @@ if 'D', previous can be in range [j+1,i]
 if 'I', previous can be in range [0,j-1]
 this can be done by shifting all numbers >=j by 1 (shift them to j+1...i), which has the same number of permutation. (understand this to get the transfer function).
 1032, if we want to end 2, we need first change to 1043 then append 2 -> 10432
+->>
+
+<<-467	Unique Substrings in Wraparound String    		35.9%	Medium	
+s is infinite repeat of a-z. given a string t, find the number of unique substring of t is present in s.
+
+we only need to find the longest substr satisfying the adjacent different is 1 or 25. ending with different char.
+
+dp: ending with for unique substr. common trick to do unique problems (ending with different elements and length) 
 ->>
 
 ### count number of ways
@@ -1349,7 +1353,7 @@ dp: next row dp[i+1,j]=dp[i+1,j+1]=(dp[i,j]-1)/2
 ->>
 
 <<-135	Candy    		32.4%	Hard	
-distribute candy according to rating.
+distribute candy according to rating. 1d case.
 dp: left to right and right to left. simple version for 2d matrix similar problems.
 ->>
 
@@ -1859,7 +1863,7 @@ knapsack:dp[i,time] max number of courses including ith course
 
 <<-659	Split Array into Consecutive Subsequences    		44.0%	Medium	
 given a sorted array, see if you can split into 1 or more subsequence with consecutive integers with length>=3
-- the highest frequency number determines number of sequence we shall divide
+- the highest frequency number determines number of sequence we shall divide  -will not work.
 - since it is sorted we can loop over the array, key idea: the smallest must be the start.
 there is something not solved yet if we need continue to extend our sequence.
 cnt: the frequency map
@@ -1893,6 +1897,7 @@ we see 3: there is no sequence ending with 2, so start a new one [3,4,5]
 
 greedy+hashmap, this is pretty trick.
 ->>
+
 <<-846	Hand of Straights    		55.0%	Medium	
 reorder the cards in groups, each group with consecutive number and with size W.
 greedy: from the smallest. same as 1296.
