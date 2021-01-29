@@ -119,3 +119,214 @@ add 3 [2,3]
 pop 3
 pop 2
 add 3 [3]
+
+248	Strobogrammatic Number III 
+```
+    unordered_map<char,char> mp={{'0','0'},{'1','1'},{'6','9'},{'9','6'},{'8','8'}};
+    int strobogrammaticInRange(string low, string high) {
+        int m=low.size(),n=high.size();
+        int ans=0;
+        for(int len=m;len<=n;len++){
+            string t=string(len,'0');
+            ans+=backtrack(low,high,t,len,0,len-1);
+        }
+        return ans;
+    }
+    
+    int backtrack(string& low,string& high,string& t,int len,int l,int r){
+        if(l>r){
+            if(t.size()>low.size() && t.size()<high.size()) return 1;
+            if(t.size()==low.size()) {
+                if(t.size()==high.size()) return t>=low && t<=high;
+                return t>=low;
+            }
+            return t<=high;
+        }
+        int ans=0;
+        for(auto p: mp){
+            if(l==0 && l!=r && p.first=='0') continue;
+            if(l==r && p.first!=p.second) continue;
+            t[l]=p.first,t[r]=p.second;
+            ans+=backtrack(low,high,t,len,l+1,r-1);
+            
+        }
+        return ans;
+    }
+```
+
+
+254. factor combinations
+```
+    vector<vector<int>> getFactors(int n) {
+        if(n==1) return {};
+        vector<vector<int>> ans;
+        backtrack(n,2,{},ans);
+        return ans;
+    }
+    void backtrack(int n,int start,vector<int> t,vector<vector<int>>& ans){
+        if(n<start){ans.push_back(t);return;}
+        for(int i=start;i*i<=n;i++){
+            if(n%i==0){
+                t.push_back(i),t.push_back(n/i);
+                ans.push_back(t);
+                t.pop_back();
+                backtrack(n/i,i,t,ans);
+                t.pop_back();
+            }
+        }
+    }
+```
+
+267	Palindrome Permutation II  
+```
+    vector<string> generatePalindromes(string s) {
+        unordered_map<char,int> mp;
+        for(char c: s) mp[c]++;
+        int nodd=0,len=0;
+        char odd=0;
+        for(auto& p: mp) {
+            nodd+=p.second%2;
+            if(p.second%2) odd=p.first;
+            p.second/=2;
+            len+=p.second;
+        }
+        if(nodd>1) return {};
+        vector<string> ans;
+        backtrack(mp,"",len,ans);
+        for(auto& s: ans){
+            string rs={rbegin(s),rend(s)};
+            if(odd) s+=odd;
+            s+=rs;
+        }
+        return ans;
+    }
+    
+    void backtrack(unordered_map<char,int>& mp,string t,int len,vector<string>& ans){
+        if(len==t.size()){
+            ans.push_back(t);
+            return;
+        }
+        for(auto& p: mp){
+            if(p.second==0) continue;
+            p.second--;
+            t+=p.first;
+            backtrack(mp,t,len,ans);
+            t.pop_back();
+            p.second++;
+        }
+    }
+```
+
+
+282. Expression Add Operators
+
+```
+    vector<string> addOperators(string num, int target) {
+        vector<string> ans;
+        if (num.empty()) return {};
+        for (int i=1; i<=num.size(); i++) 
+        {
+            string s = num.substr(0, i);
+            long cur = stol(s);
+            if (to_string(cur).size() != s.size()) continue;//leading zeros
+            backtrack(ans, num, target, s, i, cur, cur, '#');         // no operator defined.
+        }
+
+        return ans;
+    }
+    // cur: {string} expression generated so far.
+    // pos: {int}    current visiting position of num.
+    // cv:  {long}   cumulative value so far.
+    // pv:  {long}   previous operand value.
+    // op:  {char}   previous operator used.
+    void backtrack(vector<string>& res, string& num, int target, string& cur, int pos, long cv, long pv, char op) {
+        if (pos == num.size() && cv == target) {res.push_back(cur);return;} 
+        for (int i=pos+1; i<=num.size(); i++) 
+        {
+            string t = num.substr(pos, i-pos);
+            long now = stol(t);
+            if (to_string(now).size() != t.size()) continue;
+            string s;
+            s=cur+"+"+t;backtrack(res, num, target, s, i, cv+now, now, '+');
+            s=cur+"-"+t;backtrack(res, num, target, s, i, cv-now, now, '-');
+            s=cur+"*"+t;backtrack(res, num, target, s, i, (op=='-')?cv+pv-pv*now:((op=='+')?cv-pv+pv*now : pv*now), pv*now, op);
+        }
+    }   
+```
+the complexity:
+we divide the string into 1 to n parts, each part has 3 options.
+so 3^n
+
+use reference passing for the string is critical to pass the OJ.
+
+39. Combination Sum
+
+```
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> ans;
+        backtrack(candidates,0,target,{},ans);
+        return ans;
+    }
+    void backtrack(vector<int>& nums,int start,int target,vector<int> t,vector<vector<int>>& ans){
+        if(0==target){
+            ans.push_back(t);
+            return;
+        }
+        if(0>target) return;
+        for(int i=start;i<nums.size();i++){
+            t.push_back(nums[i]);
+            backtrack(nums,i,target-nums[i],t,ans);
+            t.pop_back();
+        }
+    }
+```
+loop each element and process to the right.	
+	
+377. Combination Sum IV
+the direct dp using array cannot pass any more
+```
+    int combinationSum4(vector<int>& nums, int target) {
+        //knapsack with repetition
+        vector<int> dp(target+1); //number of combinations
+        dp[0]=1; //empty
+        //sort(nums.begin(),nums.end());
+        for(int t=1;t<=target;t++)
+        {
+            for(int i=0;i<nums.size();i++)
+            {
+                if(t>=nums[i]) dp[t]+=dp[t-nums[i]];
+            }
+        }
+        return dp[target];
+    }
+```
+for [3,33,333] target=10000
+- not all target needs to be calculated
+- size would be too large
+
+using top down + recursive, which is more similar to backtracking.
+
+377. combination IV.
+```
+    int combinationSum4(vector<int>& nums, int target) {
+        int n=nums.size();
+        //sort(begin(nums),end(nums));
+        unordered_map<int,int> dp;
+        
+        return backtrack(nums,0,target,dp);
+    }
+    int backtrack(vector<int>& nums,int start,int target,unordered_map<int,int>& dp){
+        if(target==0) return 1;
+        if(start>=nums.size() || target<0) return 0;
+        if(dp.count(target)) return dp[target];
+        int ans=0;
+        for(int i=0;i<nums.size();i++)
+            ans+=backtrack(nums,i,target-nums[i],dp);
+        return dp[target]=ans;
+    }
+```
+since this is actually the permutation so we need start from 0.
+	
+
+	
+	

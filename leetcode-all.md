@@ -1394,7 +1394,7 @@ simple dp one pass.
 
 <<-750	Number Of Corner Rectangles    		66.6%	Medium	
 given a 01 matrix, corner rect means the 4 corner is 1. return number of corner rectangles.
-idea: two rows count number of columns is 11 and then n*(n-1)/2
+idea: two rows count number of columns is 11 and then n*(n-1)/2. reduce from O(N^4) to O(N^3)
 ->>
 
 <<-764	Largest Plus Sign    		46.1%	Medium	
@@ -2663,12 +2663,57 @@ optimization in backtracking is very important.
 - backtracking is similar to dfs, push/pop is simulating the dfs (when reach leaf node, it back one step)
 - value passing and reference passing. passing a big array is extra overhead.
 
-
+- general backtracking.
 <<-22	Generate Parentheses    		64.2%	Medium	
 value passing can be more concise, but more time.
 need keep left>=right at any time.
 ->>
 
+<<-784	Letter Case Permutation    		65.7%	Medium	
+string of letter and digits, you can change to lowercase or uppercase
+return all combination
+backtracking: no change or change to upper/lower.
+->>
+
+<<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	
+given n=number of digits, adjacent digit's absolute difference=k. return all numbers.
+backtrack.
+->>
+
+<<-797	All Paths From Source to Target    		78.2%	Medium	
+given a directed acyclic graph with n node from 0 to n-1. find all possible path from 0 to n-1.
+backtracking or dfs.
+->>
+
+<<-1215	Stepping Numbers    		42.7%	Medium	
+stepping number: its neighboring digits absolute difference is 1. return a sorted list stepping number in range [L,R]
+- backtrack: 
+->>
+
+<<-1291	Sequential Digits    		57.4%	Medium	
+digit[i]=digit[i-1]+1. return all integers in range [L,R].
+backtrack.
+->>
+
+
+<<-248	Strobogrammatic Number III    		39.9%	Hard	
+a strobogrammtic number looks the same when rotated 180 degree.
+count number of strobogrammatic number in range [L,R].
+0-0,1-1,6-9,9-6,8-8
+backtracking: note there is additional, the digit pairs shall be at symmetric positions.
+so we need use two pointer to pair them.
+edge case: low=high
+compare: length the same, compare string, otherwise compare length.
+*****
+->>
+<<-247	Strobogrammatic Number II    		48.1%	Medium	
+find all the numbers of length n.
+need pair. 1xxx1,6xx9,9xx6,8xxx8
+very similar to 248, using two pointer.
+->>
+<<-246	Strobogrammatic Number    		45.4%	Easy	->>
+
+- permutations
 <<-47	Permutations II    		48.4%	Medium	
 all permutation of array with duplicates.
 sort and skip duplicates - ie do not start with the same element, but permutation can include duplicates.
@@ -2683,7 +2728,34 @@ using next permutation or backtracking.
 backtracking: loop swap i to start, and go start+1. It is not trivial.
 to avoid mistakes, use a separate array and visited array.
 ->>
+<<-267	Palindrome Permutation II    		36.9%	Medium	
+given a string s, return all possible palindrome permutation (without duplicates).
+- only need get the prefix. 
+- get the hashmap and divide by 2. 
+- and then the combination is similar to 254. (actually this is permutation).
+backtracking: 
+****
+->>
 
+<<-266	Palindrome Permutation    		62.3%	Easy	
+check if the permutation can form a palinrdome- counting.
+->>
+
+<<-1079	Letter Tile Possibilities    		75.6%	Medium	
+given a list of letters, return number of different string can form.
+permutation with duplicates. n!/(n1!n2!..)
+-backtrack. with a hashmap.
+->>
+
+<<-996	Number of Squareful Arrays    		47.5%	Hard	
+given an array, it is squareful if every adjacent pair sum is a square number.
+return number of permutation of A is squareful.
+- for each number, find all its paired numbers.
+- each number may have duplicates, using hashmap to count.
+- backtracking: try each number at the first, and then look for paired number.
+->>
+
+- combinations
 <<-90	Subsets II    		48.0%	Medium	
 array contains duplicates, return all possible subsets (power set)
 must not contain duplicate subsets
@@ -2694,6 +2766,140 @@ backtracking.
 <<-78	Subsets    		63.7%	Medium	
 no duplicates. no need sort and skip duplicates.
 ->>
+
+<<-77	Combinations    		56.2%	Medium	
+given 1 to n, return all possible combination of k numbers. 
+backtracking with k. (start from 1 k-1)
+->>
+<<-377	Combination Sum IV    		45.7%	Medium	
+input has no duplicates, find the  number of combinations that sum=target. (elements can be reused)
+- dp: dp[t]+=dp[t-num[i]]
+that is why we do not use backtrack here (overlapped subproblem).
+- target is large, try using hashmap. Note it actually asks for the permutation.
+[1,1,2] is different from [2,1,1]
+->>
+<<-216	Combination Sum III    		59.4%	Medium	
+using digit 1-9 choose k digits so that sum to n, each digit can be used at most once.
+return all combination.
+- backtrack.
+->>
+<<-40	Combination Sum II    		49.4%	Medium	
+input with duplicates, each number can be used only once, return all combinations.
+backtrack: sort and loop each element and skip duplicates, and advance pointer.
+->>
+<<-39	Combination Sum    		58.1%	Medium	
+input is unique, each number can be reused. return all possible combination with sum==target. do not need to advance pointer.
+backtrack: loop the element as the first and process to the right.
+->>
+
+<<-254	Factor Combinations    		47.0%	Medium	
+return all possible combination of its factors. (no duplicate combinations)
+backtrack: for n: add i n/i to complete a candidate, then use n/i for the subproblem.
+see 1735 count ways to make array with product, which limit the number of factors.
+it keep get all 2 factors, and then get all 3 factors...
+****
+->>
+
+<<-416	Partition Equal Subset Sum    		44.3%	Medium	
+- dfs for k=2.
+- dp knapsack: choose or not choose. This is a special case for 698.
+->>
+
+<<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
+backtracking: since the length is small, we can use bitmask to indicate which one is used.
+complexity: will choose or not choose for one grouping. O(k2^n)
+can also do dp: dp[mask|(1<<i)]=dp[mask]+nums[i].
+****
+->>
+
+<<-473	Matchsticks to Square    		37.9%	Medium	
+given a list of stick length, check if we can make a square using all the sticks.
+need divide 4 equal parts with sum=tsum/4.
+this is exactly the problem: 698 partion into k equal subset
+- dfs or backtracking using mask. do not forget the loop.
+->>
+
+<<-1286	Iterator for Combination    		70.7%	Medium	
+given string, length k, return the the next combination of length k.
+backtrack
+->>
+
+<<-638	Shopping Offers    		52.1%	Medium	
+given a list offers [na,nb,price], and [pricea,priceb] if buy separately. and target number [Na,Nb]
+you can use offers repeatedly. return the min cost to buy exactly the numbers.
+backtracking: with vector operations, could use dp for memoization. it is a variation of combination sum problem (you can reuse the item).
+->>
+
+<<-491	Increasing Subsequences    		46.9%	Medium	
+find all increasing subsequence with length>=2
+backtracking: using hashset to avoid using it repeatedly. skip duplicates. (starting duplicate and goes right will get same sequence).
+similar to dfs once the search is done, we need set it visited. (combination to avoid duplicates)
+****
+->>
+
+<<-1258	Synonymous Sentences    		67.2%	Medium	
+given a list of synonymous pairs, return all possible sentences in sorted order.
+- union find the get the disjoint set for each synonymous word
+- dfs/backtrack to get all combinations
+->>
+
+- try all prefix and solve subproblem.
+these may introduce overlaps and can use memoization and is dp problems.
+
+<<-282	Expression Add Operators    		36.2%	Hard	
+given a digit string. add +-* so that it evaluates to target.
+return all possible string.
+- backtracking: prefix 1 to n, and remaining apply +-*
+- subproblem: note * will need previous result, so we need save previous results.
+- try all prefix (valid)
+- then try all position to get the 2nd operand
+***** hard to implement.
+->>
+
+<<-290	Word Pattern    		38.1%	Easy	
+string separated by space, mapping is simple. just check mutual mapping.
+->>
+
+<<-291	Word Pattern II    		43.8%	Hard	
+given a pattern and a string, check if s matches the pattern.
+mapping relation: each char in pattern can match a string in s.
+one way is to try all possibilities.
+- pattern must contain duplicates, otherwise we can always map true.
+- char to str map, str to char map and they cannot change.
+- try all prefix to the first char match.
+backtracking + hashmap.
+->>
+
+<<-816	Ambiguous Coordinates    		47.6%	Medium	
+(x,y) the . and comma are missing. return all possible pairs of coordinates
+backtracking: separate first into two strings and do backtracking by adding .
+- left possible strings and right possible strings and then combine.
+->>
+
+<<-842	Split Array into Fibonacci Sequence    		36.4%	Medium	
+given a string divide it into fib series.
+once the first two elements are determined, the whole series are determined.
+c=a+b, so c at least is as long as the larger one. limit the first two to half length and try all combinations.
+->>
+
+<<-131. Palindrome Partitioning
+return all possible palindrome partitioning.
+typical backtracking, from left to right.
+- try all prefix leaving a subproblem
+- if the suffix is a pal, add it to answer
+****
+->>
+
+<<-1593	Split a String Into the Max Number of Unique Substrings    		46.7%	Medium	
+backtracking using hashset.
+take from one char to the whole string and leave a subproblem.
+- try all prefix 
+- using hashset to record 
+- only needs the number, it is more dp than backtracking. (they are essentially the same, trying all possibilities, dp with memo.)
+****
+->>
+
+- board game
 
 <<-52	N-Queens II    		59.1%	Hard	
 place n queens on nxn chessboard. return the number of distinct solutions.
@@ -2706,108 +2912,6 @@ return all distinct solutions
 backtracking.
 ->>
 
-<<-77	Combinations    		56.2%	Medium	
-given 1 to n, return all possible combination of k numbers. 
-backtracking with k. (start from 1 k-1)
-->>
-
-
-
-<<-248	Strobogrammatic Number III    		39.9%	Hard	
-a strobogrammtic number looks the same when rotated 180 degree.
-count number of strobogrammatic number in range [L,R].
-0-0,1-1,6-9,9-6,8-8
-backtracking: note there is additional, the digit pairs shall be at symmetric positions.
-so we need use two pointer to pair them.
-->>
-<<-247	Strobogrammatic Number II    		48.1%	Medium	
-find all the numbers of length n.
-need pair. 1xxx1,6xx9,9xx6,8xxx8
-->>
-<<-246	Strobogrammatic Number    		45.4%	Easy	->>
-
-<<-254	Factor Combinations    		47.0%	Medium	
-return all possible combination of its factors. (no duplicate combinations)
-backtrack: for n: add i n/i to complete a candidate, then use n/i for the subproblem.
-see 1735 count ways to make array with product, which limit the number of factors.
-->>
-
-<<-267	Palindrome Permutation II    		36.9%	Medium	
-given a string s, return all possible palindrome permutation (without duplicates).
-- only need get the prefix. 
-- get the hashmap and divide by 2. 
-- and then the combination is similar to 254.
-backtracking: 
-->>
-<<-266	Palindrome Permutation    		62.3%	Easy	
-check if the permutation can form a palinrdome- counting.
-->>
-
-<<-282	Expression Add Operators    		36.2%	Hard	
-given a digit string. add +-* so that it evaluates to target.
-return all possible string.
-- backtracking: prefix 1 to n, and remaining apply +-*
-- subproblem: note * will need previous result, so we need save previous results.
-->>
-
-<<-291	Word Pattern II    		43.8%	Hard	
-given a pattern and a string, check if s matches the pattern.
-mapping relation: each char in pattern can match a string in s.
-one way is to try all possibilities.
-- pattern must contain duplicates, otherwise we can always map true.
-- char to str map, str to char map and they cannot change.
-- try all prefix to the first char match.
-backtracking + hashmap.
-->>
-<<-290	Word Pattern    		38.1%	Easy	
-string separated by space, mapping is simple. just check mutual mapping.
-->>
-
-<<-320	Generalized Abbreviation    		52.9%	Medium	
-take any substr and replace with its length.
-return all possible abbreviations.
-backtracking: use current char or not for abbreviation.
-if previous is already num, then we shall take it as char.
-->>
-
-<<-332	Reconstruct Itinerary    		37.3%	Medium	
-giveb a list of tickets [from,to], reconstruct the itinerary in order start with JFK.
-if multiple, return the lexi smallest. You must use the ticket all and once.
-- sort the ticket (lexi order)
-- build a graph 
-- dfs starting from the smallest child. Need make sure one dfs will used all the tickets.
-->>
-
-<<-377	Combination Sum IV    		45.7%	Medium	
-input has no duplicates, find the  number of combinations that sum=target.
-- dp: dp[t]+=dp[t-num[i]]
-->>
-<<-216	Combination Sum III    		59.4%	Medium	
-input has duplicates, find all unique combinations
-- sort
-- skip same 
-- backtrack.
-->>
-<<-40	Combination Sum II    		49.4%	Medium	
-input is unique, each number can be used only once, return all combinations.
-backtrack. advance pointer.
-->>
-<<-39	Combination Sum    		58.1%	Medium	
-input is unique, each number can be reused. return all possible combination with sum==target. do not need to advance pointer.
-backtrack.
-->>
-
-<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
-from 1 to n, find the kth lexi smallest integer.
-similar to a tree.
-->>
-
-<<-386	Lexicographical Numbers    		52.8%	Medium	
-given an integer n generate the numbers in lexi order.
-backtracking.
-similar to 
-->>
-
 <<-425	Word Squares    		49.4%	Hard	
 kth row and column reads the same. 
 given a set of words, find all word squares you can build.
@@ -2816,33 +2920,6 @@ given a set of words, find all word squares you can build.
 - try each string at the first col/row. 
 - then 2nd col/row shall start with given str. similar for others -- this is what trie does.
 build a trie and do backtracking on it.
-->>
-
-<<-465	Optimal Account Balancing    		47.6%	Hard	
-given a list of transaction [x,y,z] person x gave person y $z.
-return the min number of transactioons to settle the debt.
-- graph problem
-- we can get each person's net balance from the list of transactions.
-debt>0, need to pay money, debt<0 need to collect money back.
-- Starting from first debt debt[0], we look for all other debts debt[i] (i>0) which have opposite sign to debt[0]. Then each such debt[i] can make one transaction debt[i] += debt[0] to clear the person with debt debt[0]. From now on, the person with debt debt[0] is dropped out of the problem and we recursively drop persons one by one until everyone's debt is cleared meanwhile updating the minimum number of transactions during DFS.
-- backtracking to get the min transaction: skip duplicates.
-->>
-
-<<-416	Partition Equal Subset Sum    		44.3%	Medium	
-- dfs for k=2.
-- dp knapsack: choose or not choose
-->>
-
-<<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
-backtracking: since the length is small, we can use bitmask to indicate which one is used.
-complexity: will choose or not choose for one grouping. O(k2^n)
-can also do dp: dp[mask|(1<<i)]=dp[mask]+nums[i].
-->>
-<<-473	Matchsticks to Square    		37.9%	Medium	
-given a list of stick length, check if we can make a square using all the sticks.
-need divide 4 equal parts with sum=tsum/4.
-this is exactly the problem: 698 partion into k equal subset
-- dfs or backtracking using mask. do not forget the loop.
 ->>
 
 <<-488	Zuma Game    		39.2%	Hard	
@@ -2865,85 +2942,11 @@ TLE (adding hashset to store seen string will avoid TLE), and also gives wrong a
 even the accepted version is not correct since it does not follow the rule. It uses some greedy approach to use two balls and each time only eliminate 3 balls even it has 3 more such balls.
 ->>
 
-<<-491	Increasing Subsequences    		46.9%	Medium	
-find all increasing subsequence with length>=2
-backtracking: using hashset to avoid using it repeatedly. skip duplicates. (starting duplicate and goes right will get same sequence).
-->>
-
-<<-638	Shopping Offers    		52.1%	Medium	
-given a list offers [na,nb,price], and [pricea,priceb] if buy separately. and target number [Na,Nb]
-you can use offers repeatedly. return the min cost to buy exactly the numbers.
-backtracking: with vector operations, could use dp for memoization
-->>
-
 <<-756	Pyramid Transition Matrix    		55.3%	Medium	
 given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
 backtracking: 
 - the first two as the key and build a list of 3rd chars.
 - try all these combinations.
-->>
-
-<<-784	Letter Case Permutation    		65.7%	Medium	
-string of letter and digits, you can change to lowercase or uppercase
-return all combination
-backtracking: no change or change to upper/lower.
-->>
-
-<<-797	All Paths From Source to Target    		78.2%	Medium	
-given a directed acyclic graph with n node from 0 to n-1. find all possible path from 0 to n-1.
-backtracking or dfs.
-->>
-
-<<-816	Ambiguous Coordinates    		47.6%	Medium	
-(x,y) the . and comma are missing. return all possible pairs of coordinates
-backtracking: separate first into two strings and do backtracking by adding .
-- left possible strings and right possible strings and then combine.
-->>
-
-<<-842	Split Array into Fibonacci Sequence    		36.4%	Medium	
-given a string divide it into fib series.
-once the first two elements are determined, the whole series are determined.
-c=a+b, so c at least is as long as the larger one. limit the first two to half length and try all combinations.
-->>
-
-<<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	
-given n=number of digits, adjacent digit's absolute difference=k. return all numbers.
-backtrack.
-->>
-
-<<-996	Number of Squareful Arrays    		47.5%	Hard	
-given an array, it is squareful if every adjacent pair sum is a square number.
-return number of permutation of A is squareful.
-- for each number, find all its paired numbers.
-- each number may have duplicate, using hashmap to count for it.
-- backtracking: 
-->>
-
-<<-1079	Letter Tile Possibilities    		75.6%	Medium	
-given a list of letters, return number of different string can form.
-permutation with duplicates. n!/(n1!n2!..)
--backtrack. with a hashmap.
-->>
-
-<<-1215	Stepping Numbers    		42.7%	Medium	
-stepping number: its neighboring digits absolute difference is 1. return a sorted list stepping number in range [L,R]
-- backtrack: 
-->>
-
-<<-1258	Synonymous Sentences    		67.2%	Medium	
-given a list of synonymous pairs, return all possible sentences in sorted order.
-- union find the get the disjoint set for each synonymous word
-- dfs/backtrack to get all combinations
-->>
-
-<<-1286	Iterator for Combination    		70.7%	Medium	
-given string, length k, return the the next combination of length k.
-backtrack
-->>
-
-<<-1291	Sequential Digits    		57.4%	Medium	
-digit[i]=digit[i-1]+1. return all integers in range [L,R].
-backtrack.
 ->>
 
 <<-1307	Verbal Arithmetic Puzzle    		37.6%	Hard	
@@ -2952,6 +2955,46 @@ a 2d backtracking problem with rows and cols.
 - using hashmap or vector to record letter digit mapping and used digits.
 - reverse each row so that addition is more convenient.
 - do it from first column (all rows) and then process to next cols with cf.
+->>
+
+<<-36 valid sudoko ->>
+<<-37 soduko solver ->>
+
+
+<<-320	Generalized Abbreviation    		52.9%	Medium	
+take any substr and replace with its length.
+return all possible abbreviations.
+backtracking: use current char or not for abbreviation.
+if previous is already num, then we shall take it as char.
+->>
+
+<<-332	Reconstruct Itinerary    		37.3%	Medium	
+giveb a list of tickets [from,to], reconstruct the itinerary in order start with JFK.
+if multiple, return the lexi smallest. You must use the ticket all and once.
+- sort the ticket (lexi order)
+- build a graph 
+- dfs starting from the smallest child. Need make sure one dfs will used all the tickets.
+->>
+
+<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
+from 1 to n, find the kth lexi smallest integer.
+similar to a tree.
+->>
+
+<<-386	Lexicographical Numbers    		52.8%	Medium	
+given an integer n generate the numbers in lexi order.
+backtracking.
+similar to 
+->>
+
+<<-465	Optimal Account Balancing    		47.6%	Hard	
+given a list of transaction [x,y,z] person x gave person y $z.
+return the min number of transactioons to settle the debt.
+- graph problem
+- we can get each person's net balance from the list of transactions.
+debt>0, need to pay money, debt<0 need to collect money back.
+- Starting from first debt debt[0], we look for all other debts debt[i] (i>0) which have opposite sign to debt[0]. Then each such debt[i] can make one transaction debt[i] += debt[0] to clear the person with debt debt[0]. From now on, the person with debt debt[0] is dropped out of the problem and we recursively drop persons one by one until everyone's debt is cleared meanwhile updating the minimum number of transactions during DFS.
+- backtracking to get the min transaction: skip duplicates.
 ->>
 
 <<-1467	Probability of a Two Boxes Having The Same Number of Distinct Balls    		61.3%	Hard	
@@ -2964,10 +3007,6 @@ This is a permutation problem.
 - use double for factorial.
 ->>
 
-<<-1593	Split a String Into the Max Number of Unique Substrings    		46.7%	Medium	
-backtracking using hashset.
-take from one char to the whole string and leave a subproblem.
-->>
 
 <<-1601	Maximum Number of Achievable Transfer Requests    		47.2%	Hard	
 n buildings from 0 to n-1. Given a list of requests transfering from src to dest. All building is full, so net change shall be 0.
@@ -2977,10 +3016,6 @@ backtracking: each request can be used or not used. 2^R.
 valid requests: all building is net 0.
 ->>
 
-<<-131. Palindrome Partitioning
-return all poosible palindrome partitioning.
-typical backtracking, from left to right.
-->>
 
 <<-1655	Distribute Repeating Integers    		40.0%	Hard	
 problem: given an array of integer and m customer orders, each order is number of integers. Each order shall give the same integer.
