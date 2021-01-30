@@ -327,6 +327,30 @@ using top down + recursive, which is more similar to backtracking.
 ```
 since this is actually the permutation so we need start from 0.
 	
+320. generalized abbreviation
 
+use it or not (if abbrev, previous shall not be digits.
+
+```
+    vector<string> generateAbbreviations(string word) {
+        vector<string> ans;
+        backtrack(word,0,"",ans,0);
+        return ans;
+    }
+    void backtrack(string& w,int ind,string t,vector<string>& ans,bool prev_num){
+        if(ind==w.size()){
+            ans.push_back(t);
+            return;
+        }
+        
+        backtrack(w,ind+1,t+w[ind],ans,0); //use current char
+        if(!prev_num){
+            for(int i=ind;i<w.size();i++){
+                int sz=i-ind+1;
+                backtrack(w,i+1,t+to_string(sz),ans,1);
+            }
+        }
+    }
+```	
 	
 	

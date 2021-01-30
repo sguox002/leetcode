@@ -2663,7 +2663,13 @@ optimization in backtracking is very important.
 - backtracking is similar to dfs, push/pop is simulating the dfs (when reach leaf node, it back one step)
 - value passing and reference passing. passing a big array is extra overhead.
 
-- general backtracking.
+It is very important to understand backtracking essential is recursion.
+dfs, dp and backtracking are all based on recursion.
+dfs and backtracking is not overlapped recursives. dp is overlapped recursions.
+Try to solve problem from this spective and avoid many mistakes.
+These 3 types of algorithm are all about subproblems.
+
+#### general backtracking.
 <<-22	Generate Parentheses    		64.2%	Medium	
 value passing can be more concise, but more time.
 need keep left>=right at any time.
@@ -2695,7 +2701,6 @@ digit[i]=digit[i-1]+1. return all integers in range [L,R].
 backtrack.
 ->>
 
-
 <<-248	Strobogrammatic Number III    		39.9%	Hard	
 a strobogrammtic number looks the same when rotated 180 degree.
 count number of strobogrammatic number in range [L,R].
@@ -2713,7 +2718,66 @@ very similar to 248, using two pointer.
 ->>
 <<-246	Strobogrammatic Number    		45.4%	Easy	->>
 
-- permutations
+<<-320	Generalized Abbreviation    		52.9%	Medium	
+take any substr and replace with its length.
+return all possible abbreviations.
+backtracking: use current char or not for abbreviation.
+if previous is already num, then we shall take it as char. (use a bool to indicate this)
+->>
+
+<<-756	Pyramid Transition Matrix    		55.3%	Medium	
+given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
+backtracking: 
+- the first two as the key and build a list of 3rd chars.
+- try all these combinations.
+->>
+
+<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
+from 1 to n, find the kth lexi smallest integer.
+similar to a tree. K up to 10^9. so cannot use backtrack.
+we shall count and skip some.
+- first get the max number of digits (for n) which is the depth to go.
+- all numbers with less depth shall be counted. (this reduces a lot of countings)
+- first we find the path for n for example n=13,k=2, the depth=2
+- the same level: count the number of nodes '3'-'0'+1=4 nodes, then we know it is 10
+->>
+
+<<-386	Lexicographical Numbers    		52.8%	Medium	
+given an integer n generate the numbers in lexi order.
+backtracking: first digit shall be 1 to 9, then next chars would be 0 to 9.
+->>
+
+<<-465	Optimal Account Balancing    		47.6%	Hard	
+given a list of transaction [x,y,z] person x gave person y $z.
+return the min number of transactioons to settle the debt.
+- graph problem
+- we can get each person's net balance from the list of transactions.
+debt>0, need to pay money, debt<0 need to collect money back.
+- Starting from first debt debt[0], we look for all other debts debt[i] (i>0) which have opposite sign to debt[0]. Then each such debt[i] can make one transaction debt[i] += debt[0] to clear the person with debt debt[0]. From now on, the person with debt debt[0] is dropped out of the problem and we recursively drop persons one by one until everyone's debt is cleared meanwhile updating the minimum number of transactions during DFS.
+- backtracking to get the min transaction: skip duplicates.
+->>
+
+<<-1601	Maximum Number of Achievable Transfer Requests    		47.2%	Hard	
+n buildings from 0 to n-1. Given a list of requests transfering from src to dest. All building is full, so net change shall be 0.
+return the max number of achievable requests.
+n<=20, requests<=16.
+backtracking: each request can be used or not used. 2^R.
+valid requests: all building is net 0.
+->>
+
+<<-1655	Distribute Repeating Integers    		40.0%	Hard	
+problem: given an array of integer and m customer orders, each order is number of integers. Each order shall give the same integer.
+check if it is possible to fulfill the order.
+important: try order from largest to smallest. (sort the array is useless since it keeps changing). If the highest order is not able fulfill, then it is done (prune)
+->>
+
+<<-1681. Minimum Incompatibility
+problem: divide into k sets, each set cannot contain duplicate number, incompatibility=max-min for each set. find the min sum of incompatibility.
+- backtracking: but it will find all permutations. using set to avoid revisit.
+a very tricky backtracking problem. I still have problem with it.
+also a bitmask dp problem.
+->>
+#### permutations
 <<-47	Permutations II    		48.4%	Medium	
 all permutation of array with duplicates.
 sort and skip duplicates - ie do not start with the same element, but permutation can include duplicates.
@@ -2755,7 +2819,28 @@ return number of permutation of A is squareful.
 - backtracking: try each number at the first, and then look for paired number.
 ->>
 
-- combinations
+<<-332	Reconstruct Itinerary    		37.3%	Medium	
+given a list of tickets [from,to], reconstruct the itinerary in order start with JFK.
+if multiple, return the lexi smallest. You must use the ticket all and once.
+- sort the ticket (lexi order)
+- build a graph 
+- dfs starting from the smallest child. Need make sure one dfs will used all the tickets. (permutation with greedy)
+- use visited/to visit to get terminate condition 
+- use multiset to store identical tickets.
+- be very careful delete element from hashset while looping over it. It will cause crash since the iterator is damaged.
+->>
+
+<<-1467	Probability of a Two Boxes Having The Same Number of Distinct Balls    		61.3%	Hard	
+given 2n balls with k colors. two boxes, each box put n balls. Two boxes are consider different. The balls are shuffled uniformly. calculate the probability that the two boxes has the same number of distinct balls.
+input array A[i] is the number of balls with color i. target: each box get n balls, and the same number of colors.
+This is a permutation problem.
+- before that we need to know the permutation with duplicates n!/(A1!*....*An!)
+- then we only need to count the number of permutation with equal distinct color, which can be obtained using backtracking.
+- backtracking is combination approach, after we get a valid combination we need to get the permutation
+- backtracking for length n array would be (A+1)^n.
+- use double for factorial.
+->>
+#### combinations
 <<-90	Subsets II    		48.0%	Medium	
 array contains duplicates, return all possible subsets (power set)
 must not contain duplicate subsets
@@ -2843,7 +2928,12 @@ given a list of synonymous pairs, return all possible sentences in sorted order.
 - dfs/backtrack to get all combinations
 ->>
 
-- try all prefix and solve subproblem.
+<<-1735. Count Ways to Make Array With Product
+use factor combination and generate the combinations in n slots.
+similar to 254.
+->>
+
+#### try all prefix and solve subproblem.
 these may introduce overlaps and can use memoization and is dp problems.
 
 <<-282	Expression Add Operators    		36.2%	Hard	
@@ -2899,7 +2989,7 @@ take from one char to the whole string and leave a subproblem.
 ****
 ->>
 
-- board game
+#### board game
 
 <<-52	N-Queens II    		59.1%	Hard	
 place n queens on nxn chessboard. return the number of distinct solutions.
@@ -2942,13 +3032,6 @@ TLE (adding hashset to store seen string will avoid TLE), and also gives wrong a
 even the accepted version is not correct since it does not follow the rule. It uses some greedy approach to use two balls and each time only eliminate 3 balls even it has 3 more such balls.
 ->>
 
-<<-756	Pyramid Transition Matrix    		55.3%	Medium	
-given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
-backtracking: 
-- the first two as the key and build a list of 3rd chars.
-- try all these combinations.
-->>
-
 <<-1307	Verbal Arithmetic Puzzle    		37.6%	Hard	
 each character represents a digit from 0 to 9. and given an equation, check if it is solvable.
 a 2d backtracking problem with rows and cols.
@@ -2959,76 +3042,6 @@ a 2d backtracking problem with rows and cols.
 
 <<-36 valid sudoko ->>
 <<-37 soduko solver ->>
-
-
-<<-320	Generalized Abbreviation    		52.9%	Medium	
-take any substr and replace with its length.
-return all possible abbreviations.
-backtracking: use current char or not for abbreviation.
-if previous is already num, then we shall take it as char.
-->>
-
-<<-332	Reconstruct Itinerary    		37.3%	Medium	
-giveb a list of tickets [from,to], reconstruct the itinerary in order start with JFK.
-if multiple, return the lexi smallest. You must use the ticket all and once.
-- sort the ticket (lexi order)
-- build a graph 
-- dfs starting from the smallest child. Need make sure one dfs will used all the tickets.
-->>
-
-<<-440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
-from 1 to n, find the kth lexi smallest integer.
-similar to a tree.
-->>
-
-<<-386	Lexicographical Numbers    		52.8%	Medium	
-given an integer n generate the numbers in lexi order.
-backtracking.
-similar to 
-->>
-
-<<-465	Optimal Account Balancing    		47.6%	Hard	
-given a list of transaction [x,y,z] person x gave person y $z.
-return the min number of transactioons to settle the debt.
-- graph problem
-- we can get each person's net balance from the list of transactions.
-debt>0, need to pay money, debt<0 need to collect money back.
-- Starting from first debt debt[0], we look for all other debts debt[i] (i>0) which have opposite sign to debt[0]. Then each such debt[i] can make one transaction debt[i] += debt[0] to clear the person with debt debt[0]. From now on, the person with debt debt[0] is dropped out of the problem and we recursively drop persons one by one until everyone's debt is cleared meanwhile updating the minimum number of transactions during DFS.
-- backtracking to get the min transaction: skip duplicates.
-->>
-
-<<-1467	Probability of a Two Boxes Having The Same Number of Distinct Balls    		61.3%	Hard	
-given 2n balls with k colors. two boxes, each box put n balls. Two boxes are consider different. The balls are shuffled uniformly. calculate the probability that the two boxes has the same number of distinct balls.
-This is a permutation problem.
-- before that we need to know the permutation with duplicates n!/(A1!*....*An!)
-- then we only need to count the number of permutation with equal distinct color, which can be obtained using backtracking.
-- backtracking is combination approach, after we get a valid combination we need to get the permutation
-- backtracking for length n array would be (A+1)^n.
-- use double for factorial.
-->>
-
-
-<<-1601	Maximum Number of Achievable Transfer Requests    		47.2%	Hard	
-n buildings from 0 to n-1. Given a list of requests transfering from src to dest. All building is full, so net change shall be 0.
-return the max number of achievable requests.
-n<=20, requests<=16.
-backtracking: each request can be used or not used. 2^R.
-valid requests: all building is net 0.
-->>
-
-
-<<-1655	Distribute Repeating Integers    		40.0%	Hard	
-problem: given an array of integer and m customer orders, each order is number of integers. Each order shall give the same integer.
-check if it is possible to fulfill the order.
-important: try order from largest to smallest. (sort the array is useless since it keeps changing). If the highest order is not able fulfill, then it is done (prune)
-->>
-
-<<-1681. Minimum Incompatibility
-problem: divide into k sets, each set cannot contain duplicate number, incompatibility=max-min for each set. find the min sum of incompatibility.
-- backtracking: but it will find all permutations. using set to avoid revisit.
-a very tricky backtracking problem. I still have problem with it.
-also a bitmask dp problem.
-->>
 
 ### dfs
 - dfs to group connected
