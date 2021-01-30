@@ -352,5 +352,66 @@ use it or not (if abbrev, previous shall not be digits.
         }
     }
 ```	
+291. word pattern II
+
+```
+    bool wordPatternMatch(string pattern, string s) {
+        unordered_map<string,char> s2c;
+        unordered_map<char,string> c2s;
+        return backtrack(s,pattern,0,0,c2s,s2c);
+    }
+    
+    bool backtrack(string& s,string& pat,int i,int j,unordered_map<char,string>& c2s,unordered_map<string,char>& s2c){
+        if(i==s.size() && j==pat.size()) return 1;
+        if(i==s.size() || j==pat.size()) return 0;
+        
+        //using all possible prefix starting from i
+        char c=pat[j];
+        for(int k=i;k<s.size();k++){
+            string t=s.substr(i,k-i+1);
+            //check if the mapping
+            if(s2c.count(t) && s2c[t]!=c) continue; 
+            if(c2s.count(c) && c2s[c]!=t) continue;
+            c2s[c]=t;
+            s2c[t]=c;
+            if(backtrack(s,pat,k+1,j+1,c2s,s2c)) return 1;
+            c2s.erase(c);
+            s2c.erase(t);
+        }
+        return 0;
+    }
+```
+
+this will fail the case:
+"sucks"
+"teezmmmmteez"
+why? the reason:
+if the string is already mapped, we shall not pop them back
+add a boolean to add the mapping.
+
+756. Pyramid Transition Matrix
+2d backtracking:
+
+```
+    unordered_map<string,vector<char>> mp;
+    bool pyramidTransition(string bottom, vector<string>& allowed) {
+        for(auto s: allowed) mp[s.substr(0,2)].push_back(s[2]);
+        return backtrack(bottom,0,"");
+    }
+    bool backtrack(string& bott,int start,string next){
+        if(bott.size()==1) return 1;
+        if(start==bott.size()-1) return backtrack(next,0,"");
+        
+        for(char c: mp[bott.substr(start,2)]){
+            if(backtrack(bott,start+1,next+c)) return 1;
+        }
+        
+        return 0;
+    }
+```
+
+	
+	
+	
 	
 	
