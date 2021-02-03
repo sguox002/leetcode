@@ -3707,6 +3707,7 @@ mxn matrix. rank matrix: smallest element in its row and column shall be 1. smal
 ## divide and conquer
 merge sort, recursion et al often involves in divide and conquer.
 divide into two subproblem recursively and then combine two small problem to get the larger problem answer.
+merge sort and count. (count in linear time)
 
 <<-315	Count of Smaller Numbers After Self    		42.3%	Hard	
 - from right to left and store the elements in sorted order then we can use binary search. but count the higher is still O(N^2) will TLE.
@@ -3722,6 +3723,7 @@ return number of important reverse pairs.
 - using map to store previous visited elements, and binary search O(N^2) since the distance is O(N)
 - segment tree.
 - merge sort divide and conquer. divide into left and right part and then use two pointer to compare O(n/2)+O(n/4)+....
+*****
 ->>
 
 <<-327	Count of Range Sum    		35.7%	Hard	
@@ -3731,15 +3733,8 @@ then use binary search to get the lowerbound and upperbound. O(N^2)
 other approach:
 merge sort: prefix sum and divide into two parts, count the right part - left part in the range. using three pointer to find the region for each element in left. (note prefix shall add 0, and segment needs have at least 2 elements)
 binary index tree:
-->>
-
-<<-95	Unique Binary Search Trees II    		41.6%	Medium	
-generate all trees. divide and conquer, or recursive.
-->>
-
-<<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	
-each char in the substring appear >= K times.
-- divide and conquer: the char appear less than k times will not be a part of the solution, so we can divide it into several parts, and solve them independently.
+*****
+two sorted array counting. two pointer or 3 pointer.
 ->>
 
 <<-932	Beautiful Array    		60.9%	Medium	
@@ -3753,6 +3748,17 @@ if A is beautiful, then 2A, 2A+1, 2A-1 is also beautiful.
 [1], 2*i-1 ->1 2i->2 [1,2]
 [1,2] 2*A-1->[1,3], 2i->[2,4] -->[1,3,2,4]
 This is also reverse thinking. If it is hard to rearrange, why not build it from beginning.
+*****
+->>
+
+<<-95	Unique Binary Search Trees II    		41.6%	Medium	
+generate all trees for n node from 1 to n. 
+divide and conquer, or recursive. choose root= 1 to n. and then left shall be all smaller elements in array and right shall be the larger elements in the array. 
+->>
+
+<<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	
+each char in the substring appear >= K times.
+- divide and conquer: the char appear less than k times will not be a part of the solution, so we can divide it into several parts, and solve them independently.
 ->>
 
 <<-241	Different Ways to Add Parentheses    		56.5%	Medium	
