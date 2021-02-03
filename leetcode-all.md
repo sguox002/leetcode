@@ -48,6 +48,16 @@ major algorithms:
 - search
 - sort.
 
+approaches to solve a problem:
+- recursion is most important, it reduces to smaller similar problem, consider it.
+- if we can divide into left and right two parts -divide and conquer
+- if subproblem overlaps, considering dp..
+- if searching for a target, considering binary search
+- can use data structure to optimize? hashmap, queue, deque
+- can apply greedy first step?
+- better complexity? consider const or linear algorithm to reduce one order complexity.
+
+
 ## dp
 common steps to solve dp problems
 - identity it is a dp problem: overlap subproblems, using memoization to avoid repetitive recursive calls, polynomial complexity
@@ -3649,9 +3659,11 @@ merge sort, recursion et al often involves in divide and conquer.
 divide into two subproblem recursively and then combine two small problem to get the larger problem answer.
 
 <<-315	Count of Smaller Numbers After Self    		42.3%	Hard	
-- from right to left and store the elements in sorted order then we can use binary search. to count, it is still O(N^2) will TLE.
-- merge sort: divide and conquer, count right smaller than left.
+- from right to left and store the elements in sorted order then we can use binary search. but count the higher is still O(N^2) will TLE.
+- merge sort: divide and conquer, count right smaller than left. (during a stable sort, the number of smaller elements is exactly the jump from its right to its left. so we use merge sort recording the jumps. O(nlogn).
+divide into left and right parts and do merge and count. (when sorted, the counting is easier)
 - binary tree: from right to left, build a BST. Since we may have duplicates, add a field to count the duplicates. when we insert a new value, all its left subtree are smaller than it. We use prefix sum to count the sum of duplicates under the subtree.
+*****
 ->>
 
 <<-493	Reverse Pairs    		26.0%	Hard	
@@ -3660,6 +3672,15 @@ return number of important reverse pairs.
 - using map to store previous visited elements, and binary search O(N^2) since the distance is O(N)
 - segment tree.
 - merge sort divide and conquer. divide into left and right part and then use two pointer to compare O(n/2)+O(n/4)+....
+->>
+
+<<-327	Count of Range Sum    		35.7%	Hard	
+return the number of range sums in [L,R].
+prefix sum, and save in map: presum vs list of index.
+then use binary search to get the lowerbound and upperbound. O(N^2)
+other approach:
+merge sort: prefix sum and divide into two parts, count the right part - left part in the range. using three pointer to find the region for each element in left. (note prefix shall add 0, and segment needs have at least 2 elements)
+binary index tree:
 ->>
 
 <<-95	Unique Binary Search Trees II    		41.6%	Medium	
@@ -3676,7 +3697,7 @@ given permutation of 1 to n. rearrange so that for every i<j there is no k i<k<j
 idea: A[i]+A[j] must be odd. keep the odd and even separated. If the odd is beautiful then the even follow the same pattern is also beautiful.
 - divide and conquer
 - first step: divide into odd and even
-- further divide using 2A+1, 2A.
+- further divide using odd, even index elements: rearrange odd indexed elements all then followed by even indexed elements.
 another approach:
 if A is beautiful, then 2A, 2A+1, 2A-1 is also beautiful.
 [1], 2*i-1 ->1 2i->2 [1,2]
@@ -4096,6 +4117,9 @@ using merge sort with two pointer. wait until we see identical number. choose th
 ->>
 
 ## bit manipulation
+- use bit to represent a different object to simplify (person, skill, ...)
+- bit manipulation on integers as a whole (32 bits do the same time)
+- extend bits to other base system
 
 <<-89	Gray Code    		49.7%	Medium	
 gray code is gnerated using i^(i>>1)
@@ -8315,7 +8339,7 @@ recursive approach.
 ->>
 
 ## trie
-trie is essentially the n-arry tree. generally used for prefix or suffix string.
+trie is essentially the n-arry tree. generally used for prefix or suffix string. This topic is not hard and can be used similarly as dfs/bfs...
 bits are often using trie for xor, and...
 trie is important since it is the base data structure for recommendation system such as google search, amazon recommendation et al.
 
@@ -8453,3 +8477,13 @@ if cell is leaf node, then subcell will all be 1 (if we divide into smaller cell
 - case 1: q1 or q2 is leaf: with all 1, then the q1 or q2 will get a all 1 cell (subcell is merged), with all 0, then use the other node.
 - case 2: q1 and q2 are both non-leaf nodes: recursive do it. return a leaf node or non-leaf node.
 ->>
+
+### how to optimize the algorithm
+optimization is critical especially in competing programming. Also, using complexity analysis to judge how to optimize the algorithms.
+
+- get familiar with data structure complexity
+- actual performance of data structure in real using the language. for example vector is for flexible length, array is for fixed length and is having better performance.
+- avoid recomputing: visit tree node again and again, visit array elements, the repetitive work is generally reduced by using memoization, collecting information needed while visit once.
+- passing value or reference
+- prune while searching.
+
