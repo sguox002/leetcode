@@ -3822,11 +3822,18 @@ This is also reverse thinking. If it is hard to rearrange, why not build it from
 <<-95	Unique Binary Search Trees II    		41.6%	Medium	
 generate all trees for n node from 1 to n. 
 divide and conquer, or recursive. choose root= 1 to n. and then left shall be all smaller elements in array and right shall be the larger elements in the array. 
+note: 
+- when 0 node, return a vector containing null.
+- if use i as root, then left is 1 to i-1 totoal i-1 nodes. right from i+1 to n, total n-i nodes
+- then left and right combine.
+***
 ->>
 
 <<-395	Longest Substring with At Least K Repeating Characters    		41.9%	Medium	
 each char in the substring appear >= K times.
-- divide and conquer: the char appear less than k times will not be a part of the solution, so we can divide it into several parts, and solve them independently.
+- divide and conquer: the char appear less than k times will not be a part of the solution, so we can divide it into several parts, and solve them independently. (do not forget the last segment)
+- base case: length<k, all char >=k.
+***
 ->>
 
 <<-241	Different Ways to Add Parentheses    		56.5%	Medium	
@@ -3843,66 +3850,138 @@ add () to the expression and evaluate all possible results. operator only includ
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
 
+### fixed window.
+fixed window size sliding is generally easy and not much tricks.
+also some times we discard those non-related elements and do fixed window on the new array, and change the variable size to fixed window.
+if we can do fixed window, try to use fixed size. (variable window is tricky and easy to make mistakes)
+
+<<-438	Find All Anagrams in a String    		44.3%	Medium	
+find p's anagrams in s.
+fixed window size sliding + hashmap.
+**
+->>
+
 <<-134	Gas Station    		40.5%	Medium	
 n gas station along a circular route. ith station with gas[i] and it cost cost[i] from station i to i+1.
 you begin with empty gas. return the starting index that you can finish the whole route. (clockwise)
 - sliding window with n. net gas= gas[i]-cost[i] at any time shall >=0
 - unfold the circular array to 2N array.
+for example gas=[1,2,3,4,5],cost = [3,4,5,1,2]
+the net=[-2,-2,-2,3,3]
+unfold net=[-2,-2,-2,3,3,-2,-2,3,3]
+i=0, -2, skip
+i=1, -2, skip.
+i=2, -2, skip
+i=3, valid  --found the answer.
+This is O(N^2) and need to be optimized.
+- we only need check the min>=0
+i=0, prefix sum=[-2,-4,-6,-3,0] min=-6
+i=1: prefix sum+2=[-2,-4,-1,+2,0] min=-4
+i=2: prefix sum+2=[-2,1,4,2,0] min=-2
+i=3: prefix sum+2=[3,6,4,2,0]
+greedy: find the prefix sum min ind, answer is ind+1. (can have math proof)
+***
 ->>
+
+<<-1343	Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold    		64.3%	Medium	
+fix size sliding window.
+->>
+
+<<-1100	Find K-Length Substrings With No Repeated Characters    		73.4%	Medium	
+find number of substrings. hashmap sliding window.
+->>
+
+<<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	
+k=2，00，01，10，11.
+so using sliding window to get the number and set the flag.
+->>
+
+<<-1052	Grumpy Bookstore Owner    		55.5%	Medium	
+x minutes window size.
+sliding window to find the max grumpy 
+->>
+
+<<-1176	Diet Plan Performance    		53.9%	Easy	
+for k days, if the sum <L, get -1, if sum>R get 1, otherwise get 0.
+fixed size sliding window.
+->>
+
+<<-1248	Count Number of Nice Subarrays    		56.6%	Medium	
+find number of subarrays with k odd number inside.
+sliding window: only keep the odd numbers with fixed k window.
+->>
+
+<<-1423	Maximum Points You Can Obtain from Cards    		45.1%	Medium	
+take cards from either end, return the max points taking k cards.
+equivalent: sliding window to get min sum using n-k.
+->>
+
+<<-1456	Maximum Number of Vowels in a Substring of Given Length    		53.5%	Medium	
+a substring of length k, return the max number of vowels.
+sliding window with size k.
+->>
+
+### variable window size
+generally using two pointer or three pointers to grow and shrink the window.
 
 <<-76	Minimum Window Substring    		35.4%	Hard	
 min window substring which contains all the characters in t.
 - we can ignore chars not in t and maintain hashset 
 - sliding window: (this string is not limited to lowercase letters)
+two pointer: grows j, when we found a substr satisfying the condition, keeps shrinking window until invalid.
+***
 ->>
 
 <<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	
 using hashmap+sliding window.
-->>
-
-<<-209	Minimum Size Subarray Sum    		38.9%	Medium	
-find the min length subarray sum >=target.
-hashmap or sliding window.
+- when map size >2, keep shrinking the window. for valid get the window size.
+***
 ->>
 
 <<-340	Longest Substring with At Most K Distinct Characters    		44.7%	Hard	
-two pointer, when hashmap size >k, keep shrinking the left.
-->>
-<<-424	Longest Repeating Character Replacement    		47.7%	Medium	
-return the longest repeating subarray after performing at most k char replacement.
-sliding window with at most k different chars.
-- counting char
-- make sure in the subarray w-maxcnt>k 
+two pointer, when hashmap size >k, keep shrinking the left. (greedy we shall keep growing to get longest)
+***
 ->>
 
-<<-438	Find All Anagrams in a String    		44.3%	Medium	
-fixed window size sliding + hashmap.
+<<-904	Fruit Into Baskets    		42.7%	Medium	
+you have two baskests, each basket holds one type of fruit. You start at any index of the array. if you cannot choose, stop. each tree you can pick one fruit.
+return max amount of fruits
+equivalent find the longest subarray with only two types of fruit. (or with two distinct number) 
+sliding window + hashmap.
+->>
+
+<<-209	Minimum Size Subarray Sum    		38.9%	Medium	
+find the min length subarray sum >=target. （input all positives)
+hashmap or sliding window: keep adding while >=s then shrinking the left.
+***
+->>
+
+<<-424	Longest Repeating Character Replacement    		47.7%	Medium	
+return the longest repeating subarray after performing at most k char replacement.
+equivalent: find the longest window containing at most k other chars.
+- counting char
+- make sure in the subarray w-maxcnt>k count the max using hashmap (vector) and find max is O(26).
+****
 ->>
 
 <<-485	Max Consecutive Ones    		53.5%	Easy	->>
 <<-487	Max Consecutive Ones II    		47.9%	Medium	
 you can flip 0 to 1 at most once. find the longest window of all 1.
 sliding window: record previous previous 0 position and update the length.
+simpler: using two pointer, count 0, if >1, then shrink left. (instead record the 0 position)
 ->>
-
-<<-904	Fruit Into Baskets    		42.7%	Medium	
-you have two baskests, each basket holds one type of fruit. You start at any index of the array. if you cannot choose, stop. each tree you can pick one fruit.
-return max amount of fruits
-equivalent find the longest subarray with only two types of fruit. 
-sliding window + hashmap.
+<<-1004	Max Consecutive Ones III    		60.1%	Medium	
+change 0 to 1 for at most k time.
+equivalent: find the longest window containing at most k 0s. (use cnt0)
+***
 ->>
 
 <<-992	Subarrays with K Different Integers    		49.9%	Hard	
-sliding window with hashmap
-->>
-
-<<-1004	Max Consecutive Ones III    		60.1%	Medium	
-change 0 to 1 for at most k time.
-equivalent: find the longest window containing at most k 0s. 
-->>
-
-<<-1033	Moving Stones Until Consecutive    		42.6%	Easy	
-3 stones only.
+find the number of subarray (the subarray has exactly K different integers).
+sliding window with hashmap:
+- three pointer, i the leftmost for a valid subarray, j, the left pointer for the min subarray, k the right.
+- shrinking j must make sure mp[A[j]]>1, otherwise we make it not equal =K.
+****
 ->>
 
 <<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	
@@ -3910,12 +3989,8 @@ min move and max move
 sliding window for min: find the window with length=n with min empty slots or max filled.
 greedy for max: move the leftmost to next right available position or rightmost to left available slot.
 ->>
-<<-1052	Grumpy Bookstore Owner    		55.5%	Medium	
-sliding window to find the max grumpy 
-->>
-
-<<-1100	Find K-Length Substrings With No Repeated Characters    		73.4%	Medium	
-find number of substrings. hashmap sliding window.
+<<-1033	Moving Stones Until Consecutive    		42.6%	Easy	
+3 stone piles only at different positions. return the min/max moves to make them consecutive.
 ->>
 
 <<-1151	Minimum Swaps to Group All 1's Together    		58.7%	Medium	
@@ -3942,29 +4017,12 @@ k: the length or following chars.
 if s[j+k]>s[i+k] then i is not best, move to j.
 ->>
 
-<<-1176	Diet Plan Performance    		53.9%	Easy	
-for k days, if the sum <L, get -1, if sum>R get 1, otherwise get 0.
-fixed size sliding window.
-->>
-
 <<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
 two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
 given a maxcost, and find the longest substring <=maxcost.
 sliding window.
 ->>
 
-<<-1248	Count Number of Nice Subarrays    		56.6%	Medium	
-find number of subarrays with k odd number inside.
-sliding window: only keep the odd numbers with fixed k window.
-->>
-
-<<-1343	Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold    		64.3%	Medium	
-fix size sliding window.
-->>
-
-<<-1352	Product of the Last K Numbers    		42.6%	Medium	
-sliding window product using prefix product
-->>
 
 <<-1358	Number of Substrings Containing All Three Characters    		60.0%	Medium	
 a string consists of only a,b,c. find number of strings containing all 3 chars.
@@ -3981,21 +4039,6 @@ all left ones move to left median and all right ones move to right median (left 
 why? this is similar to best meeting point. for two, any between point will get the same cost. for 3, keep the median unchanged and two moves to the median position)
 however, we do not need to move to the median position and that is why we need subtract the extra
 which is k*(k+1)/2/2.
-->>
-
-<<-1423	Maximum Points You Can Obtain from Cards    		45.1%	Medium	
-take cards from either end, return the max points taking k cards.
-equivalent: sliding window to get min sum using n-k.
-->>
-
-<<-1456	Maximum Number of Vowels in a Substring of Given Length    		53.5%	Medium	
-a substring of length k, return the max number of vowels.
-sliding window with size k.
-->>
-
-<<-1461	Check If a String Contains All Binary Codes of Size K    		46.3%	Medium	
-k=2，00，01，10，11.
-so using sliding window to get the number and set the flag.
 ->>
 
 <<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
@@ -6356,6 +6399,10 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
+<<-1352	Product of the Last K Numbers    		42.6%	Medium	
+sliding window product using prefix product. Actually not related to window. similar to prefix sum.
+->>
+
 <<-48	Rotate Image    		58.5%	Medium	->>
 <<-189	Rotate Array    		36.1%	Medium	
 - using reverse

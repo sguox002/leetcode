@@ -657,11 +657,84 @@ can use hashset to reduce duplicates
 note it is tricky when to judge that we found an answer.
 
 	
+### divide and conquer
 
 
+95 unique binary search tree II
 
+```
+    vector<TreeNode*> generateTrees(int n,int start=1) {
+        vector<TreeNode*> ans;
+        if(n<=0) return {0}; //null pointer
+        for(int i=start;i<n+start;i++){ 
+            auto left=generateTrees(i-start,start);//start  //start to i-1
+            auto right=generateTrees(n+start-i-1,i+1);//i+1 to n+start
+            for(auto l: left)
+                for(auto r: right){
+                    TreeNode* root=new TreeNode(i);
+                    root->left=l,root->right=r;
+                    ans.push_back(root);
+                }
+        }
+        return ans;
+    }
+```
+
+395. Longest Substring with At Least K Repeating Characters
+
+It divides into multiple blocks (instead of two blocks)
+```
+    int longestSubstring(string s, int k) {
+        //divide and conquer
+        return maxsub(s,k,0,s.size());
+    }
+    
+    int maxsub(string& s,int k,int l,int r){
+        if(r-l<k) return 0; 
+        vector<int> cnt(26);
+        for(int i=l;i<r;i++) cnt[s[i]-'a']++;
+        bool valid=1;
+        for(int i: cnt) if(i && i<k) {valid=0;break;}
+        if(valid) return r-l;
+        int maxlen=0;
+        for(int i=l;i<r;i++){
+            if(cnt[s[i]-'a']<k){ //this char cannot be inside the substr
+                maxlen=max({maxlen,maxsub(s,k,l,i)});
+                l=i+1;
+            }
+        }
+        maxlen=max(maxlen,maxsub(s,k,l,r)); //the last one is not covered.
+        return maxlen;
+    }
+```	
 	
+315. Count of Smaller Numbers After Self
+```
+    vector<int> countSmaller(vector<int>& nums) {
+        vector<vector<int>> vp;
+        for(int i=0;i<nums.size();i++) vp.push_back({nums[i],i});
+        vector<int> ans(nums.size());
+        sort_count(vp,0,nums.size(),ans);
+        return ans;
+    }
+    void sort_count(vector<vector<int>>& vp,int l,int r,vector<int>& ans){
+        if(l+1>=r) return;
+        int m=l+(r-l)/2;
+        sort_count(vp,l,m,ans);
+        sort_count(vp,m,r,ans);
+        int j=m;
+        for(int i=l;i<m;i++){
+            while(j<r && vp[j][0]<vp[i][0]) j++;
+            ans[vp[i][1]]+=j-m;
+        }
+        inplace_merge(begin(vp)+l,begin(vp)+m,begin(vp)+r);
+    }
+```
+similar problems:
+493	Reverse Pairs
+327	Count of Range Sum    		35.7%	Hard	
 
+all relates to two sorted list count in O(n) time.
 	
 	
 	
