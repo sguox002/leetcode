@@ -2404,7 +2404,7 @@ since odd can change to even only once, we can change all to even, and then only
 Greedy: reduce the max even by half and evaluate the difference. Since we need both the max and the min, sorting or set is more suitable than priority_queue.
 if the max is odd, we stop. You cannot make it smaller.
 subject: greedy, heap.
-level: 4
+level: ****
 ->>
 
 <<-1673. Find the most competitive subsequence
@@ -2673,6 +2673,10 @@ optimization in backtracking is very important.
 - backtracking is similar to dfs, push/pop is simulating the dfs (when reach leaf node, it back one step)
 - value passing and reference passing. passing a big array is extra overhead.
 
+- recursion is especially hard to debug so understand the inside is really important.
+
+- general backtracking.
+use recursion or dfs but with recording visited elements in array simulating the backtracking.
 It is very important to understand backtracking essential is recursion.
 dfs, dp and backtracking are all based on recursion.
 dfs and backtracking is not overlapped recursives. dp is overlapped recursions.
@@ -2680,25 +2684,32 @@ Try to solve problem from this spective and avoid many mistakes.
 These 3 types of algorithm are all about subproblems.
 
 #### general backtracking.
+use recursion or dfs but with recording visited elements in array simulating the backtracking.
+
 <<-22	Generate Parentheses    		64.2%	Medium	
 value passing can be more concise, but more time.
 need keep left>=right at any time.
+**
 ->>
 
 <<-784	Letter Case Permutation    		65.7%	Medium	
 string of letter and digits, you can change to lowercase or uppercase
 return all combination
 backtracking: no change or change to upper/lower.
+**
 ->>
 
 <<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	
 given n=number of digits, adjacent digit's absolute difference=k. return all numbers.
 backtrack.
+**
 ->>
 
 <<-797	All Paths From Source to Target    		78.2%	Medium	
 given a directed acyclic graph with n node from 0 to n-1. find all possible path from 0 to n-1.
-backtracking or dfs.
+graph is given as adjacency matrix.
+backtracking: need to pay attention to last and first node.
+**
 ->>
 
 <<-1215	Stepping Numbers    		42.7%	Medium	
@@ -2707,9 +2718,11 @@ stepping number: its neighboring digits absolute difference is 1. return a sorte
 ->>
 
 <<-1291	Sequential Digits    		57.4%	Medium	
-digit[i]=digit[i-1]+1. return all integers in range [L,R].
-backtrack.
+digit[i]=digit[i-1]+1. return all integers in range [L,R]. return in sorted order.
+backtrack and then sort.
+**
 ->>
+
 
 <<-248	Strobogrammatic Number III    		39.9%	Hard	
 a strobogrammtic number looks the same when rotated 180 degree.
@@ -2725,6 +2738,7 @@ compare: length the same, compare string, otherwise compare length.
 find all the numbers of length n.
 need pair. 1xxx1,6xx9,9xx6,8xxx8
 very similar to 248, using two pointer.
+***
 ->>
 <<-246	Strobogrammatic Number    		45.4%	Easy	->>
 
@@ -2787,7 +2801,13 @@ problem: divide into k sets, each set cannot contain duplicate number, incompati
 a very tricky backtracking problem. I still have problem with it.
 also a bitmask dp problem.
 ->>
+
 #### permutations
+permutation: loop to use each element as the first position and then a subproblem
+- duplicate: using sort and skip, or using hashmap
+- swap.
+- permutation will not just go right, it shall loop the same whole range.
+
 <<-47	Permutations II    		48.4%	Medium	
 all permutation of array with duplicates.
 sort and skip duplicates - ie do not start with the same element, but permutation can include duplicates.
@@ -2827,6 +2847,7 @@ return number of permutation of A is squareful.
 - for each number, find all its paired numbers.
 - each number may have duplicates, using hashmap to count.
 - backtracking: try each number at the first, and then look for paired number.
+****
 ->>
 
 <<-332	Reconstruct Itinerary    		37.3%	Medium	
@@ -2850,7 +2871,11 @@ This is a permutation problem.
 - backtracking for length n array would be (A+1)^n.
 - use double for factorial.
 ->>
-#### combinations
+
+- combinations
+combination generally loops over each element and only goes to right.
+so the range is keeping smaller.
+
 <<-90	Subsets II    		48.0%	Medium	
 array contains duplicates, return all possible subsets (power set)
 must not contain duplicate subsets
@@ -2943,8 +2968,8 @@ use factor combination and generate the combinations in n slots.
 similar to 254.
 ->>
 
-#### try all prefix and solve subproblem.
-these may introduce overlaps and can use memoization and is dp problems.
+- try all prefix and solve subproblem.
+these may introduce overlaps and can use memoization and becomes dp problems.
 
 <<-282	Expression Add Operators    		36.2%	Hard	
 given a digit string. add +-* so that it evaluates to target.
@@ -2953,7 +2978,7 @@ return all possible string.
 - subproblem: note * will need previous result, so we need save previous results.
 - try all prefix (valid)
 - then try all position to get the 2nd operand
-***** hard to implement.
+***** hard to implement because of *, you need get previous value as the operand.
 ->>
 
 <<-290	Word Pattern    		38.1%	Easy	
@@ -2968,6 +2993,15 @@ one way is to try all possibilities.
 - char to str map, str to char map and they cannot change.
 - try all prefix to the first char match.
 backtracking + hashmap.
+important: different char shall map to different strings.
+"sucks"
+"teezmmmmteez"
+s map to teez
+u: map to mm.
+c: map to m.
+k: map to m. (which is invalid)
+problem: the backtracking pair shall happen when there are new inserts. If the mapping already exisit, we cannot pop them.
+****
 ->>
 
 <<-816	Ambiguous Coordinates    		47.6%	Medium	
@@ -3003,13 +3037,28 @@ take from one char to the whole string and leave a subproblem.
 
 <<-52	N-Queens II    		59.1%	Hard	
 place n queens on nxn chessboard. return the number of distinct solutions.
-- the first row choice will affect the next row. - backtracking
+- the first row choice will affect the next row. 
+- backtracking: check next step is valid or not and then push/pop.
 - also can use bitsets to represent the place.
 ->>
 
 <<-51	N-Queens    		48.2%	Hard	
 return all distinct solutions
 backtracking.
+->>
+
+<<-756	Pyramid Transition Matrix    		55.3%	Medium	
+given bottom string and a list of allowed string (the top and bottom two forms the string), we are building a pyramid. return if we can build it.
+backtracking: 
+- the first two as the key and build a list of 3rd chars.
+- try all these combinations.
+- form a hashmap the first two char vs last char.
+- try each two chars (subproblem) and goes to next two char
+- you can first do the dfs to get all next combination or do it a 2d dfs.
+2d backtracking: 
+- loop over each char, and procceed to right. 
+- reach the end, try a reduced new bottom.
+****
 ->>
 
 <<-425	Word Squares    		49.4%	Hard	
@@ -3041,6 +3090,7 @@ TLE (adding hashset to store seen string will avoid TLE), and also gives wrong a
 "WRBRW"
 even the accepted version is not correct since it does not follow the rule. It uses some greedy approach to use two balls and each time only eliminate 3 balls even it has 3 more such balls.
 ->>
+
 
 <<-1307	Verbal Arithmetic Puzzle    		37.6%	Hard	
 each character represents a digit from 0 to 9. and given an equation, check if it is solvable.
