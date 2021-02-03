@@ -1,7 +1,14 @@
+Selected topics and problems
 
-backtracking:
+recursion based algorithm:
+
+## backtracking
+
+backtracking is used to get the required combinations or path. 
+similar to dp: take the first step and solve the subsequent subproblem.
+
 46. permutation
-with all unique.
+input is unique.
 similar but simpler as 47.
 
 47. permutation II
@@ -409,6 +416,251 @@ add a boolean to add the mapping.
         return 0;
     }
 ```
+
+1307. Verbal Arithmetic Puzzle
+
+char digit map
+digit char map 
+
+the two map shall set up unique and consistent mapping.
+no leading zero.
+natural: column by column from right to left (or reverse from left to right)
+using col index, and row index for 2d back. if current col fail then we need backtrack to previous col.
+
+```
+    int d2c[10],c2d[26],notallowed[26]={0};
+    bool isSolvable(vector<string>& words, string result) {
+        memset(d2c,-1,10*sizeof(int));
+        memset(c2d,-1,26*sizeof(int));
+        if(result.size()>1) notallowed[result[0]-'A']=1;
+        int mxl=0;
+        for(auto w: words) {
+            if(w.size()>1) notallowed[w[0]-'A']=1;
+            mxl=max(mxl,(int)w.size());
+        }
+        if(mxl>result.size()) return 0;
+        reverse(begin(result),end(result));
+        for(auto& w: words) reverse(begin(w),end(w));
+        return backtrack(words,result,0,0,0);
+    }
+    
+    bool backtrack(vector<string>& left,string& right,int row,int col,int cf){
+        //cout<<row<<" "<<col<<": ";print(c2d);
+        if(col==right.size()) return cf==0;
+        if(row==left.size()){ //finished a col
+            int d=cf%10;
+            cf/=10;
+            int ind=right[col]-'A';
+            if(c2d[ind]>=0){ //mapped
+                if(c2d[ind]==d) return backtrack(left,right,0,col+1,cf);
+                return 0;//fail
+            }
+            else{ //not mapped yet
+                if(d2c[d]>=0) return 0;
+                if(!d && notallowed[ind]) return 0;
+                c2d[ind]=d;
+                d2c[d]=ind;
+                //used[d]=1;
+                if(backtrack(left,right,0,col+1,cf)) return 1;
+                c2d[ind]=-1;
+                d2c[d]=-1;
+                //used[d]=0;
+                return 0;//fail this is critical
+            }
+        }
+        //process col
+        if(col>=left[row].size()) return backtrack(left,right,row+1,col,cf);
+        int ind=left[row][col]-'A';
+        if(c2d[ind]>=0) return backtrack(left,right,row+1,col,cf+c2d[ind]);
+        for(int i=0;i<=9;i++){
+            //if(used[i]) continue;
+            if(d2c[i]>=0) continue;
+            if(!i && notallowed[ind]) continue;
+            c2d[ind]=i;
+            d2c[i]=ind;
+            //used[i]=1;
+            if(backtrack(left,right,row+1,col,cf+i)) return 1;
+            //used[i]=0;
+            d2c[i]=-1;
+            c2d[ind]=-1;
+        }
+        return 0;
+    }
+    
+    void print(int a[]){
+        for(int i=0;i<26;i++){
+            if(a[i]>=0) cout<<"["<<char('A'+i)<<":"<<a[i]<<"],";
+        }
+        cout<<endl;
+    }
+```
+
+some critical:
+- missing return 0 for mapping result char failure.
+- edge case when result is shorter than longest left.
+
+425. Word Squares
+kth row and kth column read the same.
+if we choose the string as the first row:
+then we need pick string starting with 2nd char in string.
+this makes it a trie combined approach.
+
+```
+    struct TrieNode{
+        TrieNode* child[26];
+        vector<int> wl;//store list of word index
+        bool isleaf;
+        TrieNode(){isleaf=0;memset(child,0,26*sizeof(TrieNode*));}
+    };
+    void addWord(TrieNode* root,string w,int ind){
+        for(char c: w){
+            if(root->child[c-'a']==0) 
+                root->child[c-'a']=new TrieNode;
+            root=root->child[c-'a'];
+            root->wl.push_back(ind);
+        }
+        root->isleaf=1;
+    }
+    vector<int> startWith(TrieNode* root, string pre){
+        for(char c: pre){
+            if(root->child[c-'a']==0) return {};
+            root=root->child[c-'a'];
+        }
+        return root->wl;
+    }
+    vector<vector<string>> wordSquares(vector<string>& words) {
+        TrieNode* root=new TrieNode;
+        for(int i=0;i<words.size();i++) addWord(root,words[i],i);
+        vector<vector<string>> ans;
+        for(int i=0;i<words.size();i++){ //choose any word to start
+            backtrack(root,words,{words[i]},ans);
+        }
+        return ans;
+    }
+    void backtrack(TrieNode* root,vector<string>& words,vector<string> vt,vector<vector<string>>& ans){
+        int n=words[0].size();
+        if(vt.size()==n){
+            ans.push_back(vt);
+            return;
+        }
+        int sz=vt.size();
+        string prefix;
+        for(int j=0;j<sz;j++) prefix+=vt[j][sz];
+        auto t=startWith(root,prefix);
+        for(auto ind: t){
+            vt.push_back(words[ind]);
+            backtrack(root,words,vt,ans);
+            vt.pop_back();
+        }
+    }
+```
+	
+### dfs - recursion 
+if we include the tree traversals, the dfs covers quite a few problems.
+some dfs connection problems can be solved using union-find (disjoint set) and is not recursive.
+
+regular dfs search
+
+79. Word Search
+
+```
+    bool exist(vector<vector<char>>& board, string word) {
+        for(int i=0;i<board.size();i++){
+            for(int j=0;j<board[0].size();j++){
+                if(dfs(board,i,j,0,word)) return 1;
+            }
+        }
+        return 0;
+    }
+    
+    bool dfs(vector<vector<char>>& b,int i,int j,int start,string& word){
+        if(start>=word.size()) return 1;
+        if(i<0||j<0||i>=b.size()||j>=b[0].size()||b[i][j]!=word[start]) return 0;
+        char c=b[i][j];
+        b[i][j]='.';
+        bool ans=dfs(b,i+1,j,start+1,word)||
+            dfs(b,i-1,j,start+1,word)||
+            dfs(b,i,j+1,start+1,word)||
+            dfs(b,i,j-1,start+1,word);
+        b[i][j]=c;
+        return ans;
+    }
+```
+
+212. word search II
+combined with trie search.
+
+```
+    struct TrieNode{
+        TrieNode* child[26];
+        bool leaf;
+        TrieNode(){leaf=0;memset(child,0,26*sizeof(TrieNode*));}
+    };
+    void addWord(string& w,TrieNode* root){
+        for(char c: w){
+            if(root->child[c-'a']==0) 
+                root->child[c-'a']=new TrieNode;
+            root=root->child[c-'a'];
+        }
+        root->leaf=1;
+    }
+    
+    bool startWith(string& pre,TrieNode* root){
+        for(char c: pre){
+            if(root->child[c-'a']==0) return 0;
+            root=root->child[c-'a'];
+        }
+        return 1;
+    }
+    
+    bool find(string& w,TrieNode* root){
+        for(char c: w){
+            if(root->child[c-'a']==0) return 0;
+            root=root->child[c-'a'];
+        }
+        return root->leaf;
+    }
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        TrieNode* root=new TrieNode;
+        for(auto w: words) addWord(w,root);
+        vector<string> ans;
+        for(int i=0;i<board.size();i++){
+            for(int j=0;j<board[0].size();j++){
+                dfs(board,i,j,root,"",ans); //replace the index with the root
+            }
+        }
+        unordered_set<string> ms(begin(ans),end(ans)); //eliminate duplicates
+        return {begin(ms),end(ms)};
+    }
+    
+    void dfs(vector<vector<char>>& b,int i,int j,TrieNode* parent,string t,vector<string>& ans){
+        if(i<0||j<0||i>=b.size()||j>=b[0].size()||b[i][j]=='.') return;
+        char oc=b[i][j];
+        
+        if(!parent->child[oc-'a']) return; //prune if we cannot find this branch.
+        
+        b[i][j]='.';
+        parent=parent->child[oc-'a'];
+        if(parent->leaf) ans.push_back(t+oc);
+        if(parent){ //i,j becomes the parent
+            dfs(b,i+1,j,parent,t+oc,ans);
+            dfs(b,i-1,j,parent,t+oc,ans);
+            dfs(b,i,j+1,parent,t+oc,ans);
+            dfs(b,i,j-1,parent,t+oc,ans);
+        }
+        b[i][j]=oc;
+    }
+```
+this includes duplicates, since may exist multiple same instance.
+can use hashset to reduce duplicates
+
+note it is tricky when to judge that we found an answer.
+
+	
+
+
+
+	
 
 	
 	

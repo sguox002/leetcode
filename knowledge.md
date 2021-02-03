@@ -1174,3 +1174,50 @@ build O(n) for sorted, O(nlogn) for unsorted
 union(T1,T2) O(Mlog(N/M)) removing duplicates
 intersect(T1,T2) O(Mlog(N/M))
 
+
+standard code to save some repetitive work.
+
+some typedefine for c++
+```
+typedef vector<int> vi;
+typedef vector<long> vl;
+typedef vector<char> vc;
+typedef vector<vector<int>> v2i;
+typedef vector<vector<long>> v2i;
+typedef vector<vector<char>> v2c;
+```
+
+trie:
+```
+    struct TrieNode{
+        TrieNode* child[27];
+        bool leaf;
+        TrieNode(){leaf=0;memset(child,0,27*sizeof(TrieNode*));}
+    };
+    void addWord(string& w,TrieNode* root){
+        for(char c: w){
+            if(root->child[c-'a']==0) 
+                root->child[c-'a']=new TrieNode;
+            root=root->child[c-'a'];
+        }
+        root->leaf=1;
+    }
+    
+    bool startWith(string& pre,TrieNode* root){
+        for(char c: pre){
+            if(root->child[c-'a']==0) return 0;
+            root=root->child[c-'a'];
+        }
+        return 1;
+    }
+    
+    bool find(string& w,TrieNode* root){
+        for(char c: w){
+            if(root->child[c-'a']==0) return 0;
+            root=root->child[c-'a'];
+        }
+        return root->leaf;
+    }
+```
+
+union find with path compression.

@@ -37,6 +37,23 @@ level: 1
 ->>
 problems are classified according to the most important classification. we focused on the idea.
 
+## brief on algorithm and data structure
+
+on algorithm, recursion is most important. It is the base for many powerful techniques such as dfs, backtracking, dynamic programming, divide and conquer et al.
+divide and conquer, dp, backtracking is generally hard, especially dp could be very hard.
+dfs/bfs/union find is easier.
+two pointer, sliding window could be tricky.
+greedy: the most difficulty part of greedy is to find the correct first step and prove it is correct. Most first step choice is wrong. Once the first step is found, implementation is usually straightforward.
+
+Among the data structure, hashmap and array could be very tricky.
+tree, trie all relates to recursion and could be hard.
+heap could be tricky. (nonlinear data structure).
+stack could be the most tricky one in the data struture.
+queue, deque is generally easier.
+string could also be tricky since it has a lot of applications.
+
+misc: math, bit manipulation, Binary index tree, segment tree.
+
 ## algorithm focused Problems
 
 major algorithms:
@@ -2689,6 +2706,10 @@ backtracking: no change or change to upper/lower.
 **
 ->>
 
+<<-17	Letter Combinations of a Phone Number    		48.0%	Medium	
+each digit corresponds to several letters.  actually a backtracking problem.
+->>
+
 <<-967	Numbers With Same Consecutive Differences    		44.1%	Medium	
 given n=number of digits, adjacent digit's absolute difference=k. return all numbers.
 backtrack.
@@ -3051,6 +3072,27 @@ backtracking:
 ****
 ->>
 
+<<-1307	Verbal Arithmetic Puzzle    		37.6%	Hard	
+each character represents a digit from 0 to 9. and given an equation, check if it is solvable.
+a 2d backtracking problem with rows and cols.
+- using hashmap or vector to record letter digit mapping and used digits.
+- reverse each row so that addition is more convenient.
+- do it from first column (all rows) and then process to next cols with cf.
+approach:
+- first char not allowed to map to 0. - notallowed
+- d2c and c2d hashmap (using array is faster + used)
+- reverse left and right
+- need row,col, cf.
+- col reaches result size and cf=0, success.
+- reach row size, 
+if row sum %10 == result mapping, go to next col.
+if result not mapped, add the mapping and do push/pop + backtracking.
+- for each row, search for next available mapping.
+some edge case shall be avoid first: result shorter than left, single digit can allow to be 0.
+*****
+->>
+
+
 <<-425	Word Squares    		49.4%	Hard	
 kth row and column reads the same. 
 given a set of words, find all word squares you can build.
@@ -3059,6 +3101,10 @@ given a set of words, find all word squares you can build.
 - try each string at the first col/row. 
 - then 2nd col/row shall start with given str. similar for others -- this is what trie does.
 build a trie and do backtracking on it.
+- trie, with word index (we need actually return the array)
+- start with any words (first row)
+- we search to get all candidates with the required prefix.
+*****
 ->>
 
 <<-488	Zuma Game    		39.2%	Hard	
@@ -3079,15 +3125,7 @@ TLE (adding hashset to store seen string will avoid TLE), and also gives wrong a
 "WWRRBBWW"
 "WRBRW"
 even the accepted version is not correct since it does not follow the rule. It uses some greedy approach to use two balls and each time only eliminate 3 balls even it has 3 more such balls.
-->>
-
-
-<<-1307	Verbal Arithmetic Puzzle    		37.6%	Hard	
-each character represents a digit from 0 to 9. and given an equation, check if it is solvable.
-a 2d backtracking problem with rows and cols.
-- using hashmap or vector to record letter digit mapping and used digits.
-- reverse each row so that addition is more convenient.
-- do it from first column (all rows) and then process to next cols with cf.
+***** still did not pass.
 ->>
 
 <<-36 valid sudoko ->>
@@ -3102,89 +3140,47 @@ a lot of cases can also be done via bfs, union find, backtracking.
 backtracking almost the same as dfs, but backtracking generally involves some prune.
 both dfs and backtracking are recursion based and involves some tree searching.
 
-<<-17	Letter Combinations of a Phone Number    		48.0%	Medium	->>
+just as the name depth first search, dfs is mainly used for pattern searching.
 
-<<-130	Surrounded Regions    		28.8%	Medium	
-dfs (connected to boundary are not counted)
+most dfs has a tree like structure.
+
+### searching paths.
+
+<<-688	Knight Probability in Chessboard    		49.6%	Medium	
+dfs: out of board, prob=0, k=0 and inside board=1.
+need memoization for large board. -- dp since a lot of overlapped subproblem.
 ->>
 
-<<-200	Number of Islands    		47.9%	Medium	->>
+<<-1377	Frog Position After T Seconds    		34.2%	Hard	
+given an undirected tree with n vertices from 1 to n. Starts at 1, it can jump to direct connected vertices, cannot go back to visited nodes. It randomly jump to its neighbors with same probability. 
+given time t and target node, find the probability on the target at time t.
+dfs: decrease t and get its neighbors
+leaf node: 1/0
+->>
+
+<<-79	Word Search    		36.2%	Medium	
+given a board and a string, check if the string exist in board
+plain dfs- visited change to other char to avoid revisit, after done change it back.
+*** 
+->>
 
 <<-212	Word Search II    		35.9%	Hard	
 given a board with char, and a list of dictionary words. find all the words in the board. (4 direction connected).
 - build the trie using the list of words
 - dfs on the board and find in the trie.
-->>
-
-<<-79	Word Search    		36.2%	Medium	
-given a board and a string, check if the string exist in board
-plain dfs.
-->>
-
-<<-302	Smallest Rectangle Enclosing Black Pixels    		52.1%	Hard	
-given a binary grid, 0 white, 1 black.
-black pixels are connected and only one region. return the smallest rect enclosed all black pixel.
-get the xmin,xmax,ymin,ymax of the pixel region
+- root actually is parent node.
+- now replace word using trie root since we have a list of nodes 
+- avoid go further if there is no such child.
+*****
 ->>
 
 <<-329	Longest Increasing Path in a Matrix    		44.0%	Hard	
 do dfs and save longest path in dp.
+***
 ->>
 
 <<-341	Flatten Nested List Iterator    		53.7%	Medium	
 dfs to flatten the nested integer. leaf is integer.
-->>
-
-<<-351	Android Unlock Patterns    		49.1%	Medium	
-android locks using a 3x3 grid. No jump is allowed. 
-however you can jump if the point is selected before.
-given m and n, your lock must involves at least m points and at most n points.
-pattern is unique if there is a dot not in other or the order is different.
-- symmetric: 1,3,7,9 are symmetric (starting point), 2,4,5,8 are symmetric
-so we only consider start from 1,2,5.
-- start from 1, it can go to 2,5,4 only, reduce on step.
-- start from 2, it can go to 1,3,4,5,6 only, reduce one step.
-- start from 5, it can go to 1,2,3,4,6,7,8,9, reduce one step.
-- you can skip 1<->3 skip 2, 1<->7 skip 4, 7-9 skip 8, 3-9 skip 6, 3-7 skip 5, 4-6 skip 5...
-actually the skip matrix is enough and we can try all 9 positions.
-dp or dfs.
-->>
-
-<<-403	Frog Jump    		40.6%	Hard	
-first jump is 1, if last jump is k, then next jump could be k-1,k,k+1.
-check if frog can land on the last stone.
-- bfs: put all possible position in queue
-- dfs: check if any works prune.
-- dp:  
-->>
-
-<<-417	Pacific Atlantic Water Flow    		41.9%	Medium	
-dfs with two states.
-->>
-
-<<-489	Robot Room Cleaner    		71.5%	Hard	
-given robot API: move, turnLeft,turnRight, clean
-design algorithm to clean the entire room.
-simulate the dfs. from current position and goes one direction until blocked and then try other direction. going back one step.
-since we do not know the matrix, using hashmap to record visited cell
-- clean current cell and mark visited.
-- loop 4 directions
-- dfs to clean all cells along current direction.
-- back off one cell and try other directions.
-->>
-
-<<-529	Minesweeper    		60.2%	Medium	
-given a 2d grid, 'M' unrevealed mine, 'E' unrevealed empty cell, 'B' revealed blank cell that has no ajacent mines (8 directions), digit '1' to '8' is number of mines adjacent. 'X' revealed mine.
-return the next board status:
-- if M is revealed,game over change to 'X'
-- 'E' change to 'B' if no adjacent mines and all of its adjacent shall be revealed
-- 'E' change to digit if there is adjacent mines
-dfs.
-->>
-
-<<-565	Array Nesting    		55.7%	Medium	
-array from 0 to N-1, find the longest link [A[i],A[A[i]],A[A[A[i]]]...).
-simiar to dfs, use visited array and dfs.
 ->>
 
 <<-339	Nested List Weight Sum    		75.0%	Easy
@@ -3201,120 +3197,6 @@ approach 3: do dfs for example
 we see x, sum=x, 
 then we see y, sum+=flatsum+y->2x+y, 
 we see z: sum+=sum+z ->2x+y+x+y+z, ie we get the flat sum and keep adding. 
-->>
-
-<<-688	Knight Probability in Chessboard    		49.6%	Medium	
-dfs
-->>
-
-<<-695	Max Area of Island    		63.7%	Medium	
-dfs calculate the number of nodes in each set.
-->>
-
-<<-694	Number of Distinct Islands    		56.8%	Medium	
-only need to remove the reference. translation only.
-->>
-
-<<-711	Number of Distinct Islands II    		48.6%	Hard	
-supports rotation (90,180,270 degrees) or reflections
-for each set we save the points with 8 different format and convert to string and push into hashset.
-see dihedral_group in wiki
-- reflection 2, rotation 4, total 8 combinations
-- save all the 8 shapes
-- remove the reference (shift to origin)
-- sort the 8 shapes so we get the smallest representation and use it as key.
-->>
-
-<<-733	Flood Fill    		55.6%	Easy	
-start (sr,sc) and flood fill with a new color. dfs.
-->>
-
-<<-749	Contain Virus    		47.1%	Hard	
-given a 2d grid, 0 uninfected, 1 infected. a wall can be installed between ajacent cells. Each nigh the virus spreads to its neighboring cells. Each day you can install walls around only one region- the affected area the threatens the most unaffected cells.
-if it is possible to save? number of walls required?
-- need dfs to get region and number of cells to be infected. = number of walls
-- growing of all other regions.
-- quarantine region can mark as -1 so no dfs will be done.
-- using dfs/bfs/union-find to save each set's infect list.
-- store information in heap.
-->>
-
-<<-886	Possible Bipartition    		44.7%	Medium	
-dfs coloring alternatively.
-->>
-
-<<-934	Shortest Bridge    		49.2%	Medium	
-shortest bridge between two island.
-group all positions in each set and try the distance.
-dfs to two groups.
-->>
-
-<<-959	Regions Cut By Slashes    		66.6%	Medium	
-upscale 3 by 3 and do bfs/dfs.
-->>
-
-<<- 1706. Where will the ball fall
-the grid with / and \,
-upscale the grid by 3, and then use bfs or dfs to find which one to go. bfs is better (for implementation)
-->>
-
-<<-980	Unique Paths III    		77.0%	Hard	
-from start to end, 0 can go, -1 cannot go.
-return number of paths what walk over every empty cell exactly once.
-dfs: visited cannot visit again, final nstep is the total empty cell.
-->>
-
-<<-1020	Number of Enclaves    		58.5%	Medium	
-find those cannot connect to boundary
-dfs
-->>
-
-<<-1034	Coloring A Border    		45.1%	Medium	
-same value and connected. border has at least a neighboring cell which is not the connected group.
-dfs to mark negative as visited and then check all negatives and see if they have a cell not in the group.
-->>
-
-<<-1219	Path with Maximum Gold    		65.6%	Medium	
-mxn matrix with gold, 0 means you cannot cross. You cannot visit the same cell again.
-you can start and stop any place.
-- dfs: at any position with gold do dfs, visited changed to 0. and find the max.
-->>
-
-<<-1254	Number of Closed Islands    		61.1%	Medium	
-0 is land, 1 is water.
-closed island are those 0s which does not touch the boundary.
-dfs: mark if the dfs touched the boundary. or first dfs using boundary 0s to change to 1. and then dfs inner nodes of 0.
-->>
-
-<<-1306	Jump Game III    		60.5%	Medium	
-given an array you are at index start. At i, you can jump to i+A[i] or i-A[i].
-check if you can jump to any position with value 0.
-dfs using visited hashtable.
-->>
-
-<<-55	Jump Game    		34.9%	Medium	
-you are at the first element, each element represents the max step you can jump.
-determine if you are able to reach the last index.
-bfs similar: update the max i+nums[i] 
-->>
-
-<<-1377	Frog Position After T Seconds    		34.2%	Hard	
-given an undirected tree with n vertices from 1 to n. Starts at 1, it can jump to direct connected vertices, cannot go back to visited nodes. It randomly jump to its neighbors with same probability. 
-given time t and target node, find the probability on the target at time t.
-dfs: decrease t and get its neighbors
-leaf node: 1/0
-->>
-
-<<-1462	Course Schedule IV    		43.9%	Medium	
-given n course from 0 to n-1 and a list of prerquisitites. given a list of queries (a,b) need to return if a is b's prerequisites.
-- the graph will form several connected graphs.
-- post order traversal to get the parent child relations.
-->>
-
-<<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	
-given a matrix, find if there exists a cycle, a cycle is connected path with same value.
-dfs with parent position, we cannot go back to immediate parent. If we found we back to a visited node, we found a cycle.
-very easy to make mistakes.
 ->>
 
 <<-1568	Minimum Number of Days to Disconnect Island    		51.1%	Hard	
@@ -3335,6 +3217,186 @@ person vs a list of direct children, with live or death.
 dfs, hashmap
 ->>
 
+### connected sets in graph or 2d matrix.
+can also use union-find. generally is easy.
+
+<<-417	Pacific Atlantic Water Flow    		41.9%	Medium	
+dfs with two states.
+->>
+
+<<-130	Surrounded Regions    		28.8%	Medium	
+dfs (connected to boundary are not counted)
+->>
+
+<<-200	Number of Islands    		47.9%	Medium	->>
+<<-1020	Number of Enclaves    		58.5%	Medium	
+find those cannot connect to boundary
+dfs
+->>
+
+<<-695	Max Area of Island    		63.7%	Medium	
+dfs calculate the number of nodes in each set.
+->>
+
+<<-1254	Number of Closed Islands    		61.1%	Medium	
+0 is land, 1 is water.
+closed island are those 0s which does not touch the boundary.
+dfs: mark if the dfs touched the boundary. or first dfs using boundary 0s to change to 1. and then dfs inner nodes of 0.
+->>
+
+<<-694	Number of Distinct Islands    		56.8%	Medium	
+only need to remove the reference. translation only.
+->>
+
+<<-711	Number of Distinct Islands II    		48.6%	Hard	
+supports rotation (90,180,270 degrees) or reflections
+for each set we save the points with 8 different format and convert to string and push into hashset.
+see dihedral_group in wiki
+- reflection 2, rotation 4, total 8 combinations
+- save all the 8 shapes
+- remove the reference (shift to origin)
+- sort the 8 shapes so we get the smallest representation and use it as key.
+****
+->>
+
+<<-302	Smallest Rectangle Enclosing Black Pixels    		52.1%	Hard	
+given a binary grid, 0 white, 1 black.
+black pixels are connected and only one region. return the smallest rect enclosed all black pixel.
+get the xmin,xmax,ymin,ymax of the pixel region
+->>
+
+<<-959	Regions Cut By Slashes    		66.6%	Medium	
+upscale 3 by 3 and do bfs/dfs.
+->>
+
+<<- 1706. Where will the ball fall
+the grid with / and \,
+upscale the grid by 3, and then use bfs or dfs to find which one to go. bfs is better (for implementation)
+->>
+
+<<-934	Shortest Bridge    		49.2%	Medium	
+shortest bridge between two island.
+group all positions in each set and try the distance.
+dfs to two groups.
+->>
+
+<<-749	Contain Virus    		47.1%	Hard	
+given a 2d grid, 0 uninfected, 1 infected. a wall can be installed between ajacent cells. Each nigh the virus spreads to its neighboring cells. Each day you can install walls around only one region- the affected area the threatens the most unaffected cells.
+if it is possible to save? number of walls required?
+- need dfs to get region and number of cells to be infected. = number of walls
+- growing of all other regions.
+- quarantine region can mark as -1 so no dfs will be done.
+- using dfs/bfs/union-find to save each set's infect list.
+- store information in heap.
+****
+->>
+
+### search for paths.
+
+generally need some prunes to avoid TLE.
+
+<<-351	Android Unlock Patterns    		49.1%	Medium	
+android locks using a 3x3 grid. No jump is allowed. 
+however you can jump if the point is selected before.
+given m and n, your lock must involves at least m points and at most n points.
+pattern is unique if there is a dot not in other or the order is different.
+- symmetric: 1,3,7,9 are symmetric (starting point), 2,4,5,8 are symmetric
+so we only consider start from 1,2,5.
+- start from 1, it can go to 2,5,4 only, reduce on step.
+- start from 2, it can go to 1,3,4,5,6 only, reduce one step.
+- start from 5, it can go to 1,2,3,4,6,7,8,9, reduce one step.
+- you can skip 1<->3 skip 2, 1<->7 skip 4, 7-9 skip 8, 3-9 skip 6, 3-7 skip 5, 4-6 skip 5...
+actually the skip matrix is enough and we can try all 9 positions.
+dp or dfs.
+->>
+
+
+<<-489	Robot Room Cleaner    		71.5%	Hard	
+given robot API: move, turnLeft,turnRight, clean
+design algorithm to clean the entire room.
+simulate the dfs. from current position and goes one direction until blocked and then try other direction. going back one step.
+since we do not know the matrix, using hashmap to record visited cell
+- clean current cell and mark visited.
+- loop 4 directions
+- dfs to clean all cells along current direction.
+- back off one cell and try other directions.
+*****
+->>
+
+<<-529	Minesweeper    		60.2%	Medium	
+given a 2d grid, 'M' unrevealed mine, 'E' unrevealed empty cell, 'B' revealed blank cell that has no ajacent mines (8 directions), digit '1' to '8' is number of mines adjacent. 'X' revealed mine.
+return the next board status:
+- if M is revealed,game over change to 'X'
+- 'E' change to 'B' if no adjacent mines and all of its adjacent shall be revealed
+- 'E' change to digit if there is adjacent mines
+dfs.
+->>
+
+<<-565	Array Nesting    		55.7%	Medium	
+array from 0 to N-1, find the longest link [A[i],A[A[i]],A[A[A[i]]]...).
+simiar to dfs, use visited array and dfs.
+->>
+
+<<-980	Unique Paths III    		77.0%	Hard	
+from start to end, 0 can go, -1 cannot go.
+return number of paths what walk over every empty cell exactly once.
+dfs: visited cannot visit again, final nstep is the total empty cell.
+->>
+
+<<-1219	Path with Maximum Gold    		65.6%	Medium	
+mxn matrix with gold, 0 means you cannot cross. You cannot visit the same cell again.
+you can start and stop any place.
+- dfs: at any position with gold do dfs, visited changed to 0. and find the max.
+->>
+
+<<-403	Frog Jump    		40.6%	Hard	
+first jump is 1, if last jump is k, then next jump could be k-1,k,k+1.
+check if frog can land on the last stone.
+- bfs: put all possible position in queue
+- dfs: check if any works prune.
+- dp:  
+->>
+
+<<-1306	Jump Game III    		60.5%	Medium	
+given an array you are at index start. At i, you can jump to i+A[i] or i-A[i].
+check if you can jump to any position with value 0.
+dfs using visited hashtable.
+->>
+
+<<-55	Jump Game    		34.9%	Medium	
+you are at the first element, each element represents the max step you can jump.
+determine if you are able to reach the last index.
+bfs similar: update the max i+nums[i] 
+->>
+
+### coloring.
+<<-733	Flood Fill    		55.6%	Easy	
+start (sr,sc) and flood fill with a new color. dfs.
+->>
+
+<<-886	Possible Bipartition    		44.7%	Medium	
+dfs coloring alternatively.
+->>
+
+<<-1034	Coloring A Border    		45.1%	Medium	
+same value and connected. border has at least a neighboring cell which is not the connected group.
+dfs to mark negative as visited and then check all negatives and see if they have a cell not in the group.
+->>
+
+### cycles.
+<<-1462	Course Schedule IV    		43.9%	Medium	
+given n course from 0 to n-1 and a list of prerquisitites. given a list of queries (a,b) need to return if a is b's prerequisites.
+- the graph will form several connected graphs.
+- post order traversal to get the parent child relations.
+->>
+
+<<-1559	Detect Cycles in 2D Grid    		44.8%	Hard	
+given a matrix, find if there exists a cycle, a cycle is connected path with same value.
+dfs with parent position, we cannot go back to immediate parent. If we found we back to a visited node, we found a cycle.
+very easy to make mistakes.
+->>
+
+
 ### bfs
 - bfs with queue
 - bfs with deque pop from both end
@@ -3343,59 +3405,38 @@ dfs, hashmap
 - bfs with more than one state.
 - bfs with shortest distance problem
 
+#### shortest distance with queue (no weight) from source to dest.
+
 <<-127	Word Ladder    		30.7%	Medium	
-shortest change from one string to other string in dictionary
-bfs.
+shortest change from one string to other string in dictionary each time change one char.
+bfs: change each char and check if it is in dict, and push in the queue.
 ->>
 <<-126	Word Ladder II    		23.0%	Hard	
 find all possible transform with shortest path.
 need parent information to trace back using bfs.
 ->>
 
-<<-286	Walls and Gates    		55.5%	Medium	
-given a grid, -1: a wall, 0,a gate, inf: empty room.
-find the nearest distance of empty room to gate.
-bfs.
+<<-433	Minimum Genetic Mutation    		42.6%	Medium	
+a gene string is 8 char ACGT, mutation is one single char changed.
+given a bank of valid gene strings. given a start string, return the min number of permutation to change to the end string.
+bfs. this is same as 127 word ladder.
 ->>
 
-<<-301	Remove Invalid Parentheses    		44.1%	Hard	
-remove min number of parenthesis to make it valid, return all possible combinations.
-backtracking: ???
-bfs: if we find the first invalid, we shall stop adding stuff into queue.
-try remove each ( or ). slower than backtracking.
+<<-286	Walls and Gates    		55.5%	Medium	
+given a grid, -1: a wall, 0,a gate, inf: empty room.
+find the nearest distance of empty room to gate (to the nearest gate)
+bfs: gate to empty cell. first fill int-max, the first reach is the nearest distance.
 ->>
 
 <<-317	Shortest Distance from All Buildings    		42.1%	Hard	
 given a grid, 0 means empty, 1 building,2 obstacle.
 find an empty cell which has the shortest distance sum to all building.
 bfs from all other building and add the distance for each empty cell.
-- can do bfs for each building, simpler
-- do bfs all, we need to have n (if visited n times, no more visit)
+- can do bfs for each building, simpler. using hashmap to record the distance sum. non-reachable cells are deleted.
+- do bfs all, we need to have n (if visited n times, no more visit - too complicated, not recommended)
 optimization: if one cell is not reachable from any building, do not consider it.
-->>
-
-<<-433	Minimum Genetic Mutation    		42.6%	Medium	
-a gene string is 8 char ACGT, mutation is one single char changed.
-given a bank of valid gene strings. given a start string, return the min number of permutation to change to the end string.
-bfs.
-->>
-
-<<-527	Word Abbreviation    		55.5%	Hard	
-given n strings, generate abbreviation for each word with min length
-- begin with first char followed by number of digits + last char
-- if conflict using longer prefix
-- if cannot keep abbreviation shorter, keep the original.
-bfs: first round, remove those string which is unique using first and last.
-using hashmap to save the ambiguous strings. the use longer prefix for the remaining.
-->>
-
-<<-210	Course Schedule II    		41.7%	Medium	
-given a list of prerquisite, return the ordering of course taken
-bfs: remove source nodes layer by layer.
-->>
-<<-207	Course Schedule    		43.8%	Medium	
-given a list of prerquisites, check if we you can finish all the courses.
-dfs: no cycle. detect if there is a cycle.
+every time we update the map.
+****
 ->>
 
 <<-675	Cut Off Trees for Golf Event    		34.9%	Hard	->>
@@ -3408,7 +3449,7 @@ bfs. you can rotate clockwise or counterclockwise.
 
 <<-773	Sliding Puzzle    		60.2%	Hard	
 given 2x3 board with 1-5, return min number of moves to solve the board.
-bfs: define the possible direction to go.
+bfs: define the possible direction to go, each position has specific next position to go.
 ->>
 
 <<-815	Bus Routes    		43.0%	Hard	
@@ -3449,17 +3490,12 @@ dfs with greedy
 ->>
 
 <<-1091	Shortest Path in Binary Matrix    		38.6%	Medium	
-given a binary matrix, 1 means blocked. You can go 8 directions.
+given a binary matrix, 1 means blocked. You can go 8 directions. return the shortest path from top left ot bottom right.
 regular bfs.
 ->>
 
 <<-1129	Shortest Path with Alternating Colors    		39.6%	Medium	
 assemble the edge with odd/even property and do bfs.
-->>
-
-<<-1136	Parallel Courses    		61.1%	Hard	
-given a list of prerquisitites relations. In a semester you can study any number of courses if cleared. return the min semester needed.
-- put all sources in queue and clear them and do bfs.
 ->>
 
 <<-1197	Minimum Knight Moves    		36.7%	Medium	
@@ -3526,6 +3562,38 @@ a line with forbidden position. given a and b. you can jump forward by a, or jum
 given position x, return the min number of jumps to home (at position 0)
 bfs: with two status. either from right or from left.
 need store position and direction also, the visited array.
+->>
+
+#### bfs in graph or tree.
+
+<<-210	Course Schedule II    		41.7%	Medium	
+given a list of prerquisite, return the ordering of course taken
+bfs: remove source nodes layer by layer.
+->>
+<<-207	Course Schedule    		43.8%	Medium	
+given a list of prerquisites, check if we you can finish all the courses.
+dfs: no cycle. detect if there is a cycle.
+->>
+
+<<-1136	Parallel Courses    		61.1%	Hard	
+given a list of prerquisitites relations. In a semester you can study any number of courses if cleared. return the min semester needed.
+- put all sources in queue and clear them and do bfs.
+->>
+
+<<-301	Remove Invalid Parentheses    		44.1%	Hard	
+remove min number of parenthesis to make it valid, return all possible combinations.
+backtracking: ???
+bfs: if we find the first invalid, we shall stop adding stuff into queue.
+try remove each ( or ). slower than backtracking.
+->>
+
+<<-527	Word Abbreviation    		55.5%	Hard	
+given n strings, generate abbreviation for each word with min length
+- begin with first char followed by number of digits + last char
+- if conflict using longer prefix
+- if cannot keep abbreviation shorter, keep the original.
+bfs: first round, remove those string which is unique using first and last.
+using hashmap to save the ambiguous strings. the use longer prefix for the remaining.
 ->>
 
 ## union-find
