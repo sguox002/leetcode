@@ -737,6 +737,90 @@ similar problems:
 all relates to two sorted list count in O(n) time.
 	
 	
+## sliding window
+
+76	Minimum Window Substring
+two pointer to find the substr and then shrink to the min.
+
+```
+    string minWindow(string s, string t) {
+        unordered_map<char,int> mp;
+        for(char c: t) mp[c]++;
+        int i=0,j=0,mxlen=s.size()+1,mxind=-1;
+        while(j<s.size()){
+            mp[s[j]]--;
+            while(valid(mp)) {
+                if(mxlen>j-i+1){
+                    mxlen=j-i+1;
+                    mxind=i;
+                }
+                mp[s[i]]++,i++;
+            }
+            j++;
+        }
+        return mxind>=0?s.substr(mxind,mxlen):"";
+    }
+    bool valid(unordered_map<char,int>& mp){
+        for(auto t: mp) if(t.second>0) return 0;
+        return 1;
+    }
+```
+similar using two pointers:
+209	Minimum Size Subarray Sum 
+159	Longest Substring with At Most Two Distinct Characters 
+keep growing until not valid
+340	Longest Substring with At Most K Distinct Characters  
+keep growing until not valid
+424	Longest Repeating Character Replacement 
+485	Max Consecutive Ones
+487	Max Consecutive Ones II
+1004	Max Consecutive Ones III
+
+992	Subarrays with K Different Integers  
+get the number of subarray
+idea: using 3 pointer, i<=j<=k, i to k for a valid subarray, j to k the min subarray.
+
+```
+    int subarraysWithKDistinct(vector<int>& A, int K) {
+        int ans=0;
+        int i=0,j=0,k=0;//use 3 pointers, i, j for the two left i<j
+        unordered_map<int,int> mp;
+        while(k<A.size())
+        {
+            mp[A[k]]++;
+            if(mp.size()>K) {i=j+1;mp.erase(A[j]);}
+            if(j<i) j=i;
+            if(mp.size()==K) 
+            {
+                while(mp[A[j]]>1) {
+                    mp[A[j]]--;
+                    j++;
+                }
+                ans+=j-i+1;
+            }
+            k++;
+        }
+        return ans;
+    }
+```
+1358	Number of Substrings Containing All Three Characters 
+
+1703. Min adjacent swaps for k consecutive ones.
+sliding window to find a subarray which contains k 1s. How do we get the min swaps to get them together?
+10001011->10000111->01000111->00100111->00010111->00001111
+the index: [0,4,6,7]->[5,5,5,5]->[4,5,6,7]  
+                               ->[3,4,5,6]
+[0,4,6,7]->[5,5,5,5] need 5-0+5-4+6-5+7-5=9
+[5,5,5,5]->[4,5,6,7] need 1+1+2=4 this is extra move. total 9-4=5							   
+							   
+- the inner distribution matters.
+- we can choose to move to one position (moving to median is the min sum).
+above example: median=(4+6)/2=5
+then divide into left and right: 
+
+	
+
+	
 	
 	
 	

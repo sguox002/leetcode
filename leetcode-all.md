@@ -4039,6 +4039,7 @@ i the best candidate position,
 j loop over following chars
 k: the length or following chars.
 if s[j+k]>s[i+k] then i is not best, move to j.
+hard!!!
 ->>
 
 <<-1703. Min adjacent swaps for k consecutive ones.
@@ -4049,12 +4050,14 @@ sliding window with some tricks
 - if we only slide window on the one's index, then it is fixed k size sliding window.
 - then the price is to move all 1 to the median position. we are looking for the min.
 all left ones move to left median and all right ones move to right median (left or right could be the same for odd length k)
+- note the result depends on the inner distribution so need to calculate the moves in each window.
+- do not need to save original values, only index is fine. then we get the prefix sum on the index array.
+
 why? this is similar to best meeting point. for two, any between point will get the same cost. for 3, keep the median unchanged and two moves to the median position)
 however, we do not need to move to the median position and that is why we need subtract the extra
 which is k*(k+1)/2/2.
 *****
 ->>
-
 
 
 ## sort
@@ -5117,7 +5120,8 @@ fixed window sliding, + hashmap.
 
 <<-594	Longest Harmonious Subsequence    		47.4%	Easy	
 harmonious array: the max min difference is 1.
-hashmap and then converts to sorted array. or find +1/-1 (use it for ending element)
+use sorted hashmap to get the frequency and then for each combine with -1.
+***
 ->>
 
 <<-697	Degree of an Array    		54.2%	Easy	
