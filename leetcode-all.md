@@ -3846,6 +3846,136 @@ add () to the expression and evaluate all possible results. operator only includ
 - divide and conquer using the operators.
 ->>
 
+## two pointer
+two pointer is base for sliding window and some O(N) algorithm in array or two arrays.
+
+<<-11	Container With Most Water    		51.8%	Medium	
+two pointer: water determined by the min height * the width.
+->>
+
+<<-18	4Sum    		34.3%	Medium	
+to use two pointer, must sort first.
+->>
+<<-16	3Sum Closest    		46.2%	Medium	->>
+<<-15	3Sum    		27.4%	Medium	->>
+<<-1	Two Sum    		45.8%	Easy	
+hashmap for O(N)
+->>
+<<-259	3Sum Smaller    		48.4%	Medium	
+find the number of triplet that sum < target.
+sort and then use 3 pointer.
+>=target k--
+<target ans+=k-j, j++ (fix i, and solve the two pointer problem)
+->>
+
+<<-75	Sort Colors    		48.4%	Medium	
+only 3 colors
+- count sort
+- approach 2: three pointers, i for 0, j for 1 and k for 2.
+i<j<k. i grows from left and k grows from right to left. 
+->>
+
+<<-251	Flatten 2D Vector    		46.0%	Medium	
+similar to nested integer, implement next and hasNext
+using two pointer: i for inside vector, j for vector elements.
+->>
+
+<<-68	Text Justification    		28.7%	Hard	
+given a list of words, and maxWidth, padding space so that each line is exactly maxWidth.
+extra space shall be distributed evenly. if not divisiable, the left will be assigned more.
+each line: starting word and last word has no spaces. When a word cannot add to the line, goes to next line
+two pointer: pay attention to the last line. It is not that easy.
+->>
+
+<<-418	Sentence Screen Fitting    		32.8%	Medium	
+we need add or delete a space, using two pointer, for sentence we add/remove a space, for screen we need %width.
+->>
+
+<<-466	Count The Repetitions    		28.5%	Hard	
+S=[s,n] repeat s n times. 
+s1 is obtainable from s2, means that s1 is a subsequence of s2.
+given s1,n1,s2,n2 and S1=[s1,n1],S2=[s2,n2]
+find the max integer M so that [S2,M] is obtainable from S1.
+approach: 
+- you do not need to construct the string since n1 or n2 is very large
+- two pointer search s1*n1 in s2*n2 (using pointer go monotonically but use % for the char)
+- get the max repeat
+->>
+
+<<-713	Subarray Product Less Than K    		40.3%	Medium	
+return number of subarray
+to avoid overflow, we have to use sliding window using two pointer.
+->>
+
+<<-727	Minimum Window Subsequence    		42.1%	Hard	
+given S and T, find the min size substr of S so that T is a subsequence of it.
+a very good question:
+approach 1: two pointer: i for S, and j for T. 
+first find one match, and from right to left we get the smallest length for this one
+then we proceed from next char and find next match
+for example: abcdebdde match against bde
+we first find "bcde" and from right to left get the smallest length is 4
+then we start from c: "cdebdde" and we find "bdde".
+- dp approach: dp[i,j] stores the starting index of S[0..i] and T[0...j].
+if S[i-1]==T[j-1] then the index no change.
+else dp[i,j-1] (since we only matched j-1 chars)
+invalid put -1.
+->>
+
+<<-777	Swap Adjacent in LR String    		35.1%	Medium	
+string of 'L','R','X', you can replace XL to LX or RX to XR.
+check if we can convert A to B.
+XL->LX we push L to left
+RX->XR we push R to right
+L cannot pass right R, R cannot pass left L.
+check one by one: 
+- first they shall one by one equal ignoring x. (two pointer)
+- L's index in L(B)>=L(A), R(B)<=R(A)
+to make it easier first return -1 for invalid cases.
+->>
+
+<<-809	Expressive Words    		46.7%	Medium	
+two pointer compare.
+->>
+
+<<-844	Backspace String Compare    		46.7%	Easy	
+string with # to backspace previous char. return two string equal.
+two pointer from right to count.
+->>
+
+<<-905	Sort Array By Parity    		74.9%	Easy	
+even first.
+two pointer: i for current position, j for even number position
+->>
+
+<<-948	Bag of Tokens    		46.2%	Medium	
+given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
+- if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
+- you can lose 1 point and get token[i]
+return the max score.
+greedy approach: use the point to get the max power. losing min power to get 1 point.
+using two pointer to do it from min and max side.
+->>
+
+<<-1023	Camelcase Matching    		57.1%	Medium	
+given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
+- capital shall match exactly.
+- using two pointer matching. if capital does not match, return false.
+->>
+
+<<-1055	Shortest Way to Form String    		57.2%	Medium	
+given string src and target, return the min number of subsequence used to reach target string.
+two pointer, with one using mod.
+->>
+
+<<-1537	Get the Maximum Score    		36.1%	Hard	
+two sorted array, a valid path (at the same value you can switch to the other array) return the max path sum.
+- path can begin from nums1 or nums2, end at nums1 or nums2.
+- choose the max sum branch.
+- need to find the common segments.
+using merge sort with two pointer. wait until we see identical number. choose the previous max.
+->>
+
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
@@ -3984,6 +4114,25 @@ sliding window with hashmap:
 ****
 ->>
 
+<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
+sliding window with at most one 0 inside. record previous 0 position.
+->>
+
+<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
+two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
+given a maxcost, and find the longest substring <=maxcost.
+sliding window.
+->>
+
+<<-1695. Maximum Erasure value.
+given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the erased subarray.
+using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
+****
+->>
+
+
+### sliding window equivalent.
+
 <<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	
 min move and max move
 sliding window for min: find the window with length=n with min empty slots or max filled.
@@ -3998,8 +4147,11 @@ equivalent to find the window with most 1s. window size=total number of 1s.
 ->>
 
 <<-1156	Swap For Longest Repeated Character Substring    		47.7%	Medium	
+you are allowed to swap two chars. 
 equivalent: find the longest window with only one char different from the other one. You need has at least one outside the group.
 try each index as the repeat char and expand the window.
+i as the start index and expand the subarray.
+****
 ->>
 
 <<-1163	Last Substring in Lexicographical Order    		35.7%	Hard	
@@ -4007,7 +4159,7 @@ or the max substring.
 a string is larger: prefix is larger or it is longer.
 is the first largest char suffix string the last string?
 not really, for example "cacacb", the max is "cb"
-build a trie and the rightmost brnach is the answer.
+build a trie and the rightmost branch is the answer.
 - the answer is the suffix string with max char as the first char. (so we can get rid of those starting char not the max char, but worse case will not improve)
 - if we compare the n suffix string, we will get O(N^2)
 - using two pointer: 
@@ -4016,13 +4168,6 @@ j loop over following chars
 k: the length or following chars.
 if s[j+k]>s[i+k] then i is not best, move to j.
 ->>
-
-<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
-two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
-given a maxcost, and find the longest substring <=maxcost.
-sliding window.
-->>
-
 
 <<-1358	Number of Substrings Containing All Three Characters    		60.0%	Medium	
 a string consists of only a,b,c. find number of strings containing all 3 chars.
@@ -4041,18 +4186,13 @@ however, we do not need to move to the median position and that is why we need s
 which is k*(k+1)/2/2.
 ->>
 
-<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
-sliding window with at most one 0 inside. record previous 0 position.
-->>
-
-<<-1695. Maximum Erasure value.
-given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the subarray.
-using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
-->>
-
 ## sort
 - sort makes things easier.
-- sort using given order
+- sort using given order.
+qsort using random pivot
+merge sort.
+bubble sort.
+count sort.
 
 <<-147	Insertion Sort List    		43.8%	Medium	
 similar to array insertion sort. insert list node one by one.
@@ -4152,135 +4292,6 @@ using stable_sort.
 
 <<-1471	The k Strongest Values in an Array    		58.3%	Medium	
 sort using lambda function with a parameter or customized compare function
-->>
-
-## two pointer
-<<-11	Container With Most Water    		51.8%	Medium	
-two pointer: water determined by the min height * the width.
-->>
-
-<<-18	4Sum    		34.3%	Medium	
-to use two pointer, must sort first.
-->>
-<<-16	3Sum Closest    		46.2%	Medium	->>
-<<-15	3Sum    		27.4%	Medium	->>
-<<-1	Two Sum    		45.8%	Easy	
-hashmap for O(N)
-->>
-
-<<-68	Text Justification    		28.7%	Hard	
-given a list of words, and maxWidth, padding space so that each line is exactly maxWidth.
-extra space shall be distributed evenly. if not divisiable, the left will be assigned more.
-each line: starting word and last word has no spaces. When a word cannot add to the line, goes to next line
-two pointer: pay attention to the last line. It is not that easy.
-->>
-
-<<-75	Sort Colors    		48.4%	Medium	
-only 3 colors
-- count sort
-- approach 2: three pointers, i for 0, j for 1 and k for 2.
-i<j<k. i grows from left and k grows from right to left. 
-->>
-
-<<-251	Flatten 2D Vector    		46.0%	Medium	
-similar to nested integer, implement next and hasNext
-using two pointer: i for inside vector, j for vector elements.
-->>
-
-<<-259	3Sum Smaller    		48.4%	Medium	
-find the number of triplet that sum < target.
-sort and then use 3 pointer.
->=target k--
-<target ans+=k-j, j++ (fix i, and solve the two pointer problem)
-->>
-
-<<-418	Sentence Screen Fitting    		32.8%	Medium	
-we need add or delete a space, using two pointer, for sentence we add/remove a space, for screen we need %width.
-->>
-
-<<-466	Count The Repetitions    		28.5%	Hard	
-S=[s,n] repeat s n times. 
-s1 is obtainable from s2, means that s1 is a subsequence of s2.
-given s1,n1,s2,n2 and S1=[s1,n1],S2=[s2,n2]
-find the max integer M so that [S2,M] is obtainable from S1.
-approach: 
-- you do not need to construct the string since n1 or n2 is very large
-- two pointer search s1*n1 in s2*n2 (using pointer go monotonically but use % for the char)
-- get the max repeat
-->>
-
-<<-713	Subarray Product Less Than K    		40.3%	Medium	
-return number of subarray
-to avoid overflow, we have to use sliding window using two pointer.
-->>
-
-<<-727	Minimum Window Subsequence    		42.1%	Hard	
-given S and T, find the min size substr of S so that T is a subsequence of it.
-a very good question:
-approach 1: two pointer: i for S, and j for T. 
-first find one match, and from right to left we get the smallest length for this one
-then we proceed from next char and find next match
-for example: abcdebdde match against bde
-we first find "bcde" and from right to left get the smallest length is 4
-then we start from c: "cdebdde" and we find "bdde".
-- dp approach: dp[i,j] stores the starting index of S[0..i] and T[0...j].
-if S[i-1]==T[j-1] then the index no change.
-else dp[i,j-1] (since we only matched j-1 chars)
-invalid put -1.
-->>
-
-<<-777	Swap Adjacent in LR String    		35.1%	Medium	
-string of 'L','R','X', you can replace XL to LX or RX to XR.
-check if we can convert A to B.
-XL->LX we push L to left
-RX->XR we push R to right
-L cannot pass right R, R cannot pass left L.
-check one by one: 
-- first they shall one by one equal ignoring x. (two pointer)
-- L's index in L(B)>=L(A), R(B)<=R(A)
-to make it easier first return -1 for invalid cases.
-->>
-
-<<-809	Expressive Words    		46.7%	Medium	
-two pointer compare.
-->>
-
-<<-844	Backspace String Compare    		46.7%	Easy	
-string with # to backspace previous char. return two string equal.
-two pointer from right to count.
-->>
-
-<<-905	Sort Array By Parity    		74.9%	Easy	
-even first.
-two pointer: i for current position, j for even number position
-->>
-
-<<-948	Bag of Tokens    		46.2%	Medium	
-given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
-- if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
-- you can lose 1 point and get token[i]
-return the max score.
-greedy approach: use the point to get the max power. losing min power to get 1 point.
-using two pointer to do it from min and max side.
-->>
-
-<<-1023	Camelcase Matching    		57.1%	Medium	
-given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
-- capital shall match exactly.
-- using two pointer matching. if capital does not match, return false.
-->>
-
-<<-1055	Shortest Way to Form String    		57.2%	Medium	
-given string src and target, return the min number of subsequence used to reach target string.
-two pointer, with one using mod.
-->>
-
-<<-1537	Get the Maximum Score    		36.1%	Hard	
-two sorted array, a valid path (at the same value you can switch to the other array) return the max path sum.
-- path can begin from nums1 or nums2, end at nums1 or nums2.
-- choose the max sum branch.
-- need to find the common segments.
-using merge sort with two pointer. wait until we see identical number. choose the previous max.
 ->>
 
 ## bit manipulation
