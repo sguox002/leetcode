@@ -4114,6 +4114,7 @@ sliding window with hashmap:
 ****
 ->>
 
+<<<<<<< HEAD
 <<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
 sliding window with at most one 0 inside. record previous 0 position.
 ->>
@@ -4133,6 +4134,12 @@ using hashmap or hashset. (using hashset, when you add an element which is prese
 
 ### sliding window equivalent.
 
+<<-1358	Number of Substrings Containing All Three Characters    		60.0%	Medium	
+a string consists of only a,b,c. find number of strings containing all 3 chars.
+- we only need to find the smallest window containing the 3 chars. and all previous including the window are all valid substrings.
+sliding window to find the min window containing abc. all prefix. two pointer.
+->>
+
 <<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	
 min move and max move
 sliding window for min: find the window with length=n with min empty slots or max filled.
@@ -4144,6 +4151,8 @@ greedy for max: move the leftmost to next right available position or rightmost 
 
 <<-1151	Minimum Swaps to Group All 1's Together    		58.7%	Medium	
 equivalent to find the window with most 1s. window size=total number of 1s.
+num of swap = num1s-max1s
+**
 ->>
 
 <<-1156	Swap For Longest Repeated Character Substring    		47.7%	Medium	
@@ -4152,6 +4161,22 @@ equivalent: find the longest window with only one char different from the other 
 try each index as the repeat char and expand the window.
 i as the start index and expand the subarray.
 ****
+****
+->>
+
+<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
+two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
+given a maxcost, and find the longest substring <=maxcost.
+sliding window of |s[i]-t[i]|.
+->>
+
+<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
+sliding window with at most one 0 inside. record previous 0 position.
+->>
+
+<<-1695. Maximum Erasure value.
+given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the subarray.
+using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
 ->>
 
 <<-1163	Last Substring in Lexicographical Order    		35.7%	Hard	
@@ -4173,18 +4198,27 @@ if s[j+k]>s[i+k] then i is not best, move to j.
 a string consists of only a,b,c. find number of strings containing all 3 chars.
 - we only need to find the smallest window containing the 3 chars. and all previous including the window are all valid substrings.
 sliding window to find the min window containing abc.
+hard!!!
 ->>
 
 <<-1703. Min adjacent swaps for k consecutive ones.
+in one move, you can swap two adjacent elements (01 array). return min number of moves to have exactly k consecutive ones.
+equivalent: find the min window size containing exactly k ones.
 sliding window with some tricks
 - if we slide window on original array, we need binary search to find the size first.
 - if we only slide window on the one's index, then it is fixed k size sliding window.
 - then the price is to move all 1 to the median position. we are looking for the min.
 all left ones move to left median and all right ones move to right median (left or right could be the same for odd length k)
+- note the result depends on the inner distribution so need to calculate the moves in each window.
+- do not need to save original values, only index is fine. then we get the prefix sum on the index array.
+
 why? this is similar to best meeting point. for two, any between point will get the same cost. for 3, keep the median unchanged and two moves to the median position)
 however, we do not need to move to the median position and that is why we need subtract the extra
 which is k*(k+1)/2/2.
+*****
 ->>
+
+=======
 
 ## sort
 - sort makes things easier.
@@ -5121,7 +5155,8 @@ fixed window sliding, + hashmap.
 
 <<-594	Longest Harmonious Subsequence    		47.4%	Easy	
 harmonious array: the max min difference is 1.
-hashmap and then converts to sorted array. or find +1/-1 (use it for ending element)
+use sorted hashmap to get the frequency and then for each combine with -1.
+***
 ->>
 
 <<-697	Degree of an Array    		54.2%	Easy	
