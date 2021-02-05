@@ -817,7 +817,59 @@ the index: [0,4,6,7]->[5,5,5,5]->[4,5,6,7]
 - we can choose to move to one position (moving to median is the min sum).
 above example: median=(4+6)/2=5
 then divide into left and right: 
+```
+    int minMoves(vector<int>& nums, int k) {
+        if(k==1) return 0;
+        vector<int> ind;
+        for(int i=0;i<nums.size();i++)
+            if(nums[i]) ind.push_back(i);
+        int ans=INT_MAX;
+        for(int i=0;i<=ind.size()-k;i++){
+            ans=min(ans,getswaps(ind,i,i+k));
+            //cout<<ans<<" "<<i<<endl;
+        }
+        return ans==INT_MAX?0:ans;
+    }
+    
+    int getswaps(vector<int>& ind,int l,int r){
+        //odd: left and right the same, even: two median position
+        int k=r-l;
+        int med1=(ind[l+(k-1)/2]+ind[l+k/2])/2; //this is not correct for example [0,6,7], the median is 6
+        int ans=0;
+        //expand from the median
+        int it=upper_bound(begin(ind)+l,begin(ind)+r,med1)-begin(ind);
+        int tind=it;
+        it--; //<=
+        
+        int cnt=0;
+        while(it>=l) ans+=med1-ind[it--]-cnt++;
+        cnt=1;
+        while(tind<r) ans+=ind[tind++]-med1-cnt++;
+        return ans;
+    }
+```
+this will TLE since it is O(N^2)
 
+need to optmize the getswaps using O(1)
+- all moves to median position
+- and then compensate the extras.
+- using prefix to avoid O(N)
+
+```
+    int minMoves(vector<int>& nums, int k) {
+        vector<long> A, B(1);
+        for (int i = 0; i < nums.size(); ++i)
+            if (nums[i])
+                A.push_back(i);
+        long n = A.size(), res = 2e9;
+        for (int i = 0; i < n; ++i)
+            B.push_back(B[i] + A[i]);
+        for (int i = 0; i < n - k + 1; ++i)
+            res = min(res, B[i + k] - B[k / 2 + i] - B[(k + 1) / 2 + i] + B[i]);
+        res -= (k / 2) * ((k + 1) / 2);
+        return res;
+    }
+```	
 	
 
 	

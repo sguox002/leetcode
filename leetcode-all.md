@@ -1731,6 +1731,16 @@ Most time, greedy approach is incorrect. So use it by caution.
 greedy can often be approached using recursion.
 greedy focus more on idea instead of algorithm or data structure.
 
+<<-948	Bag of Tokens    		46.2%	Medium	
+given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
+- if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
+- you can lose 1 point and get token[i]
+return the max score.
+
+greedy approach: use the point to get the max power. losing min power to get 1 point.
+using two pointer to do it from min and max side.
+->>
+
 <<-31	Next Permutation    		33.0%	Medium	
 next larger : find from right the first A[i]<A[i+1] and swap it and then reverse the right part.
 ->>
@@ -3847,25 +3857,63 @@ add () to the expression and evaluate all possible results. operator only includ
 ->>
 
 ## two pointer
+
 two pointer is base for sliding window and some O(N) algorithm in array or two arrays.
+two pointers in sorted array or two sorted array (used in divide and conquer to reduce complexity)
+some variations: from same end (left or right), one from left one from right, 3 pointers, 4 pointers et al.
+using 2 pointers keep i<=j the restrictions.
+
+<<-809	Expressive Words    		46.7%	Medium	
+two pointer compare.
+->>
+
+<<-844	Backspace String Compare    		46.7%	Easy	
+string with # to backspace previous char. return two string equal.
+two pointer from right to count.
+->>
+
+<<-905	Sort Array By Parity    		74.9%	Easy	
+even first.
+two pointer: i for current position, j for even number position
+->>
+
+<<-1023	Camelcase Matching    		57.1%	Medium	
+given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
+- capital shall match exactly.
+- using two pointer matching. if capital does not match, return false.
+->>
+
+<<-1055	Shortest Way to Form String    		57.2%	Medium	
+given string src and target, return the min number of subsequence used to reach target string.
+two pointer, with one using mod.
+->>
 
 <<-11	Container With Most Water    		51.8%	Medium	
 two pointer: water determined by the min height * the width.
+one from left one from right, when curr bar is min bar, move the pointer.
 ->>
 
 <<-18	4Sum    		34.3%	Medium	
-to use two pointer, must sort first.
+a+b+c+d=target from the input array. find all quadruples.
+to use two pointer, must sort first. skip duplicates. use i,j,k,l fix i j and then solve two pointer problem in linear time.
+O(N^3)
 ->>
-<<-16	3Sum Closest    		46.2%	Medium	->>
-<<-15	3Sum    		27.4%	Medium	->>
-<<-1	Two Sum    		45.8%	Easy	
-hashmap for O(N)
+<<-16	3Sum Closest    		46.2%	Medium	
+three pointers.
 ->>
+
 <<-259	3Sum Smaller    		48.4%	Medium	
 find the number of triplet that sum < target.
 sort and then use 3 pointer.
 >=target k--
 <target ans+=k-j, j++ (fix i, and solve the two pointer problem)
+->>
+
+<<-15	3Sum    		27.4%	Medium	
+three pointers.
+->>
+<<-1	Two Sum    		45.8%	Easy	
+hashmap for O(N), non-sorted. 
 ->>
 
 <<-75	Sort Colors    		48.4%	Medium	
@@ -3900,26 +3948,7 @@ approach:
 - you do not need to construct the string since n1 or n2 is very large
 - two pointer search s1*n1 in s2*n2 (using pointer go monotonically but use % for the char)
 - get the max repeat
-->>
-
-<<-713	Subarray Product Less Than K    		40.3%	Medium	
-return number of subarray
-to avoid overflow, we have to use sliding window using two pointer.
-->>
-
-<<-727	Minimum Window Subsequence    		42.1%	Hard	
-given S and T, find the min size substr of S so that T is a subsequence of it.
-a very good question:
-approach 1: two pointer: i for S, and j for T. 
-first find one match, and from right to left we get the smallest length for this one
-then we proceed from next char and find next match
-for example: abcdebdde match against bde
-we first find "bcde" and from right to left get the smallest length is 4
-then we start from c: "cdebdde" and we find "bdde".
-- dp approach: dp[i,j] stores the starting index of S[0..i] and T[0...j].
-if S[i-1]==T[j-1] then the index no change.
-else dp[i,j-1] (since we only matched j-1 chars)
-invalid put -1.
+****
 ->>
 
 <<-777	Swap Adjacent in LR String    		35.1%	Medium	
@@ -3934,51 +3963,22 @@ check one by one:
 to make it easier first return -1 for invalid cases.
 ->>
 
-<<-809	Expressive Words    		46.7%	Medium	
-two pointer compare.
-->>
-
-<<-844	Backspace String Compare    		46.7%	Easy	
-string with # to backspace previous char. return two string equal.
-two pointer from right to count.
-->>
-
-<<-905	Sort Array By Parity    		74.9%	Easy	
-even first.
-two pointer: i for current position, j for even number position
-->>
-
-<<-948	Bag of Tokens    		46.2%	Medium	
-given intial power P and score 0 and a bag of tokens. each token has different power and can only be used once. 
-- if your current power >=token[i] you can take the token, losing token[i] power and get 1 point
-- you can lose 1 point and get token[i]
-return the max score.
-greedy approach: use the point to get the max power. losing min power to get 1 point.
-using two pointer to do it from min and max side.
-->>
-
-<<-1023	Camelcase Matching    		57.1%	Medium	
-given a list of string, and a pattern string, if you can insert 0 or more lowercase letters into pattern and make two strings equal, we call matched.
-- capital shall match exactly.
-- using two pointer matching. if capital does not match, return false.
-->>
-
-<<-1055	Shortest Way to Form String    		57.2%	Medium	
-given string src and target, return the min number of subsequence used to reach target string.
-two pointer, with one using mod.
-->>
-
 <<-1537	Get the Maximum Score    		36.1%	Hard	
 two sorted array, a valid path (at the same value you can switch to the other array) return the max path sum.
 - path can begin from nums1 or nums2, end at nums1 or nums2.
 - choose the max sum branch.
 - need to find the common segments.
 using merge sort with two pointer. wait until we see identical number. choose the previous max.
+***
 ->>
 
 ## sliding window
 
 sliding window sometimes is tricky, especially when combined with other stuff, such as priority_queue, dp.
+- fixed sliding window problem - generally easy, some problems (especially containing unrelated elements) can be converted to fixed window.
+- two pointer: for min window, grow right until valid, then shrink left. for longest window, grow right until invalid and then shrink left.
+- for counting number of valid window, get the max and min valid window.
+- also there are other shrinking: for example find the valid window and then we go right to left and find the min window (without using extra data structure). for example subsequence.
 
 ### fixed window.
 fixed window size sliding is generally easy and not much tricks.
@@ -4051,25 +4051,31 @@ a substring of length k, return the max number of vowels.
 sliding window with size k.
 ->>
 
-### variable window size
+### min/max window problem using two pointer.
 generally using two pointer or three pointers to grow and shrink the window.
+for min window problem: grows right to find a valid window and then shrink to get the min window
+for max window problem: grows right to get a invalid window and then shrink to get the max window
+for min+max window problem: need 3 pointer to find the min and max window.
 
 <<-76	Minimum Window Substring    		35.4%	Hard	
 min window substring which contains all the characters in t.
 - we can ignore chars not in t and maintain hashset 
 - sliding window: (this string is not limited to lowercase letters)
 two pointer: grows j, when we found a substr satisfying the condition, keeps shrinking window until invalid.
+min window.
 ***
 ->>
 
 <<-159	Longest Substring with At Most Two Distinct Characters    		49.8%	Medium	
 using hashmap+sliding window.
 - when map size >2, keep shrinking the window. for valid get the window size.
+min window
 ***
 ->>
 
 <<-340	Longest Substring with At Most K Distinct Characters    		44.7%	Hard	
 two pointer, when hashmap size >k, keep shrinking the left. (greedy we shall keep growing to get longest)
+min window
 ***
 ->>
 
@@ -4078,12 +4084,14 @@ you have two baskests, each basket holds one type of fruit. You start at any ind
 return max amount of fruits
 equivalent find the longest subarray with only two types of fruit. (or with two distinct number) 
 sliding window + hashmap.
+max window
 ->>
 
 <<-209	Minimum Size Subarray Sum    		38.9%	Medium	
 find the min length subarray sum >=target. （input all positives)
 hashmap or sliding window: keep adding while >=s then shrinking the left.
 ***
+min window
 ->>
 
 <<-424	Longest Repeating Character Replacement    		47.7%	Medium	
@@ -4091,6 +4099,7 @@ return the longest repeating subarray after performing at most k char replacemen
 equivalent: find the longest window containing at most k other chars.
 - counting char
 - make sure in the subarray w-maxcnt>k count the max using hashmap (vector) and find max is O(26).
+max window.
 ****
 ->>
 
@@ -4099,11 +4108,32 @@ equivalent: find the longest window containing at most k other chars.
 you can flip 0 to 1 at most once. find the longest window of all 1.
 sliding window: record previous previous 0 position and update the length.
 simpler: using two pointer, count 0, if >1, then shrink left. (instead record the 0 position)
+max window.
 ->>
 <<-1004	Max Consecutive Ones III    		60.1%	Medium	
 change 0 to 1 for at most k time.
 equivalent: find the longest window containing at most k 0s. (use cnt0)
 ***
+max window.
+->>
+
+<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
+sliding window with at most one 0 inside. record previous 0 position.
+max window.
+->>
+
+<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
+two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
+given a maxcost, and find the longest substring <=maxcost.
+sliding window.
+max window.
+->>
+
+<<-1695. Maximum Erasure value.
+given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the erased subarray.
+using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
+****
+max window.
 ->>
 
 <<-992	Subarrays with K Different Integers    		49.9%	Hard	
@@ -4111,33 +4141,20 @@ find the number of subarray (the subarray has exactly K different integers).
 sliding window with hashmap:
 - three pointer, i the leftmost for a valid subarray, j, the left pointer for the min subarray, k the right.
 - shrinking j must make sure mp[A[j]]>1, otherwise we make it not equal =K.
+min+max window.
 ****
 ->>
-
-<<<<<<< HEAD
-<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
-sliding window with at most one 0 inside. record previous 0 position.
-->>
-
-<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
-two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
-given a maxcost, and find the longest substring <=maxcost.
-sliding window.
-->>
-
-<<-1695. Maximum Erasure value.
-given an array of positive numbers, erase a subarray containing unique elements. return the max sum of the erased subarray.
-using hashmap or hashset. (using hashset, when you add an element which is present in hashset, keep popping left elements until the element is not present).
-****
-->>
-
-
-### sliding window equivalent.
 
 <<-1358	Number of Substrings Containing All Three Characters    		60.0%	Medium	
 a string consists of only a,b,c. find number of strings containing all 3 chars.
 - we only need to find the smallest window containing the 3 chars. and all previous including the window are all valid substrings.
 sliding window to find the min window containing abc. all prefix. two pointer.
+min + max window
+->>
+
+<<-713	Subarray Product Less Than K    		40.3%	Medium	
+return number of subarray
+to avoid overflow, we have to use sliding window using two pointer.
 ->>
 
 <<-1040	Moving Stones Until Consecutive II    		53.3%	Medium	
@@ -4161,17 +4178,6 @@ equivalent: find the longest window with only one char different from the other 
 try each index as the repeat char and expand the window.
 i as the start index and expand the subarray.
 ****
-****
-->>
-
-<<-1208	Get Equal Substrings Within Budget    		42.9%	Medium	
-two equal length string s and t, we want to change s to t by same locations at the cost of |s[i]-t[i]|.
-given a maxcost, and find the longest substring <=maxcost.
-sliding window of |s[i]-t[i]|.
-->>
-
-<<-1493	Longest Subarray of 1's After Deleting One Element    		58.6%	Medium	
-sliding window with at most one 0 inside. record previous 0 position.
 ->>
 
 <<-1695. Maximum Erasure value.
@@ -4192,14 +4198,9 @@ i the best candidate position,
 j loop over following chars
 k: the length or following chars.
 if s[j+k]>s[i+k] then i is not best, move to j.
+*****
 ->>
 
-<<-1358	Number of Substrings Containing All Three Characters    		60.0%	Medium	
-a string consists of only a,b,c. find number of strings containing all 3 chars.
-- we only need to find the smallest window containing the 3 chars. and all previous including the window are all valid substrings.
-sliding window to find the min window containing abc.
-hard!!!
-->>
 
 <<-1703. Min adjacent swaps for k consecutive ones.
 in one move, you can swap two adjacent elements (01 array). return min number of moves to have exactly k consecutive ones.
@@ -4216,9 +4217,24 @@ why? this is similar to best meeting point. for two, any between point will get 
 however, we do not need to move to the median position and that is why we need subtract the extra
 which is k*(k+1)/2/2.
 *****
+hard!!!
 ->>
 
-=======
+<<-727	Minimum Window Subsequence    		42.1%	Hard	
+given S and T, find the min size substr of S so that T is a subsequence of it.
+a very good question:
+approach 1: two pointer: i for S, and j for T. 
+first find one match, and from right to left we get the smallest length for this one
+then we proceed from next char and find next match
+for example: abcdebdde match against bde
+we first find "bcde" and from right to left get the smallest length is 4
+then we start from c: "cdebdde" and we find "bdde".
+- dp approach: dp[i,j] stores the starting index of S[0..i] and T[0...j].
+if S[i-1]==T[j-1] then the index no change.
+else dp[i,j-1] (since we only matched j-1 chars)
+invalid put -1.
+->>
+
 
 ## sort
 - sort makes things easier.
@@ -4454,7 +4470,7 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 ## data structure focused problems
 
 ## stack
-- general stack
+- general stack: first in last out.
 - monotonic stack, to use decreasing or increasing need ask what element is to stay in the stack.
 - recursive stack for syntax parsing.
 - stack is very useful and sometimes is also hard!
@@ -4463,6 +4479,7 @@ func(A,l,r) is the bit AND from A[l] to A[r]. find the func value closest to tar
 understand why we need use monotonic stack is very important. Among them find next smaller/greater is the base problem.
 
 ### general stack operations.
+
 <<-32	Longest Valid Parentheses    		28.9%	Hard	
 using stack to store index and eliminate valid pairs.
 ->>
@@ -4541,14 +4558,6 @@ using two stack for this
 simulate stack.
 ->>
 
-<<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	
-expression tree: leaf nodes are numbers, inner nodes are +-*/.
-infix expression: in order traversal of the binary tree
-given an input string with (), produce a expression tree with equal infix (omitting the ())
-typical syntax analysis using stack.
-using vector to store the node* is better for processing.
-->>
-
 <<-1628	Design an Expression Tree With Evaluate Function    		86.0%	Medium	
 given an virtual class interface and postfix string, build the tree and evaluate it.
 class design and oop and tree evaluations
@@ -4556,24 +4565,20 @@ class design and oop and tree evaluations
 - use a stack to store the generated treenode.
 - inherit a class from the virtual class.
 subject: tree, stack, OOP, polymorphism
+***
 ->>
 
 ### monotonic stack
 
-<<-42	Trapping Rain Water    		50.1%	Hard	
-monotonic stack: decreasing, when we see a larger one we get the water.
-for each bar, we need find the next greater and prev greater to get the water.
-->>
+monotonic stack/deque is often used to implement O(N) algorithm (generally need O(N^2) otherwise).
 
-<<-334	Increasing Triplet Subsequence    		39.9%	Medium	
-check if there exist i<j<k and A[i]<A[j]<A[k]
-similar to 132 pattern. s1 to be the left min.
-->>
+when need push/pop from both ends, we need use monotonic deque.
 
-<<-456	132 Pattern    		30.5%	Medium	
-i<j<k and nums[i]<nums[k]<nums[j]
-stack: from right to left, keep the stack the largest in the right, so when we see current val > stack top, we assign s3=stack top. then we see a number < s3, we know curr<s3.
-->>
+this topic is generally hard, and not intuitive. It is critical to understand why we do this.
+
+### one direction: next/prev smaller or larger.
+
+This is often easier, each element is pushed once and popped once. and required information is obtained while popping.
 
 <<-496	Next Greater Element I    		64.7%	Easy	
 given two array and find each number of A's greater element in B. A is a subset of B.
@@ -4595,19 +4600,18 @@ stock span means from today previous stock prices are consecutively <= today's p
 stack for previous larger. Montonic stack.
 ->>
 
-<<-907	Sum of Subarray Minimums    		33.3%	Medium	
-sum of all subarray min.
-each element can be min. using stack find previous larger and next larger to get the range. if left length is L: we can have L*A[i]
-->>
+<<-1019	Next Greater Node In Linked List    		58.2%	Medium	->>
 
+<<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	
+if you buy prices[i] you can get discount at price[j] where j>i and prices[j]<prices[i], j shall be minimized.
+stack: find next smaller.
+->>
 
 <<-1003	Check If Word Is Valid After Substitutions    		55.6%	Medium	
 given a string s, with only 'a','b','c'. check if you can build t by adding "abc" any times.
 equivalent: eliminate "abc" and make it empty.
 using stack or deque is more convenient since it needs check two chars.
 ->>
-
-<<-1019	Next Greater Node In Linked List    		58.2%	Medium	->>
 
 <<-1028	Recover a Tree From Preorder Traversal    		70.3%	Hard	
 preorder traversal to get the serialization string, with (dashes), number of dashes=depth+value.
@@ -4617,7 +4621,7 @@ add a - at the end for convenience.
 ->>
 
 <<-1063	Number of Valid Subarrays    		71.7%	Hard	
-leftmost element in the subarray <= other elements in the subarray.
+valid subarray: leftmost element in the subarray <= other elements in the subarray. 
 so the element shall be the min and we are looking for next smaller for each element.
 monotonic increasing stack.
 ->>
@@ -4625,6 +4629,7 @@ monotonic increasing stack.
 <<-1081	Smallest Subsequence of Distinct Characters    		53.3%	Medium	
 given a string, find the smallest subsequence with distinct characters.
 using monotonic increasing stack, when we see a smaller char behind we pop from stack (if the char has no more behind we cannot pop it)
+****
 ->>
 
 <<-316	Remove Duplicate Letters    		38.5%	Medium
@@ -4645,15 +4650,6 @@ see "c" ->"acdb"
 need a counter map, a visited array.
 ->>
 
-<<-1124	Longest Well-Performing Interval    		33.0%	Medium	
-change 9 to 1 and <8 to -1, then we are looking for the longest subarray sum >0.
-subarray sum can be done using prefix sum. 
-can generalize to subarry sum>target.
-- using ordered_map, we need check all smaller than current one. complexity would be O(nlogn)
-- using stack. keep the new lowest prefix into stack, and then from right, while current is larger than top, pop it and get the answer. 
-- using hashmap to record the prefix sum vs first appear index. if prefix>0, then the whole prefix is the valid subarray. if prefix<0, if we have not seen it, record it, otherwise we check score-1 (since the score start from 0, and -1 must appear than -2. (pretty tricky)
-->>
-
 <<-1130	Minimum Cost Tree From Leaf Values    		67.1%	Medium	
 given an array of integer, consider all binary tree:
 the leaf nodes are the array elements in order, the inner nodes is the product of left and right max leaf value. return the smallest sum of non-leaf nodes.
@@ -4664,15 +4660,44 @@ Once we are clear about that, we can use greedy approach.
 every leaf shall be combined with its left or right. For each element it shall combine to the next larger number to get rid of itself.
 So the problem is equivalent to find next larger integer in its left or right.
 And this can be solved using stack.
+*****
 ->>
 
-<<-85	Maximal Rectangle    		38.7%	Hard	
-row by row check histogram.
+### get next smaller/larger and previous smaller/larger
+generally involves to find a range or a window. (can be solved using sliding window with O(N^2)).
+
+<<-334	Increasing Triplet Subsequence    		39.9%	Medium	
+check if there exist i<j<k and A[i]<A[j]<A[k] (123 pattern)
+similar to 132 pattern. s1 to be the left min.
+idea: keep monotonic increasing stack, so that A[j] is as small as possible yet keep A[j]>A[i], then if we find current element > stack.top, we find one.
+***
+->>
+
+<<-456	132 Pattern    		30.5%	Medium	
+i<j<k and nums[i]<nums[k]<nums[j]
+stack: similar to 334. if we want to do from left, we need keep nums[i] as small as possible and nums[j] as large as possible. if we do from right to left, we want to keep nums[j]>nums[k] and nums[k] as large as possible. this is a decreasing stack. (current one is larger, pop smaller ones).
+from right to left, keep the stack the largest in the right, so when we see current val > stack top, we assign s3=stack top. then we see a number < s3, we know curr<s3.
+*****
+->>
+
+<<-907	Sum of Subarray Minimums    		33.3%	Medium	
+sum of all subarray min.
+each element can be min. using stack find previous smaller and next smaller to get the range. if left length is L: we can have L*A[i]
+- keep an increasing stack, if A[i]<stack top, we know the top element's right smaller. and stack increasing, so stack top element is A[i]'s left smaller.
+That is the regular trick to get previous smaller next smaller using one monotonic stack.
+***** 
+->>
+
+<<-42	Trapping Rain Water    		50.1%	Hard	
+monotonic stack: decreasing stack, when current bar is taller we get the water (a v shape).
+for each bar, we need find the next greater and prev greater to get the water.
+key idea: each bar as the lowest bar and calculate the water it holds.
+****
 ->>
 
 <<-84	Largest Rectangle in Histogram    		36.0%	Hard	
 find the largest rectange (think sorted, we need check each one as the lowest bar)
-idea: area is min(height(i..j)*(j-i+1))
+idea: area is min(height(i..j)*(j-i+1)) use each bar as the min bar and calculate the area, so we need to get previous smaller and next smaller. (so uses a increasing stack). the stack top element is the element with left and right smaller.
 thinking process: 
 - there are only n possible candidates since the largest rect has to be one of the height.
 - if we use bar[i] as the rect height, we need to make sure left and right are both higher than it
@@ -4687,14 +4712,31 @@ add 5: now we know next right is 7. pop 7, get area 7
 		pop 6, get area 6*2
 		stack [0,5]
 the idea:each bar can be the height of some rect, and we are looking for previous smaller and next smaller. so element increasing is fine, using monotonic increasing stack.
+*****
 ->>
 
-<<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	
-if you buy prices[i] you can get discount at price[j] where j>i and prices[j]<prices[i], j shall be minimized.
-stack: find next smaller.
+<<-85	Maximal Rectangle    		38.7%	Hard	
+row by row check histogram.
+->>
+
+<<-1124	Longest Well-Performing Interval    		33.0%	Medium	
+change 9 to 1 and <8 to -1, then we are looking for the longest subarray sum >0.
+subarray sum can be done using prefix sum. 
+can generalize to subarry sum>target.
+- using ordered_map, we need check all smaller than current one. complexity would be O(nlogn)
+- using stack. keep the new lowest prefix into stack, and then from right, while current is larger than top, pop it and get the answer. 
+- using hashmap to record the prefix sum vs first appear index. if prefix>0, then the whole prefix is the valid subarray. if prefix<0, if we have not seen it, record it, otherwise we check score-1 (since the score start from 0, and -1 must appear than -2. (pretty tricky)
 ->>
 
 ### recursive stack
+
+<<-1597	Build Binary Expression Tree From Infix Expression    		63.6%	Hard	
+expression tree: leaf nodes are numbers, inner nodes are +-*/.
+infix expression: in order traversal of the binary tree
+given an input string with (), produce a expression tree with equal infix (omitting the ())
+typical syntax analysis using stack.
+using vector to store the node* is better for processing.
+->>
 
 <<-439	Ternary Expression Parser    		56.3%	Medium	
 T?2:3 F?1:T?4:5
@@ -4818,13 +4860,19 @@ just simulate the deque
 ->>
 
 <<-239	Sliding Window Maximum    		44.1%	Hard	
-deque monotonic.
+deque monotonic. using index to pop out out of window elements, keep an increasing deque.
+similar for sliding window min
+sliding window median using heap.
+****
 ->>
 
 <<-862	Shortest Subarray with Sum at Least K    		24.9%	Hard	
-find the length.
+find the length. input array may contain negatives.
 - prefix sum and record its index and sorted in map then binary search. O(nlogn)
-- use deque to get O(N). monotonic decreasing deque (larger and old value are discarded)
+- use deque to get O(N). we are looking for previous prefix sum prej<=prei-k.
+monotonic decreasing deque (larger and old value are discarded since they cannot contribute shorter length). The deque front shall be the min so it is a decreasing deque)
+- why we cannot use sliding window by growing and shrinking? because it contains negative and shrinking will stop from getting the min window. If check all previous then it will get TLE.
+*****
 ->>
 
 
