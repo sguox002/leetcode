@@ -6411,6 +6411,7 @@ find and replace shall be done separately.
 <<-859	Buddy Strings    		29.9%	Easy	
 by swapping a pair in A exactly once, can you get B?
 compare one by one: 0 mismatch or 2 mismatch, for 2 mismatch must be able to swap. for 0 mismatch we need to find two same chars in A.
+another approach using hashmap to compare
 ->>
 
 <<-890	Find and Replace Pattern    		74.0%	Medium	->>
