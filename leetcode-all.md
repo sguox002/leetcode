@@ -95,7 +95,7 @@ dp[i]=min(dp[i-j*j]+1)
 at most k transactions. based on previous transactions.
 ->>
 <<-123	Best Time to Buy and Sell Stock III    		39.3%	Hard	
-at most two transactions. based on previous transactions
+at most two transactions. based on previous transactions. Note: top down for this will TLE. it is slower than bottom up (due to stack operations).
 ->>
 <<-122	Best Time to Buy and Sell Stock II    		57.9%	Easy	
 many transactions as possible.
@@ -2954,6 +2954,9 @@ it keep get all 2 factors, and then get all 3 factors...
 <<-416	Partition Equal Subset Sum    		44.3%	Medium	
 - dfs for k=2.
 - dp knapsack: choose or not choose. This is a special case for 698.
+target 0 for all array length is true.
+choose or not choose. (do not forget this)!!!
+****
 ->>
 
 <<-698	Partition to K Equal Sum Subsets    		45.3%	Medium	
@@ -3985,6 +3988,12 @@ fixed window size sliding is generally easy and not much tricks.
 also some times we discard those non-related elements and do fixed window on the new array, and change the variable size to fixed window.
 if we can do fixed window, try to use fixed size. (variable window is tricky and easy to make mistakes)
 
+<<-567	Permutation in String    		44.5%	Medium	
+check if s2 contains the permutation of s1 as a substring.
+fixed window sliding, + hashmap (using vector) when all 0 then we get a valid answer.
+**
+->>
+
 <<-438	Find All Anagrams in a String    		44.3%	Medium	
 find p's anagrams in s.
 fixed window size sliding + hashmap.
@@ -4093,6 +4102,9 @@ hashmap or sliding window: keep adding while >=s then shrinking the left.
 ***
 min window
 ->>
+
+see why min window subarray sum >=target with input having negatives cannot use sliding window since it is not sorted.
+862	Shortest Subarray with Sum at Least K 
 
 <<-424	Longest Repeating Character Replacement    		47.7%	Medium	
 return the longest repeating subarray after performing at most k char replacement.
@@ -5196,10 +5208,6 @@ assign a unique id to url, and then use the id to build a tiny url. each char fr
 number of subarrays with sum==k. hashmap + prefix sum.
 ->>
 
-<<-567	Permutation in String    		44.5%	Medium	
-check if s2 contains the permutation of s1 as a substring.
-fixed window sliding, + hashmap.
-->>
 
 <<-594	Longest Harmonious Subsequence    		47.4%	Easy	
 harmonious array: the max min difference is 1.
@@ -5909,7 +5917,25 @@ go to left or right O(log(n))
 
 <<-1123	Lowest Common Ancestor of Deepest Leaves    		67.2%	Medium	
 postorder visit and get the maxDepth and then back to root to check if left and right==maxh.
-tricky.
+tricky. depth: 
+```
+    int h=0;
+    TreeNode* lca=0;
+    TreeNode* lcaDeepestLeaves(TreeNode* root) {
+        depth(root,0);
+        return lca;
+    }
+    int depth(TreeNode* root,int d){
+        h=max(h,d);
+        if(!root) return d;
+        int left=depth(root->left,d+1);
+        int right=depth(root->right,d+1);
+        if(left==h && right==h)
+            lca=root;
+        return max(left,right);
+    }
+```
+****	
 ->>
 
 <<-1145	Binary Tree Coloring Game    		51.4%	Medium	
@@ -6231,6 +6257,7 @@ create two lists and then connect them.
 <<-426	Convert Binary Search Tree to Sorted Doubly Linked List    		60.2%	Medium	
 inorder traversal do the transformation in place.
 - create a dummy node and prev node.
+****
 ->>
 
 <<-430	Flatten a Multilevel Doubly Linked List    		56.3%	Medium	
