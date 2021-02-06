@@ -5489,6 +5489,25 @@ binary search. val<root, goes to left, else goes to right.
 ->>
 <<-700	Search in a Binary Search Tree    		73.3%	Easy	->>
 
+<<-270	Closest Binary Search Tree Value    		49.2%	Easy	
+find the value in O(logn). target is float.
+curr_diff=target-root->val, >0 we want to reduce the diff, goes to right.
+else goes to left O(h).
+->>
+
+<<-272	Closest Binary Search Tree Value II    		51.3%	Hard	
+find the k values closest to the target in BST.
+O(N): the difference is ia V shape. using a deque to move the window. O(N)
+if the tree is balanced: find the closest node and extend left and right (inorder and reverse inorder) 
+->>
+
+<<-333	Largest BST Subtree    		36.7%	Medium	
+find the subtree which is a BST with largest number of nodes.
+postorder: count the nodes and get the lmax and rmin to make sure it is a bst
+O(N) complexity.
+***
+->>
+
 ### preorder, inorder, postorder.
 <<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
 <<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
@@ -5521,6 +5540,10 @@ if there is right, go to the leftmost.
 ->>
 <<-101	Symmetric Tree    		47.6%	Easy	->>
 <<-100	Same Tree    		53.8%	Easy	->>
+<<-572	Subtree of Another Tree    		44.3%	Easy	
+two recursive problem: isSameTree and isSubtree.
+->>
+<<-965	Univalued Binary Tree    		67.6%	Easy	->>
 <<-617	Merge Two Binary Trees    		74.8%	Easy	
 overlapped add them together. do traverse at the same time.
 ->>
@@ -5530,6 +5553,7 @@ row number = height, col number shall be odd. even the node does not exist you n
 <<-987	Vertical Order Traversal of a Binary Tree    		37.2%	Medium	->>
 
 ### collect information while traversing.
+
 <<-112	Path Sum    		41.8%	Easy	
 check if there is a path sum=target. (from root to leaf)
 ->>
@@ -5541,25 +5565,31 @@ dfs or backtracking.
 
 <<-1022	Sum of Root To Leaf Binary Numbers    		71.2%	Easy	->>
 
+<<-1161	Maximum Level Sum of a Binary Tree    		71.1%	Medium	->>
+
+<<-515	Find Largest Value in Each Tree Row    		61.7%	Medium	
+dfs or bfs. simple.
+->>
+
 <<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	
 a path may pass or not pass the root.
 - get the subtree max path sum, left and right including root max path sum
 - the including root left/right path sum is similar to 1d array max subarray sum. (connecting or discard)
-- post order.
+- post order traversal + max subarray path sum.
+****
 ->>
 
 <<-366	Find Leaves of Binary Tree    		71.3%	Medium	
 find leaves and then remove, until no nodes left.
-postorder: leaf depth=0, and upper level is 1...
+postorder: leaf depth=0, and upper level is 1 and store same level nodes in array...
+(leaf=level 0) postorder depth! (we can also start from root depth=0 using dfs)
+*** 
 ->>
 
 <<-513	Find Bottom Left Tree Value    		62.0%	Medium	
 find the leftmost value on the bottom level.
 dfs when h>maxh record the value.
-->>
-
-<<-515	Find Largest Value in Each Tree Row    		61.7%	Medium	
-dfs or bfs.
+***
 ->>
 
 <<-1104	Path In Zigzag Labelled Binary Tree    		72.6%	Medium	
@@ -5567,37 +5597,33 @@ full tree, odd row are labelled from left to right, even rows are labelled from 
 just use full tree ordering and then convert.
 ->>
 
-<<-965	Univalued Binary Tree    		67.6%	Easy	->>
-
-<<-572	Subtree of Another Tree    		44.3%	Easy	
-two recursive problem: isSameTree and isSubtree.
-->>
-
 <<-652	Find Duplicate Subtrees    		51.3%	Medium	
 postorder get the subtree's serialization and check hashmap.
-->>
-
-<<-654	Maximum Binary Tree    		80.6%	Medium	
-root is the max. find the max divide into left and right.
+for each root, get the subtree serialization.
+****
 ->>
 
 <<-988	Smallest String Starting From Leaf    		46.4%	Medium	
-preorder
+preorder: reach leaf get the string.
 ->>
 
 <<-993	Cousins in Binary Tree    		52.1%	Easy	->>
 <<-872	Leaf-Similar Trees    		64.5%	Easy	->>
+
 <<-543	Diameter of Binary Tree    		48.9%	Easy	
 longest path, it could be root to leaf or cross the root.
 return longest root to leaf in subtree and cross root path.
+***
 ->>
 
 <<-1026	Maximum Difference Between Node and Ancestor    		68.8%	Medium	
 dfs to get the previous min and max, and compare the difference.
+****
 ->>
 
 <<-1120	Maximum Average Subtree    		63.1%	Medium	
 get the sum of values and number of nodes, postorder
+***
 ->>
 
 <<-236	Lowest Common Ancestor of a Binary Tree    		47.4%	Medium	->>
@@ -5606,7 +5632,8 @@ go to left or right O(log(n))
 ->>
 <<-1123	Lowest Common Ancestor of Deepest Leaves    		67.2%	Medium	
 postorder visit and get the maxDepth and then back to root to check if left and right==maxh.
-tricky. depth: 
+O(N^2) is simple but O(N) is tricky. 
+find depth and get the maxh at the same time, postorder from bottom to upper layers: 
 ```
     int h=0;
     TreeNode* lca=0;
@@ -5626,37 +5653,23 @@ tricky. depth:
 ```
 ****	
 ->>
-<<-1161	Maximum Level Sum of a Binary Tree    		71.1%	Medium	->>
+
 
 ### build tree
+all similar to divide and conquer procedure.
+
 <<-106	Construct Binary Tree from Inorder and Postorder Traversal    		48.5%	Medium	->>
 <<-105	Construct Binary Tree from Preorder and Inorder Traversal    		50.5%	Medium	->>
-<<-428	Serialize and Deserialize N-ary Tree    		60.6%	Hard	
-serialization needs include number of children for each node.
-->>
+
 <<-109	Convert Sorted List to Binary Search Tree    		49.2%	Medium	
 similar to array find the mid and divide into two parts.
 ->>
 <<-108	Convert Sorted Array to Binary Search Tree    		59.3%	Easy	->>
-<<-297	Serialize and Deserialize Binary Tree    		48.8%	Hard	->>
+
 <<-431	Encode N-ary Tree to Binary Tree    		73.9%	Hard	
 idea: the first children as the left, all the other children connected as the right.,
 decode reverse the process.
 ->>
-<<-331	Verify Preorder Serialization of a Binary Tree    		40.7%	Medium	
-serialization uses '#' for null node. 
-each node has two children (counting '#')
-- each node has one incoming, 2 outcoming.
-- root has zero incoming
-- '#' has no outcoming
-if we count diff=out-in. the diff will always >=0 and will be 0 at the end. (just similar to valid parenthesis)
-->>
-
-<<-449	Serialize and Deserialize BST    		53.5%	Medium	
-preorder: root left right .. and '# ' for null node.
-deserialization: also do preorder.
-->>
-
 <<-606	Construct String from Binary Tree    		54.8%	Easy	
 output tree as string in preorder, null node represented by (). root(left)(right)
 ->>
@@ -5664,9 +5677,37 @@ output tree as string in preorder, null node represented by (). root(left)(right
 <<-889	Construct Binary Tree from Preorder and Postorder Traversal    		66.9%	Medium	->>
 <<-1008	Construct Binary Search Tree from Preorder Traversal    		78.6%	Medium	->>
 
+<<-297	Serialize and Deserialize Binary Tree    		48.8%	Hard	
+Use # for null node. using stringstream to build the tree recursively.
+->>
+<<-428	Serialize and Deserialize N-ary Tree    		60.6%	Hard	
+serialization needs include number of children for each node. serialization text string for transfer.
+->>
+<<-331	Verify Preorder Serialization of a Binary Tree    		40.7%	Medium	
+serialization uses '#' for null node. 
+each node has two children (counting '#')
+- each node has one incoming, 2 outcoming.
+- root has zero incoming
+- '#' has no outcoming
+if we count diff=out-in. the diff will always >=0 and will be 0 at the end. (just similar to valid parenthesis, actually you can use () to serialize the tree)
+->>
+
+<<-449	Serialize and Deserialize BST    		53.5%	Medium	
+preorder: root left right .. and '# ' for null node.
+deserialization: also do preorder.
+same as serialization of binary tree.
+->>
+
+<<-654	Maximum Binary Tree    		80.6%	Medium	
+root is the max. build the tree from array.
+**
+->>
+
 ### apply algorithm in tree.
 
-<<-653	Two Sum IV - Input is a BST    		55.9%	Easy	->>
+<<-653	Two Sum IV - Input is a BST    		55.9%	Easy	
+tree traversal + hashtable
+->>
 
 <<-96	Unique Binary Search Trees    		53.8%	Medium	
 return number of unique BST using nodes 1 to n.
@@ -5674,35 +5715,20 @@ dp: dp[i] represent the number of unique BST for i nodes. dp[i]+=dp[j-1]*dp[i-j]
 ->>
 
 <<-250	Count Univalue Subtrees    		52.7%	Medium	
-post order traversal. 
+post order traversal, if current subtree is univalue add 1.
 ->>
 
 <<-255	Verify Preorder Sequence in Binary Search Tree    		45.9%	Medium	
-binary search to find the upper bound and divide into left and right.
+root left right. 
+binary search to find the upper bound and divide into left and right. and check all left < right. similar to divide and conquer.
 ->>
 
-<<-270	Closest Binary Search Tree Value    		49.2%	Easy	
-find the value in O(logn). target is float.
-curr_diff=target-root->val, >0 we want to reduce the diff, goes to right.
-else goes to left O(h).
-->>
-
-<<-272	Closest Binary Search Tree Value II    		51.3%	Hard	
-find the k values closest to the target in BST.
-O(N): the difference is ia V shape. using a deque to move the window. O(N)
-if the tree is balanced: find the closest node and extend left and right (inorder and reverse inorder) 
-->>
 
 <<-298	Binary Tree Longest Consecutive Sequence    		47.6%	Medium	
 path shall follow parent child, ascending order.
 dfs: if root!=parent+1, then reset the length otherwise =parent.length+1
 ->>
 
-<<-333	Largest BST Subtree    		36.7%	Medium	
-find the subtree which is a BST with largest number of nodes.
-postorder: count the nodes and get the lmax and rmin to make sure it is a bst
-O(N) complexity.
-->>
 
 <<-437	Path Sum III    		47.7%	Medium	
 find number of path with sum=target, the path does not need from root to leaf, but any downpath is good.
