@@ -5508,6 +5508,10 @@ O(N) complexity.
 ***
 ->>
 
+<<-783	Minimum Distance Between BST Nodes    		53.4%	Easy	
+absolute difference, just do inorder traversal.
+->>
+
 ### preorder, inorder, postorder.
 <<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
 <<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
@@ -5794,9 +5798,6 @@ find row N and kth digit.
 it forms a complete binary tree. if previous node is 0, then left is 0 and right is 1. if previous node is 1, then left is 1 right is 0. do it recursively.
 ->>
 
-<<-783	Minimum Distance Between BST Nodes    		53.4%	Easy	
-absolute difference, just do inorder traversal.
-->>
 <<-834	Sum of Distances in Tree    		44.9%	Hard	
 given a tree representing as a list of edges. return the sum of distance from i to all other nodes.
 this is mostly about optimization since a lot of paths are revisited.
@@ -6036,6 +6037,7 @@ it is better to use two states: the answer and the counting. (Note the dfs or po
 ->>
 
 ### change the tree: insert, delete, rotate, et al.
+
 <<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	
 right root left order 
 ->>
