@@ -869,7 +869,32 @@ need to optmize the getswaps using O(1)
         res -= (k / 2) * ((k + 1) / 2);
         return res;
     }
-```	
+```
+
+1163	Last Substring in Lexicographical Order 
+trie: TLE
+
+
+two pointer approach:
+i, j, with k as the length. i<j.
+s[i+k]==s[j+k] k++
+s[i+k]<s[j+k]: i=j, j++,k=0
+s[i+k]>s[j+k]: 	j+=k+1 since i is better, so j can go forward.
+
+```
+    string lastSubstring(string s) {
+        int n=s.length(),i=0,j=1,k=0;
+        while(j+k<n)
+        {
+            if(s[i+k]==s[j+k]) k++; 
+            else if(s[i+k]<s[j+k]) i=j++,k=0;
+            else j+=k+1,k=0;
+        }
+        return s.substr(i);
+    }
+```
+
+	
 	
 
 	
