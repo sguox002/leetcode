@@ -734,6 +734,8 @@ both operation complexity is O(logn)
 For array A[0..N] we precompute the T[0..N]
 for every T[i] it is the function on the range [g[i],i]
 
+code for sum [0,r]:
+```
 def sum(int r): #calculate the sum for A[0,r] using intervals seamlessly.
     res = 0
     while (r >= 0):
@@ -744,13 +746,15 @@ def sum(int r): #calculate the sum for A[0,r] using intervals seamlessly.
 def increase(int i, int delta): #increase A[i], we need change all T involving i.
     for all j with g(j) <= i <= j:
         t[j] += delta
+```
 	
 note: for sum, we are reducing the r, for increasing, we increase the j
 0-based index:
 g[i]=i&(i+1)
 h[j]=j|(j+1)
 
-finding sum:
+finding range sum in [l,r]:
+
 ```cpp
 struct FenwickTree {
     vector<int> bit;  // binary indexed tree

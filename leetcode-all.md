@@ -1214,6 +1214,8 @@ so hard!!!
 You can jump oe step left or right or stay.
 return the number of ways to stay in the same place 0 after k moves
 dp[i,k] could come from dp[i-1,k-1], dp[i+1,k-1] or dp[i,k-1]
+i is position and k is times so dp[n,k+1].
+*** 
 ->>
 
 <<-1259	Handshakes That Don't Cross    		53.9%	Hard	
@@ -2586,6 +2588,7 @@ binary search with rolling hash. use binary power to speed the calculation. be s
 <<-1060	Missing Element in Sorted Array    		54.5%	Medium	
 find the kth missing number start from the leftmost
 binary search!!
+***
 ->>
 
 <<-1064	Fixed Point    		65.6%	Easy	
@@ -2604,7 +2607,7 @@ binary search
 ->>
 
 <<-1150	Check If a Number Is Majority Element in a Sorted Array    		58.3%	Easy	
-using equal_range.
+using equal_range (binary search to get the number).
 ->>
 
 <<-1157	Online Majority Element In Subarray    		39.3%	Hard	
@@ -3687,7 +3690,7 @@ union-find.
 ->>
 
 <<-839	Similar String Groups    		39.1%	Hard	
-two strings are similar if we can swap two letters in x so that it equals y. 
+two strings are similar if we can swap two letters in x so that it equals y.  (same string are also similar)
 given a list of words, return the number of similar groups
 union-find.
 ->>
@@ -5468,25 +5471,29 @@ why tree is important? tree is base for a lot of data structures with O(n) or O(
 - tree is a special graph.
 - binary tree, BST, n-ary tree
 
-### tree traversal
-inorder, postorder, preorder, other order.
-no change to tree structure.immutable.
-- collect information while traversal to reduce O(N^2) to O(N).
-
 ### BSTs
+<<-938	Range Sum of BST    		82.6%	Easy	->>
+
+<<-1382	Balance a Binary Search Tree    		75.7%	Medium	
+convert to sorted array and then do merge sort
+->>
+
 <<-98	Validate Binary Search Tree    		28.2%	Medium	
 use min/max recursively. or O(N) in order traversal.
 ***
 ->>
+
 <<-285	Inorder Successor in BST    		41.7%	Medium	
 given a val, find its next greater.
 binary search. val<root, goes to left, else goes to right.
 ->>
+
 <<-230	Kth Smallest Element in a BST    		61.6%	Medium	
-- inorder traversal
-- binary search (count)
+- inorder traversal O(N)
+- binary search (count), O(nlogn)
 - if the tree is modified often? add a counter to each node.
 ->>
+
 <<-700	Search in a Binary Search Tree    		73.3%	Easy	->>
 
 <<-270	Closest Binary Search Tree Value    		49.2%	Easy	
@@ -5511,6 +5518,32 @@ O(N) complexity.
 <<-783	Minimum Distance Between BST Nodes    		53.4%	Easy	
 absolute difference, just do inorder traversal.
 ->>
+
+<<-255	Verify Preorder Sequence in Binary Search Tree    		45.9%	Medium	
+root left right. 
+binary search to find the upper bound and divide into left and right. and check all left < right. similar to divide and conquer.
+->>
+
+<<-1214	Two Sum BSTs    		67.8%	Medium	
+two bsts, check if a from bst1 and b from bst2 and a+b=target.
+hashmap + traverse
+->>
+
+<<-1373	Maximum Sum BST in Binary Tree    		38.1%	Hard	
+postorder to find the left max, right min and sum and isBST.
+->>
+
+<<-1305	All Elements in Two Binary Search Trees    		77.7%	Medium	
+approach 1: inorder for tree 1 and tree 2 separately and merge sort.
+approach 2: same time inorder traversal and merge. has to use iterative approach
+We are doing in-order traversal independently for two trees. When it's time to 'visit' a node on the top of the stack, we are visiting the smallest of two.
+->>
+
+### tree traversal
+inorder, postorder, preorder, other order.
+no change to tree structure.immutable.
+- collect information while traversal to reduce O(N^2) to O(N).
+
 
 ### preorder, inorder, postorder.
 <<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
@@ -5555,8 +5588,25 @@ overlapped add them together. do traverse at the same time.
 row number = height, col number shall be odd. even the node does not exist you need reserve space for it.
 ->>
 <<-987	Vertical Order Traversal of a Binary Tree    		37.2%	Medium	->>
+<<-690	Employee Importance    		57.9%	Easy	
+tree structure for postorder add.
+->>
 
 ### collect information while traversing.
+<<-865	Smallest Subtree with all the Deepest Nodes    		61.4%	Medium	
+postorder to get the max depth and the first node with ldepth=rdepth.
+similar to the LCA of all the deepest nodes.
+->>
+
+<<-894	All Possible Full Binary Trees    		76.5%	Medium	
+each node has 0 or 2 children. n nodes.
+N must be an odd number, give left/right (1,N-2),(3,N-5)... and do recursive
+->>
+
+<<-958	Check Completeness of a Binary Tree    		52.3%	Medium	
+- bfs level order traversal. If we see a null and still have nodes following, then it is not a complete tree.
+- dfs: find the depth. mark the end, h=mh-1. after end is found, if we see h=mh, then it is not a complete tree.
+->>
 
 <<-112	Path Sum    		41.8%	Easy	
 check if there is a path sum=target. (from root to leaf)
@@ -5658,6 +5708,96 @@ find depth and get the maxh at the same time, postorder from bottom to upper lay
 ****	
 ->>
 
+<<-111	Minimum Depth of Binary Tree    		38.8%	Easy	->>
+<<-129	Sum Root to Leaf Numbers    		50.1%	Medium	->>
+<<-1379	Find a Corresponding Node of a Binary Tree in a Clone of That Tree    		84.0%	Medium	
+traverse at the same time in original and cloned tree.
+->>
+<<-1469	Find All The Lonely Nodes    		80.8%	Easy	
+parent has only one child, the child is lonely node, dfs.
+->>
+
+
+<<-1506	Find Root of N-Ary Tree    		80.5%	Medium	
+given a list nodes (Node*) find the root.
+using xor: root only appears once, but all other nodes have parents
+using dfs and xor.
+->>
+
+<<-1519	Number of Nodes in the Sub-Tree With the Same Label    		36.2%	Medium	
+a tree with n nodes from 0 to n-1, 0 as the root. each node has a char label.
+The tree is given by list of edges.
+return number of nodes with the same label as node i in the subtree of node i.
+- adjacency matrix
+- postorder (n-ary tree) return the hashmap （using vector of 26)
+->>
+
+<<-1522	Diameter of N-Ary Tree    		68.5%	Medium	
+diameter: longest path among any two nodes.
+postorder traversal: get the child max depth and 2nd max depth, add them and compare with global diameter
+->>
+
+<<-1530	Number of Good Leaf Nodes Pairs    		55.2%	Medium	
+given a tree and a distance limit. A good pair leaf their distance <=limit.
+leaf distance: must through the root (recursively). so get the left leaf depth and right leaf depth
+and find combinations
+->>
+
+<<-1572	Matrix Diagonal Sum    		78.3%	Easy	->>
+<<-1586	Binary Search Tree Iterator II    		65.6%	Medium	
+this we need add prev and hasPrev.
+- inorder traversal and put into vector, trivial
+- iterative: only maintain the visited nodes using stack.
+->>
+
+<<-1602	Find Nearest Right Node in Binary Tree    		75.0%	Medium	
+given a node u, find its nearest right node. using dfs and store the previous node.
+->>
+
+<<-1609	Even Odd Tree    		54.0%	Medium	
+root is level 0, child at level 1. odd indexed level all even, and even index level all odd.
+and in strictly increasing order.
+dfs and save to a list only the previous node. and check against its index.
+->>
+
+<<-1612	Check If Two Expression Trees are Equivalent    		71.0%	Medium	
+expression tree: leaf are values a-z, operation + only.
+just connect the leaf nodes and sort to check if two are equal.
+->>
+
+<<-235. Lowest Common Ancestor of a Binary Search Tree
+use the BST property and determine which branch to go.
+->>
+
+<<-1257	Smallest Common Region    		60.0%	Medium	
+given regions: each row, the first region contains all remaining regions in the same row.
+given two regions, find the smallest region contain the two regions.
+- build the parent relation similar to union find
+- find the lowest common ancestor for the two regions (save all parents for region1, and then the first match for region2 is the LCA)
+->>
+
+<<-236. Lowest Common Ancestor of a Binary Tree
+the typical dfs approach.
+->>
+
+<<-1644	Lowest Common Ancestor of a Binary Tree II    		59.7%	Medium	
+p or q may not exist in the tree.
+while searching, return node and return bool.
+->>
+
+<<-1650. Lowest Common Ancestor of a Binary Tree III
+Problem: node has left,right,parent. The tree is not given.
+- approach 1: we can go up to find the root first and then is the same with lca.
+- approach 2: go up from p and q, find the first common node.
+- approach 3: equivalent to find the intersection node of two linked list. (brilliant)
+->>
+
+<<-1676. Lowest Common Ancestor of a Binary Tree IV
+now given a list of nodes, find their LCA
+approach 1: using 2 node's lca and reduce by half. O(mnlogm)
+approach 2: traversal and mark each found nodes using postorder traversal. The first visited node when all nodes are seen is the LCA.
+it is better to use two states: the answer and the counting. (Note the dfs or postorder, we need assign the answer only the first time).
+->>
 
 ### build tree
 all similar to divide and conquer procedure.
@@ -5707,10 +5847,37 @@ root is the max. build the tree from array.
 **
 ->>
 
+<<-998	Maximum Binary Tree II    		63.6%	Medium	
+max tree: node value is greater than all nodes in its subtree.
+build from an array, if A[i] is the max, then A[i] will be the root, and left put in left subtree, right put in right subtree.
+Now we already build the tree and we append a val to A, return the tree.
+- if val>root, root will be the left.
+- else add the val to the right tree.
+->>
+
+<<-1485	Clone Binary Tree With Random Pointer    		80.1%	Medium	
+same as graph clone using hashmap + traverse.
+with random pointer. store node vs node in hashmap and then change all pointer's random pointer using the map.
+pay attention to null random pointer (they are not in the map).
+random pointer may forms a cycle, but this way we have no problem.
+->>
+
+<<-1490	Clone N-ary Tree    		83.7%	Medium	
+same as deep copy of graph. dfs
+->>
+
 ### apply algorithm in tree.
 
 <<-653	Two Sum IV - Input is a BST    		55.9%	Easy	
 tree traversal + hashtable
+->>
+
+<<-124	Binary Tree Maximum Path Sum    		35.0%	Hard	
+a path may pass or not pass the root.
+- get the subtree max path sum, left and right including root max path sum
+- the including root left/right path sum is similar to 1d array max subarray sum. (connecting or discard)
+- post order. get lmax and rmax including the root, and the connect left and right with root, get the global max.
+***
 ->>
 
 <<-96	Unique Binary Search Trees    		53.8%	Medium	
@@ -5722,21 +5889,26 @@ dp: dp[i] represent the number of unique BST for i nodes. dp[i]+=dp[j-1]*dp[i-j]
 post order traversal, if current subtree is univalue add 1.
 ->>
 
-<<-255	Verify Preorder Sequence in Binary Search Tree    		45.9%	Medium	
-root left right. 
-binary search to find the upper bound and divide into left and right. and check all left < right. similar to divide and conquer.
-->>
-
-
 <<-298	Binary Tree Longest Consecutive Sequence    		47.6%	Medium	
 path shall follow parent child, ascending order.
 dfs: if root!=parent+1, then reset the length otherwise =parent.length+1
+- preorder: need parent information.
+***
 ->>
 
+<<-549	Binary Tree Longest Consecutive Sequence II    		47.1%	Medium	
+longest path with consecutive sequence (either increasing or decreasing). The path can cross the root.
+- get left and right longest path, longest sequence ending with root.
+- postorder to get the two results: longest increasing, longest decreasing sequence
+{inc,dec}, longest=max(longest,inc+dec-1);
+****
+->>
 
 <<-437	Path Sum III    		47.7%	Medium	
 find number of path with sum=target, the path does not need from root to leaf, but any downpath is good.
 prefix sum with hashmap while dfs.
+similar to subarray sum = target. (1d array range sum problem)
+***
 ->>
 
 <<-508	Most Frequent Subtree Sum    		58.6%	Medium	
@@ -5750,24 +5922,20 @@ postorder for the right boundary.
 also need judge if the node is left or right boundary
 left boundary: lb && !root->left
 right boundary: rb && !root->right
-->>
-
-<<-549	Binary Tree Longest Consecutive Sequence II    		47.1%	Medium	
-longest path with consecutive sequence (either increasing or decreasing).
-- get left and right longest path, longest sequence ending with root.
-- postorder to get the two results: longest increasing, longest decreasing sequence
-{inc,dec}, longest=max(longest,inc+dec-1);
-- preorder: need parent information.
+****
 ->>
 
 <<-662	Maximum Width of Binary Tree    		40.2%	Medium	
 width is the level width. (according to full tree definition)
-dfs with full tree index.
+dfs with full tree index. 2*i and 2*i+1 for left and right children.
+attention: overflow problem.
 ->>
 
 <<-663	Equal Tree Partition    		39.6%	Medium	
 divide into two subtree with same sum by removing one edge.
 record each subtree's sum in hashmap. one tree must be a subtree, so we just find sum/2.
+- first get total sum, then do postorder get subtree sum.
+- or just one pass post order and store subtree sum in hashset.
 ->>
 
 <<-666	Path Sum IV    		55.3%	Medium	
@@ -5782,10 +5950,6 @@ unit digit: value.
 tree is given in ascending order.
 return the sum of all paths from root to leaf.
 represent the tree with array (full tree representation). nonexistent with 0.
-->>
-
-<<-690	Employee Importance    		57.9%	Easy	
-tree structure for postorder add.
 ->>
 
 <<-687	Longest Univalue Path    		36.8%	Medium	
@@ -5806,21 +5970,7 @@ this is mostly about optimization since a lot of paths are revisited.
 - start from root 0, do a postorder traversal to get number of nodes in subtree and sum of distance in substree. count[root]=sum(count[child])+1, dist[root]=sum(dist[child])+sum(count[child])
 - when we move root from parent to its child i, res[i]=res[root]-count[i]+N-count[i], do a preorder dfs to update.
 tree+dp, hard!!
-->>
-
-<<-865	Smallest Subtree with all the Deepest Nodes    		61.4%	Medium	
-postorder to get the max depth and the first node with ldepth=rdepth.
-->>
-
-<<-894	All Possible Full Binary Trees    		76.5%	Medium	
-each node has 0 or 2 children. n nodes.
-N must be an odd number, give left/right (1,N-2),(3,N-5)... and do recursive
-->>
-
-<<-938	Range Sum of BST    		82.6%	Easy	->>
-<<-958	Check Completeness of a Binary Tree    		52.3%	Medium	
-- bfs level order traversal. If we see a null and still have nodes following, then it is not a complete tree.
-- dfs: find the depth. mark the end, h=mh-1. after end is found, if we see h=mh, then it is not a complete tree.
+*****
 ->>
 
 <<-968	Binary Tree Cameras    		38.1%	Hard	
@@ -5830,28 +5980,16 @@ idea: greedy approach, we need do postorder traversal and put the camera on the 
 define 3 state： 0： not covered, 1, place a camera, 2: covered.
 child 0x or x0, we need add one at parent, 22, we do not place camera but not monitored.
 12 or 21->monitored.
+greedy。
+*****
 ->>
-
-<<-1080	Insufficient Nodes in Root to Leaf Paths    		49.7%	Medium	
-a node is insufficient if all path passing this node has a sum < limit.
-remove all the insufficient nodes.
-dfs and subtract the node from limit. Note if the left and right is removed, the root shall also be removed.
-->>
-
 
 <<-979	Distribute Coins in Binary Tree    		69.2%	Medium	
 given a binary tree with n nodes and n coins. In each move, you can choose two adjacent nodes and move one coin from one to the other. The coin initial distribution is given as tree node value.
 return the min number of operations to make each node one coin.
 postorder to get the sum of node value -1 (since we need 1)
 the steps from/to root is abs(sum).
-->>
-
-<<-998	Maximum Binary Tree II    		63.6%	Medium	
-max tree: node value is greater than all nodes in its subtree.
-build from an array, if A[i] is the max, then A[i] will be the root, and left put in left subtree, right put in right subtree.
-Now we already build the tree and we append a val to A, return the tree.
-- if val>root, root will be the left.
-- else add the val to the right tree.
+*****
 ->>
 
 <<-1145	Binary Tree Coloring Game    		51.4%	Medium	
@@ -5859,32 +5997,23 @@ first player choose one node, each player can only choose his neighnors.
 second player can have 3 choices: left child, parent,right child. Since the choice will bprevent the first player to choose that branch. So it turns out the count the nodes in all three branches. You can always choose two branches.
 ->>
 
-<<-1214	Two Sum BSTs    		67.8%	Medium	
-two bsts, check if a from bst1 and b from bst2 and a+b=target.
-hashmap + traverse
-->>
-
 <<-1245	Tree Diameter    		61.1%	Medium	
 n-ary tree. given a list of edges. 
 dfs: get the depth and find the max and 2nd max depth for node. 
-diameter is the max depth + 2nd max depth via some node.
+diameter is the max depth + 2nd max depth via some node. (similar to find max and 2nd max in array in O(N)
 ->>
 
 <<-1302	Deepest Leaves Sum    		83.9%	Medium	
 two pass is trivial one pass to get the max depth, one pass to get the sum.
 one pass: bfs to get the previous row's sum.
 one pass: dfs, get the depth and max depth, when d>md, reset the sum.
-->>
-
-<<-1305	All Elements in Two Binary Search Trees    		77.7%	Medium	
-approach 1: inorder for tree 1 and tree 2 separately and merge sort.
-approach 2: same time inorder traversal and merge. has to use iterative approach
-We are doing in-order traversal independently for two trees. When it's time to 'visit' a node on the top of the stack, we are visiting the smallest of two.
+similar to LCA deepest nodes., subtree of deepest nodes.
 ->>
 
 <<-1315	Sum of Nodes with Even-Valued Grandparent    		83.8%	Medium	
 dfs with parent info.
 ->>
+
 <<-1339	Maximum Product of Splitted Binary Tree    		37.4%	Medium	
 split the tree by removing one edge, return the max product of the two tree's sum.
 a+b=tsum, max(ab) it is same to min(|a-b|)
@@ -5894,29 +6023,19 @@ two pass visit. first any order to get the sum, second postorder to get mindiff.
 <<-1361	Validate Binary Tree Nodes    		44.9%	Medium	
 given a tree with a list of nodes and its left child and right child (-1 means no child)
 a tree shall have n nodes, n-1 edges and each node except the root has one pararent, no cycle.
+tree property.
 ->>
 
 <<-1367	Linked List in Binary Tree    		41.1%	Medium	
 check if the linked list exist in the tree as a down path.
 - find all nodes as starting and do dfs and traverse on linked-list. or
 - it can start as root, left or right, so check 3 problem.
+***
 ->>
 
 <<-1372	Longest ZigZag Path in a Binary Tree    		54.4%	Medium	
 choose a node and then choose a direction and then switch direction. Get the longest path.
 postorder traversal and return the subtree max path, using left branch or right branch,
-->>
-
-<<-1373	Maximum Sum BST in Binary Tree    		38.1%	Hard	
-postorder to find the left max, right min and sum and isBST.
-->>
-
-<<-1379	Find a Corresponding Node of a Binary Tree in a Clone of That Tree    		84.0%	Medium	
-traverse at the same time in original and cloned tree.
-->>
-
-<<-1382	Balance a Binary Search Tree    		75.7%	Medium	
-convert to sorted array and then do merge sort
 ->>
 
 <<-1430	Check If a String Is a Valid Sequence from Root to Leaves Path in a Binary Tree    		45.0%	Medium	
@@ -5941,102 +6060,13 @@ a tree node value are from 1 to 9. return the number of pseuso-palindrome path f
 - record the digit's even odd. A path is valid if it has at most one odd.
 ->>
 
-<<-1469	Find All The Lonely Nodes    		80.8%	Easy	
-parent has only one child, the child is lonely node, dfs.
-->>
-
-<<-1485	Clone Binary Tree With Random Pointer    		80.1%	Medium	
-same as graph clone using hashmap + traverse.
-with random pointer. store node vs node in hashmap and then change all pointer's random pointer using the map.
-pay attention to null random pointer (they are not in the map).
-random pointer may forms a cycle, but this way we have no problem.
-->>
-
-<<-1490	Clone N-ary Tree    		83.7%	Medium	
-same as deep copy of graph. dfs
-->>
-
-<<-1506	Find Root of N-Ary Tree    		80.5%	Medium	
-given a list nodes (Node*) find the root.
-using xor: root only appears once, but all other nodes have parents
-using dfs and xor.
-->>
-
-<<-1519	Number of Nodes in the Sub-Tree With the Same Label    		36.2%	Medium	
-a tree with n nodes from 0 to n-1, 0 as the root. each node has a char label.
-The tree is given by list of edges.
-return number of nodes with the same label as node i in the subtree of node i.
-- adjacency matrix
-- postorder (n-ary tree) return the hashmap （using vector of 26)
-->>
-
-<<-1522	Diameter of N-Ary Tree    		68.5%	Medium	
-diameter: longest path among any two nodes.
-postorder traversal: get the child max depth and 2nd max depth, add them and compare with global diameter
-->>
-
-<<-1530	Number of Good Leaf Nodes Pairs    		55.2%	Medium	
-given a tree and a distance limit. A good pair leaf their distance <=limit.
-leaf distance: must through the root (recursively). so get the left leaf depth and right leaf depth
-and find combinations
-->>
-
-<<-1572	Matrix Diagonal Sum    		78.3%	Easy	->>
-<<-1586	Binary Search Tree Iterator II    		65.6%	Medium	
-this we need add prev and hasPrev.
-- inorder traversal and put into vector, trivial
-- iterative: only maintain the visited nodes using stack.
-->>
-
-<<-1602	Find Nearest Right Node in Binary Tree    		75.0%	Medium	
-given a node u, find its nearest right node. using dfs and store the previous node.
-->>
-
-<<-1609	Even Odd Tree    		54.0%	Medium	
-root is level 0, child at level 1. odd indexed level all even, and even index level all odd.
-and in strictly increasing order.
-dfs and save to a list only the previous node. and check against its index.
-->>
-
-<<-1612	Check If Two Expression Trees are Equivalent    		71.0%	Medium	
-expression tree: leaf are values a-z, operation + only.
-just connect the leaf nodes and sort to check if two are equal.
-->>
-<<-235. Lowest Common Ancestor of a Binary Search Tree
-use the BST property and determine which branch to go.
-->>
-
-<<-1257	Smallest Common Region    		60.0%	Medium	
-given regions: each row, the first region contains all remaining regions in the same row.
-given two regions, find the smallest region contain the two regions.
-- build the parent relation similar to union find
-- find the lowest common ancestor for the two regions (save all parents for region1, and then the first match for region2 is the LCA)
-->>
-
-<<-236. Lowest Common Ancestor of a Binary Tree
-the typical dfs approach.
-->>
-
-<<-1644	Lowest Common Ancestor of a Binary Tree II    		59.7%	Medium	
-p or q may not exist in the tree.
-while searching, return node and return bool.
-->>
-
-<<-1650. Lowest Common Ancestor of a Binary Tree III
-Problem: node has left,right,parent. The tree is not given.
-- approach 1: we can go up to find the root first and then is the same with lca.
-- approach 2: go up from p and q, find the first common node.
-- approach 3: equivalent to find the intersection node of two linked list. (brilliant)
-->>
-
-<<-1676. Lowest Common Ancestor of a Binary Tree IV
-now given a list of nodes, find their LCA
-approach 1: using 2 node's lca and reduce by half. O(mnlogm)
-approach 2: traversal and mark each found nodes using postorder traversal. The first visited node when all nodes are seen is the LCA.
-it is better to use two states: the answer and the counting. (Note the dfs or postorder, we need assign the answer only the first time).
-->>
-
 ### change the tree: insert, delete, rotate, et al.
+
+<<-1080	Insufficient Nodes in Root to Leaf Paths    		49.7%	Medium	
+a node is insufficient if all path passing this node has a sum < limit.
+remove all the insufficient nodes.
+dfs and subtract the node from limit. Note if the left and right is removed, the root shall also be removed.
+->>
 
 <<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	
 right root left order 
@@ -6184,8 +6214,56 @@ subject: binary tree, very confusing.
 level: 4
 ->>
 
-### segment tree or binary index tree
+## binary index tree
 see the appendix for binary index tree.
+fenwick tree or binary index tree O(nlogn) to update and query range sum in [l,r].
+
+including sum, xor the function shall be reversible. BIT is used to calculate/update the function in O(logn).
+A BIT is an array where each element T[i]=sum of elements in original array A in range [g(i),i] with 0<=g[i]<=i.
+
+g(i): replace all i's binary trailing 1 to 0. (so g(i)<=i)
+i.e. g(i)=i&(i+1) (eliminate all trailing zeros)
+
+update: for all j with g(j)<=i<=j h(j)=j|(j+1)
+
+- 1d array 
+- 2d array
+- build the BIT array
+- add range sum 
+- add update function
+
+both can be used for dynamic cases (query and updates). BIT actually does not have a tree structure so cannot use tree traversal, but its navigation is determined by the simple relation. segment tree although uses the array but its inside logic is binary tree structure, so we can use those tree traversal and is more understandable (can use recursive).
+in a lot of cases, they are exchangeable. segment tree is more versatile.
+
+<<-307	Range Sum Query - Mutable    		36.0%	Medium	
+array.
+binary index tree for 1d array. need convert update to add/increase function. (need keep original array and BIT).
+***
+->>
+<<-303	Range Sum Query - Immutable    		46.3%	Easy	
+prefix sum. 1d.
+->>
+
+<<-308	Range Sum Query 2D - Mutable    		36.7%	Hard	
+update an element.
+sum region
+prefix sum using similar dp.
+binary index tree for 2d array. using 1-index equation
+do not know why using the loop variable as the same as input will get incorrect results.
+***
+->>
+<<-304	Range Sum Query 2D - Immutable    		39.7%	Medium	
+prefix sum. 2d.
+->>
+
+<<-327	Count of Range Sum    		35.7%	Hard	
+return the number of range sums in [L,R].
+prefix sum, and save in map: presum vs list of index.
+then use binary search to get the lowerbound and upperbound.
+other approach:
+- merge sort (divide and conquer): prefix sum and divide into two parts, count the right part - left part in the range.
+- binary index tree: hard to understand why BIT can be used
+->>
 
 <<-1505	Minimum Possible Integer After at Most K Adjacent Swaps On Digits    		36.1%	Hard	
 a string of digits, you are allowed to swap two adjacent digits, at most k operations are allowed. return the min string you can obtain.
@@ -6201,37 +6279,20 @@ query[i] move the element at query[i] to the beginning
 tag: array, value vs index, hashmap
 ->>
 
-<<-327	Count of Range Sum    		35.7%	Hard	
-return the number of range sums in [L,R].
-prefix sum, and save in map: presum vs list of index.
-then use binary search to get the lowerbound and upperbound.
-other approach:
-merge sort: prefix sum and divide into two parts, count the right part - left part in the range.
-binary index tree:
-->>
-
-<<-308	Range Sum Query 2D - Mutable    		36.7%	Hard	
-update an element.
-sum region
-prefix sum using similar dp.
-binary index tree.
-->>
-
-<<-307	Range Sum Query - Mutable    		36.0%	Medium	
-array, instead of 2d matrix.
-binary index tree.
-->>
-
-<<-304	Range Sum Query 2D - Immutable    		39.7%	Medium	
-prefix sum. 2d.
-->>
-<<-303	Range Sum Query - Immutable    		46.3%	Easy	
-prefix sum. 1d.
-->>
-
 <<-1649	Create Sorted Array through Instructions    		42.0%	Hard	
 segment tree 
 ->>
+
+## segment tree
+
+segment tree is a full binary tree with the root for the whole tree, left is the left array and right is the right array recursively. Using array to store the tree and the index of the child and parent relation is fixed.
+
+- compute range sum
+- compute range max/min
+- compute range gcd/lcm 
+
+we can use a full binary tree (in array) to store the segment tree.
+- apply tree's traversal, preorder, postorder, inorder...
 
 ### linked list
 - single linked list
@@ -7235,7 +7296,9 @@ bfs: for each candidate, rotate to get all possible strings (unvisited) and then
 ->>
 
 ## math
-<<-29	Divide Two Integers    		16.5%	Medium	->>
+<<-29	Divide Two Integers    		16.5%	Medium	
+math: using divisor double until <=divid and then use binary coefficient to get all binary coeff..
+->>
 <<-43	Multiply Strings    		34.4%	Medium	->>
 <<-50	Pow(x, n)    		30.7%	Medium	
 binary exponential.
@@ -8309,7 +8372,10 @@ basically it is two problem: find the node and find the min-depth (note you need
 ->>
 
 <<-785	Is Graph Bipartite?    		48.0%	Medium	
-dfs coloring
+dfs coloring:
+first judge if colored, if yes check color the same
+then color the node and then check its connected neighbors.
+***
 ->>
 <<-802	Find Eventual Safe States    		49.3%	Medium	
 given a directed graph as an adjacency matrix.
@@ -8734,7 +8800,9 @@ thus no dfs needed.
 
 <<-720	Longest Word in Dictionary    		48.9%	Easy	
 longest word which can be built one char from other words in the dictionary.
-build a trie and search start with. (sort reversely using length)
+- build a trie and search start with. (sort reversely using length)
+- sort alphabetically and use dp similar approach.
+***
 ->>
 
 <<-745	Prefix and Suffix Search    		34.7%	Hard	
