@@ -6285,7 +6285,7 @@ segment tree
 
 ## segment tree
 
-segment tree is a full binary tree with the root for the whole tree, left is the left array and right is the right array recursively. Using array to store the tree and the index of the child and parent relation is fixed.
+segment tree is a full binary tree with the root for the whole tree, left is the left array and right is the right array recursively. Using array to store the tree and the index of the child and parent relation is fixed. so needs extra storage.
 
 - compute range sum
 - compute range max/min
@@ -6293,6 +6293,71 @@ segment tree is a full binary tree with the root for the whole tree, left is the
 
 we can use a full binary tree (in array) to store the segment tree.
 - apply tree's traversal, preorder, postorder, inorder...
+- segment tree can solve similar BIT problem.
+
+- the segment tree is stored as a complete tree in array. parent index v, left child index 2*v, and right child index 2v+1.
+- the leaf nodes are the single element in original array.
+- the tree array need store all parent nodes, max size 4*N.
+
+build the segment tree:
+- postorder build: each node contain the segment sum.
+- or you can actually build a tree, which we can use tree traversal.
+
+query the sum in A[l,r]:
+- go to left or right, or break into left and right two intervals
+- recursively get the range sum. (preorder to get the interval sum)
+
+update the elements:
+- similar to build, update the leaf and propage to all parents nodes.
+
+segment tree in array:
+tree[1] is the root node. so we cn use 2v and 2v+1 as left and right.
+
+<<-308	Range Sum Query 2D - Mutable
+
+- tree: root index=1, range 0 to n-1.
+- goes left and right or break into left and right.
+
+```
+    vector<int> tree;
+    int n;
+    NumArray(vector<int>& nums) {
+        n=nums.size();
+        tree.resize(4*n);
+        build_tree(nums,1,0,n-1);
+    }
+    
+    void update(int index, int val) {
+        update(1,0,n-1,index,val);//start from root, postorder
+    }
+    void update(int v,int tl,int tr,int ind,int val){
+        if(tl==tr) {tree[v]=val;return;}
+        int tm=(tl+tr)/2;
+        if(ind<=tm) 
+            update(2*v,tl,tm,ind,val); //go to left
+        else 
+            update(2*v+1,tm+1,tr,ind,val); //go to right
+        tree[v]=tree[2*v]+tree[2*v+1]; //update parent
+    }
+    
+    int sumRange(int left, int right) {
+        return sum(1,0,n-1,left,right); 
+    }
+    int sum(int v,int tl,int tr,int l,int r){
+        if(l>r) return 0;
+        if(l==tl && r==tr) return tree[v]; //found a matching interval sum
+        int tm=(tl+tr)/2;
+        return sum(2*v,tl,tm,l,min(r,tm))+sum(2*v+1,tm+1,tr,max(l,tm+1),r);
+    }
+    void build_tree(vector<int>& nums,int v,int tl,int tr){
+        if(tl==tr) {tree[v]=nums[tl];return;}
+        int tm=(tl+tr)/2;
+        build_tree(nums,2*v,tl,tm);
+        build_tree(nums,2*v+1,tm+1,tr);
+        tree[v]=tree[2*v]+tree[2*v+1];
+    }
+```
+->>
 
 ### linked list
 - single linked list
