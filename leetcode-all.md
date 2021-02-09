@@ -6066,15 +6066,31 @@ a tree node value are from 1 to 9. return the number of pseuso-palindrome path f
 a node is insufficient if all path passing this node has a sum < limit.
 remove all the insufficient nodes.
 dfs and subtract the node from limit. Note if the left and right is removed, the root shall also be removed.
+actually this is a first dfs and then postorder traversal.
+if the leaf < limit, we return null.
+and then postorder the left and right and update the root.
+```
+    TreeNode* sufficientSubset(TreeNode* root, int limit) {
+        if(!root) return 0;
+		if(root->left==root->right) 
+            return root->val<limit?0:root;
+		root->left=sufficientSubset(root->left,limit-root->val);
+		root->right=sufficientSubset(root->right,limit-root->val);
+		return root->left==root->right?0:root;
+    }
+```
+****	
 ->>
 
 <<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	
-right root left order 
+right root left order using a prev node.
+***
 ->>
 
 <<-99	Recover Binary Search Tree    		41.7%	Hard	
 two nodes of the BST was swapped. 
 inorder traversal, similar to 1d array, it will create one pair or two pairs of disorder.
+one pair: it is adjacent, otherwise two positions.
 ->>
 
 <<-156	Binary Tree Upside Down    		55.6%	Medium	
@@ -6100,6 +6116,8 @@ if key==root, we first sink the root to its right leftmost node, swap it, and de
 <<-538	Convert BST to Greater Tree    		56.1%	Medium	
 node value is changed to the value + sum of all keys greater than it.
 right, root, left order.
+suffix sum.
+***
 ->>
 
 <<-563	Binary Tree Tilt    		52.2%	Easy	
