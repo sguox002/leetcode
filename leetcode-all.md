@@ -5072,6 +5072,7 @@ fixed window size and
 
 <<-138	Copy List with Random Pointer    		38.5%	Medium	
 hashmap node vs node.
+or: copy node by node and form a list, then assign the random pointer, then break into two lists.
 ->>
 
 <<-146	LRU Cache    		34.6%	Medium	
@@ -5539,6 +5540,13 @@ approach 2: same time inorder traversal and merge. has to use iterative approach
 We are doing in-order traversal independently for two trees. When it's time to 'visit' a node on the top of the stack, we are visiting the smallest of two.
 ->>
 
+<<-99	Recover Binary Search Tree    		41.7%	Hard	
+two nodes of the BST was swapped. 
+inorder traversal, similar to 1d array, it will create one pair or two pairs of disorder.
+one pair: it is adjacent, otherwise two positions.
+**
+->>
+
 ### tree traversal
 inorder, postorder, preorder, other order.
 no change to tree structure.immutable.
@@ -5871,6 +5879,12 @@ random pointer may forms a cycle, but this way we have no problem.
 same as deep copy of graph. dfs
 ->>
 
+<<-582	Kill Process    		62.0%	Medium	
+given proces id and its parent id. kill a process will also kill its all ascendants.
+build the tree relation (unordered_map ajacent matrix) and do dfs from the id.
+**
+->>
+
 ### apply algorithm in tree.
 
 <<-653	Two Sum IV - Input is a BST    		55.9%	Easy	
@@ -6067,6 +6081,48 @@ a tree node value are from 1 to 9. return the number of pseuso-palindrome path f
 
 ### change the tree: insert, delete, rotate, et al.
 
+<<-226	Invert Binary Tree    		66.1%	Easy	
+swap left right.
+*
+->>
+
+<<-814	Binary Tree Pruning    		73.3%	Medium	
+prune all subtree with all 0.
+postorder traversal: remove leaf node=0.
+->>
+
+<<-669	Trim a Binary Search Tree    		63.2%	Easy	
+trim so that all value in range [L,R]
+postorder.
+**
+->>
+
+<<-701	Insert into a Binary Search Tree    		76.0%	Medium	
+just insert in left or right. (use it as root is much complicated)
+there are multiple ways, we can insert it as a leaf node.
+->>
+
+<<-450	Delete Node in a BST    		44.9%	Medium	
+if key<root, goes left, else goes right
+if key==root, 
+- if no right, promote the left: root=root->left
+- if there is right branch, we first sink the root to its right leftmost node, swap it, and delete the leftmost node.
+***
+->>
+
+<<-623	Add One Row to Tree    		50.0%	Medium	
+add a row of nodes to depth d. original left subtree is still left, original right is still right.
+- bfs until d-1 layers (parent nodes) and then do the swaps.
+- dfs: add 1 layer, so that cd==d, then do the swap and return current search.
+->>
+
+<<-538	Convert BST to Greater Tree    		56.1%	Medium	
+node value is changed to the value + sum of all keys greater than it.
+right, root, left order.
+suffix sum: passing the sum as reference is must.
+***
+->>
+
 <<-1080	Insufficient Nodes in Root to Leaf Paths    		49.7%	Medium	
 a node is insufficient if all path passing this node has a sum < limit.
 remove all the insufficient nodes.
@@ -6088,14 +6144,24 @@ and then postorder the left and right and update the root.
 ->>
 
 <<-114	Flatten Binary Tree to Linked List    		50.8%	Medium	
-right root left order using a prev node.
-***
-->>
-
-<<-99	Recover Binary Search Tree    		41.7%	Hard	
-two nodes of the BST was swapped. 
-inorder traversal, similar to 1d array, it will create one pair or two pairs of disorder.
-one pair: it is adjacent, otherwise two positions.
+traverse right left root order using a prev node. passing prev using reference.
+```
+    void flatten(TreeNode* root) {
+        TreeNode* prev=0;
+        helper(root,prev);
+    }
+    void helper(TreeNode* root, TreeNode*& prev)
+    {
+        if(!root) return;
+        helper(root->right,prev);
+        helper(root->left,prev);
+        root->right=prev;
+        root->left=0;
+        prev=root;
+    }
+```
+using value passing will be incorrect, why? we need pass changes from right to left. if value pass, the prev for the right and left is the same.	
+****
 ->>
 
 <<-156	Binary Tree Upside Down    		55.6%	Medium	
@@ -6107,64 +6173,31 @@ this is similar to reverse linked list. not very intuitive.
 root->left becomes the new root.
 root itself becomes the right child root->left->right=root
 original right becomes the left child root->left->left=root->right.
-->>
 
-<<-226	Invert Binary Tree    		66.1%	Easy	
-swap left right.
-->>
-
-<<-450	Delete Node in a BST    		44.9%	Medium	
-if key<root, goes left, else goes right
-if key==root, we first sink the root to its right leftmost node, swap it, and delete the left most node.
+follow the recursive and simplest tree operation：
+- base case: null tree and leaf only
+- left->left and left->right
+- root becomes leaf.
 ***
-->>
-
-<<-538	Convert BST to Greater Tree    		56.1%	Medium	
-node value is changed to the value + sum of all keys greater than it.
-right, root, left order.
-suffix sum.
-***
-->>
-
-<<-582	Kill Process    		62.0%	Medium	
-given proces id and its parent id. kill a process will also kill its all ascendants.
-build the tree relation and do dfs from the id.
-->>
-
-<<-623	Add One Row to Tree    		50.0%	Medium	
-add a row of nodes to depth d. original left subtree is still left, original right is still right.
-- bfs until d-1 layers (parent nodes) and then do the swaps.
-- dfs: add 1 layer, so that cd==d, then do the swap and return current search.
-->>
-
-<<-669	Trim a Binary Search Tree    		63.2%	Easy	
-trim so that all value in range [L,R]
-postorder.
-**
-->>
-
-<<-701	Insert into a Binary Search Tree    		76.0%	Medium	
-just insert in left or right. (use it as root is much complicated)
-there are multiple ways, we can insert it as a leaf node.
 ->>
 
 <<-776	Split BST    		56.3%	Medium	
 given a bst and a target value, split into two subtree so that all nodes in the subtree <= target and the other subtree > target.
 most of the structure shall be kept.
+- if root<=v, then split right, else split left.
 - split the tree get smaller and bigger subtree
 - if root>target, we go left and split into smaller and larger. root->left=larger.
 - if root<=target, we go right and split into smaller and larger, root->right=smaller 
 tricky.
-->>
-
-<<-814	Binary Tree Pruning    		73.3%	Medium	
-prune all subtree with all 0.
-postorder traversal
+*****
 ->>
 
 <<-919	Complete Binary Tree Inserter    		58.1%	Medium	
 using array to represent a complete binary tree.
-root child index relation i,2i,2i+1
+root child index relation i,2i,2i+1.
+- do it like bfs one layer by layer and push_back to the array (naturally the proper position)
+- add a node at the end of the last level.
+***
 ->>
 
 <<-897	Increasing Order Search Tree    		72.5%	Easy	
