@@ -5799,6 +5799,11 @@ approach 2: traversal and mark each found nodes using postorder traversal. The f
 it is better to use two states: the answer and the counting. (Note the dfs or postorder, we need assign the answer only the first time).
 ->>
 
+<<-563	Binary Tree Tilt    		52.2%	Easy	
+tilt=absolute difference between left sum and right sum
+postorder to get tilt and sum
+->>
+
 ### build tree
 all similar to divide and conquer procedure.
 
@@ -6111,6 +6116,7 @@ swap left right.
 <<-450	Delete Node in a BST    		44.9%	Medium	
 if key<root, goes left, else goes right
 if key==root, we first sink the root to its right leftmost node, swap it, and delete the left most node.
+***
 ->>
 
 <<-538	Convert BST to Greater Tree    		56.1%	Medium	
@@ -6118,11 +6124,6 @@ node value is changed to the value + sum of all keys greater than it.
 right, root, left order.
 suffix sum.
 ***
-->>
-
-<<-563	Binary Tree Tilt    		52.2%	Easy	
-tilt=absolute difference between left sum and right sum
-postorder to get tilt and sum
 ->>
 
 <<-582	Kill Process    		62.0%	Medium	
@@ -6139,14 +6140,16 @@ add a row of nodes to depth d. original left subtree is still left, original rig
 <<-669	Trim a Binary Search Tree    		63.2%	Easy	
 trim so that all value in range [L,R]
 postorder.
+**
 ->>
 
 <<-701	Insert into a Binary Search Tree    		76.0%	Medium	
 just insert in left or right. (use it as root is much complicated)
+there are multiple ways, we can insert it as a leaf node.
 ->>
 
 <<-776	Split BST    		56.3%	Medium	
-given a bst and a target value, split into two subtree so that one <= target and the other > target.
+given a bst and a target value, split into two subtree so that all nodes in the subtree <= target and the other subtree > target.
 most of the structure shall be kept.
 - split the tree get smaller and bigger subtree
 - if root>target, we go left and split into smaller and larger. root->left=larger.
@@ -6377,6 +6380,14 @@ tree[1] is the root node. so we cn use 2v and 2v+1 as left and right.
 ```
 ->>
 
+if there are no update, try use merge sort, divide and conquer method.
+
+- build the segment tree, postorder (the parent is the sum/max/min... of the children)
+- the tree is stored in array (completed tree storage)
+- the leaf node is a single element.
+- query [l,r]: do tree traversal
+- update one element, update the whole path.
+
 ### linked list
 - single linked list
 - libray list
@@ -6390,25 +6401,38 @@ tree[1] is the root node. so we cn use 2v and 2v+1 as left and right.
 - linked list is inside data structure for hashmap et al
 - list iterator with hashamp often can be used to reduce complexity.
 
-<<-19	Remove Nth Node From End of List    		35.4%	Medium	->>
-<<-25	Reverse Nodes in k-Group    		43.5%	Hard	->>
+<<-19	Remove Nth Node From End of List    		35.4%	Medium	
+two pointer to get nth node.
+->>
+<<-1474	Delete N Nodes After M Nodes of a Linked List    		74.4%	Easy	->>
+
 <<-24	Swap Nodes in Pairs    		51.6%	Medium	->>
+
 <<-23	Merge k Sorted Lists    		41.4%	Hard	->>
 
 <<-61	Rotate List    		31.3%	Medium	
 rotate by k places. find the length and k%=n, and then do the rotation.
 ->>
-<<-82	Remove Duplicates from Sorted List II    		37.6%	Medium	
+
+<<-82	Remove Duplicates from Sorted List III    		37.6%	Medium	
 delete one nodes that have duplicate numbers, leaving only the distinct ones.
 similar to a stack. but need keep prev.
 ->>
+
 <<-80	Remove Duplicates from Sorted Array II    		44.7%	Medium	
 duplicates only allows 2 times. two pointer, check nums[i] with nums[i-2]
+->>
+
+<<-83	Remove Duplicates from Sorted List    		46.0%	Easy	
+easy but tricky, for each node we need iterate until we find no more duplicates.
 ->>
 
 <<-86	Partition List    		42.5%	Medium	
 give a value x, parition so that all nodes less than x comes before node >=x.
 two list and merge.
+->>
+
+<<-25	Reverse Nodes in k-Group    		43.5%	Hard	
 ->>
 
 <<-92	Reverse Linked List II    		39.8%	Medium	
@@ -6419,8 +6443,14 @@ reverse from position m to n. do it in place.
 l0->ln->l1->Ln-1--
 break into two, reverse one and merge.
 ->>
-<<-142	Linked List Cycle II    		38.9%	Medium	->>
-<<-141	Linked List Cycle    		41.9%	Easy	->>
+
+<<-142	Linked List Cycle II    		38.9%	Medium	
+two pointer.
+->>
+
+<<-141	Linked List Cycle    		41.9%	Easy	
+two pointer.
+->>
 
 <<-328	Odd Even Linked List    		56.5%	Medium	
 group odd value nodes followed by the even list.
@@ -6454,21 +6484,16 @@ split the list into k consecutive parts. K could be larger than number of nodes.
 <<-817	Linked List Components    		57.4%	Medium	
 given a linked list of unique numbers and a subset. return the number of connected groups.
 hashset and do traversal.
-
 ->>
 
 <<-876	Middle of the Linked List    		68.8%	Easy	
 fast slow pointer.
-->>
-<<-83	Remove Duplicates from Sorted List    		46.0%	Easy	
-easy but tricky, for each node we need iterate until we find no more duplicates.
 ->>
 
 <<-1206	Design Skiplist    		57.9%	Hard	
 - design a node structure with right and down pointer.
 - head always point to the top layer (since we are going right and down)
 - build we need from bottom layer to top layer.
-
 add a node: each layer shall have an option to add or not add, but stop if lower layer do not add, top layer do not add either.
 in case all added and insertion point not used, we need add a new layer.
 ->>
@@ -6476,8 +6501,6 @@ in case all added and insertion point not used, we need add a new layer.
 <<-1265	Print Immutable Linked List in Reverse    		94.5%	Medium	
 save into vector and then reverse print
 ->>
-
-<<-1474	Delete N Nodes After M Nodes of a Linked List    		74.4%	Easy	->>
 
 <<-1669 Merge in between linked list
 problem: remove a range of nodes from list1 and replace with list2
@@ -6493,9 +6516,57 @@ two pointer merge.
 
 
 ## string
+strings are often mixed with array, equivalent to array of chars.
+most important of string is for word processing. The search, replace, regex...
+
+some special algorithm related with string:
+rolling hash
+KMP.
+regex.
+
+KMP uses subpattern in pattern so that we can skip some mismatch.
+- it connects pattern + $ + text.
+- create a prefix function
+- then check s with text.
+```
+vector<int> computePrefixFunction(const string& p)
+{
+	int len=p.size();
+	int border=0;
+	vector<int> s(len);
+	for(int i=1;i<len;i++)
+	{
+		while(border>0 && p[i]!=p[border])
+			border=s[border-1];
+		if(p[i]==p[border]) border++;
+		else border=0;
+		s[i]=border;
+	}
+	return s;
+}
+
+
+vector<int> find_pattern(const string& pattern, const string& text)
+{
+    vector<int> result;
+	int lenp=pattern.size();
+	int lens=text.size();
+	if(lenp>lens) return result;
+    // Implement this function yourself
+	vector<int> s=computePrefixFunction(pattern+"$"+text);
+	for(int i=lenp+1;i<lens+lenp+1;i++)
+		if(s[i]==lenp) result.push_back(i-2*lenp);
+    return result;
+}
+```
+
 <<-93	Restore IP Addresses    		36.7%	Medium	
-ip address missing all dots.
+ip address missing all dots. stoi.
 just try all possibles !!
+->>
+
+<<-468	Validate IP Address    		24.6%	Medium	
+ipv4 vs ipv6. be careful of all the restrictions.
 ->>
 
 <<-214	Shortest Palindrome    		30.3%	Hard	
@@ -6539,10 +6610,6 @@ two pointer, one count, one modify in-place.
 - or (s+s).substr(1,2n-2) contains str itself.
 ->>
 
-<<-468	Validate IP Address    		24.6%	Medium	
-ipv4 vs ipv6. be careful of all the restrictions.
-->>
-
 <<-524	Longest Word in Dictionary through Deleting    		48.7%	Medium	
 given a list of dictionary word, and a string. we can delete some chars to get the dictionary word.
 return the longest word with the smallest lexi order.
@@ -6581,6 +6648,7 @@ repeated subarray in two arrays.
 
 <<-722	Remove Comments    		35.5%	Medium	
 regex or mark the comment begin and start similar to stack.
+regex or stack.
 ->>
 
 <<-758	Bold Words in String    		46.8%	Easy	
@@ -6588,6 +6656,7 @@ given a list keyword, all appearances in string shall be bolded by <b> </b>
 the returned string shall have least number of tags possible.
 same as 616. just mark the index to be bolded and then check the segment.
 ->>
+
 <<-616	Add Bold Tag in String    		44.1%	Medium	->>
 
 <<-796	Rotate String    		49.4%	Easy	
@@ -6612,6 +6681,7 @@ find and replace shall be done separately.
 by swapping a pair in A exactly once, can you get B?
 compare one by one: 0 mismatch or 2 mismatch, for 2 mismatch must be able to swap. for 0 mismatch we need to find two same chars in A.
 another approach using hashmap to compare
+greedy.
 ->>
 
 <<-890	Find and Replace Pattern    		74.0%	Medium	->>
@@ -6694,28 +6764,19 @@ typical string: find all positions and replace from right.
 ->>
 
 ## array
-<<-1352	Product of the Last K Numbers    		42.6%	Medium	
-sliding window product using prefix product. Actually not related to window. similar to prefix sum.
-->>
+
+array could be very easy or very hard. It involves a lot of algorithms and data structures.
+1d array, 2d array, multi-dimensional
+
+### trivials
+
+### rotate, reverse, sort, traverse...
 
 <<-48	Rotate Image    		58.5%	Medium	->>
+
 <<-189	Rotate Array    		36.1%	Medium	
 - using reverse
 - using stl
-->>
-
-<<-229	Majority Element II    		38.1%	Medium	
-find elements appear more then n/3 times.
-one or two candidate O(N), voting algorithm.
-->>
-<<-169	Majority Element    		59.5%	Easy	
-find elements appear more than n/2.
-voting algorithm.
-->>
-
-<<-238	Product of Array Except Self    		60.9%	Medium	
-no division allowed.
-left and right two direction (prefix suffix product)
 ->>
 
 <<-360	Sort Transformed Array    		49.3%	Medium	
@@ -6725,8 +6786,70 @@ a==0, check b.
 a!=0, using two pointer.
 ->>
 
+<<-782	Transform to Chessboard    		46.8%	Hard	
+given nxn 01 matrix, swap any two rows or two columns
+return min number of mvoes to transform to a chess board or impossible -1
+- determine the [0,0] element is 0 or 1. If N is odd, this is fixed.
+- if even, have two choices the top left can be 0 or 1.
+- if first row is determined, then everything is determined.
+- rowSwap compare to row 0
+- colSwap compare to col 0
+->>
+
+<<-498	Diagonal Traverse    		48.9%	Medium	
+given a matrix, return the diagonal traverse, up and down...
+- can use hashmap and then reverse 
+- can use two pointer. rebounce back when hit the 4 walls.
+->>
+
+<<-611	Valid Triangle Number    		48.8%	Medium	
+given an array, find number of triplets which can make a triangle.
+a+b>c 
+- sort the array and  use two pointer i,j and find k using binary search O(N^2log(n))
+- sort the array and use A[i] as the largest side, and then binary search A[l]+A[r] O(N^2)
+->>
+
+<<-581	Shortest Unsorted Continuous Subarray    		31.4%	Medium	
+one subarray if sorted then the whole array is sorted
+compare to sorted array.
+->>
+
+<<-885	Spiral Matrix III    		70.0%	Medium	
+give a 2d grid with R rows and C columns, start with (r0,c0), goes clockwise.
+it goes 1R,1D,2L,2U,3R.....
+out of boundary just ignore.
+simulate the process 
+->>
+
+<<-59 Spiral matrix II.
+generate nxn matrix using spiral order (shrinking size)
+use 4 boundaries.
+->>
+
+<<54 Spiral Matrix
+traverse the matrix in spiral order (using 4 bounaries)
+->>
+
+
+### get information from array: search.
+search to get desired information: find target, target sum, min/max, shortest longest subarray, subsequence.....
+so many patterns to search. 
+Generally you need use some other techniques or data structures.
+
+- get min max, median, majority, mode...
+
+<<-169	Majority Element    		59.5%	Easy	
+find elements appear more than n/2.
+voting algorithm: cancel different votes and accumulate.
+->>
+
+<<-229	Majority Element II    		38.1%	Medium	
+find elements appear more then n/3 times.
+one or two candidate O(N), voting algorithm. need check if they are over n/3.
+->>
+
 <<-361	Bomb Enemy    		46.4%	Medium	
-given a 2 d grid, 'W' wall, 'E' enemy, '0' empty.
+given a 2d grid, 'W' wall, 'E' enemy, '0' empty.
 a bomb will kill enemies on the row and column until blocked by wall.
 return max enemies killed by one bomb.
 try each empty cell and count number of enemies killed.
@@ -6734,6 +6857,7 @@ try each empty cell and count number of enemies killed.
 
 <<-363	Max Sum of Rectangle No Larger Than K    		38.2%	Hard	
 idea: get all possible submatrices and reduce to 1d array, and then find max subarray sum <=k.
+****
 ->>
 
 <<-419	Battleships in a Board    		70.6%	Medium	
@@ -6744,12 +6868,64 @@ if we see empty + x horizontal or vertical we add one ship.
 <<-442	Find All Duplicates in an Array    		68.4%	Medium	
 elements are from 1 to n, some appear twice, other once, find all the elements appear twice.
 mark negative using as index. Same as 448.
+using value as index.
 ->>
 
 <<-448	Find All Numbers Disappeared in an Array    		56.0%	Easy	
 given 1 to n, some appear twice others appear once. find all disappeared numbers.
 - sort 
 - use the number-1 as the index and mark seen as negative. those positives are seen twice.
+->>
+
+- prefix sum, product
+
+<<-1352	Product of the Last K Numbers    		42.6%	Medium	
+sliding window product using prefix product. Actually not related to window. similar to prefix sum.
+->>
+
+<<-238	Product of Array Except Self    		60.9%	Medium	
+no division allowed.
+left and right two direction (prefix suffix product)
+->>
+
+<<-525	Contiguous Array    		43.2%	Medium	
+binary array find the longest subarray with equal number of 0 and 1.
+change 0 to -1, and then use prefix sum to find longest subarray with sum=0;
+hashmap
+->>
+
+<<-900	RLE Iterator    		54.8%	Medium	
+run length encoding iterator.
+prefix sum on the element count and do binary search.
+->>
+
+- left right two directions, intervals, subarrays...
+
+<<-689	Maximum Sum of 3 Non-Overlapping Subarrays    		46.9%	Hard	
+fix left and right and find range for bottom
+->>
+
+<<-821	Shortest Distance to a Character    		67.5%	Easy	
+in a string find each char to a given char's shortest distance.
+two pass to update the distance to left and right.
+->>
+
+<<-915	Partition Array into Disjoint Intervals    		45.7%	Medium	
+partition into left and right, so that left[i]<=right[j] for any i,j.
+left max and rmin.
+->>
+
+<<-926	Flip String to Monotone Increasing    		52.7%	Medium	
+give a 01 string, you can flip 1 to 0 or 0 to 1.
+return the min number of flips to make it monotonic increasing.
+count left 1s and right 0s.
+->>
+
+<<-1014	Best Sightseeing Pair    		52.7%	Medium	
+given array A[i]=value of ith spot.distance of i and j= |i-j|.
+max the function A[i]+A[j]+i-j, i<j.
+separate A[i]+i and A[j]-j for left and right side.
+using lmax and rmax approach.
 ->>
 
 <<-475	Heaters    		33.4%	Medium	
@@ -6766,35 +6942,11 @@ odd: add 1, the char in s represent the number of digits to add.
 even: add 2
 ->>
 
-
-<<-498	Diagonal Traverse    		48.9%	Medium	
-given a matrix, return the diagonal traverse, up and down...
-- can use hashmap and then reverse 
-- can use two pointer. rebounce back when hit the 4 walls.
-->>
-
-<<-525	Contiguous Array    		43.2%	Medium	
-binary array find the longest subarray with equal number of 0 and 1.
-change 0 to -1, and then use prefix sum to find longest subarray with sum=0;
-hashmap
-->>
 <<-548	Split Array with Equal Sum    		47.2%	Medium	
 given an array, three index i,j,k will split the array into 4 subset (excluding the selected index elements at i,j,k). The 4 subsets shall have the same subarray sum. Check if it is possible.
 - prefix sum.
 - fix the mid pointer by looping all possible positions
 - try all possible left and right positions save all possible valid cut into hashmap.
-->>
-
-<<-611	Valid Triangle Number    		48.8%	Medium	
-given an array, find number of triplets which can make a triangle.
-a+b>c 
-- sort the array and  use two pointer i,j and find k using binary search O(N^2log(n))
-- sort the array and use A[i] as the largest side, and then binary search A[l]+A[r] O(N^2)
-->>
-
-<<-581	Shortest Unsorted Continuous Subarray    		31.4%	Medium	
-one subarray if sorted then the whole array is sorted
-compare to sorted array.
 ->>
 
 <<-624	Maximum Distance in Arrays    		39.2%	Medium	
@@ -6803,7 +6955,7 @@ note: it is not a matrix.
 get the min of the first col and max from the back of each row.
 ->>
 
-<<-678 valid paenthesis string
+<<-678 valid parenthesis string
 string include (*) * can represent left or right or empty.
 '*' as a left, we increase counter by 1
 '*' as a right,we decrease counter by 1
@@ -6824,16 +6976,8 @@ for example "(**())" we get the tree structure
 so we just counter min and max.  need keep mn>=0 to eliminate invalid paths.
 ->>
 
-<<-680	Valid Palindrome II    		36.8%	Easy	
-remove at most one char to make it palindrome.
-->>
-
 <<-680	Valid Palindrome II    		31.4%	Medium	
 you can delete at most one char. compare string with reversed string. at least two mismatch. remove the first or the second.
-->>
-
-<<-689	Maximum Sum of 3 Non-Overlapping Subarrays    		46.9%	Hard	
-fix left and right and find range for bottom
 ->>
 
 <<-696	Count Binary Substrings    		57.0%	Easy	
@@ -6856,8 +7000,8 @@ simulate the process.
 given a permutation of 0 to n-1. divide into groups and sort each partition and connect them the whole array is sorted.
 return the max number of chunks.
 - greedy: compare to sort. if identical +1, using two hashset to save elements in A and sorted. If they are equal this is a group.
-
 ->>
+
 <<-768	Max Chunks To Make Sorted II    		49.4%	Hard	
 elements could be duplicate. use multiset.
 ->>
@@ -6870,16 +7014,6 @@ check if local inversion=global inversion
 - if we invert the inversion we shall be able to get a sorted array-->
 - if(abs(A[i]-i)>1) there is a global inversion.
 or lmax <A[i+2].
-->>
-
-<<-782	Transform to Chessboard    		46.8%	Hard	
-given nxn 01 matrix, swap any two rows or two columns
-return min number of mvoes to transform to a chess board or impossible -1
-- determine the [0,0] element is 0 or 1. If N is odd, this is fixed.
-- if even, have two choices the top left can be 0 or 1.
-- if first row is determined, then everything is determined.
-- rowSwap compare to row 0
-- colSwap compare to col 0
 ->>
 
 <<-792	Number of Matching Subsequences    		47.8%	Medium	
@@ -6910,11 +7044,6 @@ return the max sum increased.
 looking left or right we get the max in each row.
 looking up or down, we get the max in each column.
 so each element can be increased to col and row max.
-
-->>
-<<-821	Shortest Distance to a Character    		67.5%	Easy	
-in a string find each char to a given char's shortest distance.
-two pass to update the distance to left and right.
 ->>
 
 <<-822	Card Flipping Game    		43.4%	Medium	
@@ -6931,7 +7060,6 @@ A will not request B if any of the condition is satisified:
 - age[B]>100 && age[A]<100
 otherwise A will request B. return number of requests.
 group peope according to their ages.
-
 ->>
 
 <<-835	Image Overlap    		62.0%	Medium	
@@ -6953,8 +7081,8 @@ for convenience we can add L and R on the left side and right side.
 
 <<-840	Magic Squares In Grid    		37.6%	Medium	
 magic square is 3x3 with 1-9 each and each row, col, diagonal sum are all equal. return number of magic square in matrix.
-
 ->>
+
 <<-845	Longest Mountain in Array    		38.5%	Medium	
 - can use binary search
 - can use one pass O(N) to find up and down and update the max size.
@@ -6972,46 +7100,13 @@ a single row. sit:
 just simulate the process, using vector or set to store the index
 ->>
 
-<<-885	Spiral Matrix III    		70.0%	Medium	
-give a 2d grid with R rows and C columns, start with (r0,c0), goes clockwise.
-it goes 1R,1D,2L,2U,3R.....
-out of boundary just ignore.
-simulate the process 
-->>
-
-<<-59 Spiral matrix II.
-generate nxn matrix using spiral order (shrinking size)
-use 4 boundaries.
-->>
-
-<<54 Spiral Matrix
-traverse the matrix in spiral order (using 4 bounaries)
-->>
-
-<<-900	RLE Iterator    		54.8%	Medium	
-run length encoding iterator.
-prefix sum on the element count and do binary search.
-->>
-
-<<-915	Partition Array into Disjoint Intervals    		45.7%	Medium	
-partition into left and right, so that left[i]<=right[j] for any i,j.
-left max and rmin.
-->>
-
-<<-926	Flip String to Monotone Increasing    		52.7%	Medium	
-give a 01 string, you can flip 1 to 0 or 0 to 1.
-return the min number of flips to make it monotonic increasing.
-count left 1s and right 0s.
-->>
-
 <<-927	Three Equal Parts    		34.2%	Hard	
 binary array, find the index i,j divide into 3 equal parts.
 count 1's pattern, leading zero does not matter, but trailing matters.
 ->>
 
-
-
 <<-942	DI String Match    		73.2%	Easy	->>
+
 <<-941	Valid Mountain Array    		32.3%	Easy	
 climb and meet at the peak.
 ->>
@@ -7050,12 +7145,6 @@ two choices: make all =A[0] or all=B[0]. Then you have two choices put A[0] to A
 
 <<-1013	Partition Array Into Three Parts With Equal Sum    		50.0%	Easy	
 count group.
-->>
-<<-1014	Best Sightseeing Pair    		52.7%	Medium	
-given array A[i]=value of ith spot.distance of i and j= |i-j|.
-max the function A[i]+A[j]+i-j, i<j.
-separate A[i]+i and A[j]-j for left and right side.
-using lmax and rmax approach.
 ->>
 
 <<-1031	Maximum Sum of Two Non-Overlapping Subarrays    		58.6%	Medium	
@@ -7415,7 +7504,6 @@ from MSB to LSB.
 two elements appear once and others appear two times.
 - xor will eliminate all appear twice
 - then using one set bit in the xor result to paritition into two parts and do xor in each parts
-
 ->>
 
 <<-268	Missing Number    		52.7%	Easy	
@@ -7423,14 +7511,18 @@ missing in [0,n], xor.
 ->>
 
 <<-287	Find the Duplicate Number    		56.6%	Medium	
-n+1 elements with 1-n, one appear twice. xor
+n+1 elements with 1-n, one appear twice. xor to eliminate even occurences.
 ->>
 
 <<-296	Best Meeting Point    		57.9%	Hard	
 given a 2d grid with some people on grid, find the meeting point to minimize the total distance.
 all x's median and all y's median.
 ->>
-<<-311	Sparse Matrix Multiplication    		63.1%	Medium	->>
+
+<<-311	Sparse Matrix Multiplication    		63.1%	Medium	
+store value vs i,j then add if i,k vs k,j.
+->>
+
 <<-319	Bulb Switcher    		45.2%	Medium	
 n bulbs initially off. turn every 2,3,4,5...
 return the number of bulbs that are on after n rounds.
@@ -7460,7 +7552,6 @@ given n points on xy plane. find if there is a line parellel to y-axis, so that 
 - if symmetric the y shall be paired the same.
 - the x shall be the mid point of the leftmost and rightmost point.
 - for each y, keep the x in sorted order and then check pair sum==2*mid.
-
 ->>
 
 <<-357	Count Numbers with Unique Digits    		48.6%	Medium	
@@ -7473,7 +7564,6 @@ fermat theorem.
         //number theory: coprime: can get any number
         //has a gcd, then it can only get any number of N*gcd
         //for example 5,3: 5-3=2, 5-(3-2)=1
-
 ->>
 
 <<-372	Super Pow    		36.5%	Medium	
@@ -7638,7 +7728,6 @@ math: n=sum(b^i)=(b^(i+1)-1)/(b-1) just loop from 2 to log2(n).
 <<-497	Random Point in Non-overlapping Rectangles    		39.0%	Medium	
 first randomly choose a rect using the area as weight (using prefix sum)
 then randomly choose a point in the rect.
-
 ->>
 
 <<-519	Random Flip Matrix    		37.4%	Medium	
@@ -7798,10 +7887,12 @@ from (0,0) to (tx,ty), given some ghosts at different position.
 return if you can reach the destination.
 greedy: all ghost goes to the destination and wait there.
 ->>
+
 <<-843	Guess the Word    		46.4%	Hard	
 given a list of words, each word is 6 char long. each time guess return number of matched chars. 
 idea: randomly take one guess, find all those matched same amount of chars and discard others.
 ->>
+
 <<-793	Preimage Size of Factorial Zeroes Function    		40.4%	Hard	
 f(x) represents the trailing zeros for x!
 return the number of f(x)=K.
@@ -8020,6 +8111,7 @@ extended euclid theorem, if (x,y,z) coprime, then it is able to find a,b,c..
 <<-1276	Number of Burgers with No Waste of Ingredients    		50.0%	Medium	
 elementary math solve equation
 ->>
+
 <<-1330	Reverse Subarray To Maximize Array Value    		35.9%	Hard	
 array value is defined as the accumulate absolute difference between adjacent elements. Select a subarray and then reverse it. One operation is allowed. return the max value.
 assume we choose a=nums[i-1],b=nums[i],c=nums[j],d=nums[j+1] and we reverse [i,j]
@@ -8121,8 +8213,6 @@ given a list of signal tower on plane (x,y,q).each tower has a radius. The signa
 ->>
 
 
-
-
 ## strategy game
 zero sum game:
 , a zero-sum game is a mathematical representation of a situation in which each participant's gain or loss of utility is exactly balanced by the losses or gains of the utility of the other participants. If the total gains of the participants are added up and the total losses are subtracted, they will sum to zero
@@ -8131,21 +8221,25 @@ linear programming
 NP-hard: non-deterministic polynomial time hardness.
 
 some games especially zero-sum game
+
 <<-294	Flip Game II    		50.4%	Medium	
 two players take turn to flip consecutive "++" into "--", the game ends when play cannot move.
 determine if the first player can win.
 backtrack+memoization。
 record the win string using hashmap. if other party lose, we win.
 ->>
+
 <<-293	Flip Game    		61.0%	Easy	
 get all possible states after one valid move.
 simple change all ++.
 ->>
+
 <<-292	Nim Game    		54.9%	Easy	
 by turn you can take 1-3 stones from the heap. The one who removes the last wins.
 n=4, lose, 1-3 win, n>4 can reduce to n<=4
 greedy.
 ->>
+
 <<-464	Can I Win    		29.4%	Medium	
 given 1 to MaxN and desiredTotal, cannot reuse the integers. Who first causes the total >=desiredTotal wins. check if the first winner wins.
 backtracking or dp. store bitmask for win or lose for the first player. 
@@ -8159,6 +8253,7 @@ pick one number from either end
 <<-877	Stone Game    		66.0%	Medium	
 by turn take either end. dp problem.
 ->>
+
 <<-1140	Stone Game II    		64.9%	Medium	
 A and B takes turn. Initially M=1, each time you can take 1<<x<<2M piles of staones. then we set M=max(M,x).
 dp: top down, max(A-B), strategy game.
@@ -8376,7 +8471,6 @@ who will win.
 bitmask dp: record the win and lost status.
 ->>
 
-
 ## subject: linear programming 线性规划
 linear programming is to get max or min under some inequality restrictions.
 <<-1626	Best Team With No Conflicts    		36.7%	Medium	
@@ -8405,6 +8499,10 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 ->>
 
 ## graph
+graph representation
+graph traversal, dfs or bfs
+connection.
+
 <<-261	Graph Valid Tree    		42.7%	Medium	
 given n nodes and a list of undirected edges, check if it forms a valid tree.
 a tree: n nodes and n-1 edges. no cycle. union find. 
