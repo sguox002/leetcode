@@ -5485,8 +5485,21 @@ use min/max recursively. or O(N) in order traversal.
 ->>
 
 <<-285	Inorder Successor in BST    		41.7%	Medium	
+- using as normal tree found p and next node (it will keeps going)
 given a val, find its next greater.
 binary search. val<root, goes to left, else goes to right.
+```
+    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+        //binary search the target and find its next.
+        //upper_bound
+        if(!root) return 0;
+        if(p->val<root->val) {
+            TreeNode* left=inorderSuccessor(root->left,p);  
+            return left==0?root:left;
+        } 
+        return inorderSuccessor(root->right,p);
+    }
+```	
 ->>
 
 <<-230	Kth Smallest Element in a BST    		61.6%	Medium	
@@ -8124,6 +8137,8 @@ total is m!*(n-m)!
 
 <<-1185	Day of the Week    		62.5%	Easy	
 count days between the date and a specific day known weekday and then %7 to get the weekday.
+c++ function struct tm and mktime. then get the number of days between two dates.
+mktime to convert to seconds, tm use referecen 1900/1/1.
 ->>
 
 
@@ -8949,7 +8964,7 @@ recursive approach.
 ->>
 
 ## trie
-trie is essentially the n-arry tree. generally used for prefix or suffix string. This topic is not hard and can be used similarly as dfs/bfs...
+trie is essentially the n-ary tree. generally used for prefix or suffix string. This topic is not hard and can be used similarly as dfs/bfs...
 bits are often using trie for xor, and...
 trie is important since it is the base data structure for recommendation system such as google search, amazon recommendation et al.
 
