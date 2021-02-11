@@ -6097,6 +6097,42 @@ postorder.
 **
 ->>
 
+<<-897	Increasing Order Search Tree    		72.5%	Easy	
+change tree to a in-order order tree.
+using reverse inorder traversal.
+root->right=process(root->right,prev)
+...
+return process(root->left,prev); prev shall be reference.
+level: 3
+->>
+
+<<-1325	Delete Leaves With a Given Value    		73.4%	Medium	
+post order to remove a leaf.
+->>
+
+<<-1038	Binary Search Tree to Greater Sum Tree    		81.5%	Medium	
+change the node's value to value+sum of all keys > val.
+right, root, left traversal. prefix sum.
+->>
+
+<<-1261	Find Elements in a Contaminated Binary Tree    		74.3%	Medium	
+recover and find.
+root is x then left=2x+1, and right=2x+2. 
+dfs to restore.
+hashset to find.
+->>
+
+<<-1110	Delete Nodes And Return Forest    		67.4%	Medium	
+postorder traversal.
+->>
+
+<<-951	Flip Equivalent Binary Trees    		65.5%	Medium	
+check if you flip left and right and get the other tree.
+left vs left, right vs right
+left vs right, right vs left.
+***
+->>
+
 <<-701	Insert into a Binary Search Tree    		76.0%	Medium	
 just insert in left or right. (use it as root is much complicated)
 there are multiple ways, we can insert it as a leaf node.
@@ -6197,24 +6233,9 @@ using array to represent a complete binary tree.
 root child index relation i,2i,2i+1.
 - do it like bfs one layer by layer and push_back to the array (naturally the proper position)
 - add a node at the end of the last level.
+be careful of the index: n is odd, we are adding left child, (0 index).
 ***
 ->>
-
-<<-897	Increasing Order Search Tree    		72.5%	Easy	
-change tree to a in-order order tree.
-using reverse inorder traversal.
-root->right=process(root->right,prev)
-...
-return process(root->left,prev);
-level: 3
-->>
-
-<<-951	Flip Equivalent Binary Trees    		65.5%	Medium	
-check if you flip left and right and get the other tree.
-left vs left, right vs right
-left vs right, right vs left.
-->>
-
 
 <<-971	Flip Binary Tree To Match Preorder Traversal    		46.1%	Medium	
 binary tree with n nodes from 1 to n. you can flip a node's left and right subtree to match the preorder traversal.
@@ -6224,31 +6245,21 @@ preorder: root, left, right.
 first compare root, with A[ind] start from 0, fail then directly return.
 check left (preorder traversal) if fail, we first check right and then left.
 check right.
+two problem: match or not, flipped nodes.
+note we need advance start or rewind to original, this is convenient using value passing. then we return the start value so far to reach reference passing. (reference passing: for null node the pointer is advanced but need to get back).
+be careful the returned pointer is already advance 1. (so do not add 1 again)
 very good tree problem.
-->>
-
-<<-1038	Binary Search Tree to Greater Sum Tree    		81.5%	Medium	
-change the node's value to value+sum of all keys > val.
-right, root, left traversal
-->>
-
-<<-1110	Delete Nodes And Return Forest    		67.4%	Medium	
-postorder traversal.
-->>
-
-<<-1261	Find Elements in a Contaminated Binary Tree    		74.3%	Medium	
-recover and find.
-root is x then left=2x+1, and right=2x+2
+*****
 ->>
 
 <<-1273	Delete Tree Nodes    		63.3%	Medium
 the tree is given in the format of： node-parent array.
 build the tree and do postorder traversal to get num_nodea and sum. Delete the subtree=reset the sum and num_nodes.
+-build the tree using adjacency matrix
+- post order to get num node and sum. if sum==0 elmininate the subtree.
+***
 ->>
 
-<<-1325	Delete Leaves With a Given Value    		73.4%	Medium	
-post order to remove a leaf.
-->>
 
 <<-1516	Move Sub-Tree of N-Ary Tree    		62.1%	Hard	
 all nodes have unique values, given two nodes p and q. 
@@ -6423,7 +6434,7 @@ if there are no update, try use merge sort, divide and conquer method.
 
 ### linked list
 - single linked list
-- libray list
+- library list
 - doubly linked list
 - list is the base for hash table.
 - cycle detection
@@ -6593,6 +6604,7 @@ vector<int> find_pattern(const string& pattern, const string& text)
 }
 ```
 
+### simple
 <<-93	Restore IP Addresses    		36.7%	Medium	
 ip address missing all dots. stoi.
 just try all possibles !!
@@ -6600,12 +6612,6 @@ just try all possibles !!
 
 <<-468	Validate IP Address    		24.6%	Medium	
 ipv4 vs ipv6. be careful of all the restrictions.
-->>
-
-<<-214	Shortest Palindrome    		30.3%	Hard	
-given a string, you can add chars in front of it to make it palindrome. return the shortest palindrome.
-- equiv find the longest palindrome starting with the first char. try longest first. (TLE)
-- KMP to speed it.
 ->>
 
 <<-306	Additive Number    		29.5%	Medium	
@@ -6641,6 +6647,13 @@ two pointer, one count, one modify in-place.
 <<-459	Repeated Substring Pattern    		43.1%	Easy	
 - check 1 to n/2 length
 - or (s+s).substr(1,2n-2) contains str itself.
+->>
+
+<<-214	Shortest Palindrome    		30.3%	Hard	
+given a string, you can add chars in front of it to make it palindrome. return the shortest palindrome.
+- equiv find the longest palindrome starting with the first char. try longest first. (TLE)
+- KMP to speed it.
+****
 ->>
 
 <<-524	Longest Word in Dictionary through Deleting    		48.7%	Medium	
