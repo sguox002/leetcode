@@ -6561,6 +6561,7 @@ KMP uses subpattern in pattern so that we can skip some mismatch.
 - it connects pattern + $ + text.
 - create a prefix function
 - then check s with text.
+O(N) 
 ```
 vector<int> computePrefixFunction(const string& p)
 {
@@ -6593,6 +6594,7 @@ vector<int> find_pattern(const string& pattern, const string& text)
 }
 ```
 
+### general string operations
 <<-93	Restore IP Addresses    		36.7%	Medium	
 ip address missing all dots. stoi.
 just try all possibles !!
@@ -6600,12 +6602,6 @@ just try all possibles !!
 
 <<-468	Validate IP Address    		24.6%	Medium	
 ipv4 vs ipv6. be careful of all the restrictions.
-->>
-
-<<-214	Shortest Palindrome    		30.3%	Hard	
-given a string, you can add chars in front of it to make it palindrome. return the shortest palindrome.
-- equiv find the longest palindrome starting with the first char. try longest first. (TLE)
-- KMP to speed it.
 ->>
 
 <<-306	Additive Number    		29.5%	Medium	
@@ -6643,29 +6639,6 @@ two pointer, one count, one modify in-place.
 - or (s+s).substr(1,2n-2) contains str itself.
 ->>
 
-<<-524	Longest Word in Dictionary through Deleting    		48.7%	Medium	
-given a list of dictionary word, and a string. we can delete some chars to get the dictionary word.
-return the longest word with the smallest lexi order.
-brutal force: sort the dict in lexi order, check each word in dict and see if it is a subsequence of s.
-->>
-
-<<-544	Output Contest Matches    		75.5%	Medium	
-team the strongest with the weakest. the initial ranking is 1 to n.
-you need always keep strong vs weaker order
-for example 4 teams, ((1,4),(2,3)), n=2^k.
-a bit tricky:
-- each round using two pointer match from both ends.
-- each round reduces by half.
-- until reduce to 1 group.
-->>
-
-<<-647	Palindromic Substrings    		61.4%	Medium	
-return number of pal substrings (with different start end index)
-- expand at all possible position 2n-1 positions
-- dp: dp[i,j]=ispal(s,i,j)+dp[i+1,j]+dp[i,j-1]-dp[i+1,j-1], can also be used for subsequence.
-- manacher most fast.
-->>
-
 <<-686	Repeated String Match    		32.6%	Medium	
 return the min times of repeat string a so that b is a substrng of the repeated one.
 - at least to make the length >=b.
@@ -6697,14 +6670,6 @@ check if we can rotate A to get B.
 circular: A+A to see if B is a substr.
 ->>
 
-<<-820	Short Encoding of Words    		51.2%	Medium	
-return the shortest encoded string, encoding format:
-word#word#...each word in the list can be found in the encoded string.
-- we shall embed some common subarray into one word. each word is a suffix of a substring
-- using Trie
-- or sort by length, short word can be suffix of longer.(build a suffix array hashmap)
-->>
-
 <<-831	Masking Personal Information    		44.6%	Medium	->>
 <<-833	Find And Replace in String    		51.0%	Medium	
 find and replace shall be done separately.
@@ -6728,23 +6693,79 @@ sort by odd or even.
 just find if all the n string appears in it.
 ->>
 
-<<-1062	Longest Repeating Substring    		57.7%	Medium	
-- binary search
-- dp solution, id(s[i]==s[j] dp[i,j]=dp[i-1,j-1]
-- trie
-- KMP
+<<-1071	Greatest Common Divisor of Strings    		51.7%	Easy	->>
+<<-1323	Maximum 69 Number    		77.9%	Easy	
+number consists of 6 and 9 only. You can change at most one digit from 6 to 9 or 9 to 6 to get the max.
+find the first 6 and replace it with 9.
+->>
+
+<<-1392	Longest Happy Prefix    		41.1%	Hard	
+find the longest prefix which is also a suffix (not including itself).
+to get O(N) using rolling hash.
+->>
+
+<<-1410	HTML Entity Parser    		54.3%	Medium	
+find given list of special strings and replace with given string
+typical string: find all positions and replace from right.
 ->>
 
 <<-1065	Index Pairs of a String    		61.1%	Easy	
+given a list of dictionary words, find the index.
 - brutal force.
 - trie.
 ->>
 
-<<-1071	Greatest Common Divisor of Strings    		51.7%	Easy	->>
-
 <<-1078	Occurrences After Bigram    		64.7%	Easy	
 first second and store the followed words.
 stringstream just keep 2 in the storage, keep updating.
+->>
+
+### string more tricky.
+<<-214	Shortest Palindrome    		30.3%	Hard	
+given a string, you can add chars in front of it to make it palindrome. return the shortest palindrome.
+- equiv find the longest palindrome starting with the first char. try longest first. (TLE)
+- KMP to speed it. S+"$"+reverse(s) and calculate the prefix function.
+->>
+
+<<-524	Longest Word in Dictionary through Deleting    		48.7%	Medium	
+given a list of dictionary word, and a string. we can delete some chars to get the dictionary word.
+return the longest word with the smallest lexi order.
+brutal force: sort the dict in lexi order, check each word in dict and see if it is a subsequence of s. (check subsequence using two pointer)
+->>
+
+<<-544	Output Contest Matches    		75.5%	Medium	
+team the strongest with the weakest. the initial ranking is 1 to n.
+you need always keep strong vs weaker order
+for example 4 teams, ((1,4),(2,3)), n=2^k.
+a bit tricky:
+- store array of strings.
+- each round using two pointer match from both ends.
+- each round reduces by half.
+- until reduce to 1 group.
+->>
+
+<<-647	Palindromic Substrings    		61.4%	Medium	
+return number of pal substrings (with different start end index)
+- expand at all possible position 2n-1 positions
+- dp: dp[i,j]=ispal(s,i,j)+dp[i+1,j]+dp[i,j-1]-dp[i+1,j-1], can also be used for subsequence.
+- manacher most fast.
+***
+->>
+
+<<-820	Short Encoding of Words    		51.2%	Medium	
+return the shortest encoded string, encoding format:
+word#word#...each word in the list can be found in the encoded string.
+- we shall embed some common subarray into one word. each word is a suffix of a substring
+- using Trie
+- or sort by length, short word can be suffix of longer.(build a suffix array hashmap)
+->>
+
+<<-1062	Longest Repeating Substring    		57.7%	Medium	
+- binary search
+- dp solution, id(s[i]==s[j] dp[i,j]=dp[i-1,j-1]
+- trie: insert all suffix into trie and update the repeating substr length.
+- KMP: for every suffix of s, find the prefix. get the longest
+****
 ->>
 
 <<-1233	Remove Sub-Folders from the Filesystem    		61.2%	Medium	
@@ -6759,17 +6780,8 @@ or we sort lexi order, then upper layer folder is a prefix of subfolder.
 <<-1316	Distinct Echo Substrings    		49.4%	Hard	
 return number of substring which is in the form of A+A.
 given a substr length (even) and check its inside pattern.
-using hashset to achieve distinct.
-->>
-
-<<-1323	Maximum 69 Number    		77.9%	Easy	
-number consists of 6 and 9 only. You can change at most one digit from 6 to 9 or 9 to 6 to get the max.
-find the first 6 and replace it with 9.
-->>
-
-<<-1392	Longest Happy Prefix    		41.1%	Hard	
-find the longest prefix which is also a suffix (not including itself).
-to get O(N) using rolling hash.
+using hashset to achieve distinct. (for each start index, with different length) -->O(N^3)
+- rolling hash to reduce to O(N^2) using fixed size sliding window.
 ->>
 
 <<-1400	Construct K Palindrome Strings    		62.5%	Medium	
@@ -6781,9 +6793,9 @@ count each characters.
 ->>
 
 <<-1404	Number of Steps to Reduce a Number in Binary Representation to One    		50.5%	Medium	
-reduce to 1: if it is even, divide by 2, if it is odd, add 1.
-approach 1: simulate the process with string add.
-approach 2: optimize with a cf.
+reduce to 1: if it is even, divide by 2, if it is odd, add 1. (remove the LSB using 1 or two steps)
+approach 1: simulate the process with string add. O(N^2)
+approach 2: optimize with a cf. rememble the bit operation using & and >>.
 ->>
 
 <<-1408	String Matching in an Array    		62.6%	Easy	
@@ -6791,10 +6803,6 @@ given a list of words, find words which is a substring of another word.
 sort by length: shorter one can be longer one's substring
 ->>
 
-<<-1410	HTML Entity Parser    		54.3%	Medium	
-find given list of special strings and replace with given string
-typical string: find all positions and replace from right.
-->>
 
 ## array
 
@@ -6809,7 +6817,7 @@ array could be very easy or very hard. It involves a lot of algorithms and data 
 
 <<-189	Rotate Array    		36.1%	Medium	
 - using reverse
-- using stl
+- using stl rotate.
 ->>
 
 <<-360	Sort Transformed Array    		49.3%	Medium	
