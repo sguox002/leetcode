@@ -2699,11 +2699,9 @@ level: 5
 backtracking problem generally finds all sets required. It can also be used for counting. 
 - it is base for some dp problems.
 - generally some prune is needed to avoid invalid search.
-backtracking is similar to dfs, but it generally include put in and take out.
+backtracking is similar to dfs, but it generally include put in and take out since we need to gather information during traverse. The add/removal is simulate the stack process using dfs.
 optimization in backtracking is very important.
-- backtracking is similar to dfs, push/pop is simulating the dfs (when reach leaf node, it back one step)
 - value passing and reference passing. passing a big array is extra overhead.
-
 - recursion is especially hard to debug so understand the inside is really important.
 
 - general backtracking.
