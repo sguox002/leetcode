@@ -4586,6 +4586,19 @@ subject: tree, stack, OOP, polymorphism
 ***
 ->>
 
+<<-1003	Check If Word Is Valid After Substitutions    		55.6%	Medium	
+given a string s, with only 'a','b','c'. check if you can build t by adding "abc" any times.
+equivalent: eliminate "abc" and make it empty.
+using stack or deque is more convenient since it needs check two chars.
+->>
+
+<<-1028	Recover a Tree From Preorder Traversal    		70.3%	Hard	
+preorder traversal to get the serialization string, with (dashes), number of dashes=depth+value.
+if only one child, it is the left child.
+iterative stack: store node and depth. When top depth larger than current, pop it.
+add a - at the end for convenience.
+->>
+
 ### monotonic stack
 
 monotonic stack/deque is often used to implement O(N) algorithm (generally need O(N^2) otherwise).
@@ -4623,19 +4636,6 @@ stack for previous larger. Montonic stack.
 <<-1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy	
 if you buy prices[i] you can get discount at price[j] where j>i and prices[j]<prices[i], j shall be minimized.
 stack: find next smaller.
-->>
-
-<<-1003	Check If Word Is Valid After Substitutions    		55.6%	Medium	
-given a string s, with only 'a','b','c'. check if you can build t by adding "abc" any times.
-equivalent: eliminate "abc" and make it empty.
-using stack or deque is more convenient since it needs check two chars.
-->>
-
-<<-1028	Recover a Tree From Preorder Traversal    		70.3%	Hard	
-preorder traversal to get the serialization string, with (dashes), number of dashes=depth+value.
-if only one child, it is the left child.
-iterative stack: store node and depth. When top depth larger than current, pop it.
-add a - at the end for convenience.
 ->>
 
 <<-1063	Number of Valid Subarrays    		71.7%	Hard	
