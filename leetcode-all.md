@@ -1186,6 +1186,7 @@ dp[n,l,k]=(n-k)*dp[n,l-1,k]
 <<-935	Knight Dialer    		45.9%	Medium	
 return the number of ways on the phone pad.
 build the adjacency matrix and do a dfs like (dp from previous group)
+need memoization! 2d dp: dp[n,k] nth step with ending digit k.
 ->>
 
 <<-940	Distinct Subsequences II    		41.5%	Hard	
@@ -4192,6 +4193,7 @@ you are allowed to swap two chars.
 equivalent: find the longest window with only one char different from the other one. You need has at least one outside the group.
 try each index as the repeat char and expand the window.
 i as the start index and expand the subarray.
+actually we need try each char as the most frequent char in the subarray and then try each index using two pointer so the complexity would be O(26n).
 ****
 ->>
 
@@ -5736,6 +5738,7 @@ traverse at the same time in original and cloned tree.
 ->>
 <<-1469	Find All The Lonely Nodes    		80.8%	Easy	
 parent has only one child, the child is lonely node, dfs.
+check its left and right child to store the child if it is the only child.
 ->>
 
 
@@ -6019,8 +6022,8 @@ greedy。
 <<-979	Distribute Coins in Binary Tree    		69.2%	Medium	
 given a binary tree with n nodes and n coins. In each move, you can choose two adjacent nodes and move one coin from one to the other. The coin initial distribution is given as tree node value.
 return the min number of operations to make each node one coin.
-postorder to get the sum of node value -1 (since we need 1)
-the steps from/to root is abs(sum).
+postorder to get the sum of node value -1 (since we need 1): root-1+l+r
+the steps from/to root is abs(sum). ans+=abs(sum).
 *****
 ->>
 
@@ -6502,16 +6505,19 @@ break into two, reverse one and merge.
 ->>
 
 <<-142	Linked List Cycle II    		38.9%	Medium	
-two pointer.
+two pointer., find the cycle entrance.
 ->>
 
 <<-141	Linked List Cycle    		41.9%	Easy	
-two pointer.
+two pointer. detect if there is a cycle.
 ->>
 
 <<-328	Odd Even Linked List    		56.5%	Medium	
 group odd value nodes followed by the even list.
 create two lists and then connect them.
+many edge cases.
+use odd, even, (odd->next=even->next,even->next=odd->next, then connect) avoid edge cases.
+***
 ->>
 
 <<-426	Convert Binary Search Tree to Sorted Doubly Linked List    		60.2%	Medium	
