@@ -15,11 +15,14 @@ find the right first element which smaller or greater than current element.
 - generally we store index in the stack.
 - each element is pushed once and poped once.
 
+more similar problems:
+
 - 496	Next Greater Element I    		64.7%	Easy
 - 503	Next Greater Element II    		57.5%	Medium	
 - 1019	Next Greater Node In Linked List    		58.2%	Medium	->>
 - 739	Daily Temperatures    		64.1%	Medium	
 - 901	Online Stock Span    		60.9%	Medium	
+- 1475	Final Prices With a Special Discount in a Shop    		75.0%	Easy
 
 example: 503	Next Greater Element II
 find next greater element in circular array.
@@ -112,6 +115,10 @@ so it is equivalent to find the next and previous smaller bar. using each elemen
 
 85	Maximal Rectangle    		38.7%	Hard
 based on 84.
+1063	Number of Valid Subarrays    		71.7%	Hard	
+1081	Smallest Subsequence of Distinct Characters    		53.3%	Medium	
+316	Remove Duplicate Letters    		38.5%	Medium
+1130	Minimum Cost Tree From Leaf Values    		67.1%	Medium	
 
 ## monotonic increasing/decreasing deque
 
