@@ -268,7 +268,7 @@ left and right shall be inside the set.
 <<-828	Count Unique Characters of All Substrings of a Given String    		46.5%	Hard	
 return the sum of all substring's unique number. for example "leetcode" unique number is "ltcod"=5
 - brutal force: try all substring and add the unique count.
-- for ith char we get its left and right and its contribution is L[i]*R[i]
+- for ith char we get its left and right and its contribution is L[i]*R[i]. using hashmap to record all the indices. easier to understand and implement.
 - dp: instead of calculating substrings, we count each char. 
 dp[i] represents the sum of unique char in all substrings for the prefix string len=i.
 when we add A[i], we add [i,i],[i-1,i],...[0,i] i+1 suffix strings.
@@ -8896,6 +8896,7 @@ given a list of intervals, return the min size of set s so that the set intersec
 <<-759	Employee Free Time    		67.4%	Hard	
 given a list of interval reprresenting the working time for each employee.
 return a list of common interval freetime.
+using map to record start and exit then prefix sum to get prefix=0 interval
 ->>
 
 <<-763	Partition Labels    		77.7%	Medium	
