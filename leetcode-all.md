@@ -37,6 +37,19 @@ level: 1
 ->>
 problems are classified according to the most important classification. we focused on the idea.
 
+Recursion based algorith.
+dfs
+backtracking
+divide and conquer
+dp
+tree traversal
+trie traversal
+segment tree
+syntax parser
+linked list manipulation
+greedy
+binary search
+
 ## brief on algorithm and data structure
 
 on algorithm, recursion is most important. It is the base for many powerful techniques such as dfs, backtracking, dynamic programming, divide and conquer et al.
@@ -83,6 +96,7 @@ common steps to solve dp problems
 - find the state transfer or recurrence relation
 - how to get the answer for the original problem.
 
+### overlapped subproblem
 
 <<-279	Perfect Squares    		48.2%	Medium	
 given n, return the least number of perfect square number that sum to n.
@@ -140,15 +154,9 @@ dp: dp[i]=dp[i/2]+i&1
 
 <<-343	Integer Break    		50.8%	Medium	
 break into at least two positive interger and max the products.
-dp: dp[i]=max(dp[i],dp[j]*(i/j),j*i/j)
+dp: dp[i]=max(dp[i],dp[j]*(i-j),j*(i-j)
 ->>
 
-<<-368	Largest Divisible Subset    		38.1%	Medium	
-in the subset, every pair satisfy a[i]%a[j]=0 or a[j]%a[i]=0
-equivalent: they shall have a gcd. or this is a geometric series.
-sort and then use dp LIS. with parent information to traceback.
-pay attention to edge case: empty or mxlen=1 case.
-->>
 
 <<-375	Guess Number Higher or Lower II    		41.4%	Medium	
 number from 1 to n. You guess a number if correct, you win. otherwise, you guess x and pay x. return the min money to guarantee win.
@@ -182,23 +190,9 @@ dp[w,n]-previous week at city j. max(dp[w-1,j]+days[j,i]) the key is to derive t
 ->>
 
 <<-651	4 Keys Keyboard    		52.8%	Medium	
-key1: print one 'A'
-key2: selet all
-key3: copy
-key4: paste
-press the key N times, return the max print length.
-N=1: 1 key1
-N=2: 2 key1 twice
-N=3: 3 key1 3 times
-N=4: 4 key1 4 times
-N=5: 5 key1 5 times
-N=6: 6 AAA +S+C+P 
-N=7: 8 AAAA+S+C+P, AAA+SCPP->9 len(3)*3=9
-N=8: 10 len(5)*2 or AAA+SCPPP->3*4=12
-N=9: len(6)*2, len(3)*2*2 or AAA+SCPPPP->3*5=15
-dp[i]=i press key1 i times
-dp[i]=dp[j]*(
-S+C+P 3 keys will double it. len[n]=len[j]*(i-j-1)
+four operations: print A, select all, copy, paste. find max number of 'A's if operate n times.
+option 1: print A, dp[i]=dp[i-1]+1 dp[i] the max number of chars using i operations.
+option 2: paste on previous j (select+copy+paste...+paste) dp[j]*(i-j-1)
 ->>
 <<-650	2 Keys Keyboard    		49.6%	Medium	
 on screen there is one 'A', you can use copy all and paste.
@@ -215,14 +209,6 @@ very good question!
 *****
 ->>
 
-<<-691	Stickers to Spell Word    		43.5%	Hard	
-given a list of stickers (can reuse) to spell a target string. return the min number of stickers.
-- convert target string and stickers into hashmap (no order needed)
-- greedy may not work.
-- backtracking + memo, reduced target map for the same input. (dp but with up to 26 chars)
-- DP top down is more convenient since we involves 26 numbers.
-- bottom up dp: dp[string] using hashmap representing min stickers for string s. dp[string]=1+min(dp[string-sticki])
-->>
 
 <<-740	Delete and Earn    		48.9%	Medium	
 delete num[i] and get score num[i] and delete all elements=nums[i]-1 or nums[i]+1
@@ -233,12 +219,6 @@ dp[i+2]=max(dp[i]+a[i],dp[i+1])
 <<-746	Min Cost Climbing Stairs    		50.7%	Easy	
 cost[i]: you pay the cost and you then can climb one or two steps. You can start from 0 or 1.
 dp. dp[i]=min(dp[i-2],dp[i-1])+cost[i], note this is the cost to reach i+1 or i+2
-->>
-
-<<-790	Domino and Tromino Tiling    		39.7%	Medium	
-return the number of ways to reach 2xN tile.
-dp: two kind of shapes to reach final status. L shape and I shape.
-final anwer shall be I shape with n length.
 ->>
 
 <<-808	Soup Servings    		40.5%	Medium	
@@ -284,9 +264,10 @@ level: *****
 you can draw number when you have points <K. each draw will randomly get a number in [1,W]. 
 what is the probability to have <=N points.
 - when you have k-w to k-1, you can draw 1 card.
-- prob(x)=prob(x-w)+..+prob(x-1), window is W.
+- prob(x)=(prob(x-w+1)+..+prob(x-1))/W, window is W.
 - for <=N we sum all the probability prob(N)+prob(N-1)+....prob(N-W+1)
-sliding window + dp
+
+sliding window + dp and pretty trick.
 ->>
 
 <<-873	Length of Longest Fibonacci Subsequence    		47.9%	Medium	
@@ -316,14 +297,6 @@ if egg does not break, we can check dp[m-1,k] floors
 - treat like a 2d matrix walk, generally involves only previous col or row. (for space optimization)
 
 
-<<-516	Longest Palindromic Subsequence    		54.4%	Medium	
-equivalent to:
-- longest common subsequence (LCS) (s and reversed s).
-- min deletion edit distance (s and reversed s).
-- dp[i,j] represent to max length for substr(i...j). 
-s[i]==s[j] dp[i,j]=dp[i+1,j-1]+2
-else dp[i,j]=max(dp[i+1,j],dp[i,j-1])
-->>
 
 <<-5. Longest Palindromic Substring
 for substring, 
@@ -354,11 +327,6 @@ find the lowest ascii sum of deleted chars to make two strings equal.
 edit distance variation
 ->>
 
-<<-5	Longest Palindromic Substring    		29.9%	Medium	
-- odd/even growing at all index.
-- dp[i,j] represent the length for substr i,j, dp[i,j]=dp[i+1,j-1]+2
-->>
-
 <<-10	Regular Expression Matching    		27.1%	Hard	
 '.' match any single char, '*' match 0 or more preceding elements
 ->>
@@ -377,6 +345,16 @@ dp or recursive approach.
 ### two state interlace
 - this generally onvolves limit number of elements with same color et al, or up down..
 and you have two options generally. although you can have 2d dp, but using two state transfer would be more understandable.
+
+<<-790	Domino and Tromino Tiling    		39.7%	Medium	
+return the number of ways to reach 2xN tile.
+dp: two kind of shapes to reach final status. L shape and I shape.
+final anwer shall be I shape with n length.
+g(n) represent the number of ways to get n ending with 'I' shape
+u(n) represent the number of ways to get n ending with 'L' shape
+g(n)=g(n-1)+g(n-2)+2*u(n-1)
+u(n)=g(n-1)+u(n-1)
+->>
 
 <<-1186	Maximum Subarray Sum with One Deletion    		38.3%	Medium	
 with at most one deletion.
@@ -458,6 +436,15 @@ many times, you need convert to equivalent knapsack problem.
 given an array you can assign + and - to each of the elment, so that the sum=target. return number of ways.
 dp, knapsack P-N=target, P+N=tsum.
 dp[i,w]+=dp[i-1,w-c] c is the element weight.
+->>
+
+<<-691	Stickers to Spell Word    		43.5%	Hard	
+given a list of stickers (can reuse) to spell a target string. return the min number of stickers.
+- convert target string and stickers into hashmap (no order needed)
+- greedy may not work.
+- backtracking + memo, reduced target map for the same input. (dp but with up to 26 chars)
+- DP top down is more convenient since we involves 26 numbers.
+- bottom up dp: dp[string] using hashmap representing min stickers for string s. dp[string]=1+min(dp[string-sticki])
 ->>
 
 <<-805	Split Array With Same Average    		26.5%	Hard	
@@ -656,6 +643,7 @@ but if we define dp[i,j] as the min removals for s[i,j] then it is much easier
 answer is dp[0,n-1]. dp[i,j]=min(dp[i,j],dp[i,k]+d[k+1,j]) if we split at k.
 upper triangle dp.
 pattern: palindrome, treat as substr(i,j) or two strings. similar to burst balloon.
+****
 ->>
 
 <<-1000. Minimum Cost to Merge Stones
@@ -664,6 +652,8 @@ dp[i,j] represent the min cost to reduce to k piles, then dp[i,j]=min(dp[i,k],dp
 ->>
 
 <<-312. Burst Balloons
+
+
 burst a balloon, and get the score: product of left and right and the balloon.
 idea: choose i as the last balloon to burst and its left and right are virtual balloon with value 1. And then balloon i becomes the right and left for two subproblem.
 - top down: is more straightforward.
@@ -805,11 +795,6 @@ given a list of job {start,end,profit} return the max profit you can get. (no si
 - then we use dp knapsack to include current job.
 - answer is the max among all dp. or knapsack to convery the max till the end.
 pattern: use or not use and propagate the results to next.
-->>
-
-<<-1239	Maximum Length of a Concatenated String with Unique Characters    		48.7%	Medium	
-- use bitset try all combination O(2^n)
-- use bitset represent each dictionary word. and then use dp for longest combination, try to add current set to previous set and get the longest one.
 ->>
 
 <<-1240	Tiling a Rectangle with the Fewest Squares    		51.3%	Hard	
@@ -1132,8 +1117,6 @@ reusable -> 1d dp reduced money total. dp[w]+=dp[w-c] for all c.
 a valid record: contain no more than 1 'A' no more than two continuous L.
 given length n, return number of valid records.
 dp: do not consider 'A', ending with P, ending with L. (this is not easy to get correct relation)
-dp[i,P]=dp[i-1,P]+dp[i-1,L]+dp[ 
-dp[i,L]=dp[i-2,P]
 or we can add P, PL, PLL to previous valid string. dp[i]=dp[i-1]+dp[i-2]+dp[i-3]
 then we add A into any position into two subproblem.
 ->>
@@ -1496,6 +1479,15 @@ given k and mat[i,j] is the sum of all rows [i-k,i+k] and columns [j-k,j+k]
 O(mn) complexity.
 need get familiar with this and know the variations equivalent to LCS.
 
+<<-516	Longest Palindromic Subsequence    		54.4%	Medium	
+equivalent to:
+- longest common subsequence (LCS) (s and reversed s).
+- min deletion edit distance (s and reversed s).
+- dp[i,j] represent to max length for substr(i...j). 
+s[i]==s[j] dp[i,j]=dp[i+1,j-1]+2
+else dp[i,j]=max(dp[i+1,j],dp[i,j-1])
+->>
+
 <<-583	Delete Operation for Two Strings    		49.4%	Medium	
 min delete to make two strings equal. equivalent LCS
 ->>
@@ -1551,6 +1543,20 @@ len=3, [4,5,6], so tail[2]=6.
         return piles.size();
     }
 ```	
+
+<<-368	Largest Divisible Subset    		38.1%	Medium	
+in the subset, every pair satisfy a[i]%a[j]=0 or a[j]%a[i]=0
+equivalent: they shall have a gcd. or this is a geometric series.
+sort and then use dp LIS. with parent information to traceback.
+pay attention to edge case: empty or mxlen=1 case.
+->>
+
+<<-1239	Maximum Length of a Concatenated String with Unique Characters    		48.7%	Medium	
+- use bitset try all combination O(2^n)
+- use bitset represent each dictionary word. and then use dp for longest combination, try to add current set to previous set and get the longest one.
+LIS!!
+->>
+
 <<-673	Number of Longest Increasing Subsequence    		38.2%	Medium	
 return the number of LIS.
 two dp problem: LIS and number of LIS ending with nums[i]
@@ -4888,6 +4894,7 @@ find the length. input array may contain negatives.
 - use deque to get O(N). we are looking for previous prefix sum prej<=prei-k.
 monotonic decreasing deque (larger and old value are discarded since they cannot contribute shorter length). The deque front shall be the min so it is a decreasing deque)
 - why we cannot use sliding window by growing and shrinking? because it contains negative and shrinking will stop from getting the min window. If check all previous then it will get TLE.
+- using prefix sum and put visited in map and do binary search O(nlogn).
 *****
 ->>
 
