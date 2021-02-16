@@ -268,6 +268,7 @@ base case: all prefix using k=1 get the cost matrix. dp[i][1] all given.
 
 ### count number of ways
 The idea: to reach current element, add all previous incoming path.
+This type of problem you still need sufficient flexibility and intuition.
 
 -790	Domino and Tromino Tiling    		39.7%	Medium	*****
 given 'I' and 'L' two types of tile. return the number of ways to tile a 2xN board.
@@ -275,13 +276,9 @@ ending with 'I' and 'L', two states interlaced.
 
 -115	Distinct Subsequences    		39.1%	Hard	***
 to reach i,j: s[i]==t[j] you can choose to use it or not! dp[i,j]=dp[i-1,j]+dp[i-1,j-1]
-
--518	Coin Change 2    		51.0%	Medium	****
-coins can be reused. a 2d knapsack -> 1d knapsack
-dp[i,j] to get amount i by using the first j coins.
-dp[i,j]=dp[i,j-1]+dp[i-c,j] use or not use current coin (two paths)
-to reduce j, dp[i]+=dp[i-c] the j loop shall be the outer loop.
-for 2d, loop order does not matter, but for 1d it matters (optimized).
+-940	Distinct Subsequences II    		41.5%	Hard	
+count number of distinct non-empty subsequence of s.
+distinct--ending with type of char.
 
 -552	Student Attendance Record II    		37.0%	Hard	
 A separate case
@@ -295,14 +292,13 @@ so dp[i]=dp[i-1]+dp[i-2]+dp[i-3].
 -639	Decode Ways II    		27.2%	Hard	
 -1269	Number of Ways to Stay in the Same Place After Some Steps    		43.1%	Hard	
 -1411	Number of Ways to Paint N × 3 Grid    		60.6%	Hard	
+-1259	Handshakes That Don't Cross    		53.9%	Hard	
 
 -634	Find the Derangement of An Array    		40.3%	Medium	
 -920	Number of Music Playlists    		47.4%	Hard	
 
--940	Distinct Subsequences II    		41.5%	Hard	
--1397	Find All Good Strings    		37.9%	Hard	
--1259	Handshakes That Don't Cross    		53.9%	Hard	
 
+-1397	Find All Good Strings    		37.9%	Hard	
 -1416	Restore The Array    		36.2%	Hard	
 -1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
 -1575	Count All Possible Routes    		58.4%	Hard	
@@ -315,7 +311,23 @@ so dp[i]=dp[i-1]+dp[i-2]+dp[i-3].
 
 -1692. Count ways to distribute candies
 -1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
--1223	Dice Roll Simulation    		46.8%	Medium	
+d dices, each dice f faces number from 1 to f. number of ways to reach target.
+dp[i,w] using i dices to reach w.
+dp[i,w]=dp[i-1,w-1]+dp[i-1,w-2]+....dp[i-1,w-f]
+
+-1223	Dice Roll Simulation    		46.8%	Hard	
+a typical problem with many constraints:
+you cannot roll i for rollMax[i] consecutive times. get the number of unique sequences using n rolls
+unique: ending with 
+if ending with i, then it can be repeated rollMax[i] times, so we have multiple incomings
+need 3d dp: dp[i,j,k] represent i rolls, ending with j, repeated j with k times.
+
+if we do 2d approach dp[i,j] represents the number of ways to use i rolls ending with j:
+then we have multiple incoming path:
+previous not j:
+with i-1,i-2....i-rollmax[j]
+
+
 -730. Count Different Palindromic Subsequences
 - 1641 Count Sorted Vowel Strings 
 -1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
@@ -330,6 +342,7 @@ ending with type of elements are often used to reach unique combinations.
 -446	Arithmetic Slices II - Subsequence    		33.0%	Hard	
 -795	Number of Subarrays with Bounded Maximum    		46.9%	Medium	
 -467	Unique Substrings in Wraparound String    		35.9%	Medium	
+-940	Distinct Subsequences II    		41.5%	Hard	
 
 ### subarray or intervals
 general problem: optimal take one subarray and take it away and try to get global optimal result.
@@ -347,6 +360,23 @@ Without using dp approach, this type of problem is extremely hard. Even in dp, i
 ### knapsack
 choose some elements (repeated or non-repeated) to reach a target or closest to target.
 each element has two options, to be included or excluded.
+- two options knapsack
+- multiple option knapsack
+- non-repeatitive
+- repeatitive
+
+-518	Coin Change 2    		51.0%	Medium	****
+coins can be reused. a 2d knapsack -> 1d knapsack
+dp[i,j] to get amount i by using the first j coins.
+dp[i,j]=dp[i,j-1]+dp[i-c,j] use or not use current coin (two paths)
+to reduce j, dp[i]+=dp[i-c] the j loop shall be the outer loop.
+for 2d, loop order does not matter, but for 1d it matters (optimized).
+for repeatitive knapsack, you can always get it by 1d:
+outer loop is coin: we add one new coin we apply it to all amount (and the new amount is derived from smaller amount, so coin is reused)
+if outer loop is amount, then for a new amount, we update only each [w-c] thus non-repeative.
+
+-1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
+d dices, each dice f faces number from 1 to f. number of ways to reach target.
 
 -494	Target Sum    		46.0%	Medium	
 -805	Split Array With Same Average    		26.5%	Hard	
