@@ -14,6 +14,7 @@ dfs to get all required combinations or paths.
 - it generally includes add/removal elements from the array
 - use reference passing of the array to save time.
 
+example problems:
 - 22	Generate Parentheses    		64.2%	Medium	
 generate all possible valid parentheses string with length n.
 number of left parenthesis shall be always >= number of right parenthesis
@@ -159,6 +160,32 @@ a 2d backtracking: when done with a row, we start a new row (subproblem).
         return 0;
     }
 ```	
+easier ones:
+- 22	Generate Parentheses    		64.2%	Medium	**
+- 784	Letter Case Permutation    		65.7%	Medium	**
+- 17	Letter Combinations of a Phone Number    		48.0%	Medium	**
+- 967	Numbers With Same Consecutive Differences    		44.1%	Medium **	
+note diff=0 is a special case.
+- 797	All Paths From Source to Target    		78.2%	Medium	**
+- 1215	Stepping Numbers    		42.7%	Medium	***
+digit difference=1, find all number in [L,R] in sorted order. note 0 is a special case.
+- 1291	Sequential Digits    		57.4%	Medium	***
+digit is one more than previous digit. find all number in [L,R] in sorted order.
+
+advanced:
+- 248	Strobogrammatic Number III    		39.9%	Hard
+count strobogrammatic number in range [L,R]	
+- 247	Strobogrammatic Number II    		48.1%	Medium	
+count strobogrammatic number with length n.
+- 320	Generalized Abbreviation    		52.9%	Medium	
+- 756	Pyramid Transition Matrix    		55.3%	Medium	
+- 440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
+- 386	Lexicographical Numbers    		52.8%	Medium	
+- 465	Optimal Account Balancing    		47.6%	Hard	
+- 1601	Maximum Number of Achievable Transfer Requests    		47.2%	Hard	
+- 1655	Distribute Repeating Integers    		40.0%	Hard	
+need prune using greedy. try the largest order first to save time.
+- 1681. Minimum Incompatibility
 
 more practices:
 - 440	K-th Smallest in Lexicographical Order    		29.3%	Hard	
