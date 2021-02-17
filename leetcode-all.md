@@ -1101,44 +1101,9 @@ dp: ending with for unique substr. common trick to do unique problems (ending wi
 
 ### count number of ways
 
-<<-115	Distinct Subsequences    		39.1%	Hard	
-find the number of distinct subsequence of s equals t.
-dp[i,j] represent the number of distinct sequence for s length i and t length j.
-if s[i-1]!=t[j-1] dp[i,j]=dp[i-1,j] (need delete the char in s.)
-else we can keep or delete this char: dp[i,j]=dp[i-1,j-1]+dp[i-1,j]
-->>
-
-<<-518	Coin Change 2    		51.0%	Medium	
-cions can be reused, number of ways to reach up the total money
-reusable -> 1d dp reduced money total. dp[w]+=dp[w-c] for all c.
-->>
-
-<<-552	Student Attendance Record II    		37.0%	Hard	
-a valid record: contain no more than 1 'A' no more than two continuous L.
-given length n, return number of valid records.
-dp: do not consider 'A', ending with P, ending with L. (this is not easy to get correct relation)
-or we can add P, PL, PLL to previous valid string. dp[i]=dp[i-1]+dp[i-2]+dp[i-3]
-then we add A into any position into two subproblem.
-->>
-<<-551	Student Attendance Record I    		46.0%	Easy	->>
-
 <<-576	Out of Boundary Paths    		35.5%	Medium	
 given a mxn grid, initial position (i,j) and move at most N times. find out the number of path out of grid boundary (move to adjacent cell or out of boundary)
 top down dp: dp[N,i,j] is the subproblem.
-->>
-
-<<-629	K Inverse Pairs Array    		31.4%	Hard	
-given 1 to n, find how many different permutations withe exactly K inverse pairs (i<j and A[i]>A[j])
-dp[n,k] represent the number of ways to have n elements k inverse pair
-when adding n: you can add it to 1 to n position and the number of inversed pairs:
-dp[n-1,k],dp[n-1,k-1]...
-->>
-
-<<-634	Find the Derangement of An Array    		40.3%	Medium	
-given n integers from 1 to n, derangement means no element is in its original position.
-find the number of derangement.
-try dp: dp[i] represents number of derangement for length i.
-we add ith element, you can put Ai in any previous location. suppose we put it on j. (all other not changed instead shift right). if we put at ith position, i is at the end, we get dp[n-2] otherwise dp[n-1] (n-1)*(dp[n-2]+dp[n-1])
 ->>
 
 <<-639	Decode Ways II    		27.2%	Hard	
@@ -1150,6 +1115,172 @@ dp[i]=a*dp[i-1]+b*dp[i-2]
 <<-91	Decode Ways    		25.5%	Medium	
 no *. dp similar, notice contains some illegal case.
 ->>
+
+<<-935	Knight Dialer    		45.9%	Medium	
+return the number of ways on the phone pad.
+build the adjacency matrix and do a dfs like (dp from previous group)
+need memoization! 2d dp: dp[n,k] nth step with ending digit k.
+->>
+
+<<-1259	Handshakes That Don't Cross    		53.9%	Hard	
+even number of people on a circle suppose 1 to n. number of ways that handshaken no cross.
+if i and j handshake, then divide into:
+(i+1)%n to (j-1+n)%n suppose we have m1 people
+(i-1+n)%n to (j+1)%n n-m1-2 people
+dp[i] represent the number of ways for i-pair of people.
+dp[i]+=dp[j]*dp[i-1-j]
+pattern: make a choice and split two smaller subproblems.
+->>
+
+<<-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	***
+dp: two states + number of ways.
+if current number is odd, then odd[i]=1+even[i-1], even[i]=odd[i-1]
+if current number is even then even[i]=1+even[i-1], odd[i]=odd[i-1]
+odd[i]: number of subarrays ending with element A[i] with odd sum.
+even[i]: number of subarrays ending with element A[i] with even sum.
+- add one the element itself 
+- ans is sum of all subarray ending with current element.
+->>
+
+<<-1411	Number of Ways to Paint N × 3 Grid    		60.6%	Hard	
+dp: using the first row and derive the next row. limited variations
+->>
+
+<<-1269	Number of Ways to Stay in the Same Place After Some Steps    		43.1%	Hard	*** 
+You can jump oe step left or right or stay.
+return the number of ways to stay in the same place 0 after k moves
+dp[i,k] could come from dp[i-1,k-1], dp[i+1,k-1] or dp[i,k-1]
+i is position and k is times so dp[n,k+1].
+->>
+
+<<-1220	Count Vowels Permutation    		53.8%	Hard	***
+Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
+Each vowel 'a' may only be followed by an 'e'.
+Each vowel 'e' may only be followed by an 'a' or an 'i'.
+Each vowel 'i' may not be followed by another 'i'.
+Each vowel 'o' may only be followed by an 'i' or a 'u'.
+Each vowel 'u' may only be followed by an 'a'.
+construct a string of length n.
+dp: convert the relation to before. And then use 5 different vowels.
+dp[i,c] or use 5 different array.
+pattern: dfs similar, ending with
+->>
+
+<<-115	Distinct Subsequences    		39.1%	Hard	***
+find the number of distinct subsequence of s equals t.
+dp[i,j] represent the number of distinct sequence for s length i and t length j.
+if s[i-1]!=t[j-1] dp[i,j]=dp[i-1,j] (need delete the char in s.)
+else we can keep or delete this char: dp[i,j]=dp[i-1,j-1]+dp[i-1,j]
+->>
+
+<<-940	Distinct Subsequences II    		41.5%	Hard	***
+count the number of distinct non-empty subsequence of string s.
+- ending with different char with different length are distinct.
+- dp[i,c] represent the number of distinct subsequence for length i and ending with c.
+- dp[i,c]+=d[i-1,x] x can be any char, add 1 for a single char ending with c.
+->>
+
+<<-647. Palindromic Substrings
+problem: count number of palindromic substring.
+- non-dp: for all possible position, expand and get the count
+- dp: dp[i,j] number of pal-string inside. then dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
+->>
+
+<<-730. Count Different Palindromic Subsequences ****
+number of unique palindromic subsequence.
+needs unique, add one dimension, ending with char x. (only a,b,c,d are in the string).
+dp[i,j,c] represent the number of unique pal-subsequence in the range [i,j].
+derive the relation from [i,j-1] and [i+1,j] and [i+1,j-1]
+- i>j dp[i,j,x]=0
+- i==j, dp[i,j,x]=1 s[i]=x, otherwise 0.
+- i<j
+  s[i]!=s[j] dp[i,j,x]=dp[i,j-1,x]+dp[i+1,j,x]-dp[i+1,j-1,x]
+  s[i]==s[j]=x, dp[i,j,x]=sum(dp[i+1,j-1,c])+2 //we add x and xx.
+ since we need all dp[i,j,c] c from 0 to 3, the loop shall be inside.
+rating: 5
+->>
+
+<<-518	Coin Change 2    		51.0%	Medium	****
+cions can be reused, number of ways to reach up the total money
+reusable -> 1d dp reduced money total. dp[w]+=dp[w-c] for all c.
+->>
+
+<<-552	Student Attendance Record II    		37.0%	Hard	***
+a valid record: contain no more than 1 'A' no more than two continuous L.
+given length n, return number of valid records.
+dp: do not consider 'A', ending with P, ending with L. (this is not easy to get correct relation)
+or we can add P, PL, PLL to previous valid string. dp[i]=dp[i-1]+dp[i-2]+dp[i-3]
+then we add A into any position into two subproblem.
+->>
+<<-551	Student Attendance Record I    		46.0%	Easy	->>
+
+<<-1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
+dice has 1 to f faces, find number of ways for n dices to get sum target.
+dp[i,j]+=dp[i-1,j-x] x is from 1 to f.
+- number of paths to current state.
+level 3
+->>
+
+<<-1223	Dice Roll Simulation    		46.8%	Medium	****
+given an array Max[i] the max allowed consecutive dice number i.
+return the distinct sequence rolling n times (or n dices)
+dp[i,j,k] ith dice rolls number j with k consecutive same number as j.
+dp[i,j,1] means previous can be 0 to 6 except j. add all of them dp[i-1,x,m], x and m shall loop all cases.
+dp[i,j,k] k>1, means previous must be j.
+->>
+
+<<-1416	Restore The Array    		36.2%	Hard	
+an array of integer is printed without space. each number is in the range [1,k] and there are no leading 0s. return the number of possible array.
+- dp: current digit can attach to previous up to 9 digits. dp[i]+=d[j]
+->>
+
+<<-1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
+pick up always in the front of delivery
+for the first positions, we have n options, after we choose the first position, we have 2n-1 options for the 2nd position.
+or assume we have finished i-1 pairs, now we want to insert ith pair, the pick up has 2i-1 options, and delivery 2n options, but we have to insert after pickup so it is i. i*(2i-1)
+dp[i]=i*(2i-1)*dp[i-1]
+->>
+
+<<-1692. Count ways to distribute candies
+n candies from 1 to n, distribute into k bags, each bag number of candies>=1.
+bag order and candy order does not matter.
+return the number of ways to distribute
+- base case: k=1, dp[i,k]=1
+- from i-1 candies to i candies, we have one more candy to place into k bags, k*dp[i-1,k]
+- ith candy put into kth bag, dp[i-1,k-1]
+dp[i,k]=k*dp[i-1,k]+dp[i-1,k-1]
+
+another approach:
+k=2: we can put 1 to n-1 candies into first bag, thus C(n,1)+C(n,2)+...+C(n,n-1), redundant /2.
+need some math to derive to above solution.
+->>
+
+<<- 1641 Count Sorted Vowel Strings 
+given length n.
+- dp[i,j] represents number of sorted vowel string ending with char j. the previous char shall be <=curr char. dp[i,j]+=dp[i-1,k] k<=j.
+- backtracking
+->>
+
+<<-629	K Inverse Pairs Array    		31.4%	Hard	
+given 1 to n, find how many different permutations with exactly K inverse pairs (i<j and A[i]>A[j])
+dp[n,k] represent the number of ways to have n elements k inverse pair
+when adding n (the largest): you can add it to 1 to n position and the number of inversed pairs=dp[i-1,k]+dp[i-1,k-1]+.....
+5xxxx: add 4 inversions
+x5xxx: add 3 inversions
+xx5xx: add 2 inversions
+xxx5x: add 1 inversions
+xxxx5: add 0 inversions
+->>
+
+<<-634	Find the Derangement of An Array    		40.3%	Medium	
+given n integers from 1 to n, derangement means no element is in its original position.
+find the number of derangement.
+try dp: dp[i] represents number of derangement for length i.
+- we add ith element i at j, you can put it on j by swapping j with i. (i-1)*dp[i-2] (two elements fixed)
+- we add ith element i at j, but j is not at the end. (i-1)*dp[i-1] (one element fixed)
+this is very hard to find!
+->>
+
 <<-920	Number of Music Playlists    		47.4%	Hard	
 given N different songs, want to make a list with length L:
 - Every song is played at least once
@@ -1162,21 +1293,7 @@ dp approach:
 - used n-1 songs, for the l-1 list, the not appeared song can be added. 
 dp[n,l,k]=n*dp[n-1,l-1,k]
 - if l-1 used n songs already, then we have n-k choices 
-dp[n,l,k]=(n-k)*dp[n,l-1,k]
-->>
-
-
-<<-935	Knight Dialer    		45.9%	Medium	
-return the number of ways on the phone pad.
-build the adjacency matrix and do a dfs like (dp from previous group)
-need memoization! 2d dp: dp[n,k] nth step with ending digit k.
-->>
-
-<<-940	Distinct Subsequences II    		41.5%	Hard	
-count the number of distinct non-empty subsequence of string s.
-- ending with different char with different length are distinct.
-- dp[i,c] represent the number of distinct subsequence for length i and ending with c.
-- dp[i,c]+=d[i-1,x] x can be any char, add 1 for a single char ending with c.
+dp[n,l,k]=(n-k)*dp[n,l-1,k] k is not used and can be removed.
 ->>
 
 <<-1397	Find All Good Strings    		37.9%	Hard	
@@ -1194,49 +1311,6 @@ By incllusion exclusion principle: helper(s) = a + b - c.
 so hard!!!
 ->>
 
-<<-1269	Number of Ways to Stay in the Same Place After Some Steps    		43.1%	Hard	
-You can jump oe step left or right or stay.
-return the number of ways to stay in the same place 0 after k moves
-dp[i,k] could come from dp[i-1,k-1], dp[i+1,k-1] or dp[i,k-1]
-i is position and k is times so dp[n,k+1].
-*** 
-->>
-
-<<-1259	Handshakes That Don't Cross    		53.9%	Hard	
-even number of people on a circle suppose 1 to n. number of ways that handshaken no cross.
-if i and j handshake, then divide into:
-(i+1)%n to (j-1+n)%n suppose we have m1 people
-(i-1+n)%n to (j+1)%n n-m1-2 people
-dp[i] represent the number of ways for i-pair of people.
-dp[i]+=dp[j]*dp[i-1-j]
-pattern: make a choice and split two smaller subproblems.
-->>
-
-<<-1220	Count Vowels Permutation    		53.8%	Hard	
-Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
-Each vowel 'a' may only be followed by an 'e'.
-Each vowel 'e' may only be followed by an 'a' or an 'i'.
-Each vowel 'i' may not be followed by another 'i'.
-Each vowel 'o' may only be followed by an 'i' or a 'u'.
-Each vowel 'u' may only be followed by an 'a'.
-construct a string of length n.
-dp: convert the relation to before. And then use 5 different vowels.
-dp[i,c] or use 5 different array.
-pattern: dfs similar, ending with
-->>
-
-<<-1416	Restore The Array    		36.2%	Hard	
-an array of integer is printed without space. each number is in the range [1,k] and there are no leading 0s. return the number of possible array.
-- dp: current digit can attach to previous up to 9 digits. dp[i]+=d[j]
-->>
-
-<<-1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
-pick up always in the front of delivery
-for the first positions, we have n options, after we choose the first position, we have 2n-1 options for the 2nd position.
-or assume we have finished i-1 pairs, now we want to insert ith pair, the pick up has 2i-1 options, and delivery 2n options, but we have to insert after pickup so it is i. i*(2i-1)
-dp[i]=i*(2i-1)*dp[i-1]
-->>
-
 <<-1575	Count All Possible Routes    		58.4%	Hard	
 array represent the location of cities. given start and end city and fuel. fuel is reduced by the distance. return the number of possible routes.
 idea: dp, choose any city as the first; dp[i,fuel] number of routes start at city i with fuel to dest. destination is fixed but start for subproblem is changing.
@@ -1250,16 +1324,6 @@ each cut you can choose horizontal or vertical. If you choose vertical, give the
 - ith cut we shall make sure the left has at least one apple, and remaining k-i apples. for vertical similar.
 - dp[k,i,j] kth cut and cut at i,j. using simple dp to get the postfix sum at each position.
 - then backtracking with two options using memoization.
-->>
-
-<<-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	
-return %10^9+7.
-
-dp: 
-if current number is odd, then odd[i]=1+even[i-1], even[i]=odd[i-1]
-if current number is even then even[i]=1+even[i-1], odd[i]=odd[i-1]
-odd[i]: number of subarrays ending with element A[i]
-even[i]: number of subarrays ending with element A[i]
 ->>
 
 <<-1301	Number of Paths with Max Score    		37.7%	Hard	
@@ -1288,65 +1352,6 @@ nleft*nright*comb(n-1,left)
 recursive, combination, modular inverse, pascal triangle (using dp to get combination)
 ->>
 
-
-<<-647. Palindromic Substrings
-problem: count number of palindromic substring.
-- non-dp: for all possible position, expand and get the count
-- dp: dp[i,j] number of pal-string inside. then dp[i,j]=self+dp[i,j-1]+dp[i+1,j]-dp[i+1,j-1]
-->>
-
-<<-1411	Number of Ways to Paint N × 3 Grid    		60.6%	Hard	
-dp: using the first row and derive the next row. limited variations
-->>
-
-<<-1692. Count ways to distribute candies
-n candies from 1 to n, distribute into k bags, each bag number of candies>=1.
-bag order and candy order does not matter.
-return the number of ways to distribute
-- base case: k=1, dp[i,k]=1
-- from i-1 candies to i candies, we have one more candy to place into k bags, k*dp[i-1,k]
-- ith candy put into kth bag, dp[i-1,k-1]
-dp[i,k]=k*dp[i-1,k]+dp[i-1,k-1]
-
-another approach:
-k=2: we can put 1 to n-1 candies into first bag, thus C(n,1)+C(n,2)+...+C(n,n-1), redundant /2.
-need some math to derive to above solution.
-->>
-
-<<-1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
-dice has 1 to f faces, find number of ways for n dices to get sum target.
-dp[i,j]+=dp[i-1,j-x] x is from 1 to f.
-- number of paths to current state.
-level 3
-->>
-
-<<-1223	Dice Roll Simulation    		46.8%	Medium	
-given an array Max[i] the max allowed consecutive dice number i.
-return the distinct sequence rolling n times (or n dices)
-dp[i,j,k] ith dice rolls number j with k consecutive same number as j.
-dp[i,j,1] means previous can be 0 to 6 except j. add all of them dp[i-1,x,m], x and m shall loop all cases.
-dp[i,j,k] k>1, means previous must be j.
-->>
-
-<<-730. Count Different Palindromic Subsequences
-number of unique palindromic subsequence.
-needs unique, add one dimension, ending with char x. (only a,b,c,d are in the string).
-dp[i,j,c] represent the number of unique pal-subsequence in the range [i,j].
-derive the relation from [i,j-1] and [i+1,j] and [i+1,j-1]
-- i>j dp[i,j,x]=0
-- i==j, dp[i,j,x]=1 s[i]=x, otherwise 0.
-- i<j
-  s[i]!=s[j] dp[i,j,x]=dp[i,j-1,x]+dp[i+1,j,x]-dp[i+1,j-1,x]
-  s[i]==s[j]=x, dp[i,j,x]=sum(dp[i+1,j-1,c])+2 //we add x and xx.
- since we need all dp[i,j,c] c from 0 to 3, the loop shall be inside.
-rating: 5
-->>
-
-<<- 1641 Count Sorted Vowel Strings 
-given length n.
-- dp[i,j] represents number of sorted vowel string ending with char j. the previous char shall be <=curr char. dp[i,j]+=dp[i-1,k] k<=j.
-- backtracking
-->>
 
 <<-1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
 a list of dictionary words, and a target string. You can choose a char from kth column, if you used it, then all left side cannot be used.

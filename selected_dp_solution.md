@@ -159,4 +159,68 @@ example:
 - 2 3 2 2 - - 0 
 
 
+### count number of ways
+1223. Dice Roll Simulation
+distinct sequence 
+ending with different face value.
+
+```
+    int dieSimulator(int n, vector<int>& rollMax) {
+        vector<vector<int>> dp(n+1,vector<int>(6));
+        for(int i=0;i<6;i++) dp[1][i]=1; //base case: 1 roll
+        int mod=1e9+7;
+        for(int i=2;i<=n;i++){
+            for(int j=0;j<6;j++){ //ending with j
+                for(int k=0;k<6;k++){ //previous shall not be j
+                    if(j==k) continue;
+                    
+                    for(int l=1;l<=rollMax[j] && i>=l;l++) 
+                        dp[i][j]+=dp[i-l][k],dp[i][j]%=mod;
+                }
+                if(i<=rollMax[j]) dp[i][j]++; //no previous other digits
+                //n=2, repeat 2, it shall have 1x,2x,3x,4x,5x,6x 6 instead of 5
+            }
+        }
+        long ans=0;
+        for(int i=0;i<6;i++) ans+=dp[n][i],ans%=mod;
+        return ans;
+    }
+```
+
+730. Count Different Palindromic Subsequences
+````
+    int dp[1000][1000][4]={};
+    int countPalindromicSubsequences(string s) {
+        int n=s.size();
+        int mod=1e9+7;
+        for(int i=0;i<n;i++){
+            int x=s[i]-'a';
+            dp[i][i][x]=1;
+        }
+        
+        for(int i=n-2;i>=0;i--){
+            for(int j=i+1;j<n;j++){
+                int x=s[j]-'a';
+                for(char c=0;c<4;c++){
+                    if(s[j]==s[i] && x==c){
+                        dp[i][j][c]+=2;
+                        for(int t=0;t<4;t++){
+                            dp[i][j][c]+=dp[i+1][j-1][t];
+                            dp[i][j][c]%=mod;    
+                        }
+                    }
+                    else dp[i][j][c]=dp[i][j-1][c]+dp[i+1][j][c]-dp[i+1][j-1][c];
+                    dp[i][j][c]%=mod;
+                }
+            }
+        }
+        
+        int ans=0;
+        for(int i=0;i<4;i++){
+            ans+=dp[0][n-1][i];
+            ans%=mod;
+        }
+        return ans;
+    }
+```
 

@@ -270,46 +270,44 @@ base case: all prefix using k=1 get the cost matrix. dp[i][1] all given.
 The idea: to reach current element, add all previous incoming path.
 This type of problem you still need sufficient flexibility and intuition.
 
+-1641 Count Sorted Vowel Strings 
+ending with, only add previous smaller ones.
+
 -790	Domino and Tromino Tiling    		39.7%	Medium	*****
 given 'I' and 'L' two types of tile. return the number of ways to tile a 2xN board.
 ending with 'I' and 'L', two states interlaced.
 
 -115	Distinct Subsequences    		39.1%	Hard	***
 to reach i,j: s[i]==t[j] you can choose to use it or not! dp[i,j]=dp[i-1,j]+dp[i-1,j-1]
+
 -940	Distinct Subsequences II    		41.5%	Hard	
 count number of distinct non-empty subsequence of s.
 distinct--ending with type of char.
+
+-647. Palindromic Substrings
+
+-730. Count Different Palindromic Subsequences *****
+similar to 940, dp[i,j,c] represent the number of palindrome subsequence in [i,j]
+c=s[i]==s[j]: dp[i,j,c]+=dp[i+1,j-1,x], it also add c and cc.
+s[i]!=s[j]: dp[i,j,x]=dp[i+1,j,x]+dp[i,j-1,x]-dp[i+1,j-1,x]
 
 -552	Student Attendance Record II    		37.0%	Hard	
 A separate case
 ending with P,PL,PLL are all valid. or add the string to all previous valid string.
 so dp[i]=dp[i-1]+dp[i-2]+dp[i-3].
 
--576	Out of Boundary Paths    		35.5%	Medium	
--935	Knight Dialer    		45.9%	Medium	
--1220	Count Vowels Permutation    		53.8%	Hard	
--91	Decode Ways    		25.5%	Medium	
--639	Decode Ways II    		27.2%	Hard	
--1269	Number of Ways to Stay in the Same Place After Some Steps    		43.1%	Hard	
--1411	Number of Ways to Paint N × 3 Grid    		60.6%	Hard	
--1259	Handshakes That Don't Cross    		53.9%	Hard	
-
--634	Find the Derangement of An Array    		40.3%	Medium	
--920	Number of Music Playlists    		47.4%	Hard	
 
 
--1397	Find All Good Strings    		37.9%	Hard	
--1416	Restore The Array    		36.2%	Hard	
--1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
--1575	Count All Possible Routes    		58.4%	Hard	
--1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	
+-920	Number of Music Playlists    		47.4%	Hard	****
+N songs, L=list length, song can be repeated after K other songs have played
+dp[i,l] represent the number of playlists using i songs, k and l.
+how do we reach this? 
+i-1 songs used, then we can add the song i, i*dp[i-1,l-1] (any song can be the end)
+i songs played, then we have i-k songs to choose, (k-i)*dp[i,l-1]
+
 -1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	
--1301	Number of Paths with Max Score    		37.7%	Hard	
--1621	Number of Sets of K Non-Overlapping Line Segments    		41.3%	Medium	
--1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard	
--647. Palindromic Substrings
+also can use two states transfer pattern.
 
--1692. Count ways to distribute candies
 -1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
 d dices, each dice f faces number from 1 to f. number of ways to reach target.
 dp[i,w] using i dices to reach w.
@@ -325,13 +323,43 @@ need 3d dp: dp[i,j,k] represent i rolls, ending with j, repeated j with k times.
 if we do 2d approach dp[i,j] represents the number of ways to use i rolls ending with j:
 then we have multiple incoming path:
 previous not j:
-with i-1,i-2....i-rollmax[j]
+with i-1,i-2....i-rollmax[j]. Note when i<=rollMax there is no previous other digits so we shall add 1.
 
+-634	Find the Derangement of An Array    		40.3%	Medium	****
+number of derangement of 1 to n.
+the relation is hard to find:
+put i at j, j at the end, (i-1)*dp[i-2] (two fixed)
+put i at j, but j not at the end, (i-1)*dp[i-1] (one fixed)
 
--730. Count Different Palindromic Subsequences
-- 1641 Count Sorted Vowel Strings 
+-629	K Inverse Pairs Array    		31.4%	Hard	*****
+thinking when adding element i to the array, how do we affect the inversion.
+we can put it at any positions.
+
+Practices:
+-576	Out of Boundary Paths    		35.5%	Medium	
+-935	Knight Dialer    		45.9%	Medium	
+-1220	Count Vowels Permutation    		53.8%	Hard	
+-91	Decode Ways    		25.5%	Medium	
+-639	Decode Ways II    		27.2%	Hard	
+-1269	Number of Ways to Stay in the Same Place After Some Steps    		43.1%	Hard	
+-1411	Number of Ways to Paint N × 3 Grid    		60.6%	Hard	
+-1259	Handshakes That Don't Cross    		53.9%	Hard	
+
+-1397	Find All Good Strings    		37.9%	Hard	
+-1416	Restore The Array    		36.2%	Hard	
+numbers printed without space, return number of ways to restore it. the number is in [1,K].
+-1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
+-1575	Count All Possible Routes    		58.4%	Hard	
+-1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	
+-1301	Number of Paths with Max Score    		37.7%	Hard	
+-1621	Number of Sets of K Non-Overlapping Line Segments    		41.3%	Medium	
+-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard
+insert the elements in array by order. 
+You can choose to insert left or right first.
+	
+-1692. Count ways to distribute candies
 -1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
--629	K Inverse Pairs Array    		31.4%	Hard	
+
 
 ### ending with
 ending with type of elements, ending with current element et al.
@@ -396,6 +424,7 @@ d dices, each dice f faces number from 1 to f. number of ways to reach target.
 -978	Longest Turbulent Subarray    		46.6%	Medium	
 
 ### shortest distance problem
+dijkstra
 -245	Shortest Word Distance III    		55.6%	Medium	
 -244	Shortest Word Distance II    		53.0%	Medium	
 -243	Shortest Word Distance    		61.4%	Easy	
