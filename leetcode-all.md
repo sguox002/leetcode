@@ -6503,6 +6503,7 @@ two list and merge.
 ->>
 
 <<-25	Reverse Nodes in k-Group    		43.5%	Hard	
+shall be extremely careful. using advance to get next and reverse start to end.
 ->>
 
 <<-92	Reverse Linked List II    		39.8%	Medium	
@@ -8616,6 +8617,10 @@ Given an array of building heights, and some bricks and ladders. Find the furthe
 graph representation
 graph traversal, dfs or bfs
 connection.
+
+277. find the celebrity
+O(N^2) is trivial
+O(N) two pass: first pass find the candidate, second check if everyone knows him.
 
 <<-261	Graph Valid Tree    		42.7%	Medium	
 given n nodes and a list of undirected edges, check if it forms a valid tree.
