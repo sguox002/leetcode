@@ -270,33 +270,37 @@ base case: all prefix using k=1 get the cost matrix. dp[i][1] all given.
 The idea: to reach current element, add all previous incoming path.
 This type of problem you still need sufficient flexibility and intuition.
 
--1641 Count Sorted Vowel Strings 
-ending with, only add previous smaller ones.
+-1641 Count Sorted Vowel Strings **
+problem: number of ways for vowel strings (each string is sorted).
+ending with dp, only add previous smaller ones.
+dp[i,c]+=dp[i,x] x<=c.
 
 -790	Domino and Tromino Tiling    		39.7%	Medium	*****
 given 'I' and 'L' two types of tile. return the number of ways to tile a 2xN board.
 ending with 'I' and 'L', two states interlaced.
+final answer is ending with 'I'.
 
 -115	Distinct Subsequences    		39.1%	Hard	***
-to reach i,j: s[i]==t[j] you can choose to use it or not! dp[i,j]=dp[i-1,j]+dp[i-1,j-1]
+find the number of distinct subsequence of s equals t. (position different)
+to reach i,j: s[i]==t[j] you can choose to use it or not! 
+dp[i,j]=dp[i-1,j]+dp[i-1,j-1]
 
--940	Distinct Subsequences II    		41.5%	Hard	
+-940	Distinct Subsequences II    		41.5%	Hard	***
 count number of distinct non-empty subsequence of s.
-distinct--ending with type of char.
+distinct--ending with type of char. 
+add current char to all previous ending with subproblems.
 
--647. Palindromic Substrings
+-647. Palindromic Substrings -dp or non-dp.
 
 -730. Count Different Palindromic Subsequences *****
 similar to 940, dp[i,j,c] represent the number of palindrome subsequence in [i,j]
 c=s[i]==s[j]: dp[i,j,c]+=dp[i+1,j-1,x], it also add c and cc.
 s[i]!=s[j]: dp[i,j,x]=dp[i+1,j,x]+dp[i,j-1,x]-dp[i+1,j-1,x]
 
--552	Student Attendance Record II    		37.0%	Hard	
+-552	Student Attendance Record II    		37.0%	Hard	****
 A separate case
 ending with P,PL,PLL are all valid. or add the string to all previous valid string.
 so dp[i]=dp[i-1]+dp[i-2]+dp[i-3].
-
-
 
 -920	Number of Music Playlists    		47.4%	Hard	****
 N songs, L=list length, song can be repeated after K other songs have played
@@ -305,35 +309,59 @@ how do we reach this?
 i-1 songs used, then we can add the song i, i*dp[i-1,l-1] (any song can be the end)
 i songs played, then we have i-k songs to choose, (k-i)*dp[i,l-1]
 
--1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	
+-1524	Number of Sub-arrays With Odd Sum    		38.9%	Medium	***
 also can use two states transfer pattern.
 
--1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	
+-1155	Number of Dice Rolls With Target Sum    		47.7%	Medium	***
 d dices, each dice f faces number from 1 to f. number of ways to reach target.
 dp[i,w] using i dices to reach w.
 dp[i,w]=dp[i-1,w-1]+dp[i-1,w-2]+....dp[i-1,w-f]
 
--1223	Dice Roll Simulation    		46.8%	Hard	
+-1223	Dice Roll Simulation    		46.8%	Hard	****
 a typical problem with many constraints:
 you cannot roll i for rollMax[i] consecutive times. get the number of unique sequences using n rolls
-unique: ending with 
-if ending with i, then it can be repeated rollMax[i] times, so we have multiple incomings
-need 3d dp: dp[i,j,k] represent i rolls, ending with j, repeated j with k times.
+unique: ending with dp pattern.
 
-if we do 2d approach dp[i,j] represents the number of ways to use i rolls ending with j:
+dp[i,j] represents the number of ways to use i rolls ending with j:
 then we have multiple incoming path:
 previous not j:
 with i-1,i-2....i-rollmax[j]. Note when i<=rollMax there is no previous other digits so we shall add 1.
 
 -634	Find the Derangement of An Array    		40.3%	Medium	****
-number of derangement of 1 to n.
+number of derangement of 1 to n (no element is in its original position).
 the relation is hard to find:
 put i at j, j at the end, (i-1)*dp[i-2] (two fixed)
 put i at j, but j not at the end, (i-1)*dp[i-1] (one fixed)
 
 -629	K Inverse Pairs Array    		31.4%	Hard	*****
+number of permutation of 1 to n with exact k inversions.
 thinking when adding element i to the array, how do we affect the inversion.
-we can put it at any positions.
+we can put it at any positions and create different number of inversions. Thus we have dp[i-1,k-1],dp[i-1,k-2].....dp[i-1,1] to reach to dp[i,k]. 
+
+-1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	****
+pickup must be ahead of delivery. 
+assume we are arranging ith pair, the pickup have 2i-1 options, We then arrange the delivery, and it has 2i options if not consider the order. Considering the order is 2i/2=i. dp[i]=i*(2i-1)*dp[i-1]
+
+-1575	Count All Possible Routes    		58.4%	Hard	***
+n cities on a line. given start and destination and start fuel, return the number of route from start to destination. 
+dp[i,f]+=dp[k,f-dist(i,k)]: fp[i,f] represents the number of cities to go with fuel f. 
+base case: any fuel if located (start) from finish you get one valid route.
+dp[finish,f]=1 f from 0 to fuel.
+
+-1621	Number of Sets of K Non-Overlapping Line Segments    		41.3%	Medium	
+also a dp problem of partition to k segments.
+
+-1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard ****
+insert the elements in array by order. 
+You can choose to insert left or right first.
+also need math combinations. This is pretty hard one.
+	
+-1692. Count ways to distribute candies
+dp[i,k] represent number of ways to distribute i candies into k bags
+dp[i,k]=k*dp[i-1,k]+dp[i-1,k-1]
+
+-1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
+choose a column or not, for each column you can choose different rows.
 
 Practices:
 -576	Out of Boundary Paths    		35.5%	Medium	
@@ -346,25 +374,19 @@ Practices:
 -1259	Handshakes That Don't Cross    		53.9%	Hard	
 
 -1397	Find All Good Strings    		37.9%	Hard	
+number of string in range not containing the evil string.
+-1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	
 -1416	Restore The Array    		36.2%	Hard	
 numbers printed without space, return number of ways to restore it. the number is in [1,K].
--1359	Count All Valid Pickup and Delivery Options    		57.1%	Hard	
--1575	Count All Possible Routes    		58.4%	Hard	
--1444	Number of Ways of Cutting a Pizza    		53.4%	Hard	
 -1301	Number of Paths with Max Score    		37.7%	Hard	
--1621	Number of Sets of K Non-Overlapping Line Segments    		41.3%	Medium	
--1569	Number of Ways to Reorder Array to Get Same BST    		50.0%	Hard
-insert the elements in array by order. 
-You can choose to insert left or right first.
-	
--1692. Count ways to distribute candies
--1639	Number of Ways to Form a Target String Given a Dictionary    		38.9%	Hard	
+two subproblems: one is to get the max score, one is to get the number of ways to reach the max score.
 
 
 ### ending with
 ending with type of elements, ending with current element et al.
 ending with type of elements are often used to reach unique combinations.
 
+-730. Count Different Palindromic Subsequences *****
 -1682. Longest palindromic subsequence II
 -413	Arithmetic Slices    		58.3%	Medium	
 -446	Arithmetic Slices II - Subsequence    		33.0%	Hard	

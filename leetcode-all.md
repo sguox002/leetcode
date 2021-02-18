@@ -485,24 +485,28 @@ equivalent: knapsack to make positive sum >=tsum/2.
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight (similar to bfs with visited array to terminate when reach the target).
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
 floyd-warshal: find all pair node shortest distance using dp.
+traveling salesman problem.
 
 <<-245	Shortest Word Distance III    		55.6%	Medium	
 similar to 244, but the input words could be the same and represent different positions.
 using hashmap to store indices for each word, but need check two cases.
+non-dp
 ->>
 <<-244	Shortest Word Distance II    		53.0%	Medium	
 similar to 243, but will be called many times with different parameters
 using hashmap to record the indices for each word.
+non-dp
 ->>
 <<-243	Shortest Word Distance    		61.4%	Easy	
 given two words find the distance (shortest)
 one pass: keep updating two indices and find the difference.
 O(N) if we do not consider string compare.
+non-dp
 ->>
 
 <<-490	The Maze    		52.4%	Medium	
 check if we can reach the destination.
-bfs.
+regular bfs.
 ->>
 
 <<-505	The Maze II    		48.1%	Medium	
@@ -560,7 +564,7 @@ given a list of words, return the shortest superstring connecting all words
 - dp[i,status] represent the min distance ending with node i.
 - in the status, we repeatedly choose each as the ending node j: dp[j,prev]
 dp[i,status]=min(dp[j,prev]+dist[j,i]
-ie. try any node as the last node, and try any node in previous status as the previous ending and connect them and releax the edge.
+ie. try any node as the last node, and try any node in previous status as the previous ending and connect them and relax the edge.
 answer is the min(dp[x,0xffff]) x can be any node.
 base case: 1 word
 two words, use each word as the end and get the shortest distance.
