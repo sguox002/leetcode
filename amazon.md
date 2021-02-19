@@ -589,6 +589,9 @@ Amazon high frequency:
 564	Find the Closest Palindrome	20.3%	Hard	
 
 selected practice:
+- pay attention to edge case
+- clarify input scale.
+
 496	Next Greater Element I	65.5%	Easy	 *
 hashmap + stack
 169	Majority Element	60.0%	Easy	*
@@ -603,28 +606,58 @@ binary search: note the right shall be n instead of n-1.
 997	Find the Town Judge	49.8%	Easy	*
 trust: outgoing, trusted: incoming, net=n-1;
 there is another similar by calling API: find the celebrity
-674	Longest Continuous Increasing Subsequence	46.0%	Easy	*
-196	Delete Duplicate Emails	45.0%	Easy	*
-572	Subtree of Another Tree	44.5%	Easy	*
-219	Contains Duplicate II	38.6%	Easy	*
-69	Sqrt(x)	35.0%	Easy	*
-204	Count Primes	32.2%	Easy	*
-535	Encode and Decode TinyURL	80.9%	Medium	*
-1628 Design an Expression Tree With Evaluate Function 80.6%	Medium	*
-339	Nested List Weight Sum 76.3%	Medium	*
+572	Subtree of Another Tree	44.5%	Easy	***
+using same tree.
+204	Count Primes	32.2%	Easy	***
+using flags. all 1 and use sieve to mark all multiples.
+
+535	Encode and Decode TinyURL	80.9%	Medium	***
+hashmap. using 0-9a-zA-Z, assign an int to string and then using the id to convert to string. 
+339	Nested List Weight Sum 76.3%	Medium	***
+consider a tree structure and use dfs. consider it also as an array
+
 861	Score After Flipping Matrix	73.6%	Medium	*
+greedy. fix the first col.
 1277	Count Square Submatrices with All Ones	72.9%	Medium	*
+dp ending with, use dp[i-1,j],dp[i,j-1],dp[i-1,j-1]
+
 1448	Count Good Nodes in Binary Tree	70.6%	Medium	*
-979	Distribute Coins in Binary Tree	69.7%	Medium	*
+979	Distribute Coins in Binary Tree	69.7%	Medium	***
+get count and +abs(cnt) to ans.
 442	Find All Duplicates in an Array	68.9%	Medium	*
-986	Interval List Intersections	68.3%	Medium	*
-1043 Partition Array for Maximum Sum	66.9%	Medium	*
-78	Subsets	65.0%	Medium	*
+do check the sample. similar to 443.
+
+1043 Partition Array for Maximum Sum	66.9%	Medium	***
+partition and the subarray sum is the max*subarray size. subarray length <=k.
+dp, partitioning. we can apply pq to find the max and save time to O(nlogn) + sliding window.
+
+78	Subsets	65.0%	Medium	***
+backtracking, combination.
+
 1236 Web Crawler 64.6%	Medium	*
+craw all links under tha same host. (host find / position)
+dfs or bfs are all fine. see 1242 web crawler multithreaded. 
+multithreading: need process the queue by a nmber of threads, accessing the queue shall be protected.
+thread start/exit conditions.
+
 1167 Minimum Cost to Connect Sticks 64.4%	Medium	*
-1190	Reverse Substrings Between Each Pair of Parentheses	64.1%	Medium	*
+a list of stick length, combine at the cost x+y, return min cost to connect all.
+greedy: using pq.
+
+1190	Reverse Substrings Between Each Pair of Parentheses	64.1%	Medium	***
+using stack for string processing.
+after get the string in bracket, reverse it and then connect with string in stack (using vector is better)
+
 230	Kth Smallest Element in a BST	62.5%	Medium	*
-856	Score of Parentheses	62.4%	Medium	*
+- O(N) is trivial
+- O(nlogn) count 
+- bst change often? ***
+
+856	Score of Parentheses	62.4%	Medium	***
+using stack: need two stack one stack store the char, the other stores the score. (actually the char stack is not needed.)
+()() is the base for adding score, 
+(()) need to update and unwrap to store one in the stack.
+
 426	Convert Binary Search Tree to Sorted Doubly Linked List 61.1%	Medium	*
 1004 Max Consecutive Ones III	60.7%	Medium	*
 216	Combination Sum III	60.2%	Medium	*
@@ -700,6 +733,7 @@ there is another similar by calling API: find the celebrity
 1648 Sell Diminishing-Valued Colored Balls	30.7%	Medium	*
 402	Remove K Digits	28.6%	Medium	*
 523	Continuous Subarray Sum	24.7%	Medium	*
+
 489	Robot Room Cleaner 72.4%	Hard	*
 759	Employee Free Time 68.1%	Hard	*
 1597	Build Binary Expression Tree From Infix Expression 62.5%	Hard	*

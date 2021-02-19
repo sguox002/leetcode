@@ -3579,6 +3579,7 @@ Return the number of possible array that can be printed as a string s using the 
 The number of ways could be very large so return it modulo 10^9 + 7
 </em>
 Intuition: dp problem, each number can attach to previous or start a new number.
+
 ```cpp
     int numberOfArrays(string s, int k) {
         //dp, current digit can be attached to previous or not

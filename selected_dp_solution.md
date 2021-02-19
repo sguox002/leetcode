@@ -224,3 +224,30 @@ ending with different face value.
     }
 ```
 
+1575. Count All Possible Routes
+```
+    int countRoutes(vector<int>& locations, int start, int finish, int fuel) {
+        int n=locations.size();
+        vector<vector<int>> dp(n,vector<int>(fuel+1));//d[i,f] the number of ways to reach i with fuel f.
+        int mod=1e9+7;
+        //base case start=finish and fuel=0: one way only
+        //dp[finish][0]=1;
+        for(int i=0;i<=fuel;i++) dp[finish][i]=1;
+        for(int f=1;f<=fuel;f++){
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    if(i==j) continue;
+                    int d=abs(locations[i]-locations[j]);
+                    if(d<=f){
+                        dp[i][f]+=dp[j][f-d];
+                        dp[i][f]%=mod;
+                    }
+                }
+            }
+        }
+        return dp[start][fuel];
+    }
+```	
+- dp[i,f]+=dp[j,f-dist(i,j)] represent the number of ways to start from i with fuel f.
+- base case: dp[finish] if you start from finish, you can have any fuel and it is considered a route. so all shall be 1.
+- 
