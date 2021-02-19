@@ -591,6 +591,7 @@ Amazon high frequency:
 selected practice:
 - pay attention to edge case
 - clarify input scale.
+- use example to get the approach !!
 
 496	Next Greater Element I	65.5%	Easy	 *
 hashmap + stack
@@ -657,46 +658,124 @@ after get the string in bracket, reverse it and then connect with string in stac
 using stack: need two stack one stack store the char, the other stores the score. (actually the char stack is not needed.)
 ()() is the base for adding score, 
 (()) need to update and unwrap to store one in the stack.
+- similar to +-*/ evaluation
+- first add 0 to stack (for adding)
+- use example to get the approach!!!
 
-426	Convert Binary Search Tree to Sorted Doubly Linked List 61.1%	Medium	*
+426	Convert Binary Search Tree to Sorted Doubly Linked List 61.1%	Medium	***
+using a dummy to avoid infinite loop.
+
 1004 Max Consecutive Ones III	60.7%	Medium	*
+sliding window (count 0)
+
 216	Combination Sum III	60.2%	Medium	*
+choose k element sum to target. backtracking.
+
 173	Binary Search Tree Iterator	60.0%	Medium	*
 39	Combination Sum	59.1%	Medium	*
-684	Redundant Connection	58.9%	Medium	*
+all unique combination (can be reused), backtracking. 
+
+684	Redundant Connection	58.9%	Medium	***
+undirected graph: union-find.
+for direct graph: union-find is one way.
+
 503	Next Greater Element II	58.4%	Medium	*
+circular.
 215	Kth Largest Element in an Array	58.3%	Medium	*
+unsorted array. pq.
+
 863	All Nodes Distance K in Binary Tree	57.8%	Medium	*
-1057	Campus Bikes 57.7%	Medium	*
-378	Kth Smallest Element in a Sorted Matrix	56.1%	Medium	*
-1481 Least Number of Unique Integers after K Removals	55.8%	Medium	*
+graph + bfs
+
+1057	Campus Bikes 57.7%	Medium	***
+pq.
+
+378	Kth Smallest Element in a Sorted Matrix	56.1%	Medium	***
+binary search or pq. but use the first and last element.
+count using upper_bound for each row.
+
 1041 Robot Bounded In Circle	55.0%	Medium	*
+greedy: repeat 1 to 4 times and it always return to origin (if bounded)
+
 341	Flatten Nested List Iterator	54.5%	Medium	*
+dfs
 1647 Minimum Deletions to Make Character Frequencies Unique	54.5%	Medium	*
+map
+
 1229 Meeting Scheduler 54.3%	Medium	*
+two pointer intersection
+
 449	Serialize and Deserialize BST	54.0%	Medium	*
+same as binary tree.
+
 137	Single Number II 53.8%	Medium	*
+every appears 3 times except one using bits.
+
 926	Flip String to Monotone Increasing	53.2%	Medium	*
+left and right direction
+
 646	Maximum Length of Pair Chain	52.9%	Medium	*
+LIS
 11	Container With Most Water	52.7%	Medium	*
+two pointer
+
 652	Find Duplicate Subtrees	52.4%	Medium	*
+hashmap (in the same tree)
+for each node get the serialization.
+
 131	Palindrome Partitioning	51.9%	Medium	*
+get all partitioning backtracking.
+
 1615 Maximal Network Rank	51.9%	Medium	*
+record direct connection and count incoming connections
+then try each pair.
+
 114	Flatten Binary Tree to Linked List	51.8%	Medium	*
+right root left order
+
 518	Coin Change 2	51.7%	Medium	*
+count number of ways. knapsack with repeating.
+
 498	Diagonal Traverse	50.2%	Medium	*
+using dx,dy,x,y,and diagnonal index.
+since the index x+y is bounded by diagonal index.
+
 40	Combination Sum II	50.1%	Medium	*
+backtracking each can be used once
+
 650	2 Keys Keyboard	50.0%	Medium	*
-1239	Maximum Length of a Concatenated String with Unique Characters	49.5%	Medium	*
+dp.
+
+1239	Maximum Length of a Concatenated String with Unique Characters	49.5%	Medium	****
+dp LIS.
+the key observation is: dp[i] is not dependent only on dp[j] (since if i cannot combine with dp[j] it may still be able to connect with its previous elements). It is more like a bitmask choice.
+- sort from longest to shortest
+- apply dp LIS.
+
 47	Permutations II	49.3%	Medium	*
+with duplicates, using map. backtracking.
 90	Subsets II	48.8%	Medium	*
+with duplicates, combination. backtracking.
+
 309	Best Time to Buy and Sell Stock with Cooldown	48.1%	Medium	*
+dp. use top down
 1155 Number of Dice Rolls With Target Sum	47.6%	Medium	*
+dp. count number of ways.
+
 1328	Break a Palindrome	46.4%	Medium	*
+greedy the first one>a change to a. or the last one to b.
+
 494	Target Sum	45.7%	Medium	*
+dp, knapsack, number of ways.
+
 698	Partition to K Equal Sum Subsets	45.6%	Medium	*
+backtracking.
+
 340	Longest Substring with At Most K Distinct Characters 45.4%	Medium	*
-743	Network Delay Time	45.4%	Medium	*
+sliding window.
+
+743	Network Delay Time	45.4%	Medium	****
+shortest distance using dijkstra. 
 670	Maximum Swap	45.1%	Medium	*
 416	Partition Equal Subset Sum	44.8%	Medium	*
 528	Random Pick with Weight	44.6%	Medium	*
