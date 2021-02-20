@@ -776,37 +776,93 @@ sliding window.
 
 743	Network Delay Time	45.4%	Medium	****
 shortest distance using dijkstra. 
+
 670	Maximum Swap	45.1%	Medium	*
+swap once to get max. greedy.
 416	Partition Equal Subset Sum	44.8%	Medium	*
+knapsack
+
 528	Random Pick with Weight	44.6%	Medium	*
+prefix sum.
+
 291	Word Pattern II 44.2%	Medium	*
+hashmap and similar to backtracking.
+
 435	Non-overlapping Intervals	43.9%	Medium	*
+longest non-overlapping intervals, greedy O(nlogn), dp: O(N^2)
+
 443	String Compression	43.5%	Medium	*
-395	Longest Substring with At Least K Repeating Characters	43.5%	Medium	*
+two pointer.
+
+395	Longest Substring with At Least K Repeating Characters	43.5%	Medium	***
+divide and conquer (throw away those <k chars)
+sliding window: not very suitable since we need check valid from invalid subarrays.
+
 277	Find the Celebrity 43.4%	Medium	*
+O(N): find candidate first, if someone does not know candidate, then he becomes the candidate.
+
 261	Graph Valid Tree 43.1%	Medium	*
+union-find
+
 187	Repeated DNA Sequences	41.4%	Medium	*
+rolling hash.
+
 134	Gas Station	41.2%	Medium	*
+greedy or sliding window.
+
 334	Increasing Triplet Subsequence	40.7%	Medium	*
+stack, monotonic.
+
 662	Maximum Width of Binary Tree	39.9%	Medium	*
+right position - left position
 545	Boundary of Binary Tree 39.7%	Medium	*
+preorder and then postorder. tricky!
+
 221	Maximal Square	39.1%	Medium	*
-826	Most Profit Assigning Work	39.1%	Medium	*
+dp
+
+826	Most Profit Assigning Work	39.1%	Medium	***
+- difficulty vs max profit hashmap
+- left max profit: so to avoid greedy choose the max difficulty job
+- then binary search.
+
 227	Basic Calculator II	38.5%	Medium	*
+using stack
+
 368	Largest Divisible Subset	38.3%	Medium	*
+sort and then LIS dp with path information
+not working for negatives.
+
 332	Reconstruct Itinerary	37.8%	Medium	*
+backtracking
+
 373	Find K Pairs with Smallest Sums	37.7%	Medium	*
+sorted array kth sum, pq. 
+
 687	Longest Univalue Path	37.3%	Medium	*
+connect to left right, a bit tricky.
+
 322	Coin Change	37.2%	Medium	*
+min number of coins. can reuse.
+1d dp: dfferent from coin change 2, the amount loop shall be the outer loop.
+
 1197 Minimum Knight Moves 37.2%	Medium	*
+bfs limited in 1st quarter.
+
 79	Word Search	36.8%	Medium	*
 146	LRU Cache	35.7%	Medium	*
 353	Design Snake Game 35.7%	Medium	*
 532	K-diff Pairs in an Array	35.2%	Medium	*
+|A[i]-A[j]|=k.
+- skip duplicates
+- we need keep all the elements in array. 
+
 55	Jump Game	35.1%	Medium	*
 31	Next Permutation	33.8%	Medium	*
 81	Search in Rotated Sorted Array II	33.5%	Medium	*
 556	Next Greater Element III	33.5%	Medium	*
+next larger integer using same digits.
+
 708	Insert into a Sorted Circular Linked List 32.5%	Medium	*
 3	Longest Substring Without Repeating Characters	31.4%	Medium	*
 1648 Sell Diminishing-Valued Colored Balls	30.7%	Medium	*
