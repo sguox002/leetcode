@@ -865,69 +865,723 @@ next larger integer using same digits.
 
 708	Insert into a Sorted Circular Linked List 32.5%	Medium	*
 3	Longest Substring Without Repeating Characters	31.4%	Medium	*
-1648 Sell Diminishing-Valued Colored Balls	30.7%	Medium	*
-402	Remove K Digits	28.6%	Medium	*
-523	Continuous Subarray Sum	24.7%	Medium	*
+1648 Sell Diminishing-Valued Colored Balls	30.7%	Medium	***
+binary search!!!
 
-489	Robot Room Cleaner 72.4%	Hard	*
+402	Remove K Digits	28.6%	Medium	*
+monotonic stack.
+
+523	Continuous Subarray Sum	24.7%	Medium	*
+prefix sum (%k k=0 is a special case)
+
+489	Robot Room Cleaner 72.4%	Hard	***
+dfs simulation, using v and 
+
 759	Employee Free Time 68.1%	Hard	*
+using map and prefix sum.
+
 1597	Build Binary Expression Tree From Infix Expression 62.5%	Hard	*
+recursive stack for string parsing.
+
 895	Maximum Frequency Stack	62.3%	Hard	*
+hashmap and map of stack.
+
 1335 Minimum Difficulty of a Job Schedule	56.9%	Hard	*
+dp, array partitioning.
+
 1092 Shortest Common Supersequence	53.0%	Hard	*
+bitmask dp.
+
 42	Trapping Rain Water	51.1%	Hard	*
+two pointer.
+
 726	Number of Atoms	51.1%	Hard	*
+recursive stack.
+
 992	Subarrays with K Different Integers	50.6%	Hard	*
+sliding window.
+
 1192 Critical Connections in a Network	50.0%	Hard	*
+union-find.
+
 995	Minimum Number of K Consecutive Bit Flips	49.8%	Hard	*
+greedy.
+
 297	Serialize and Deserialize Binary Tree	49.7%	Hard	*
 51	N-Queens	49.5%	Hard	*
-471	Encode String with Shortest Length 49.2%	Hard	*
+backtracking.
+
+471	Encode String with Shortest Length 49.2%	Hard	***
+dp using hashmap: check all prefix
 465	Optimal Account Balancing 48.2%	Hard	*
+get each person's net debt
+then use different sign to clear the debt.
+
 1235	Maximum Profit in Job Scheduling	47.4%	Hard	*
+dp: non-overlapped array partitioning.
+
 679	24 Game	47.2%	Hard	*
+using +-*/ to get 24. backtracking to try all combinations.
+
 295	Find Median from Data Stream	46.8%	Hard	*
+using two pq.
+
 37	Sudoku Solver	46.4%	Hard	*
+backtracking.
+
 410	Split Array Largest Sum	46.3%	Hard	*
+binary search.
+
 128	Longest Consecutive Sequence	46.2%	Hard	*
+union find.
+
 25	Reverse Nodes in k-Group	44.7%	Hard	*
+
 239	Sliding Window Maximum	44.6%	Hard	*
+deque.
 407	Trapping Rain Water II	44.1%	Hard	*
+pq from outside ring. hard!!!
+
 546	Remove Boxes	44.1%	Hard	*
+dp subarray removing.
+
 815	Bus Routes	43.3%	Hard	*
-1293 Shortest Path in a Grid with Obstacles Elimination	43.1%	Hard	*
+bfs.
+
+1293 Shortest Path in a Grid with Obstacles Elimination	43.1%	Hard	***
+bfs. with greedy approach. 
+
 317	Shortest Distance from All Buildings 42.7%	Hard	*
+bfs
+
 315	Count of Smaller Numbers After Self	42.5%	Hard	*
+divide and conquer.
+
 99	Recover Binary Search Tree	42.4%	Hard	*
+inorder and record the reversed pairs.
+
 727	Minimum Window Subsequence 42.2%	Hard	*
+sliding window. shrink the window from right to left.
+
 154	Find Minimum in Rotated Sorted Array II	42.0%	Hard	*
+binary search.
+
 1345 Jump Game IV	42.0%	Hard	*
+jump +1 -1 or index j where A[i]==A[j]
+return the min steps to reach the last index.
+bfs+hashmap: need to make some optimizations
+
 502	IPO	41.5%	Hard	*
+pq greedy
+
 403	Frog Jump	41.4%	Hard	*
+next jump would be k-1,k,k+1
+bfs
+
 1000 Minimum Cost to Merge Stones	40.4%	Hard	*
+dp interval or subarray
+
 715	Range Module	40.2%	Hard	*
+interval add/remove/query
+the order of calling are not in your order. so take care of edge cases.
+- using merge/removing interval (to store the intervals)
+- using map add/removal will be more tricky.
+
 115	Distinct Subsequences	39.6%	Hard	*
+number of ways. dp.
+
 85	Maximal Rectangle	39.4%	Hard	*
+using histogram algorithm in 2d, stack.
+
 60	Permutation Sequence	39.3%	Hard	*
+kth permutation: reduce size using (n-1)!...get each digit.
+
 829	Consecutive Numbers Sum	39.3%	Hard	*
+length=1, =2...up to sqrt(n) with math.
+
 854	K-Similar Strings	38.7%	Hard	*
+bfs.
+
 224	Basic Calculator	38.1%	Hard	*
+recursive stack.
+
 84	Largest Rectangle in Histogram	37.1%	Hard	*
+stack.
+
 212	Word Search II	36.9%	Hard	*
+trie+dfs
+
 282	Expression Add Operators	36.7%	Hard	*
+add +-* to get the target value.
+try all prefix and 3 operators.
+
 1505 Minimum Possible Integer After at Most K Adjacent Swaps On Digits	36.4%	Hard	*
+greedy, move the smallest to left.
+with heap + binary index tree. 
+hard.
+
 218	The Skyline Problem	36.3%	Hard	*
+hard
+
 1416 Restore The Array	36.3%	Hard	*
+separate the digits into [1,k], dp number of ways.
+
 460	LFU Cache	36.0%	Hard	*
+hashmap + list iterator
+
 76	Minimum Window Substring	35.9%	Hard	*
+sliding window.
 269	Alien Dictionary 33.7%	Hard	*
+bfs hard!!
 41	First Missing Positive	33.6%	Hard	*
+put the element in its position, discard those out of range.
+two pass.
+
 685	Redundant Connection II	33.0%	Hard	*
+direct tree, union find.
+
 45	Jump Game II	31.4%	Hard	*
+a[i] represent the max jump. bfs.
+
 132	Palindrome Partitioning II	31.2%	Hard	*
+min cut. dp.
+
 4	Median of Two Sorted Arrays	31.0%	Hard	*
+divide and conquer. binary search..
+
 1610 Maximum Number of Visible Points	29.2%	Hard	*
+sliding window in circular.
+
 10	Regular Expression Matching	27.3%	Hard	*
+dp
+
 887	Super Egg Drop	27.0%	Hard	*
+dp
+
 493	Reverse Pairs	26.8%	Hard	*
+divide and conquer.
+
 126	Word Ladder II	23.6%	Hard	*
+bfs with path information.
+
+
+Youtube on Amazon interview
+3 large scale example
+star method.
+data driven.
+ask questions
+
+On AWS:
+AWS: on demand clound computing platform.
+EC2: elastic compute cloud, providing a cluster of virtual computers
+AWS comprises more then 175 products and services
+computing, storage, networking, database, 
+
+https://blog.usejournal.com/what-is-aws-and-what-can-you-do-with-it-395b585b03c
+
+region
+availability zone
+edge location: they are CDN(Content delivery network) endpoints.
+
+- compute:
+	- EC2 (Elastic Computing Clound): virtual computers
+	- lightsail: auto deployes applications, (storage, networking, computing)
+	- ECS: (Elastic container services): the services provides the virtual environment for running the application (library, app, os et al)
+	- EKS: elastic container sevices for Kubernetes
+	- Lambda: serverless technology, allows to run your functions in the cloud.
+	- batch: 
+	- Elastic beamstalk: auto deployment and provisioning of resources (highly scalable)
+	
+- storage
+	- s3 (simple storage services)
+	- efs (elastic file system) to store files with EC2 instance
+	- Glacier: for long term file storage
+	- Storage Gateway: virtual machine storage.
+	
+- database:
+	- RDS: MySql, MariaDb, PostgreSQL, Oracle servers
+	- dynamoDB: highly scalable NoSQL.
+	- ElasticCache: caching the most frequent queries
+	- Neptune: graph database services
+	- RedShift: data warehousing solution for OLAP (Online Transactional Processing)
+	
+- migration
+	- DMS (database Migration services)
+	- SMS (server Migration Service)
+	- SnowBall: briefcase to send terabytes of data.
+
+Network & Content Delivery
+	- VPC(Virtual Private CLound): isolate your resources
+	- CloundFront: cache reources
+	- Route53: DNS services
+	- Direct Connect: high speed dedicated line.
+	- API gateway: create and manage your API
+	
+Developer Tools
+	- CodeStar: 
+	- CodeCommit
+	- CodeBuild
+	- CodeDeploy
+	- CodePipeLine
+	- Code9: IDE
+	- xray: analyze
+
+Management Tools:
+	- CloudWatch: 
+	- CloudFormation
+	- CloudTrail
+	
+- Analytics
+- security, identity, compliances
+- application services
+- mobile services
+- BUsiness productivity
+- desktop & app streaming
+- AI
+- VR
+- Cutomer Engagement
+- Game development
+- Internet of things
+
+About Amazon 14 leadership
+
+Customer Obsession 顾客至上
+Leaders start with the customer and work backwards. They work vigorously to earn and keep customer trust. Although leaders pay attention to competitors, they obsess over customers.
+
+领导者从客户入手，再反向推动工作。他们努力工作，赢得并维系客户对他们的信任。虽然领导者会关注竞争对手，但是他们更关注客户 。
+
+Ownership 主人翁精神
+Leaders are owners. They think long term and don’t sacrifice long-term value for short-term results. They act on behalf of the entire company, beyond just their own team. They never say “that’s not my job."
+
+领导者是主人翁。他们会从长远考虑，不会为了短期业绩而牺牲长期价值。他们不仅仅代表自己的团队，而且代表整个公司行事。他们绝不会说“那不是我的工作”。
+
+Invent and Simplify 创新简化
+Leaders expect and require innovation and invention from their teams and always find ways to simplify. They are externally aware, look for new ideas from everywhere, and are not limited by “not invented here." As we do new things, we accept that we may be misunderstood for long periods of time.
+领导者期望并要求自己的团队进行创新和发明，并始终寻求使工作简化的方法。他们了解外界动态，四处寻找新的创意，并且不局限于“非我发明”的观念。当我们开展新事物时，我们要接受被长期误解的可能。
+
+Are Right, A Lot 决策正确
+Leaders are right a lot. They have strong judgment and good instincts. They seek diverse perspectives and work to disconfirm their beliefs.
+领导者在大多数情况下都能做出正确的决定。他们拥有卓越的业务判断能力和敏锐的直觉。他们寻求多样的视角，并挑战自己的观念。
+
+Learn and Be Curious 好奇求知
+Leaders are never done learning and always seek to improve themselves. They are curious about new possibilities and act to explore them.
+领导者从不停止学习，并不断寻找机会以提升自己。领导者对各种可能性充满好奇并付于行动加以探索。
+
+Hire and Develop the Best 选贤育能
+Leaders raise the performance bar with every hire and promotion. They recognize exceptional talent, and willingly move them throughout the organization. Leaders develop leaders and take seriously their role in coaching others. We work on behalf of our people to invent mechanisms for development like Career Choice.
+领导者不断提升招聘和晋升员工的标准。他们表彰杰出的人才，并乐于在组织中通过轮岗磨砺他们。领导者培养领导人才，他们严肃地对待自己育才树人的职责。领导者从员工角度出发，创建职业发展机制。
+
+Insist on the Highest Standards 最高标准
+Leaders have relentlessly high standards — many people may think these standards are unreasonably high. Leaders are continually raising the bar and drive their teams to deliver high quality products, services, and processes. Leaders ensure that defects do not get sent down the line and that problems are fixed so they stay fixed.
+领导者有着近乎严苛的高标准 — 这些标准在很多人看来可能高得不可理喻。领导者不断提高标准，激励自己的团队提供优质产品、服务和流程。领导者会确保任何问题不会蔓延，及时彻底解决问题并确保问题不再出现。
+
+Think Big 远见卓识
+Thinking small is a self-fulfilling prophecy. Leaders create and communicate a bold direction that inspires results. They think differently and look around corners for ways to serve customers.
+局限性思考只能带来局限性的结果。领导者大胆提出并阐明大局策略，由此激发良好的成果。他们从不同角度考虑问题，并广泛寻找服务客户的方式。
+
+Bias for Action 崇尚行动
+Speed matters in business. Many decisions and actions are reversible and do not need extensive study. We value calculated risk taking. 
+速度对业务影响至关重要。很多决策和行动都可以改变，因此不需要进行过于广泛的推敲。我们提倡在深思熟虑前提下进行冒险。
+
+Frugality 勤俭节约
+Accomplish more with less. Constraints breed resourcefulness, self-sufficiency, and invention. There are no extra points for growing headcount, budget size, or fixed expense.
+力争以更少的投入实现更大的产出。勤俭节约可以让我们开动脑筋、自给自足并不断创新。增加人力、预算以及固定支出并不会为你赢得额外加分
+
+Earn Trust  赢得信任
+Leaders listen attentively, speak candidly, and treat others respectfully. They are vocally self-critical, even when doing so is awkward or embarrassing. Leaders do not believe their or their team’s body odor smells of perfume. They benchmark themselves and their teams against the best.
+领导者专注倾听，坦诚沟通，尊重他人。领导者敢于自我批评，即便这样做会令自己尴尬或难堪。他们并不认为自己或其团队总是对的。领导者会以最佳领导者和团队为标准来要求自己及其团队
+
+Dive Deep 刨根问底
+Leaders operate at all levels, stay connected to the details, audit frequently, and are skeptical when metrics and anecdote differ. No task is beneath them.
+领导者深入各个环节，随时掌控细节，经常进行审核，当数据与传闻不一致时持有怀疑态度。领导者不会遗漏任何工作。
+
+Have Backbone; Disagree and Commit 敢于谏言，服从大局
+Leaders are obligated to respectfully challenge decisions when they disagree, even when doing so is uncomfortable or exhausting. Leaders have conviction and are tenacious. They do not compromise for the sake of social cohesion. Once a decision is determined, they commit wholly.
+领导者必须要能够不卑不亢地质疑他们无法苟同的决策，哪怕这样做让人心烦意乱，精疲力尽。领导者要信念坚定，矢志不移。他们不会为了保持一团和气而屈就妥协。一旦做出决定，他们就会全身心地致力于实现目标。
+
+Deliver Results 达成业绩
+Leaders focus on the key inputs for their business and deliver them with the right quality and in a timely fashion. Despite setbacks, they rise to the occasion and never settle.
+领导者会关注其业务的关键决定条件，确保工作质量并及时完成。尽管遭受挫折，领导者依然勇于面对挑战，从不气馁。
+
+
+- amazon interview for bq also 4 grades for each question asked.
+- sell yourself.
+
+What shall be the 15th principle?
+Diversity brings thoughts and ideas from people with various backgrounds, experiences and upbringing. Diverse ideas help build innovative products for different demographics and target audiences across the globe.
+
+biggest weakness, strength & weakness, area for growth, work being criticized...
+be honest, choose something not necessary for the job, how you fixed the weakness.
+
+I Dive Too Deep
+My English
+I’m Bad at Giving Feedback
+Some people are bad at saying anything negative. This may make you a nice person but it doesn’t make you effective at work because sometimes people don’t perform well and something needs to be said about it. You can give an example of sometime you should have said something but didn’t and say how you learned from it. 
+I Can’t Say No or I’m Too Nice
+This could be too much like a fake weakness unless you give a good example of a time it happened and how it negatively affected your work and say how you’ve learned to improve it. 
+
+You Don’t Use Data 
+One client said that he was told he advocated for things without backing his ideas up with data. He said that he learned he should collect proof of what the customer actually needs and use that as the data to back up his ideas.
+
+test and practice chime
+
+Deliver Results
+Leaders focus on the key inputs for their business and deliver them with the right quality and in a timely fashion. Despite setbacks, they rise to the occasion and never settle.
+setback: 挫折, rise to the occasion: to make speical effort that is required to deal with a difficult situation.
+- keyinput: you need to validate the input and make sure we are doing the right thing.
+- rise to the occasion: try to meet the goal. work smart
+- resource assignment
+- analyze the workload and trade offs 
+- ask for more resources..
+https://dev.to/tda/the-bar-raiser-interview-amazon-lp-deliver-results-kp9
+
+
+Customer Obsession
+Leaders start with the customer and work backwards. They work vigorously to earn and keep customer trust. Although leaders pay attention to competitors, they obsess over customers.
+
+In simple terms, the ‘working backwards’ method can be described as starting with a customer want, need or problem and providing a solution through a product, service or experience. The alternative involves starting with a product, feature or solution and trying to find an audience for it.
+
+you should speak to customers regularly, find out what they want, learn about their challenges and identify specific needs.
+
+ontinuously seek out feedback from customers and measure performance against customer expectations.
+
+Collect data on and deeply understand what your customer wants and needs
+
+Ask, “Is what I’m working on helping my customers?”
+
+Rigorously pursue customer feedback
+
+“WOW’ your customers
+
+Provide products and solutions that exceed customer expectations
+
+Remove steps in your process that don't add value
+
+Treat your customers like they’re #1
+
+- priority
+- difficult customer
+- feel frustrated / impatient
+- customer want one thing but you feel something else.
+- is it ok to push back?
+- feedback change the way you worked?
+
+Showing “Customer Obsession” doesn’t mean you always do exactly what the customer asks. True “Customer Obsession” is about understanding the problem behind a customer request. Solving that problem might include something the customer never even imagined.
+
+why do you want this job? why amazon?
+1.   Your core messages – why you’re qualified/how you can benefit the company. If you’re not sure what I mean by this, I’ll explain more below.
+
+2.   The reason the role excites you
+
+3.   The idea that you understand the job
+
+4.   You want this job in particular, not just any job at the company
+
+5.   The way the job connects to your career plan
+
+6.   Your intention to stay in the job for awhile
+
+
+Leaders are obligated to respectfully challenge decisions when they disagree, even when doing so is uncomfortable or exhausting. Leaders have conviction and are tenacious. They do not compromise for the sake of social cohesion. Once a decision is determined, they commit wholly.
+
+conviction: 信念
+tenacious： 坚韧
+
+you can convince others with data, not by yelling or being unnecessarily aggressive.
+
+
+Possible BQ questions
+
+Tell me about yourself
+Why choose our company/why are you leaving your current job?
+1. Tell me about a goal you had and how you achieved it.
+2. Tell me about a time you worked on a team.
+3. Share an example of how you were able to motivate an employee or a co-worker.
+4. What was the last project you led and what was the outcome?
+5. Describe a situation when you had to work effectively under pressure.
+6. How do you handle a challenge? Give me an example.
+7. Have you ever had to change the way you communicated with someone?
+8. Tell me about a mistake that you made. How did you handle the situation?
+9. What do you usually do when you disagree with someone at work?
+10. Have you ever had to work with a difficult manager or coworker? How did you respond?
+Who was your most difficult customer?
+"What is the worst mistake you ever made?"
+"If your direct manager was instructing you to do something you disagreed with, how would you handle it?"
+"Do you know our CEO? How do you pronounce his name?" Jeff Bezos
+15. "Describe what happens in your browser as soon as you hit enter after writing a URL in the address bar."
+"Tell the story of the last time you had to apologize to someone."
+"What would you do if you saw someone being unsafe at work?"
+19. "What would you do if somehow you misdirected 10,000 units of something?"
+22. "What is the most difficult situation you have ever faced in your life? How did you handle it?"
+26. "Give me an example of a time when you were 75% of the way through a project, and you had to pivot strategy--how were you able to make that into a success story?"
+29. "Which Amazon leadership principle do you resonate most with?"
+Tell me about a time when you were faced with a problem that had a number of possible solutions. What was the problem and how did you determine the course of action? What was the outcome of that choice?
+When did you take a risk, make a mistake, or fail? How did you respond, and how did you grow from that experience?
+Describe a time you took the lead on a project.
+What did you do when you needed to motivate a group of individuals or promote collaboration on a particular project?
+How have you leveraged data to develop a strategy?
+
+Practice using the STAR method to answer the behavioral-based interview questions listed above, incorporating examples from the Amazon Leadership Principles.
+Ensure each answer has a beginning, middle, and end. Describe the situation or problem, the actions you took, and the outcome.
+Prepare short descriptions of a handful of different situations and be ready to answer follow-up questions with greater detail. Select examples that highlight your unique skills.
+Have specific examples that showcase your experience, and demonstrate that you’ve taken risks, succeeded, failed and grown in the process.
+Specifics are key; avoid generalizations. Give a detailed account of one situation for each question you answer, and use data or metrics to support your example.
+Be forthcoming and straightforward. Don't embellish or omit parts of the story.
+
+
+stories:
+customer obsession:
+
+example 1:
+One of our important client called to ask to add a feature to one of our underwater product. The product is used to measure the river water discharge. He requests us to add a ratio factor in our software so that he can provided the ratio output. I talked to the customer and understand that since the output is biased larger or lower.
+I asked some data from the client and carefully examined the output and found the reason of underestimate or overestimate due to the model applied for the non-measurable part. I discussed this with the boss and suggest to add the model which is commonly used in industry and showed the results applying the new model and boss is convinced. I talked to client about my suggestion and said the ratio could not be a scientific way to manipulate the data. I added the suggested feature in our software, after the client saw my revised software and re-processed the data, he is satisified with our revision and accept it.
+
+(invetigate customer what he wants, work backward, ask feedback, exceed expectation). 
+situation, action, results.
+
+example 2:
+We used to have a product which is used for monitoring water flow at sea for oil industry. I received some emails querying if it can be used to measure discharge in river. I did some research on our current product and realized it is realistic to use the current product to do that. The new application needs 10 times faster measure speed and data output, which needs revisions on firmware and software only. 
+After the company decided to make the new product, I implemented the firmware with most functions compatible and hardware no changes. The software GUI we changed a lot to meet the new application. Constantly I will contact the customer for the feedback and make const improvements. The new product is well received and is now one of the best sold product.
+
+(offering solutions or products to customer)
+
+Ownership:
+example 1:
+
+In the software development of our medical imaging device, there are quite a few modules and assigned for different engineers. I found the code for communicating with the DSP is lengthy, not organized and even not a module and spread in the software and causes much trouble. I decided to remove all of them and re-implemented as a DLL and cut the code by 80%. By hiding the implemtation details and limit it in a separate module, it is clear and concise and much more robust.
+
+example 2:
+One of our hard and tedious work is to verify our FPGA implementation. A tool is made to aim for the bittrue. However it often take a week to verify or find a problem. I did some reaearch on this, and found that partly is due to we have a lot of binary encoded tables and hundreds of registers and the softare engineers are not familiar with those. I offered to renovate the tool and make it highly efficient and requires minimal personal input or knowledge. I first decode all those tables are output them in human readable format and output all the intermediate outputs at every stage. By simulating the FPGA functions I made a very verstatile tool for the hardware verification. 
+A bittrue verification on the FPGA can be done in one minute, which saves a lot of tedious work.
+
+example 3:
+situation: One of the most annoying problem in development our medical device is that the scanner is not working as expected or just does not work. Engineers spent a lot of time debugging and problems keeps going. I then carefully inspected the problem and separate the problem into the scanner configuring module. The problem is mostly due to the very complicated scanning mode configured and is hard to find since they are so many. 
+I decided to make a tool to read back all FPGA configured status and convert to human readable format. When there is a problem occured, the tool is used to take the snapshot of FPGA and inspect the tables and registers. Using this, the problem is often found in short time.
+
+Invent and simplify:
+example 1: touchscreen
+situation: most medical touchscreen uses a separate computer and screen and uses serial port to communicate to the host. inflexible and expensive.
+action: use browser + javascript html to design flexible and powerful pages + inter-process communication.
+
+example 2: 
+version control 
+situation: manual version control: windiff + version number
+git: keep version control simplified.
+
+example 3:
+engineer with different perspectives:
+- we add openCV, openGL, VTK to simplify our job.
+
+Are right, A lot.
+- learn from lessons, avoid the same mistake.
+- collect more data, more perspectives
+- intuition
+“Tell me about a time you made a mistake.”
+The interpersonal conflict questions
+how you make decisions (how do you collect data, do you have good judgement, do you have good intuition, do you have experience to guide you?)
+Describe a situation where you thought you were right, but your peers or supervisor didn’t agree with you. How did you convince them you were right? How did you react? What was the outcome?
+
+Tell me about a time that you strongly disagreed with your manager on something you deemed to be very important to the business. What was it about and how did you handle it?
+
+Tell me about a time where someone openly challenged you. How did you handle this feedback?
+
+Give me an example of when you took an unpopular stance in a meeting with peers and your leader and you were the outlier. What was it, why did you feel strongly about it, and what did you do?
+
+When do you decide to go along with the group decision even if you disagree? Give me an example of a time you chose to acquiesce to the group even when you disagreed. Would you make the same decision now?
+
+Tell me about a decision for which data and analysis weren’t enough to provide the right course and you had to rely on your judgment and instincts. Give me two to three examples.
+
+Tell me about a time you made a difficult decision and how you knew it was the right solution (how you evaluated the options, if you received input, what data you reviewed, etc.)
+
+Give me an example of when you had to make an important decision in the absence of good data because there just wasn’t any. What was the situation and how did you arrive at your decision? Did the decision turn out to be the correct one? Why or why not?
+
+Tell me about a time you had to fix something but had no data or direction.
+
+Tell me about a time when you were faced with a challenge where the best way forward or strategy to adopt was not “clear cut” (i.e., there were a number of possible solutions). How did you decide the best way forward?
+
+example 1:
+one time, an engineer is doing noise normalization. But the noise is different using more samples. I examined his code and I think he should use Ampliture/sqrt(fftlen) instead of Aplitude/fftlen. The engineer is an expert on Digital signal processing and he is not willing change it since he think it is not correct, and the change also makes big difference. I then did some research and wrote a piece of code to generate pseudo noise and found my approach can get similar results for different lengths. I showed to him and he then starts to change it and find another problem in his coding. And the problem is solved and he thanked me and admit that I am right.
+
+example 2:
+mistake.
+Once give data to customer without checking again, and found it is incorrect, and have to send appology
+lesson learned: do not jump to conclusion or use unverified data support
+
+example 3: without data support.
+once a customer doing experiment on the sea. And call in that they are having a problem with our instrument and waiting for our support. According to the behavior, my intuition is that the recent wave option added may be the cause. Since they are not using it, I suggest them to explicitly disable it and problem solved.
+
+hire and develope the best
+What is your management style?
+How do you approach managing your reports?
+How do you help your employees grow?
+Give me an example of a time you provided feedback to develop and leverage the strengths of someone on your team. Were you able to positively impact that person’s performance? What were your most effective methods?
+You know how to hire excellent people
+You recognize strong performers and mentor them
+You try to help your people grow. You make it a priority to coach and teach employees. You provide regular feedback.
+
+example 1
+one top performer is quick and efficient, but I noticed that he intends to write long code since he is very efficient using tools and producing long and similar code is easy for him. I then ask him to pay more attention to think architecture and so the work can be more concise and less error prone and also reduce debugging time.
+
+
+Insist on the highest standard.
+Set SLAs for everything, and don’t take shortcuts on instrumentation.
+
+Continually self-critique your work to make sure the quality is the best it can be.
+
+Accept and seek coaching and feedback from your manager and others about improving the quality of your work.
+
+Demand that your team delivers high-quality products, services, and solutions.
+
+Coach employees about setting their own high standards and exceeding customer expectations.
+
+example 1
+Although boss and colleage are satisified with the GUI for our medical equipment, I still not happy with it. We use opengl + winGDI for the GUI and the style is not consistent. I did a lot of research trying to use OpenGL for all the GUI by adding more curves, icons, graphics to make it more intuitive. I spent a lot of time to make the fonts prettier, I tried bitmap font, texture font, outline font and truetype font, and with anti-alias, mimmap and resource sharing and get both performane and visual effects.
+
+example 2:
+color doppler imaging algorithm revision: good enough but wants to be better.
+spectrum algorithm revision
+- revisit every step and make sure its role and what will not work
+- redesigned the changing parameters.
+situation: works good for most cases, but sometimes works fair.
+
+Think Big
+If you think big you will:
+
+See problems as challenges and opportunities
+
+Be positive
+
+Think of things you can do, not things you can’t
+
+Plan what is possible, not worry about what is impossible
+
+Be fearless
+
+Be creative
+
+Be able to dream and visualize what you want
+
+calculated risk.
+
+Example 1: 
+I developed the software team by using all non-experienced engineers.
+- situation: software engineer not fit in the long term success
+- boss warns me the risk of failure, I took the risk
+- I spent many time and energy to build a succrss team which is a great success.
+
+Example 2:
+rehaul the software architecture from scratch.
+situtation: mess and at the time of building 2nd generation
+
+Bias for action:
+When faced with a tough decision that will help you and your team move forward, you don’t avoid that decision. You’re not afraid to step up and make the call. 
+
+You encourage this same behavior in your direct reports. You let them know you’ll stand behind them if they take a risk that doesn’t work out.
+
+ If you’re missing some key piece of information, you try to get it as quickly as possible. If you can’t, you’re not afraid to move ahead without it.
+
+You foster an environment of action bias by responding promptly to colleagues looking for information, and always deliver on your promises.
+
+You roll up your sleeves and remove obstacles, even when it’s “not your job.”
+
+Still stuck? You ask for help. You don’t let yourself or your team be stuck for days at a time. 
+
+example 1:
+dicom start while learning
+
+example 2:
+work against deadline
+- situation: client need to bid a contract and needs a lot of features in 4 weeks.
+- action: 
+discuss with client and understand what he wants
+estimate the workload and priority the tasks with current resources
+asking testing resources from the client and speed up the process
+help the client to get the contract.
+
+frugality
+dicom example
+deadline example
+
+Learn and be curious.
+example 1:
+pcie/usb driver:
+requires a deep understanding on the driver mechanism and protocol.
+
+example 2:
+touchscreen: learned javascript, browser, et al
+
+Earn Trust
+consistently making good decisions
+
+keeping commitments 
+
+treating others and their ideas with respect
+
+adhering to high ethical standards
+
+admitting failures
+
+ listening, communicating, and delegating to help employees get the right things done
+ 
+example 1.
+once I met a strange problem. Our software cannot talk to the hardware. The fact is that the connection is just replaced and could be one reason, and there are utilities which works. The software is not changed. So I suspect that the connection and ask to try another one. Hardware engineer does not agree and I am not happy. But I soon found that although the software is not changed, but my colleage change a input setting file which does not work on the case. This is really embarrassing, I have to admit my mistake to the hardware engineer. I decide to not be emotional anytime to avoid this kind of mistakes.
+
+example 2:
+only give judgement with support to others to earn credit
+commitment.
+
+Dive Deep:
+ If something doesn’t make sense, our leaders need to have the ability (and interest) to dive in and figure out what’s going on
+ data focus
+ Give me an example of when you used data to make a decision/solve a problem.
+
+Tell me a time you gave insights beyond the data.
+
+Have you ever leveraged data to develop strategy?
+
+Tell me about a time you were trying to understand a problem on your team and you had to go down several layers to figure it out. Who did you talk with and what info proved most valuable? How did you use that info to help solve the problem?
+
+Tell me about a problem you had to solve that required in-depth thought and analysis. How did you know you were focusing on the right things?
+
+Walk me through a big problem in your organization that you helped to solve. How did you become aware of it? What info did you gather, what was missing, and how did you fill the gaps? Did you do a post mortem analysis and what did you learn?
+
+Can you tell me about a specific metric you’ve used to identify a need for change in your department? Did you create the metric or was it readily available? How did this and other info influence the change?
+
+example 1： bittrue example。 diving into and find what is the problem
+example 2: configuration problem....
+
+
+Have backbone: disagree and commit.
+example 1:
+dicom: boss suggests to add an engineer to do some verifications. I think it is not necessary and it is waste of resources. I have done quite a few researches and had already a detailed plan by using a third party library which can be extensible and more comprehensive. Although there are a few modules which needs purchase, I am confident that I can do it myself. Just do some trial work will not benefit our project and another important reason is the engineer working style, his work is hardly be able to fit in our software (he is more used to low level firmware).
+Anyway, boss still let the engineer do the work. He worked on it for several weeks and the outcome is not satisfactory and cannot be used in software. During the same time, I was able to implement most of the necessary protocols in our software. 
+
+example 2:
+The water discharge scheme. 
+situation-
+suggestion
+confliction: 
+persuation
+results.
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

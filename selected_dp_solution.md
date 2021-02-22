@@ -251,3 +251,37 @@ ending with different face value.
 - dp[i,f]+=dp[j,f-dist(i,j)] represent the number of ways to start from i with fuel f.
 - base case: dp[finish] if you start from finish, you can have any fuel and it is considered a route. so all shall be 1.
 - 
+
+LIS
+
+1239. Maximum Length of a Concatenated String with Unique Characters
+
+sort the array from longest to shortest. (this is needed, since we do not want to miss the longer ones)
+```
+    int maxLength(vector<string>& arr) {
+        int  n=arr.size();
+        sort(begin(arr),end(arr),[](string& a,string& b){
+            return a.size()>b.size();
+        });
+        vector<bitset<26>> dp(n);
+        int ans=0;
+        for(int i=0;i<n;i++){
+            bitset<26> bs;
+            for(char c: arr[i]) bs[c-'a']=1;
+            if(bs.count()<arr[i].size()) continue; //this one is invalid
+            
+            bitset<26> mxbs=bs;
+            dp[i]=bs;
+            for(int j=0;j<i;j++){
+                bitset<26> bs0=dp[i]&dp[j];
+                if(bs0.count()==0){
+                    bs0=dp[i]|dp[j];
+                    if(bs0.count()>mxbs.count()) mxbs=bs0;
+                }
+            }
+            dp[i]=mxbs;
+            ans=max(ans,(int)dp[i].count());
+        }
+        return ans;
+    }
+```	
