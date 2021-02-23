@@ -1565,6 +1565,78 @@ persuation
 results.
 
 
+System Design
+- requirement clarification
+- system interface definition
+- back of the envelope estimation
+- defining data model
+- high level design
+- detailed design
+
+database:
+network traffic
+load balance.
+
+database sharding
+group a list of rows on a separate severs.
+- hash sharding
+- range sharding
+- geo partition
+
+vertical sharding:
+group some columns together.
+for example often used columns vs rarely used columns
+use additional tables with foreign key
+
+Rest API: representational state transfer
+text serialization of the requests.
+
+relational database and non-relational database:
+NoSql:
+key-value store
+document store
+graph: database relation can be represented as a graph. liek social relations.
+NoSql needs:
+no fixed scheme
+avoid joins
+
+easy to scale
+with humongous storage
+big data and realtime web apps
+
+
+design tinyURL:
+
+requirements;
+function:
+- given a url generate a tinyURL
+- access a url, access the long url.
+- be able to pick a custom tinyURL
+- expire after a time period
+non-functional:
+- highly available
+- min latency
+
+Estimation:
+- generate url 
+- access url 100 times more. read write ratio: 100:1
+- 500M new URL per month, 5B access.
+so read 20K/s. write 200/s.
+- storage estimate for 5 years: 15TB
+- bandwidth: write 100KB/s, read 10Mb/s.
+- memory: cache 20%: 170GB
+
+rest API:
+createURL
+deleteURL
+
+Database:
+url: database to map tinyURL vs the original URL.
+user: 
+
+
+
+
 
 
  
