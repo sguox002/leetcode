@@ -524,3 +524,5 @@ two factors and can use both as bitmask, then need use the smaller one. Convert 
 -1494	Parallel Courses II    		31.0%	Hard	
 -1595	Minimum Cost to Connect Two Groups of Points    		41.9%	Hard	
 -1659	Maximize Grid Happiness    		29.1%	Hard	
+
+### need greedy and optimization in dp.
