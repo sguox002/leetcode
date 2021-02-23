@@ -1565,13 +1565,120 @@ persuation
 results.
 
 
-System Design
+## System Design
+
+terminology
+replication
+consistency
+availability
+partition tolerance
+vertical/horizontal scaling
+sharding
+
+### background knowledge
+these are common knowledges for system design.
+pay attention to:
+- protocols, trade offs
+- algorithm and data structure for common tasks.
+
+web front end: html, javascript, css
+web server:  backend, javascript, services, server-client
+handle http requests, message, accessing a database, exchanging message et al.
+
+microservice: appication as a collection of services.
+services are highly maintainable and testable
+loosely coupled
+independently deployable
+owned by a small team
+
+database
+relational database: tables of rows.
+Often seen: MS Sql, oracle, MySql, PostgreSql, SqLite, MariaDb
+primary key: used to represent a row
+foreign key: in associative table to connect the primary key to create relation
+
+Non-relational database.
+has no primary key, foreign key, row or cols.
+actually it is a storage model optimized for specific application
+often seen: MongoDB, Apache Cassandra, Redis, Couchbase and Apache HBase.
+
+document data store:
+named string vs object data values  -> document (typically store in jason or xml, flexible format)
+
+column oriented data store:
+
+key-value store: hash-map or dictionary
+
+graph database: efficiently store relations between entities. 
+
+NoSQL is good for unstructured data with great scalability.
+
+cache:
+LRU: least recently used, hashmap list.
+LFU: least frequent used, hashmap, list.
+https://aws.amazon.com/caching/
+
+
+redundancy
+
+replication
+
+networking & often used protocols
+- http
+- tcp/ip
+json, soap, xml, 
+
+scaling
+
+load balance.
+algorithm:
+
+concurrency or multithreading
+- events
+- mutex
+
+OOD design pattern
+singleton
+factory
+builder
+prototype
+chain of responsibility
+observer
+proxiy
+adapter
+
+common techniques and data structures for system design
+trie- recommendation system
+quadtree- for geoinfo system
+graph- for social network
+hashtable- for partitioing, sharding, cache
+
+### Procedure to system design.
 - requirement clarification
 - system interface definition
 - back of the envelope estimation
 - defining data model
 - high level design
 - detailed design
+- get the requirements
+- estimate the read/write/traffic/storage..
+- high level design
+- dive down
+
+Examples
+Paging through comments
+Amazon's recommendation system
+chess game
+
+
+
+tradeoffs
+each design its advantage and disadvantages needs to be discussed.
+
+
+
+
+
 
 database:
 network traffic
