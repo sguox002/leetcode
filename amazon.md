@@ -1613,25 +1613,34 @@ graph database: efficiently store relations between entities.
 
 NoSQL is good for unstructured data with great scalability.
 
-cache:
+cache: to improve throughput and reduce latency.
 LRU: least recently used, hashmap list.
 LFU: least frequent used, hashmap, list.
 https://aws.amazon.com/caching/
 
+redundancy: remove single point of failure.
 
-redundancy
-
-replication
+replication: to keep data consistency and avoid failure.
 
 networking & often used protocols
 - http
 - tcp/ip
+- REST API.
 json, soap, xml, 
 
-scaling
-
+scaling related:
 load balance.
-algorithm:
+algorithm: simple round robin, 
+
+partition:
+- range based partitioning
+- hash based partitioing
+
+caching:
+- 20% rule
+- eviction policy: LRU: linked hashmap
+- cache miss: go to the database.
+
 
 concurrency or multithreading
 - events
@@ -1648,13 +1657,16 @@ proxiy
 adapter
 
 common techniques and data structures for system design
-trie- recommendation system
-quadtree- for geoinfo system
-graph- for social network
-hashtable- for partitioing, sharding, cache
+- trie- recommendation system
+- quadtree- for geoinfo system
+- graph- for social network
+- hashtable- for partitioing, sharding, cache
+- base62/64 MD5 encoding
+- message queue (many techniques in desktop app can be used in distributed)
 
 ### Procedure to system design.
 - requirement clarification
+- estmiation: read, write, memory, disk et al.
 - system interface definition
 - back of the envelope estimation
 - defining data model
@@ -1671,14 +1683,8 @@ Amazon's recommendation system
 chess game
 
 
-
 tradeoffs
 each design its advantage and disadvantages needs to be discussed.
-
-
-
-
-
 
 database:
 network traffic
@@ -1711,8 +1717,8 @@ easy to scale
 with humongous storage
 big data and realtime web apps
 
-
-design tinyURL:
+example 
+### design tinyURL:
 
 requirements;
 function:
@@ -1736,10 +1742,114 @@ so read 20K/s. write 200/s.
 rest API:
 createURL
 deleteURL
+algorithm: base62 to shorten to a 6 char list. and put in hashmap.
 
 Database:
 url: database to map tinyURL vs the original URL.
 user: 
+a lot user use the services:
+- how do you ensure concurrency.
+- unique...
+- key-value store.
+
+
+### design pastebin
+user store some text and get an url to access it
+clear requirement:
+- upload text and get an url.
+- expire after a time.
+reliable, highly available.
+- max size of upload.
+
+estimation:
+traffic
+storage
+network bandwidth
+memory
+
+Rest API:
+AddPaste:
+input: paste_data, custom_url, user_name, paste_name,expire_date
+return: url.
+UpdatePaste
+deletePaste
+
+Database:
+meta data
+text data
+read heavy,
+
+key generation (which is also used in TinyURL)
+
+### design Instagram
+image storage is crucial.
+
+estimation
+
+database:
+meta data: photo, user, follows
+can store it in relational database
+distributed file storgage S3 or HDFS
+nosql: key value store, 
+
+webserver has a max number of connections
+upload is lengthy and will take the connection for a while
+separate read and write.
+
+replica: master/slave
+
+sharding:
+hot user.
+
+### design dropbox
+sync user folder and cloud storage
+- store files in chunks
+- transfer (supporting retransfer)
+- transfer the difference
+- snapshot
+- a group of user to get notified when content is changed.
+
+message queue for processing request and sendback ack.
+
+### facebook messenger
+
+one to one conversation
+storage of conversation history
+group chat
+
+via the server: deliver confirmation
+
+pull/push:
+pull: client asks the server for new message: mostly there is no message.
+push: server push message to client.
+using http long polling or websocket
+message ordering
+
+database:
+store small chat in buffer and dump to database until buffer full.
+
+### design twitter: social network
+post tweet
+follow others
+mark as favorite
+timeline
+
+### design youtube
+upload view, comment, share...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
