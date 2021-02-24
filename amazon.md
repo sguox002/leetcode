@@ -1667,15 +1667,16 @@ common techniques and data structures for system design
 ### Procedure to system design.
 - requirement clarification
 - estmiation: read, write, memory, disk et al.
-- system interface definition
+- system interface definition (API)
 - back of the envelope estimation
-- defining data model
+- defining data model and algorithm.
 - high level design
 - detailed design
-- get the requirements
-- estimate the read/write/traffic/storage..
-- high level design
-- dive down
+- cache
+- replica & fault tolerance.
+- load balance
+- concurrency.
+Bear in mind: each option may have good and bad, be sure to discuss them and make tradeoff.
 
 Examples
 Paging through comments
@@ -1740,17 +1741,44 @@ so read 20K/s. write 200/s.
 - memory: cache 20%: 170GB
 
 rest API:
-createURL
-deleteURL
-algorithm: base62 to shorten to a 6 char list. and put in hashmap.
+createURL(api_dev_key,longurl,custom_alias,username,expire)
+api_key is for the registered account using for limit the user access.
+return: shorten url or error code.
+deleteURL(api_dev_key,url_key)
 
 Database:
 url: database to map tinyURL vs the original URL.
-user: 
+schema: 
+shorten usl： orginal url, createTime, expireTime,
+user: name,email, registerTime,LastLogin (relational database)
+user: (most system needs user information database or meta data)
 a lot user use the services:
 - how do you ensure concurrency.
 - unique...
 - key-value store.
+sql vs nosql: nosql key-value store. (hashmap)
+
+algorithm: base62 to shorten to a 6 char list. and put in hashmap.
+approach 1: assign and ID and convert to string with 6 chars.
+approach 2: calculate the hash using MD5 or SHA256. Using the hash as the id to get encode url.
+for 6 chars, it supports up to 62^6 which is roughly 2^42 (SHA has 128 bits, so will cause key duplication)
+- duplicate, we can choose the first several chars in the hash value
+- or add seqID, or userID.
+- or generate offline.
+- used + unused hashtables, to avoid concurrency problem.
+
+Partition:
+range based partition: using the url first letter or hash value%somthing (unbalanced server)
+hash based partition: 
+
+Cache:
+- calculate memory needed.
+- cache policy: LRU
+hit: return the memory value
+miss: get from database and update the cache.
+
+Load Balance:
+
 
 
 ### design pastebin
@@ -1838,6 +1866,37 @@ timeline
 upload view, comment, share...
 
 
+### design typeahead suggestion
+in memory data structure: trie.
+
+find the top 10 prefix matches.
+- store the frequency
+- each node stores the top 10 refereces to the terminal.
+- then post order to get the top 10 suggestions.
+
+build: dfs to build the top 10.
+update: update at a regular interval. (to avoid update every query)
+map reduce
+update: store the frequency changes in memory, when update trie, update the frequency and top 10 for each nodes.
+
+store: serialization of the trie.
+
+### API rate limit
+to avoid abuse of service.
+
+hard throttling
+soft throttling
+dynamic throttling
+
+fixed sliding window
+rolling window
+
+hashtable user vs a list of requests in window
+
+### tweet search
+
+### web crawler
+bfs/dfs
 
 
 
