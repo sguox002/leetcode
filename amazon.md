@@ -1779,8 +1779,6 @@ miss: get from database and update the cache.
 
 Load Balance:
 
-
-
 ### design pastebin
 user store some text and get an url to access it
 clear requirement:
@@ -1797,19 +1795,27 @@ memory
 
 Rest API:
 AddPaste:
-input: paste_data, custom_url, user_name, paste_name,expire_date
+input: api_key, paste_data, custom_url, user_name, paste_name,expire_date
 return: url.
-UpdatePaste
-deletePaste
+UpdatePaste(api_key, paste_key)
+deletePaste(api_key, paste_key)
 
 Database:
 meta data
 text data
-read heavy,
+read heavy.
 
+paste:
+url hash: mini URL.
+content key: key of the paste object.
+expire time
+create time
+
+user: 
 key generation (which is also used in TinyURL)
 
-### design Instagram
+
+### design Instagram: social network service
 image storage is crucial.
 
 estimation
@@ -1897,6 +1903,28 @@ hashtable user vs a list of requests in window
 
 ### web crawler
 bfs/dfs
+
+
+
+- webserver has connection limits: several hundreds
+- separate read and write.
+- Load Balance can be added at each layer: 
+user-webserver, webserver-application server/cache server
+health check
+least connection method
+least response time method
+least bandwidth method
+round robin
+weighted round robin
+IP hash
+
+CDN: global cache.
+write through cache, update both memory and disk.
+write around: update disk skipping cache
+write back: write to cache and later to disk.
+
+FIFO, LIFO, LRU, MRU, LFU, random replacement.
+
 
 
 
