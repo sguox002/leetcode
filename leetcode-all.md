@@ -636,7 +636,10 @@ each time you merge k consecutive piles into one pile at the cost of the total s
 - prefix sum so we can get range sum in O(1)
 - dp[i,j] deals with subproblem to merge i to j. dp[i,j]=min(dp[i,j],dp[i,m]+dp[m+1,j])
 - also there is a restriction the length (n-1)%(k-1)==0 must be satisfied.
+- the stone merged to 1 pile with larger value which is critical to get the correct solution.
 - final answer is dp[0,n-1]
+for example [3,2,4,1] 
+
 ->>
 
 <<-1246	Palindrome Removal    		45.7%	Hard	
@@ -6488,12 +6491,13 @@ two pointer to get nth node.
 rotate by k places. find the length and k%=n, and then do the rotation.
 ->>
 
-<<-82	Remove Duplicates from Sorted List III    		37.6%	Medium	
+<<-82	Remove Duplicates from Sorted List II    		37.6%	Medium	
 delete one nodes that have duplicate numbers, leaving only the distinct ones.
-similar to a stack. but need keep prev.
+similar to a stack. but need keep prev. use pre, cur, post three pointer.
+***
 ->>
 
-<<-80	Remove Duplicates from Sorted Array II    		44.7%	Medium	
+<<-80	Remove Duplicates from Sorted Array I    		44.7%	Medium	
 duplicates only allows 2 times. two pointer, check nums[i] with nums[i-2]
 ->>
 
@@ -8980,6 +8984,8 @@ if there are multiple answers, return the one with min total length.
 - find each char's first and last index.
 - extend range using inside chars. -this is very tricky. (once we found the interval no change the we stop)
 - sort intervals and get the max non-overlapping substrings. always uses smaller segment first.
+- can apply some greedy approach: If we find a valid substring, and then another valid substring within the first substring - we can ignore the larger substring.
+E.g. if we find "abccba", and then "bccb", and then "cc", we only care about "cc". This can be easily proven by a contradiction.
 Very hard.
 ->>
 

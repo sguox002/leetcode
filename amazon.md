@@ -1,5 +1,46 @@
 Leetcode amazon mock interview
 
+coding approach:
+- clarify requirements, edge cases, input scale.
+- observe small examples to get clear the approach and understand the problem correctly
+- offer brute force and complexity
+- try optimized solution.
+- think out loud, and explain the thinking process.
+- try to use familiar patterns 
+- understand most data structures.
+- explain language specific if interviwer is not familiar with it.
+- demonstate the analye, problem solving and technical skills.
+- make sure to not stuck on one approach, think wide!!!
+- explain complexity and approach.
+
+array: 
+- sort? greedy? binary search? dfs? bfs? 
+- divide and conquer?
+subproblem: recursive, backtracking? dp?
+- hashmap
+- tree
+- heap
+
+
+
+
+
+high frequency amazon problems
+must clear:
+1. critical connections in a network
+2. LRU cache
+3. LFU cache
+4. word search II. (trie)
+5. word break II (dp+backtracking)
+6. reorganize string (heap)
+7. sell diminishing valued colored balls
+8. jump game II (bfs like algorithm, but using queue will TLE.)
+9. shortest path in a grid with obstacles elimination (3 variable dfs)
+- median of two sorted arrays
+- reverse nodes in k-Group
+
+
+
 phone :
 flood fill: dfs
 insufficient nodes in root to leaf path, tree
@@ -28,8 +69,9 @@ remove vowels from a string:
 design an expression tree with evaluate function ***
 reorder data in log files, hashmap
 sum of nodes with even valued grandparent: tree
-the maze II: dijkstra ***
-min cost to merge stones: dp ***
+the maze II: dijkstra *** (use 1d dist matrix)
+min cost to merge stones: dp **** 
+(not easy).
 
 
 online assessment
@@ -57,7 +99,7 @@ find words that can be formed by characters
 
 onsite
 course schedule: bfs
-course schedule II ***
+course schedule II *** bfs.
 binary tree max path sum
 game of life
 shortest path in binary matrix
@@ -79,7 +121,7 @@ word ladder: bfs
 find median from data stream: pq
 kids with the greatest number of candies
 min knight moves: bfs
-max number of non-overlapping substrings: ****
+max number of non-overlapping substrings: **** (hard, we need find all char's shortest ranges and then find the longest non-overlapped interval. Extending the intervals is the key of this problem)
 average of levels in binary tree
 vowel spell checker
 k-similar strings: bfs.
@@ -605,7 +647,7 @@ hashmap
 binary search: note the right shall be n instead of n-1.
 235	Lowest Common Ancestor of a Binary Search Tree	51.7%	Easy	*
 997	Find the Town Judge	49.8%	Easy	*
-trust: outgoing, trusted: incoming, net=n-1;
+trust: outgoing, trusted: incoming, net=n-1; (also some edge cases)
 there is another similar by calling API: find the celebrity
 572	Subtree of Another Tree	44.5%	Easy	***
 using same tree.
@@ -615,7 +657,7 @@ using flags. all 1 and use sieve to mark all multiples.
 535	Encode and Decode TinyURL	80.9%	Medium	***
 hashmap. using 0-9a-zA-Z, assign an int to string and then using the id to convert to string. 
 339	Nested List Weight Sum 76.3%	Medium	***
-consider a tree structure and use dfs. consider it also as an array
+consider a tree structure and use dfs. consider it also as an array (level)
 
 861	Score After Flipping Matrix	73.6%	Medium	*
 greedy. fix the first col.
@@ -636,9 +678,9 @@ dp, partitioning. we can apply pq to find the max and save time to O(nlogn) + sl
 backtracking, combination.
 
 1236 Web Crawler 64.6%	Medium	*
-craw all links under tha same host. (host find / position)
+craw all links under tha same host. (host find / position) possibly bfs is better.
 dfs or bfs are all fine. see 1242 web crawler multithreaded. 
-multithreading: need process the queue by a nmber of threads, accessing the queue shall be protected.
+multithreading: need process the queue by a nmber of threads, accessing the queue shall be protected using mutex.
 thread start/exit conditions.
 
 1167 Minimum Cost to Connect Sticks 64.4%	Medium	*
@@ -721,7 +763,7 @@ two pointer
 
 652	Find Duplicate Subtrees	52.4%	Medium	*
 hashmap (in the same tree)
-for each node get the serialization.
+for each node get the serialization and store in hashmap.
 
 131	Palindrome Partitioning	51.9%	Medium	*
 get all partitioning backtracking.
@@ -749,7 +791,7 @@ dp.
 1239	Maximum Length of a Concatenated String with Unique Characters	49.5%	Medium	****
 dp LIS.
 the key observation is: dp[i] is not dependent only on dp[j] (since if i cannot combine with dp[j] it may still be able to connect with its previous elements). It is more like a bitmask choice.
-- sort from longest to shortest
+- sort from longest to shortest (greedy)
 - apply dp LIS.
 
 47	Permutations II	49.3%	Medium	*
@@ -811,12 +853,16 @@ rolling hash.
 greedy or sliding window.
 
 334	Increasing Triplet Subsequence	40.7%	Medium	*
-stack, monotonic.
+stack, monotonic. similar to 132 pattern.
 
 662	Maximum Width of Binary Tree	39.9%	Medium	*
 right position - left position
+
 545	Boundary of Binary Tree 39.7%	Medium	*
 preorder and then postorder. tricky!
+get the boundary of left and right. left children is left boundary but not right boundary
+right children is right boundary but not left children
+
 
 221	Maximal Square	39.1%	Medium	*
 dp
@@ -850,7 +896,7 @@ min number of coins. can reuse.
 bfs limited in 1st quarter.
 
 79	Word Search	36.8%	Medium	*
-146	LRU Cache	35.7%	Medium	*
+146	LRU Cache	35.7%	Medium	* linked hashmap.
 353	Design Snake Game 35.7%	Medium	*
 532	K-diff Pairs in an Array	35.2%	Medium	*
 |A[i]-A[j]|=k.
@@ -914,7 +960,7 @@ backtracking.
 471	Encode String with Shortest Length 49.2%	Hard	***
 dp using hashmap: check all prefix
 465	Optimal Account Balancing 48.2%	Hard	*
-get each person's net debt
+get each person's net debt, backtracking.
 then use different sign to clear the debt.
 
 1235	Maximum Profit in Job Scheduling	47.4%	Hard	*
@@ -1071,7 +1117,7 @@ star method.
 data driven.
 ask questions
 
-On AWS:
+### On AWS:
 AWS: on demand clound computing platform.
 EC2: elastic compute cloud, providing a cluster of virtual computers
 AWS comprises more then 175 products and services
@@ -1143,8 +1189,69 @@ Management Tools:
 - Game development
 - Internet of things
 
-About Amazon 14 leadership
+### general behaviour questions
+some overlapped with the 14 principles.
 
+#### team work
+Talk about a time when you had to work closely with someone whose personality was very different from yours.
+
+Give me an example of a time you faced a conflict while working on a team. How did you handle that?
+
+Describe a time when you struggled to build a relationship with someone important. How did you eventually overcome that?
+
+We all make mistakes we wish we could take back. Tell me about a time you wish you’d handled a situation differently with a colleague.
+
+Tell me about a time you needed to get information from someone who wasn’t very responsive. What did you do?
+
+
+#### client Facing
+Describe a time when it was especially important to make a good impression on a client. How did you go about doing so?
+
+Give me an example of a time when you did not meet a client’s expectation. What happened, and how did you attempt to rectify the situation?
+
+Tell me about a time when you made sure a customer was pleased with your service.
+Describe a time when you had to interact with a difficult client. What was the situation, and how did you handle it?
+
+When you’re working with a large number of customers, it’s tricky to deliver excellent service to them all. How do you go about prioritizing your customers’ needs?
+
+#### Ability to Adapt
+Tell me about a time you were under a lot of pressure. What was going on, and how did you get through it?
+Describe a time when your team or company was undergoing some change. How did that impact you, and how did you adapt?
+
+Tell me about the first job you’ve ever had. What did you do to learn the ropes?
+
+Give me an example of a time when you had to think on your feet in order to delicately extricate yourself from a difficult or awkward situation.
+- confident with the new release, but in test, it does not work as expected which is not found in house testing. I guess the reason and decide to disable the new features and collects data back. 
+
+Tell me about a time you failed. How did you deal with the situation?
+
+#### time management skills
+Tell me about a time you had to be very strategic in order to meet all your top priorities.
+Describe a long-term project that you managed. How did you keep everything moving along in a timely manner?
+Sometimes it’s just not possible to get everything on your to-do list done. Tell me about a time your responsibilities got a little overwhelming. What did you do?
+Tell me about a time you set a goal for yourself. How did you go about ensuring that you would meet your objective?
+Give me an example of a time you managed numerous responsibilities. How did you handle that?
+
+#### communication skills
+Give me an example of a time when you were able to successfully persuade someone to see things your way at work.
+Describe a time when you were the resident technical expert. What did you do to make sure everyone was able to understand you?
+Tell me about a time when you had to rely on written communication to get your ideas across to your team.
+Give me an example of a time when you had to explain something fairly complex to a frustrated client. How did you handle this delicate situation?
+Tell me about a successful presentation you gave and why you think it was a hit.
+
+#### motivation and values
+
+Tell me about your proudest professional accomplishment.
+
+Describe a time when you saw some problem and took the initiative to correct it rather than waiting for someone else to do it.
+
+Tell me about a time when you worked under close supervision or extremely loose supervision. How did you handle that?
+
+Give me an example of a time you were able to be creative with your work. What was exciting or difficult about it?
+
+Tell me about a time you were dissatisfied in your work. What could have been done to make it better?
+
+### Amazon 14 leadership
 Customer Obsession 顾客至上
 Leaders start with the customer and work backwards. They work vigorously to earn and keep customer trust. Although leaders pay attention to competitors, they obsess over customers.
 
@@ -1580,9 +1687,10 @@ these are common knowledges for system design.
 pay attention to:
 - protocols, trade offs
 - algorithm and data structure for common tasks.
+- database sql vs nosql
 
 web front end: html, javascript, css
-web server:  backend, javascript, services, server-client
+web server:  backend, javascript, services, server-client, websockets, tcp/ip
 handle http requests, message, accessing a database, exchanging message et al.
 
 microservice: appication as a collection of services.
@@ -1596,18 +1704,23 @@ relational database: tables of rows.
 Often seen: MS Sql, oracle, MySql, PostgreSql, SqLite, MariaDb
 primary key: used to represent a row
 foreign key: in associative table to connect the primary key to create relation
+query using SQL.
 
 Non-relational database.
 has no primary key, foreign key, row or cols.
 actually it is a storage model optimized for specific application
 often seen: MongoDB, Apache Cassandra, Redis, Couchbase and Apache HBase.
+flexible format or no format, easy for horizontal scaling.
+- data structure like documents for example hashmap, graph, trie, quadtree, tree et al.
+- query is usually fast since it does not need to go to several tables.
+- ideal for dynamic, complex unstructured data.
+
+key-value store: hash-map or dictionary
 
 document data store:
 named string vs object data values  -> document (typically store in jason or xml, flexible format)
 
 column oriented data store:
-
-key-value store: hash-map or dictionary
 
 graph database: efficiently store relations between entities. 
 
@@ -1641,10 +1754,10 @@ caching:
 - eviction policy: LRU: linked hashmap
 - cache miss: go to the database.
 
-
 concurrency or multithreading
 - events
 - mutex
+- algorithm and data structure for multithreading.
 
 OOD design pattern
 singleton
@@ -1663,17 +1776,17 @@ common techniques and data structures for system design
 - hashtable- for partitioing, sharding, cache
 - base62/64 MD5 encoding
 - message queue (many techniques in desktop app can be used in distributed)
+- heap (for recommendation or rating).
 
 ### Procedure to system design.
-- requirement clarification
-- estmiation: read, write, memory, disk et al.
+- requirement clarification: to define the functional and non-functional requirements.
+- estmiation: read, write, memory, disk et al. for scaling and performance 
 - system interface definition (API)
-- back of the envelope estimation
 - defining data model and algorithm.
 - high level design
-- detailed design
-- cache
-- replica & fault tolerance.
+- detailed design: talk about different options and tradeoffs.
+- cache: how to improve performance:
+- replica & fault tolerance. (availability)
 - load balance
 - concurrency.
 Bear in mind: each option may have good and bad, be sure to discuss them and make tradeoff.
@@ -1682,7 +1795,6 @@ Examples
 Paging through comments
 Amazon's recommendation system
 chess game
-
 
 tradeoffs
 each design its advantage and disadvantages needs to be discussed.
@@ -1779,7 +1891,7 @@ miss: get from database and update the cache.
 
 Load Balance:
 
-### design pastebin
+### design pastebin (similar to tinyURL)
 user store some text and get an url to access it
 clear requirement:
 - upload text and get an url.
@@ -1799,10 +1911,11 @@ input: api_key, paste_data, custom_url, user_name, paste_name,expire_date
 return: url.
 UpdatePaste(api_key, paste_key)
 deletePaste(api_key, paste_key)
+separate read and write.
 
 Database:
-meta data
-text data
+meta data: relational database
+text data: document store. each document object will have a hash value for it (tinyURL)
 read heavy.
 
 paste:
@@ -1815,15 +1928,32 @@ user:
 key generation (which is also used in TinyURL)
 
 
-### design Instagram: social network service
+### design Instagram: social network service ***
+amazon cloud: more likely.
+similar: flickr, picaso.
 image storage is crucial.
+newsfeed.
+
+functional:
+- upload/download/view images
+- search image
+- follow others
+- generate newsfeed.
+
+non-functional:
+highly available
+fast for newsfeed
+consistency
+highly available.
 
 estimation
+separate read and write.
 
 database:
 meta data: photo, user, follows
 can store it in relational database
-distributed file storgage S3 or HDFS
+distributed file storgage S3 or HDFS for images.
+
 nosql: key value store, 
 
 webserver has a max number of connections
@@ -1924,6 +2054,46 @@ write around: update disk skipping cache
 write back: write to cache and later to disk.
 
 FIFO, LIFO, LRU, MRU, LFU, random replacement.
+
+sharding:
+split big database into several machine.
+horizontal partioning: different rows into different machine
+bad: unbalanced db.
+vertical partitioning: according to feature, for example, data on a machine, user on a machine, friend list on a machine.
+bad: we may need to split one feature db.
+
+directory based partition: use a lookup service to get the location.
+
+key or hash-based partioning
+list partitioning: for example using geomtrical information
+round robin
+composite partitioning
+
+common problem of sharding:
+the row is split in different machines.
+join.
+rebalance
+
+database indexing:
+the first thing to improve performance is indexing.
+
+proxy:
+proxy can act as a cache server, or intermediate to process requests.
+
+consistent hash:
+min reorganization when nodes added or removed. easy for scaling down or up.
+
+consistent hash: add nodes, get some share from some servers, remove nodes: split the share to other.
+using the machines as a ring.  if caches moved to its neighnoring, if miss in A, then we goes to B...
+
+polling: the client keeps asking data from server, a lot of empty response.
+long polling: if no data, the server hold the request.
+websocket: persistent tcp/ip connection
+SSE: server sent events: server send realtime data to client (such as video)
+
+
+
+
 
 
 
