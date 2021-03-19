@@ -4,6 +4,10 @@ In competitive programming, optimization is important to conquer the constraints
 
 In leetcode, mostly they are marked as hard problems.
 
+optimization involves complexity reducing. Apply common used techniques to reduce complexity. But in this post, we are mainly focused on some other common techniques which is not covered in the algorithms
+
+### min/max: save previous round and used for current round and save one loop.
+
 1787. Make the XOR of All Segments Equal to Zero
 
 It may be not super hard to derive the 2d dp approach with O(1024^2*k)
@@ -46,11 +50,15 @@ dp[i,j]=min(dp[i,j],min(dp[i-1,j^x))+ceil(n/i))
     }
 ```	
 
+### use simple data structure 
+
 1792. Maximum Average Pass Ratio
 TLE when using pq with vector
 vector is a data structure with variable lemgth and is less efficient than pair or array<int,n>
 
 there are quite a few such questions in leetcode which the efficiency matters.
+
+fixed sized data structure is always more efficient than variable sized data structure. 
 
 
 
