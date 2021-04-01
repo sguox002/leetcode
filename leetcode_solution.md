@@ -18719,6 +18719,7 @@ You can assume all calls to checkIn and checkOut methods are consistent. That is
         return ans/n;
     }
 ```
+wrong answer!
 
 better approach:
 
