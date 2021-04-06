@@ -119,12 +119,14 @@ this is very similar to polymorphism.
 ### command (action, transaction)
 
 turns a request into a standalone object, letting you parameterize methods with different requests, delay, queue, undoable requests.
-
+Always include these information: command, receiver, invoker, client
 for example the UI and business logic, separate them.
 example in sonoquest:
 the touchscreen and controlpanel separate with the business logic after the UI.
 the commands are stored in a queue and is processed accordingly.
 resterant ordering procedure is a command pattern.
+
+In this pattern, an abstract Command class is declared as an interface for executing operations. This Command class defines a method, named execute, which must be implemented in each concrete command. This execute method is a bridge between a Receiver object and an action. The Receiver knows how to perform the operations associated with a request (any class may be a Receiver). Another relevant component in this pattern is the Invoker class, which asks for the command that must be executed.
 
 ### mediator: intermediary, controller.
 reduce chaotic dependencies between objects. The pattern restricts direct communication between objects and force them collborate via mediator.

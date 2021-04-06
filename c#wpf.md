@@ -131,7 +131,131 @@ GUI elements in tree structure:
 grid, stackpanel, button, listBox
 logical tree and visual tree.
 
+dependency property:
+IsMouseOver
+set style, data binding, animation, static or dynamic resource.
 
+```
+   public partial class UserControl1 : UserControl { 
+	
+      public UserControl1() { 
+         InitializeComponent(); 
+      }
+		
+      public static readonly DependencyProperty SetTextProperty = 
+         DependencyProperty.Register("SetText", typeof(string), typeof(UserControl1), new 
+            PropertyMetadata("", new PropertyChangedCallback(OnSetTextChanged))); 
+				
+      public string SetText { 
+         get { return (string)GetValue(SetTextProperty); } 
+         set { SetValue(SetTextProperty, value); } 
+      } 
+		
+      private static void OnSetTextChanged(DependencyObject d,
+         DependencyPropertyChangedEventArgs e) { 
+         UserControl1 UserControl1Control = d as UserControl1; 
+         UserControl1Control.OnSetTextChanged(e); 
+      } 
+		
+      private void OnSetTextChanged(DependencyPropertyChangedEventArgs e) { 
+         tbTest.Text = e.NewValue.ToString(); 
+      }  
+   } 
+```
+partial: the class is defined in multiple source files.
+
+### routed events
+event can invoke handler on multiple listeners.
+direct event: 
+bubbling event: from the element to the topmost element in the visual tree.
+tunnel event: event are triggered on the root and passed down to each node in the tree.
+
+button->stackPanel->windows
+to stop propagation, set e.Handled=true;
+
+customized event:
+
+### controls
+
+button
+calendar
+CheckBox
+ComboBox
+ContextMenu
+DataGrid
+DatePicker
+Dialog
+GridView
+Image
+Label
+ListBox
+Menu
+PasswordBox
+Popup
+Progressbar
+ScrollViewer
+Slider
+TextBlock
+ToggleButton
+Tooltip
+windows
+
+### layout
+
+Stack Panel: one a line horizontally or vertically
+
+wrap panel: sequential order
+
+dock panel: 
+
+canvas panel: 
+
+grid panel:
+
+### input
+mouse
+
+keyboard
+
+ContextMenu
+
+MultiTouch
+
+### command line
+startup event to get the arguments 
+main get the commandline arguments
+
+### data binding
+similar to MFC data binding to read/set UI elements.
+
+### resources
+
+templates
+styles
+triggers
+
+
+example VKB:
+
+LogicalKeyEventArgs <- eventArgs
+
+ILogicalKey- interface class
+	name, press, event
+|_LogicalKeyBase- abstract class
+
+
+Note: 
+var: similar to auto in c++
+
+
+var: similar to auto in c++
+delegate: a type references to method with a particular paramer list and return type (similar to function pointer in c++)
+
+DependencyProperty: register dependency property for control
+EventManager: create /register routed events.
+
+
+ 
 
 
 

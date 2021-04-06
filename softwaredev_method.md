@@ -52,6 +52,10 @@ While some prototypes are developed with the expectation that they will be disca
 A basic understanding of the fundamental business problem is necessary to avoid solving the wrong problems, but this is true for all software methodologies.
 
 
+What we uses:
+
+a lot of upfront planning
+iterative approach adding new features
 
 safety
 
