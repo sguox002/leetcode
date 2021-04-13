@@ -39,7 +39,7 @@ ReadLine/WriteLine
 
 Operators:
 arithmetic: +,-,*,/,%,++,--
-assignment: =,+=,-=,*=,/=,%=,&=,|=,^=,>>=,<<=
+assignment: =,+=,-=,*=,/=,%=,&=,|=,^=,>- >=,<<=
 comparison: ==,!=,>,<,>=,<=
 logical: &&, ||, !,
 
@@ -123,7 +123,7 @@ templates
 animations
 alternative input
 direct3d.
-
+- 
 XAML:
 in xml format
 You can also create the GUI without xaml using c#
