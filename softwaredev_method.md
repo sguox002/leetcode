@@ -35,7 +35,7 @@ requirements->design->implementation->verification->Maintenance
 ### Rapid application development
 condensed development process that produces a high-quality system with low investment costs
 The rapid application development method contains four phases: 
-requirements planning, user design, construction, and cutover. 
+requirements planning, user design, construction, and cutover (rapid transition). 
 The user design and construction phases repeat until the user confirms that the product meets all requirements.
 
 Pros: Rapid application development is most effective for projects with a well-defined business objective and a clearly defined user group, but which are not computationally complex. RAD is especially useful for small to medium projects that are time sensitive.
