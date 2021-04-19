@@ -8639,7 +8639,7 @@ a tree: n nodes and n-1 edges. no cycle. union find.
 alien language order is unknown. given a list of dictionary words sorted in alien language.
 derive the order from the dictionary words.
 - according to lexi rule create the graph and counting indegree
-- then use bfs to remove all source nodes first.
+- then use bfs to remove all source nodes first. (if want to get the smallest, use a pq)
 ->>
 
 <<-310	Minimum Height Trees    		34.3%	Medium	

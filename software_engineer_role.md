@@ -91,18 +91,36 @@ behavior:
 guidlines and workflow
 
 - agile (scrum, crystal, feature driven, xp (extreme programming)
+ to minimize risk (such as bugs, cost overruns, and changing requirements) when adding new functionality
+ In all agile methods, teams develop the software in iterations that contain mini-increments of the new functionality
+ 
+ xp (extreme programming) is one agile method:
+ - communication: team communication
+ - simplicity: only do the requirements
+ - feedback: get feedback and revise
+ - courage： courage to accept changes, feedbacks...
+ - respect
+ 
 plan-collaborate-delivery (review + revise)
-iterative approach adding new functionality
-- minimze risk, customer voice is heard at every step.
+iterative approach adding new functionality.
+
+- minimze risk, customer (or from other division) voice is heard at every step.
 - could be inefficient (each function must be fully completed to get user feedback)
 
 - devops (development and operate)
+DevOps deployment centers on organizational change that enhances collaboration between the departments responsible for different segments of the development life cycle, such as development, quality assurance, and operations.
+
 this is most similar to what we are doing
 smooth the process from development to operate..
+often combine with waterfall (hybrid method)
+plan-code-build-test-release-deploy-operate-monitor-plan...
+devops aims to automate continuous deployment to ensure everything goes smoothly and reliably.
+a pipe line structure
 
 - waterfall:
 not an iterative process, but a rigid linear process
 requirements-> design-> implementation -> verification -> maintenance
+Projects with clear objectives and stable requirements can best use the waterfall method
 
 rapid application development
 
