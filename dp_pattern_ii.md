@@ -204,7 +204,7 @@ traveling salesman problem.
 a pattern for dijkstra:
 
 - only give the source to source distance (other is not visited do not init the distance, otherwise will prevent adding the node into pq)
-- visited array, only when the node is popped, and is visited.
+- visited array, only when the node is popped, and is visited. (since we will process its neighboring)
 - relax the distance using current node.
 
 ```

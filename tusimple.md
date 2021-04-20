@@ -114,21 +114,31 @@ each node has an extra bit to store color 0/1
 
 TuSimple Test11 - Load Balance
 Given n servers, a list of tasks and each task $t_i$ has a arrival time $a_i$ and a work load $w_i$. The finishing time of $t_i$ is $a_i + w_i -1$. The servers take task in a robin round manner (plus if the server is still working another task, then skip to next server util find the next avaible or wait unitil next avaible server). Simulate the servers handling tasks and find out which server has a heaviest work load.
+using a queue or set, available.
++hashmap.
+similar problem lc1606.
+
 
 lc 115: distinct subsequences
+dp.
 
 lc308: range sum query 2d-mutable
 
 目：给一个List of integer，判断这个List 是否是一个 valid order of BFS of BST( Binary Search Tree)
+bfs
 
 是矩阵还原，原矩阵行列相加得到新矩阵，所以逐行逐列还原就会得到原矩阵 (prefix sum)
 
 比较像leetcode1293. 给一个1D数组，每个element代表障碍，自己可以左右移动，求到达终点所需最短路径。
 数组里面每个数在1-3之间，例如输入【1，2，3】 代表障碍在【0，1】，【1，2】，【2，3】
 每移动一次row自动加1. 个人觉得还是很难的。
+same as 1824, dp approach.
+
 
 是有序数列长度为n，里面有k个数字没有按顺序排进去，让你用比nlogn的算法把它重拍
 divide and conquer: two lists
+the conflict pair shall be all included in the unsorted array (2k)
+O(n+klogk)
 
 给你一堆source-destination data(我的理解就是graph的adjacency list),  和可以jump的次数，要你给出number of distinct paths
 比如
@@ -140,8 +150,16 @@ divide and conquer: two lists
 4: ...
 ...
 比如count_path(start_position=1, num_jumps=1) output就是2因为path有[(1, 6), (1, 8)]只能跳一次
+- count path from source to dest with no limit, shall use memoization + dfs to search all path
+- with limit, we need early terminate those path > limit.
+- BFS could be better for this.
 
 ，给定一个元素全为0和1的矩阵，输入为行列划分的次数，判断能否把矩阵分成包含相等个数1的子矩阵
+divide into mxn submatrices. and we know the number of 1s in each submatrix.
+seems that we need use backtracking to try all possible cuts.
+dp? we can count the submatrix sum using dp.
+or we can check row first and then column?
+- row only or column only, reduce to 1d array
 
 假设有一个n叉树，结点类定义如下：
 class Node {
@@ -149,22 +167,22 @@ class Node {
   List<Node> to;
   List<Integer> distance;
 }
-
-
-
 一开始distance是空的，这题让你给每个结点填充正确的distance，distance代表这个结点和结点to之间的最短路径长度（实际上就是路径长度，树中两个结点之间有且仅有一条路径）。有一个限制就是如果一个结点a中有to，那么to这个结点的to中一定有a。
+find the LCA: and depth sum.
 
 LRUCache
 
  hiring test 6，题目是 Subsequence Removal，在一个输入的array中移除一个 最短的 按升序排列 的 子列，从而使原array中每一个元素都是unique的，最后返回这个subsequence，如果这个子列不是完全按升序排列，则返回[-1]。
 这道题在Google上一时没有搜到类似，我的解法是先使用一个dictionary存储所有出现的数字及其index，用一个list存储要返回的子列，一个int记录index(current_index，初始为-1)，然后遍历sorted(array)中的每一个数，通过对index的比较来解决的。最后赶在还剩三分钟的时候终于把所有11个testcase都过了，因为之前在这里没看到过这个group的oa面经，所以来分享一下。
+- min need to remove all duplicates.
+- or find the longest unique subsequence so that remaining is sorted. (backtracking or brute force)
 
 实现insertList(vector<string>)，deleteList(vector<string>)分别将字符串列表插入/删除自建的字典数据结构，search(string)负责查找并打印自建字典中所有以该string开头的字符串
 followup：
 如果输入的vector<string>太长怎么办，比如1000000000000000000000000000
 
 Given a non-empty array containing only positive integers, find if the array can be partitioned into four subsets such that the sum of elements in both subsets is equal.
-
+backtracking same as 698 Partionn to k equal subset sum.
 
 50分钟，一题coding + 提问。
 给你一个map, map city to other city it can reach, 一个path, path from city to city.
@@ -197,10 +215,12 @@ lc239: sliding window min
 
 第一次：判断一个undirected graph 是不是一个valid tree，input就是一堆node的值。需要自己写class + test case
 第二次：least recent cache leetcode有这道题。同样的自己写class + test case 这题基本就是原题
+same as 261 Graph Valid tree, using union-find. cycle detection and num edges=n-1
 
 把二叉树变成双向链表
 输入和输出需要自行处理，输入是一行一行String，每行是一个节点和他的两个child
 输出把链表元素依次输出成String即可
+same as 426. Convert BST to sorted doubly linked list
 
 773. sliding puzzle
 
@@ -275,6 +295,9 @@ TuSimple onsite会有几轮详细过项目、考察简历。题目难度不一�
 210 course schedule
 
 Review:
+Tusimple seems heavily on graph problems and most of them are hard levels.
+commonly used algorithm: dfs, bfs, dp, union-find.
+dijkstra
 
 269. Alien Dictionary
 build the graph (adjacency hashmap) and incoming
@@ -286,6 +309,55 @@ graph + bfs
 1548. The most similar path in a graph
 Note the tusimple variation asks for the min cost instead of the path.
 dijkstra, + dp.
+It also needs the path tracing information.
+```
+    vector<int> mostSimilar(int n, vector<vector<int>>& roads, vector<string>& names, vector<string>& targetPath) {
+        //dijkstra dp approach
+        vector<vector<int>> adj(n);
+        for(auto r: roads){
+            adj[r[0]].push_back(r[1]);
+            adj[r[1]].push_back(r[0]);
+        }
+        int m=targetPath.size();
+        vector<vector<int>> dp(n,vector<int>(m,INT_MAX)),path(n,vector<int>(m,-1));//dp[i,j] use names i as the jth path
+        priority_queue<vector<int>,vector<vector<int>>,greater<>> pq;
+        vector<bool> v(n);
+        //base: use each node as the first and get the cost
+        for(int i=0;i<n;i++){
+            dp[i][0]=targetPath[0]!=names[i];
+            pq.push({dp[i][0],i,0});
+        }
+        
+        while(pq.size()){
+            auto p=pq.top();
+            pq.pop();
+            int d=p[0],i=p[1],j=p[2];
+            //if(v[i]) continue;
+            if(j==m-1) break;
+            v[i]=1;
+            for(auto ch: adj[i]){ //use its neighbors for j+1
+                int cost=names[ch]!=targetPath[j+1];
+                if(dp[ch][j+1]>d+cost){
+                    dp[ch][j+1]=d+cost;
+                    path[ch][j+1]=i; //parent
+                    pq.push({dp[ch][j+1],ch,j+1});
+                }
+            }
+        }
+        //min(dp[i][m-1])
+        int last=0;
+        for(int i=1;i<n;i++) {
+            if(dp[last][m-1]>dp[i][m-1]){
+                last=i;
+            }
+        }
+        vector<int> ans;
+        for(int j=m-1;j>=0;j--) ans.push_back(last),last=path[last][j];
+        reverse(begin(ans),end(ans));
+        return ans;
+    }
+```
+Note above code if add the v[i] continue will crash
 
 1824. Min sideway jumps
 dp approach: dp[i,j] actually only depends on (i-1,k) and we can save space,
@@ -432,3 +504,9 @@ need discard duplicates, and empty input. (edge cases)
 523. Continuous Subarray Sum
 hashmap + prefix sum %k.
 make sure you add mp[0]=-1 for prefix sum.
+
+1606. Find Servers That Handled Most Number of Requests
+available servers: use set to include i and i+k, and enable binary search to find i%k. (lower_bound)
+busy server: use pq.
+The first tech is the key point to reduce the time to find the proper server.
+mainly about using data structure.
