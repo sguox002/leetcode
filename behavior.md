@@ -35,7 +35,7 @@ role: project manager
 - supervise software, installation calibration
 - design realtime schedule
 - implement data processing 
-- coordinate field testing, mechanic
+- coordinate field testing, mechanics
 
 adcp poduct line:
 - early stage prototyping (modeling and simulation)
@@ -80,7 +80,7 @@ related questions:
 	- different skill, familarity, expertise.
 - how to work with engineers with different background
 	- use languages they are familiar
-	- make requirement, time, effort, interfaces clear.
+	- make requirement, time, effort, interfaces, problem scope clear.
 	
 - how to deal with customer or difficult customer
 	- get customer feedback and work backward
@@ -139,6 +139,7 @@ relate question:
 - ethic and altitude: initiative, creativity, resource, analytical, persist, result oriented.
 - open minded, open to new ideas, new skills and be able to make judgement.
 - calculated risk and forseen work and possible outcome.
+- remember each solution's tradeoffs and avoid mistakes.
 
 engineering: divide and conquer approach: divide into small tasks, and solve them and put them back.
 - how to approach a problem with considerable complexity
@@ -281,7 +282,7 @@ situation: not agree with boss's assignment of work, did not give out opinion an
 lesson learn: talk in calm and discuss to get the interest of both the company and myself. Also reminder me that assigning work is a big deal and is important for teamwork
 
 questions to ask to interviewer
-main purpose to discover:
+main purpose to discover company, team, department, role:
 - what the strategy of the company 
 - what the future of the company
 - what is the management style
@@ -291,6 +292,8 @@ main purpose to discover:
 - company financial
 - company organization
 - what is your expectation on the role.
+- what is most important for the success of this role.
+
 
 
 
