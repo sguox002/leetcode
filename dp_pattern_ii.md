@@ -204,8 +204,8 @@ traveling salesman problem.
 a pattern for dijkstra:
 
 - only give the source to source distance (other is not visited do not init the distance, otherwise will prevent adding the node into pq)
-- visited array, only when the node is popped, and is visited. (since we will process its neighboring)
-- relax the distance using current node.
+- visited array, only when the node is popped, and is visited. (since we will process its neighboring). It often causes problem when used improperly. With smaller distance pushed to pq, this is often not required.
+- relax the distance using current node's neighboring nodes.
 
 ```
    int networkDelayTime(vector<vector<int>>& times, int n, int k) {

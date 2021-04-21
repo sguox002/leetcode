@@ -160,6 +160,9 @@ seems that we need use backtracking to try all possible cuts.
 dp? we can count the submatrix sum using dp.
 or we can check row first and then column?
 - row only or column only, reduce to 1d array
+approach: check row if not possible, false
+check col if not possible false
+check submatrices, if not possible, return false.
 
 假设有一个n叉树，结点类定义如下：
 class Node {
@@ -230,17 +233,17 @@ The first round:
 
 In a 2D matrix constracted  by "1" and "0",  there are 2 islands constructed by connected "1"s, find the shortest bridge which can connect the 2 islands.
 
-
 Sollution: grow one of the island until it collides with the other. Pass
+dfs.
+
 The 2nd round:
-
-
 There are a set of nodes, each node will pub some topics, and also subscribe to some topics, say:
 node1: pubs=["topic2"], subs=["topic3"]
 node2: pubs=["topic3"], subs=["topic4"]
 node3: pubs=["topic4"], subs=["topic2"]
 find whether there is a loop in these nodes? In this example, there is a loop, so return true
 
+union find?
 
 I misunderstood the question and then I did not have time to do the topological sort, which is the best way to do it. first build the graph, then do topological sort.
 
@@ -358,28 +361,218 @@ It also needs the path tracing information.
     }
 ```
 Note above code if add the v[i] continue will crash
+v is not needed since only shorter disance will be added in the queue.
+if has to use v, we need to add all vertex to pq beforehand.
 
 1824. Min sideway jumps
 dp approach: dp[i,j] actually only depends on (i-1,k) and we can save space,
 
 210 course schedule II
 ordering of the course taken, graph + bfs.
+repeatedly remove source nodes.
+```
+    vector<int> findOrder(int nc, vector<vector<int>>& pre) {
+        vector<unordered_set<int>> adj(nc);
+        vector<int> edges(nc);
+        for(auto p: pre){
+            adj[p[0]].insert(p[1]);
+            edges[p[0]]++;
+        }
+        vector<int> ans;
+        vector<bool> visited(nc);
+        queue<int> q;
+        while(1){ //bfs keeping removing zero outcoming nodes
+            for(int i=0;i<nc;i++){
+                if(edges[i]==0 && !visited[i]){
+                    visited[i]=1;
+                    q.push(i);
+                    ans.push_back(i);
+                    //cout<<i<<endl;
+                }
+            }
+            //removing all incoming edges
+            int sz=q.size();
+            if(sz==0) break;
+            while(sz--){
+                int node=q.front();
+                q.pop();
+                for(int i=0;i<nc;i++){
+                    if(!visited[i]){
+                        if(adj[i].count(node)) edges[i]--;
+                    }
+                }
+            }
+        }
+        if(ans.size()!=nc) return {};
+        return ans;
+    }
+};
+```
 
 1153. String Transforms Into Another String
 replace all occurrences of one char in str1 to any other char.
 - need places to hold an extra char (mapping <26)
 - need consistent mapping
-
+```
+    bool canConvert(string str1, string str2) {
+        if(str1==str2) return 1;
+		unordered_map<char,char> mp;
+		for(int i=0;i<str1.size();i++){
+			char c1=str1[i],c2=str2[i];
+			if(mp.count(c1) && mp[c1]!=c2) return 0;
+			mp[c1]=c2;
+		}
+		unordered_set<char> ms;
+		for(auto t: mp) ms.insert(t.second);
+		return ms.size()<26;
+    }
+```
+	
 773 sliding puzzle
 graph+bfs
-
-145. binary tree postorder traversal
+```
+    int slidingPuzzle(vector<vector<int>>& board) {
+        //convert the board to string and using bfs
+        string s;
+        for(int i=0;i<board.size();i++)
+            for(int j=0;j<board[i].size();j++) s+=board[i][j]+'0';
+        string target="123450";
+        if(s==target) return 0;
+        vector<vector<int>> dir{{1,3},{0,2,4},{1,5},{0,4},{1,3,5},{2,4}};;
+        //we need keep track the zero position and try all possible move, or use search
+        //not sure if there are repeatable 
+        queue<string> q;
+        unordered_set<string> visited;
+        q.push(s);visited.insert(s);
+        int step=0;
+        while(!q.empty())
+        {
+            int sz=q.size();
+            for(int i=0;i<sz;i++)
+            {
+                string t=q.front();q.pop();
+                int ind0=t.find_first_of('0');
+                for(int j=0;j<dir[ind0].size();j++)
+                {
+                    string tt=t;
+                    swap(tt[ind0],tt[dir[ind0][j]]);
+                    if(tt==target) return step+1;
+                    if(visited.count(tt)==0) {q.push(tt);visited.insert(tt);}
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+```
+	
+145. binary tree postorder traversal (iterative)
+recursive: left right root (you can always simulate the process)
 iterative. left, right, root
 equivalent: root,right, left.
 using stack: push root, right and left. pop in reverse.
+similar: n-ary tree postorder traversal.
 
+based on recursive:
+
+```
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> nodes;
+        postorder(root, nodes);
+        return nodes;
+    }
+private:
+    void postorder(TreeNode* root, vector<int>& nodes) {
+        if (!root) {
+            return;
+        }
+        postorder(root -> left, nodes);
+        postorder(root -> right, nodes);
+        nodes.push_back(root -> val);
+    }
+```
+simulate the process:
+first goes all to left and pop back
+choose right and all go to left
+
+```
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> nodes;
+        stack<TreeNode*> st;
+        TreeNode* last = NULL;
+        while (root || !st.empty()) {
+            if (root) {
+                st.push(root);
+                root = root -> left;
+            } else {
+                TreeNode* node = st.top();
+                if (node -> right && last != node -> right) { 
+				//if it has right we need process right first.
+                    root = node -> right;
+                } else { //both left and right are processed.
+                    nodes.push_back(node -> val);
+                    last = node;
+                    st.pop();
+                }
+            }
+        }
+        return nodes;
+    }
+```	
+inorder
+```
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> nodes;
+        stack<TreeNode*> todo;
+        while (root || !todo.empty()) {
+            while (root) {
+                todo.push(root);
+                root = root -> left;
+            }
+            root = todo.top();
+            todo.pop();
+            nodes.push_back(root -> val);
+            root = root -> right;
+        }
+        return nodes;
+    }
+```
+
+postorder is reverse of preorder so we can take one.	
+```
+    vector<int> postorderTraversal(TreeNode* root) {
+        //left, right, node. use a stack to store 
+        //stack： first node, then right, then left, pop in reverse
+        stack<TreeNode*> sl;
+        vector<int> s;
+        if(!root) return s;
+        //starting from root, push all right nodes into stack, until dead end, and then pop a left node
+        //save all left nodes in another stack
+        TreeNode* p=root;
+        while(1)
+        {
+            while(p) 
+            {
+                s.push_back(p->val);
+                if(p->left) sl.push(p->left);
+                p=p->right;
+            }
+            if(sl.size()) //try the left, note when the node is the leaf
+            {
+                p=sl.top();sl.pop();
+                //s.push_back(p->val);//this will push twice
+            }
+            else break;
+        }
+        reverse(s.begin(),s.end());
+        return s;
+        
+    }
+```
+	
 239. sliding window min/max
 monotonic deque
+sliding window median use multiset and left right pointer.
 
 847. shortest path visiting all nodes
 you can start and stop any node, visiting multiple times.
