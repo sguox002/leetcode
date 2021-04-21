@@ -46,9 +46,10 @@ similar problems:
 - 797	All Paths From Source to Target    		78.2%	Medium	
 
 It shall be sufficient to develope intuition on simple backtracking problem. 
-Beginners may be often confused by the recursion or the loop. In this case, you need think you are solving subproblem  using recursion.
+Beginners may be often confused by the recursion or the loop. In this case, you need think you are solving subproblem using recursion.
 
-recursion is hard to debug and so focus more on the higher level concepts. Drawing a recursion tree may help to avoid many mistakes.
+recursion is hard to debug and so focus more on the higher level concepts. 
+Drawing a recursion tree may help to avoid many mistakes.
 
 - 1601	Maximum Number of Achievable Transfer Requests    		47.2%	Hard	
 to reach net 0 balance. if there is a outgoing edge, there must be a incoming edge.
@@ -76,6 +77,7 @@ but if thinking like this way: each edge has two options: chosen or not chosen. 
     }
 ```
 similar problem:
+
 - 465	Optimal Account Balancing    		47.6%	Hard	
 edge is give [x,y,z] z is the money x gives to y.
 find the min number of transactions to clear all the debt.
@@ -112,8 +114,9 @@ one possible optimization: debt[i]==debt[s] we do not want to check same element
 
 - 1655	Distribute Repeating Integers    		40.0%	Hard	
 each customer needs Q[i] same integers.
-- sort decreasing order (if the largest customer is not able to satisfy then fail)
+- sort decreasing order (if the largest customer is not able to satisfy then fail, which is a critical optimization here)
 - after customer is served, change the array and proceed to next customer. (subproblem)
+
 ```
     bool canDistribute(vector<int>& nums, vector<int>& quantity) {
         //you can have multiple choices to fulfill the orders
@@ -307,6 +310,7 @@ so the range is keeping smaller.
         return 0;
     }
 ```
+using mask for small array, we can use visited array if array is larger.
 
 ### dp similar: try all prefix and solve subproblem
 
@@ -378,4 +382,6 @@ so the range is keeping smaller.
 - 488	Zuma Game    		39.2%	Hard	
 - 36 valid sudoko 
 - 37 soduko solver 
+
+489. Robot Room Cleaner
 

@@ -302,13 +302,94 @@ Tusimple seems heavily on graph problems and most of them are hard levels.
 commonly used algorithm: dfs, bfs, dp, union-find.
 dijkstra
 
+familiar:
+239. sliding window min/max
+monotonic deque
+sliding window median use multiset and left right pointer.
+
+1824. Min sideway jumps
+dp approach: dp[i,j] actually only depends on (i-1,k) and we can save space,
+
+115: distinct subsequences
+dp: 2d matrix walk.
+
+934 shortest bridge
+- store two islands points and get the min distance. dfs
+- another approach: using dfs and find one island and color it with 2 and then bfs to expand until we find 1.
+
+23 merge k sorted lists
+priority_queue (multiset)
+
+128 longest consecutive sequences
+union find, need to map numbers to index so that union find is convenient.
+need discard duplicates, and empty input. (edge cases)
+
+523. Continuous Subarray Sum
+hashmap + prefix sum %k.
+make sure you add mp[0]=-1 for prefix sum.
+
+1606. Find Servers That Handled Most Number of Requests
+available servers: use set to include i and i+k, and enable binary search to find i%k. (lower_bound)
+busy server: use pq.
+The first tech is the key point to reduce the time to find the proper server.
+mainly about using data structure.
+
+698. Partition to K Equal Sum Subsets
+backtrack using visited array to record the chosen status.
+
+109. Convert Sorted List to Binary Search Tree
+convert to array and build bst.
+
+210 course schedule II ***
+ordering of the course taken, graph + bfs.
+repeatedly remove source nodes.
+```
+    vector<int> findOrder(int nc, vector<vector<int>>& pre) {
+        vector<unordered_set<int>> adj(nc);
+        vector<int> edges(nc);
+        for(auto p: pre){
+            adj[p[0]].insert(p[1]);
+            edges[p[0]]++;
+        }
+        vector<int> ans;
+        vector<bool> visited(nc);
+        queue<int> q;
+        while(1){ //bfs keeping removing zero outcoming nodes
+            for(int i=0;i<nc;i++){
+                if(edges[i]==0 && !visited[i]){
+                    visited[i]=1;
+                    q.push(i);
+                    ans.push_back(i);
+                    //cout<<i<<endl;
+                }
+            }
+            //removing all incoming edges
+            int sz=q.size();
+            if(sz==0) break;
+            while(sz--){
+                int node=q.front();
+                q.pop();
+                for(int i=0;i<nc;i++){
+                    if(!visited[i]){
+                        if(adj[i].count(node)) edges[i]--;
+                    }
+                }
+            }
+        }
+        if(ans.size()!=nc) return {};
+        return ans;
+    }
+};
+```
+
 269. Alien Dictionary
 build the graph (adjacency hashmap) and incoming
 using similar approach as course schedule (source nodes)
 if there is cycle, no solution;
 if look for smallest, using pq.
-graph + bfs
+graph + bfs （similar to course schedule)
 
+dijkstra + dp (pq or queue): shortest path problem
 1548. The most similar path in a graph
 Note the tusimple variation asks for the min cost instead of the path.
 dijkstra, + dp.
@@ -363,51 +444,8 @@ It also needs the path tracing information.
 Note above code if add the v[i] continue will crash
 v is not needed since only shorter disance will be added in the queue.
 if has to use v, we need to add all vertex to pq beforehand.
+tusimple cost of two strings actually ia another dp edit distance problem.
 
-1824. Min sideway jumps
-dp approach: dp[i,j] actually only depends on (i-1,k) and we can save space,
-
-210 course schedule II
-ordering of the course taken, graph + bfs.
-repeatedly remove source nodes.
-```
-    vector<int> findOrder(int nc, vector<vector<int>>& pre) {
-        vector<unordered_set<int>> adj(nc);
-        vector<int> edges(nc);
-        for(auto p: pre){
-            adj[p[0]].insert(p[1]);
-            edges[p[0]]++;
-        }
-        vector<int> ans;
-        vector<bool> visited(nc);
-        queue<int> q;
-        while(1){ //bfs keeping removing zero outcoming nodes
-            for(int i=0;i<nc;i++){
-                if(edges[i]==0 && !visited[i]){
-                    visited[i]=1;
-                    q.push(i);
-                    ans.push_back(i);
-                    //cout<<i<<endl;
-                }
-            }
-            //removing all incoming edges
-            int sz=q.size();
-            if(sz==0) break;
-            while(sz--){
-                int node=q.front();
-                q.pop();
-                for(int i=0;i<nc;i++){
-                    if(!visited[i]){
-                        if(adj[i].count(node)) edges[i]--;
-                    }
-                }
-            }
-        }
-        if(ans.size()!=nc) return {};
-        return ans;
-    }
-};
-```
 
 1153. String Transforms Into Another String
 replace all occurrences of one char in str1 to any other char.
@@ -473,24 +511,45 @@ equivalent: root,right, left.
 using stack: push root, right and left. pop in reverse.
 similar: n-ary tree postorder traversal.
 
-based on recursive:
-
+preorder:
 ```
-    vector<int> postorderTraversal(TreeNode* root) {
+    vector<int> preorderTraversal(TreeNode* root) {
+        //root,left,right
+        stack<TreeNode*> st;
+        vector<int> ans;
+        while(root || st.size()){
+            while(root){
+                ans.push_back(root->val);
+                st.push(root);
+                root=root->left; //go until left is null
+            }
+            TreeNode* node=st.top();
+            if(node->right) root=node->right;
+            st.pop();
+        }
+        return ans;
+    }
+```	
+
+inorder
+```
+    vector<int> inorderTraversal(TreeNode* root) {
         vector<int> nodes;
-        postorder(root, nodes);
+        stack<TreeNode*> todo;
+        while (root || !todo.empty()) {
+            while (root) {
+                todo.push(root);
+                root = root -> left;
+            }
+            root = todo.top();
+            todo.pop();
+            nodes.push_back(root -> val);
+            root = root -> right;
+        }
         return nodes;
     }
-private:
-    void postorder(TreeNode* root, vector<int>& nodes) {
-        if (!root) {
-            return;
-        }
-        postorder(root -> left, nodes);
-        postorder(root -> right, nodes);
-        nodes.push_back(root -> val);
-    }
 ```
+
 simulate the process:
 first goes all to left and pop back
 choose right and all go to left
@@ -519,26 +578,9 @@ choose right and all go to left
         return nodes;
     }
 ```	
-inorder
-```
-    vector<int> inorderTraversal(TreeNode* root) {
-        vector<int> nodes;
-        stack<TreeNode*> todo;
-        while (root || !todo.empty()) {
-            while (root) {
-                todo.push(root);
-                root = root -> left;
-            }
-            root = todo.top();
-            todo.pop();
-            nodes.push_back(root -> val);
-            root = root -> right;
-        }
-        return nodes;
-    }
-```
 
-postorder is reverse of preorder so we can take one.	
+postorder (left, right, root) is reverse of preorder (root,right,left) so we can take one.	
+using the similar approach as preorder (dfs)
 ```
     vector<int> postorderTraversal(TreeNode* root) {
         //left, right, node. use a stack to store 
@@ -570,57 +612,68 @@ postorder is reverse of preorder so we can take one.
     }
 ```
 	
-239. sliding window min/max
-monotonic deque
-sliding window median use multiset and left right pointer.
 
 847. shortest path visiting all nodes
 you can start and stop any node, visiting multiple times.
 graph+ dp + bfs.
+bitmask dp dp[i,s] ending with node i with mask s.
 
 1197. Minimum Knight Moves
 regular bfs, but we shall keep in the first coordinate.
 
+
+Hashmap linked list used often for cache mechanism.
+
 146 LRU cache
 linked list hashmap
+a list to store the elements
+a hashmap from value to list iterator to enable O(1) access to the list member
+- each time touch the element, move to the front and update the hashtable
 
-460 LFU cache
+
+460 LFU cache (based on LRU)
 linked list + hashmap + iterator
+the data structure is pretty complicated.
+need frequency, tie use LRU rule
+build a 2d hashmap list
+freq vs a list of nodes (in LRU rule)
+for each list: key to list iterator
+hashmap: key to val+freq
 
 
 426. Convert Binary Search Tree to Sorted Doubly Linked List
+add a dummy node and do inorder traversal.
 
-115: distinct subsequences
-dp: 2d matrix walk.
-
-308: range sum query 2d-mutable
+308: range sum query 2d-mutable (too hard for interview)
 binary index tree or segment tree.
-
-934 shortest bridge
-store two islands points and get the min distance. dfs
-
-23 merge k sorted lists
-priority_queue (multiset)
-
-109. Convert Sorted List to Binary Search Tree
-convert to array and build bst.
+BIT using 0 indexed or 1 indexed, hard to prepare for interview
+segment tree is better for interviewing purpose.
 
 224 Basic calculator
  +-() parsing
+ although you can avoid recursion using some tricks
+ but the most common way is still recursion.
 
 772. Basic calculator III
 +-*/() syntax parsing
+ harder than 224. but we can follow the similar procedure using recursion.
  
 290 word pattern (easy)
 
 291. word pattern
  backtracking using hashmap and all prefix
+using two pointer and hashmap matcing.
 
 124. Binary Tree Maximum Path Sum
+postorder to get the left and right max sum. (similar to 1d array max subarray sum)
 
 480 sliding window median
 two heap balanced
-multiset
+- multiset to sort the elements in the window k.
+- get the mid element pointer (next and prev for the iterator c++11)
+- k is odd/even
+- pop old element num[i-k] and adjust the mid pointer
+- add new element num[i] and adjust the mid pointer. (be careful may have multiple elements, so need to find the iterator).
 
 546. Remove Boxes
 typical dp with intervals. 
@@ -640,7 +693,7 @@ pretty tricky:
 - go back one cell and keep orientation
 - roate 90 degree and check other directions.
 this is essentially backtracking (need restore the status)
-
+```
    int dir[4][2]={{0,1},{0,-1},{1,0},{-1,0}};
     int x=0,y=0,curd=0; //position
     unordered_set<string> v;
@@ -664,8 +717,9 @@ this is essentially backtracking (need restore the status)
             curd=(curd+1)%4;
         }
     }
+```	
 	stack overflow: the reason the dir array shall follow the clockwise direction.
-	
+```	
     unordered_map<int,unordered_map<int,int>> visited; //this will create a 2d matrix
     int x=0,y=0,dir=0;
     int dir0[4][2]={{0,1},{1,0},{0,-1},{-1,0}}; //clockwise
@@ -689,17 +743,7 @@ this is essentially backtracking (need restore the status)
             dir=(dir+1)%4;
         }
     }	
+```
 	
-128 longest consecutive sequences
-union find, need to map numbers to index so that union find is convenient.
-need discard duplicates, and empty input. (edge cases)
 
-523. Continuous Subarray Sum
-hashmap + prefix sum %k.
-make sure you add mp[0]=-1 for prefix sum.
 
-1606. Find Servers That Handled Most Number of Requests
-available servers: use set to include i and i+k, and enable binary search to find i%k. (lower_bound)
-busy server: use pq.
-The first tech is the key point to reduce the time to find the proper server.
-mainly about using data structure.

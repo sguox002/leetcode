@@ -207,6 +207,7 @@ a pattern for dijkstra:
 - visited array, only when the node is popped, and is visited. (since we will process its neighboring). It often causes problem when used improperly. With smaller distance pushed to pq, this is often not required.
 - relax the distance using current node's neighboring nodes.
 
+743. Network Delay Time
 ```
    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         vector<vector<pair<int,int>>> adj(n+1);
@@ -236,6 +237,8 @@ a pattern for dijkstra:
         return ans==INT_MAX?-1:ans;
     }
 ```	
+Actually the visited array is not needed, and sometimes it will cause problem.
+
 
 -505	The Maze II    		48.1%	Medium	
 shortest distance from source to destination (with weight). dijkstra.
