@@ -7,6 +7,12 @@
 Abstract Factory is a creational design pattern that lets you produce families of related objects without specifying their concrete classes.
 
 polymorphism.
+generally it includes:
+- abstract factory class which defines the interfaces
+- concrete factory (to implement one concrete type factory)
+- use it when you deal with a family of related objects
+example: furniture factory: sofa, char, desk
+modern, victorial, classical.
 
 similar design in our sonoquest:
 - abstract interface (bmfm_render)
@@ -23,6 +29,12 @@ similar design in our sonoquest:
 bdwin to support multiple layout and components (for example, agc bar, ruler,...)
 use a builder to get the different view on each instance.
 
+such as build a house, it may have many configurations
+- use a buildClass which implements all the house build functions
+- use a director class to how to configure the house
+idea: avoid complicated logic and hard-to-understand initializer.
+for example the bdwin with many configurations.
+
 ### singleton:
 only one instance of a class is allowed.
 
@@ -36,6 +48,12 @@ use lock to guarantee single access.
 
 windows app generally has this mechanism to avoid more than one instance.
 
+### prototype (also known as clone)
+copy one object without knowing its data members.
+delegate this work to object's method clone.
+for example the render in our software. same render can be used in different window, clone then is used.
+especially when an object is passed using base pointer and concrete type is unknown.
+
 ## Structural patterns
 
 ### adapter:
@@ -43,6 +61,7 @@ design a intermediate adapter class to convert output to another's input.
 allowing two incompatible class to work together.
 
 or convert format for different lib/class inputs.
+for example stack, deque, queue et al.
 
 ### bridge:
 split a large class or a set of closely related classes into two separate hierarchies: abstraction and implementation.
@@ -52,12 +71,18 @@ but we can define shape class with m subclasses, and color class with n classes
 abstraction layer, implementation class, this reduces to m + n classes.
 
 another example: GUI and backend tasks on different platform.
+generally split into two different hierarchy and use one as data member (composition instead of inheritance)
+composition vs inheritance are often seen in ood design. Inheritance is important but sometime composition could be a better choice.
+the connection between the two hierarchy via composition is called bridge.
 
-### composite
+### composite (also known as object tree)
 tree structure.
 a composite class will pass function to each of its object members which recursively forms a tree structure.
+an order may contain products, boxes, a box may contain box and product...
+tree structure and traverse to get information.
+client only goes through all its data members, data member will recursively does the work (avoid coupling to complicated data structures)
 
-### decortator, also known as wrapper.
+### decortator (also known as wrapper.)
 add some behavior to objects in wrapper class.
 when you need alter an object's behaviour.
 similar to person wearing multiple clothes, clothes are not part of the person and can take off any time.
@@ -76,15 +101,26 @@ only provide the necessary information where the customer cares.
 
 add a interface class to interact with the sophisticated library.
 
-### flyweight also known cache
+### flyweight (also known cache)
 save common data in different objects instead to keep each data in each object.
-
 
 ### proxy
 Proxy is a structural design pattern that lets you provide a substitute or placeholder for another object. A proxy controls access to the original object, allowing you to perform something either before or after the request gets through to the original object.
 a credit card is a proxy on payment.
+a lazy operation can also add a proxy
+a proxy will have the same interface as the original and perform similar action and return to caller. The proxy will contact the original object later.
+
+especially for services from time to time, the server is up all the time, wasting a lot of resouces (like cache to avoid repeatedly download the same)
+
+access control: for example give acess control to a special group.
+
+local execuation of a remote service.
+
+Proxy is sometimes an important OOD.
 
 ## behaviour patterns
+behaviour patterns are concerned with algorithms and the assignment of responsibilitites among objects.
+
 
 ### chain of responsibilitites
 a list of chains - classes
@@ -110,6 +146,53 @@ Implementing state-specific behavior directly within a class is inflexible becau
 Define separate (state) objects that encapsulate state-specific behavior for each state. That is, define an interface (state) for performing state-specific behavior, and define classes that implement the interface for each state.
 A class delegates state-specific behavior to its current state object instead of implementing state-specific behavior directly.
 not very clear about it yet.
+
+define a base class state (its action virtual, a pointer to context)
+context class: has a reference (pointer) to concrete state object.
+for example the power saving mode for sq860 software.
+context using polymorphism to complete the task by the state.
+
+a 5s query will drive the state change.
+
+```
+class PMM_context;
+class PMM_state{
+	PMM_context* context;
+public:
+	void set_context(PMM_context* c){context=c;}
+	virtual int action1()=0;
+	virtual int action2()=0;
+};
+
+class PMM_context{
+	PMM_state* state;
+public:
+	PMM_context():state(0){}
+	PMM_context(PMM_state* s):state(0){transition_to(s);}
+	~PMM_context(){delete state;}
+	int action1(){return state->action1();}
+	int action2(){return state->action2();}
+	void transition_to(PMM_state* s){
+		if(state) delete state;
+		state=s;
+		state->set_context(this);
+	}
+};
+
+//implement a class for a concrete state
+class PMM_state1:public PMM_state{ //
+public:
+	int action1(){}
+	int action2(){}
+};
+
+class PMM_state2:public PMM_state{ //
+public:
+	int action1(){}
+	int action2(){}
+};
+```
+
 
 ### template method:
 

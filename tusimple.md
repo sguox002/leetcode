@@ -122,7 +122,7 @@ similar problem lc1606.
 lc 115: distinct subsequences
 dp.
 
-lc308: range sum query 2d-mutable
+lc 308: range sum query 2d-mutable
 
 目：给一个List of integer，判断这个List 是否是一个 valid order of BFS of BST( Binary Search Tree)
 bfs
@@ -183,6 +183,7 @@ LRUCache
 实现insertList(vector<string>)，deleteList(vector<string>)分别将字符串列表插入/删除自建的字典数据结构，search(string)负责查找并打印自建字典中所有以该string开头的字符串
 followup：
 如果输入的vector<string>太长怎么办，比如1000000000000000000000000000
+break into several tries. 
 
 Given a non-empty array containing only positive integers, find if the array can be partitioned into four subsets such that the sum of elements in both subsets is equal.
 backtracking same as 698 Partionn to k equal subset sum.
