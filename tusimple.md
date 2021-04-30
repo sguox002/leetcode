@@ -293,6 +293,9 @@ TuSimple onsite会有几轮详细过项目、考察简历。题目难度不一�
 
 输出是求把这条路径变成能走路径的最小cost
 
+insert a node cost is the same as replace a node. so it is still equivalent to the min cost or most similar path problem
+but the cost now is an edit distance problem. So it is a two dp problem.
+
 1548. The Most Similar Path in a Graph
 
 210 course schedule
@@ -617,6 +620,7 @@ using the similar approach as preorder (dfs)
 you can start and stop any node, visiting multiple times.
 graph+ dp + bfs.
 bitmask dp dp[i,s] ending with node i with mask s.
+(all nodes such as this, or traveller problem uses bitmask dp)
 
 1197. Minimum Knight Moves
 regular bfs, but we shall keep in the first coordinate.
@@ -642,12 +646,56 @@ hashmap: key to val+freq
 
 
 426. Convert Binary Search Tree to Sorted Doubly Linked List
-add a dummy node and do inorder traversal.
+add a dummy node and do inorder traversal. (left for previous and right for next)
 
 308: range sum query 2d-mutable (too hard for interview)
 binary index tree or segment tree.
 BIT using 0 indexed or 1 indexed, hard to prepare for interview
 segment tree is better for interviewing purpose.
+build a tree postorder, update the node and recursively the tree
+tree in a complete tree stored in array
+start from root with id=1
+sum: break into two subtree recursively.
+
+```
+    vector<int> tree;
+    int n;
+    NumArray(vector<int>& nums) {
+        n=nums.size();
+        tree.resize(4*n);
+        build_tree(nums,1,0,n-1);
+    }
+    
+    void update(int index, int val) {
+        update(1,0,n-1,index,val);//start from root, postorder
+    }
+    void update(int v,int tl,int tr,int ind,int val){
+        if(tl==tr) {tree[v]=val;return;}
+        int tm=(tl+tr)/2;
+        if(ind<=tm) 
+            update(2*v,tl,tm,ind,val); //go to left
+        else 
+            update(2*v+1,tm+1,tr,ind,val); //go to right
+        tree[v]=tree[2*v]+tree[2*v+1]; //update parent
+    }
+    
+    int sumRange(int left, int right) {
+        return sum(1,0,n-1,left,right); 
+    }
+    int sum(int v,int tl,int tr,int l,int r){
+        if(l>r) return 0;
+        if(l==tl && r==tr) return tree[v]; //found a matching interval sum
+        int tm=(tl+tr)/2;
+        return sum(2*v,tl,tm,l,min(r,tm))+sum(2*v+1,tm+1,tr,max(l,tm+1),r);
+    }
+    void build_tree(vector<int>& nums,int v,int tl,int tr){
+        if(tl==tr) {tree[v]=nums[tl];return;}
+        int tm=(tl+tr)/2;
+        build_tree(nums,2*v,tl,tm);
+        build_tree(nums,2*v+1,tm+1,tr);
+        tree[v]=tree[2*v]+tree[2*v+1];
+    }
+```
 
 224 Basic calculator
  +-() parsing
@@ -745,5 +793,100 @@ this is essentially backtracking (need restore the status)
     }	
 ```
 	
+1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
+floyd-warshall O(N^3)
+
+
+coding interview
+- make sure to clarify the requirements
+- make sure to talk aloud the thinking process
+- first thinking about most suitable data structure: vector, list, queue, stack, deque, tree, pq, heap, et algorithms
+- then think about brutal force or familiar pattern or equivalent 
+- implement 
+- optimization
+- pay attention to edge cases
+- pay attention to test cases to fix bugs
+
+deign a fifo using vector or array only
+
+design a concurrent fifo based on previous design
+
+auto_ptr, shared_ptr, weak_ptr, unique_ptr
+
+rvalue reference
+
+inline function
+
+static lib vs dynamic lib
+
+update software, how to keep compatibility
+
+how to debug memory safe problem
+
+focused on regular software practices and c++11 new features.
+
+different processes need pass a lot of data, what is the approach?
+if another process crashes, how to deal with?
+
+
+graph common algorithm:
+union-find
+MST (kruskal algorithm)
+dijkstra
+bellman-ford (can handle negatives)
+dfs (topolgical sort),bfs,dp
+floyd-warshal
+prim (for MST problem)
+
+
+c++11
+new algorithms
+new containers
+atomic operations
+type traits
+regex
+smart pointers
+async facility
+multithreading library
+
+lambda expressions
+[capture](parameters)->return-type {body}
+
+auto type deduction and decltype
+auto: derive type from initializer
+decltype: return the expression or object type.
+
+initializer
+
+deleted and defaulted
+use to control the old private and default constructor
+
+nullptr
+
+delegating constructors
+call another constructor in the same class in constructor.
+
+rvalue reference
+rvalue reference && can bind to right hand side literals or objects
+the primary reason for rvalue is move semantics
+for performance purpose, only swap the data member of two objects.
+if you class supportss moving, declare constructor as 
+Movable(Movable&&); //constructor
+Movable&& operator=(Movable&&);//assignment 
+
+stl:
+unordered_set/map/multiset/multimap, regex, tuple,...
+
+smart pointer
+shared_ptr， unique_ptr
+automatically deallocate the resources
+unique_ptr: at most one uniqe_ptr pointing at any resources, when unique_ptr is destroyed, the resource is destroyed. Copy of the pointer will cause a compile errors
+
+shared_ptr: allows multiple references to the resource, when the last reference is destroyed, the resource is deallocated. (reference counting)
+
+
+
+
+
 
 
