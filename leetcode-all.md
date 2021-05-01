@@ -90,7 +90,7 @@ approaches to solve a problem:
 
 ## dp
 common steps to solve dp problems
-- identity it is a dp problem: overlap subproblems, using memoization to avoid repetitive recursive calls, polynomial complexity
+- identify it is a dp problem: overlap subproblems, using memoization to avoid repetitive recursive calls, polynomial complexity
 - identify base cases.
 - define subproblem and subproblem states
 - find the state transfer or recurrence relation
@@ -484,7 +484,7 @@ equivalent: knapsack to make positive sum >=tsum/2.
 ### shortest distance problem
 dijkstra: using priority_queue, src node to all other nodes with non-negative weight (similar to bfs with visited array to terminate when reach the target).
 bellman-ford: using all nodes and edges, src node to all other nodes, can dealing with negative weight.
-floyd-warshal: find all pair node shortest distance using dp.
+floyd-warshal: find all pair node shortest distance using dp. O(V^3)
 traveling salesman problem.
 
 <<-245	Shortest Word Distance III    		55.6%	Medium	

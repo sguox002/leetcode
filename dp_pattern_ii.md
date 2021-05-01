@@ -197,6 +197,20 @@ bellman-ford: using all nodes and edges, src node to all other nodes, Bellman-fo
 complexity: O(VE)
 
 floyd-warshal: find all pair node shortest distance using dp.
+```
+let dist be a |V| × |V| array of minimum distances initialized to ∞ (infinity)
+for each edge (u, v) do
+    dist[u][v] ← w(u, v)  // The weight of the edge (u, v)
+for each vertex v do
+    dist[v][v] ← 0
+for k from 1 to |V|
+    for i from 1 to |V|
+        for j from 1 to |V|
+            if dist[i][j] > dist[i][k] + dist[k][j] 
+                dist[i][j] ← dist[i][k] + dist[k][j]
+            end if
+```
+			
 traveling salesman problem.
 
 #### dijkstra for shortest distance:
@@ -206,6 +220,7 @@ a pattern for dijkstra:
 - only give the source to source distance (other is not visited do not init the distance, otherwise will prevent adding the node into pq)
 - visited array, only when the node is popped, and is visited. (since we will process its neighboring). It often causes problem when used improperly. With smaller distance pushed to pq, this is often not required.
 - relax the distance using current node's neighboring nodes.
+- bottleneck (min max problem) for find the max of the min, try max first and dp[w]=max(dp[w],min(dp[v],edge(w,v)). For min of the max dp[w]=min(dp[w],max(dp[v],edge(w,v))
 
 743. Network Delay Time
 ```
@@ -250,7 +265,7 @@ dijkstra.
 ### bellman-ford.
 
 -787	Cheapest Flights Within K Stops    		39.4%	Medium	
-find src to dst shortest distance.
+find src to dst shortest distance <=K stops.
 both dijkstra and bellman ford can apply.
 
 ```
@@ -262,7 +277,7 @@ both dijkstra and bellman ford can apply.
         for(int i = 1; i <= K; i++)
         {
             for(int j = 0; j < n; j++)   //To update ans[j][i](using i steps), we copy ans[j][i-1] first
-                dp[j][i] = dp[j][i-1];
+                dp[j][i] = dp[j][i-1]; //
             for(auto f: flights) //iterate all flights: f[0]: from, f[1]: to, f[2], price
             {
                 if(dp[f[0]][i-1]<INT_MAX)
