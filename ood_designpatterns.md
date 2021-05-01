@@ -104,7 +104,7 @@ add a interface class to interact with the sophisticated library.
 ### flyweight (also known cache)
 save common data in different objects instead to keep each data in each object.
 
-### proxy
+### proxy (代理）
 Proxy is a structural design pattern that lets you provide a substitute or placeholder for another object. A proxy controls access to the original object, allowing you to perform something either before or after the request gets through to the original object.
 a credit card is a proxy on payment.
 a lazy operation can also add a proxy
@@ -127,6 +127,10 @@ a list of chains - classes
 MFC windows message processing using this mechanism
 The request is either processed or passing to its base.
 the handler even can convert it to another request and pass to its base.
+
+chained handler:
+each handler contains a method to process the data and linked list to the next handler.
+each handler pass the processed data to next handler.
 
 ### iterator:
 traverse elements of a collection without exposing its underlying representations.
@@ -198,6 +202,7 @@ public:
 
 defines the skeleton of an algorithm in the superclass but lets subclasses override specific steps of the algorithm without changing its structure.
 this is very similar to polymorphism.
+matrix for different type of data.
 
 ### command (action, transaction)
 
