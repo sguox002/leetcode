@@ -216,22 +216,59 @@ resterant ordering procedure is a command pattern.
 
 In this pattern, an abstract Command class is declared as an interface for executing operations. This Command class defines a method, named execute, which must be implemented in each concrete command. This execute method is a bridge between a Receiver object and an action. The Receiver knows how to perform the operations associated with a request (any class may be a Receiver). Another relevant component in this pattern is the Invoker class, which asks for the command that must be executed.
 
-### mediator: intermediary, controller.
+real word example: restaurant food ordering. each order is a command.
+
+command abstract interface:
+- execute
+
+simlple command: can derive command directly
+complex command: delegate the task to receiver and it contains a reference to receiver.
+
+receiver: for complicated business logic
+
+Invoker: 
+a command reference to do before a command is to perform.
+a command reference to do after a command is done 
+the command may indirectly trig a receiver.
+
+see UML diagram.
+
+
+
+Design Unix File Search API to search file with different arguments as "extension", "name", "size" ...
+The design should be maintainable to add new contraints.
+
+Follow up: How would you handle if some contraints should support AND, OR conditionals.
+
+### mediator: (intermediary, controller.调度)
 reduce chaotic dependencies between objects. The pattern restricts direct communication between objects and force them collborate via mediator.
 for example: a dialog has multiple components, they all talk to the dialog instead they communicate each other.
 
 example: air traffic controller.
 
-### observer: event subscriber, listener
-subscription mechanism so that an event can be notified to all subscribers.
+abstract mediator interface
+derived mediator interface
+components all has a reference to the mediator
 
-### strategy
+### observer: event subscriber, listener (订阅）
+subscription mechanism so that an event can be notified to all subscribers.
+publisher: maintain a list of subsciber and notifyall
+subscriber: each has update function
+abstract subscriber: using the same pointer.
+
+### strategy （策略）
 Strategy is a behavioral design pattern that lets you define a family of algorithms, put each of them into a separate class, and make their objects interchangeable.
 for example: find the route using car, public transportation, walker, bicycle et al.
+abstract interface routeStrategy
+concrete strategy: walk, bike, car...
+navigator: a reference to strategy and buildRoute.
 
 ### visitor
 separate algorithm from the objects on which they operate
 new behaviour into a separate class (visitors) and pass the request and the object to the visitor class.
+an abstract visitor interface with visit function to different type of objects
+concrete visitor
+abstract element class with visitor reference.
 
 design pattern focuses on good style design and implementation
 - inherit good code instead revise
@@ -240,3 +277,9 @@ design pattern focuses on good style design and implementation
 - hiding implementation details..
 
 
+UML diagram:
+
+isually representing a system along with its main actors, roles, actions, artifacts or classes, in order to better understand, alter, maintain, or document information about the system.
+
+forward design: before implementation
+backward design: after implementation
