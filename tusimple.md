@@ -42,10 +42,25 @@ Experience in ROS.
 Experience on ARM Cortex-A architecture.
 Experience in the autonomy, automotive, or robotics industries
 
+knowledge:
+agile: 
+scrum meeting: daily meeting, sprint planning, sprint retrospective, 
+agile best practice:
+ keeping teams small, sticking to short iterations, getting rapid feedback from customers, setting value-based business priorities and engaging users in refining requirements. 
+ 
 TDD： test driven development: agile
 Test-driven development (TDD) is a software development process relying on software requirements being converted to test cases before software is fully developed, and tracking all software development by repeatedly testing the software against all test cases.
 
 BDD: behavior driven development: agile
+BDD focuses:
+- where to start
+- what to test and not test
+- how much to test in one go
+- what to call the tests
+- how to understand why a test fails
+think about scenario to test and expected outcome.
+
+
 ABI: low level binary interface
 API: source interface.
 
@@ -58,8 +73,13 @@ Who cleans parameters from the stack (caller/callee).
 Where the return value is placed for return.
 How exceptions propagate.
 
+C++ different compiler cannot abi (this call and name decoration)
+use c calling (std call) (simple data structure, interface)
+
+
 ROS: robot operating system
  flexible framework for writing robot software. It is a collection of tools, libraries, and conventions that aim to simplify the task of creating complex and robust robot behavior across a wide variety of robotic platforms.
+maps, navigation, computer vision et al.
  
 ARM-cortex A: the apple iphone chip A series
 (STM32 is cortex-M series 32 bit)
@@ -100,8 +120,7 @@ secutiry
 communication protocol such as tcp/ip.
 
 
-
-tusimple coding:
+tusimple coding interview:
 Graph, BFS, DFS, matrix 之类，考的题目基本都是 medium / hard
 shall also include dp, especially working with graph.
  
@@ -125,7 +144,7 @@ dp.
 lc 308: range sum query 2d-mutable
 
 目：给一个List of integer，判断这个List 是否是一个 valid order of BFS of BST( Binary Search Tree)
-bfs
+do bfs and compare.
 
 是矩阵还原，原矩阵行列相加得到新矩阵，所以逐行逐列还原就会得到原矩阵 (prefix sum)
 
@@ -133,7 +152,6 @@ bfs
 数组里面每个数在1-3之间，例如输入【1，2，3】 代表障碍在【0，1】，【1，2】，【2，3】
 每移动一次row自动加1. 个人觉得还是很难的。
 same as 1824, dp approach.
-
 
 是有序数列长度为n，里面有k个数字没有按顺序排进去，让你用比nlogn的算法把它重拍
 divide and conquer: two lists
@@ -224,7 +242,7 @@ same as 261 Graph Valid tree, using union-find. cycle detection and num edges=n-
 把二叉树变成双向链表
 输入和输出需要自行处理，输入是一行一行String，每行是一个节点和他的两个child
 输出把链表元素依次输出成String即可
-same as 426. Convert BST to sorted doubly linked list
+same as 426. Convert BST to sorted doubly linked list， inorder traversal.
 
 773. sliding puzzle
 
@@ -266,10 +284,11 @@ TuSimple onsite会有几轮详细过项目、考察简历。题目难度不一�
 感觉Tusimple在问算法方面不会问特别复杂的数据结构，也不要求你一下子可以写出最优解，会给提示，比较注重思考过程以及和面试官的交流。
 
 一道图论题（就是关于找路径中的最大车载量），其实不难，最后我用dfs+dp的方法解决了，面试官说可以接受，但是他说不是最优解
+max of the min. (dijkstra variation). try max first (greedy)
 
 1153. String Transforms Into Another String
 
-输入是个map，含有city name，和这个cit相通的其他city
+输入是个map，含有city name，和这个city相通的其他city
 [
 [AAA: [BBB, CCC, DDD]],
 [BBB : [CCC, PPP]],
@@ -312,17 +331,48 @@ monotonic deque
 sliding window median use multiset and left right pointer.
 
 1824. Min sideway jumps
-dp approach: dp[i,j] actually only depends on (i-1,k) and we can save space,
-
+dp approach: dp[i,j] actually only depends on (i-1,k) and we can save space.
+- can reduce space requirements. (can save time and space. if there is obstacle, we need update it to max).
+```
+    int minSideJumps(vector<int>& obstacles) {
+        //dp starting with 1 and ending with 0,1,2
+        int n=obstacles.size();
+        //vector<vector<int>> dp(n,vector<int>(3,n));
+        vector<int> dp(3,n);
+        //dp[i,j] represent the min jumps to reach i at lane j
+        dp[1]=0;
+        dp[0]=1;
+        dp[2]=1;
+        //for each position you have options:
+        //go forward, jump to other lane
+        for(int i=1;i<n;i++){
+            int ob=obstacles[i];
+            if(ob) dp[ob-1]=n;
+            for(int j=0;j<3;j++){ //current lane
+                for(int k=0;k<3;k++){ //previous lane
+                    if(ob!=j+1 && ob!=k+1) dp[j]=min(dp[j],dp[k]+(k!=j));
+                }
+            }
+        }
+        //print(dp);
+        int ans=n;
+        for(int i=0;i<3;i++) ans=min(ans,dp[i]);
+        return ans;
+    }
+```
+	
 115: distinct subsequences
 dp: 2d matrix walk.
 
 934 shortest bridge
-- store two islands points and get the min distance. dfs
+- store two islands points and get the min distance. dfs only (with two islands)
 - another approach: using dfs and find one island and color it with 2 and then bfs to expand until we find 1.
+2-3-4-5-, this is in-place algorithm and does not need to extra space. (much faster, only deals with the outer boundary).
+bfs can iterate all cells without using queue. (last count-2 is the answer).
 
 23 merge k sorted lists
 priority_queue (multiset)
+list traversal with dummy node.
 
 128 longest consecutive sequences
 union find, need to map numbers to index so that union find is convenient.
@@ -333,16 +383,17 @@ hashmap + prefix sum %k.
 make sure you add mp[0]=-1 for prefix sum.
 
 1606. Find Servers That Handled Most Number of Requests
-available servers: use set to include i and i+k, and enable binary search to find i%k. (lower_bound)
+available servers: use set to include i and i+k, and enable binary search to find i%k. (lower_bound with set)
 busy server: use pq.
 The first tech is the key point to reduce the time to find the proper server.
 mainly about using data structure.
 
 698. Partition to K Equal Sum Subsets
-backtrack using visited array to record the chosen status.
+backtrack using visited array to record the chosen status. (or bitmask)
 
 109. Convert Sorted List to Binary Search Tree
-convert to array and build bst.
+- convert to array and build bst.
+- O(1) space, just manipulate the list.
 
 210 course schedule II ***
 ordering of the course taken, graph + bfs.
@@ -622,7 +673,43 @@ you can start and stop any node, visiting multiple times.
 graph+ dp + bfs.
 bitmask dp dp[i,s] ending with node i with mask s.
 (all nodes such as this, or traveller problem uses bitmask dp)
-
+```
+    struct State{
+        int mask,source;
+        State(int m,int s):mask(m),source(s){}
+    };
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int m=graph.size();
+        int len=1<<m;
+        vector<vector<int>> dp(m,vector<int>(len,INT_MAX));
+        queue<State> qs;
+        for(int i=0;i<m;i++) 
+        {
+            dp[i][1<<i]=0; //self to self distance is 0
+            qs.push(State(1<<i,i));
+        }
+        while(!qs.empty())
+        {
+            State state=qs.front();
+            //cout<<state.source<<" "<<hex<<state.mask<<endl;
+            qs.pop();
+            for(int next:graph[state.source]) //connected nodes
+            {
+                int nextmask=state.mask|(1<<next);
+                if(dp[next][nextmask]>dp[state.source][state.mask]+1) //passing this node is closer
+                {
+                    dp[next][nextmask]=dp[state.source][state.mask]+1;
+                    qs.push(State(nextmask,next));
+                }
+            }
+        }
+        //shortest path 
+        int ans=INT_MAX;
+        for(int i=0;i<m;i++) ans=min(ans,dp[i][(1<<m)-1]);
+        return ans;
+    }
+```
+	
 1197. Minimum Knight Moves
 regular bfs, but we shall keep in the first coordinate.
 
@@ -702,16 +789,18 @@ sum: break into two subtree recursively.
  +-() parsing
  although you can avoid recursion using some tricks
  but the most common way is still recursion.
+pay attention to the index (very easy to make mistakes)
 
 772. Basic calculator III
 +-*/() syntax parsing
  harder than 224. but we can follow the similar procedure using recursion.
  
+ 
 290 word pattern (easy)
 
 291. word pattern
  backtracking using hashmap and all prefix
-using two pointer and hashmap matcing.
+using two pointer and hashmap matching.
 
 124. Binary Tree Maximum Path Sum
 postorder to get the left and right max sum. (similar to 1d array max subarray sum)
@@ -796,6 +885,7 @@ this is essentially backtracking (need restore the status)
 	
 1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
 floyd-warshall O(N^3)
+find all pair shortest distance.
 
 
 coding interview
@@ -906,11 +996,22 @@ stl:
 unordered_set/map/multiset/multimap, regex, tuple,...
 
 smart pointer
-shared_ptr， unique_ptr
+shared_ptr， unique_ptr (unique ownership)
 automatically deallocate the resources
 unique_ptr: at most one uniqe_ptr pointing at any resources, when unique_ptr is destroyed, the resource is destroyed. Copy of the pointer will cause a compile errors
 
+weak_ptr: holds a reference to non-owning object. To access object, must be converted to shared_ptr
+when there is no shared_ptr to it, weak_ptr is deleted. An example is cache (when is get rid of)
+
 shared_ptr: allows multiple references to the resource, when the last reference is destroyed, the resource is deallocated. (reference counting)
+
+
+## design patterns
+creation: abstract factory, singleton, factory method, prototype (clone), 
+
+structure: adapter, bridge, composite, decorator, facade, flyweight, proxy
+
+behaviour: chain of responsibility, iterator, memento, state, template, command, mediator,, observer, strategy, observer, visitor
 
 
 
