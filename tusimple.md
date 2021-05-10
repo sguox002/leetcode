@@ -808,6 +808,7 @@ coding interview
 - pay attention to edge cases
 - pay attention to test cases to fix bugs
 
+code test 1:
 deign a fifo using vector or array only
 
 design a concurrent fifo based on previous design
@@ -828,6 +829,32 @@ focused on regular software practices and c++11 new features.
 
 different processes need pass a lot of data, what is the approach?
 if another process crashes, how to deal with?
+
+code test 2:
+convert sorted doubly linked list to binary search tree.
+O(1) space approach
+complexity
+follow up: if can use space, how to implement.
+
+asked about:
+how to keep compatibility
+smart pointer, rvalue
+c++11/14 new features
+
+code test 3:
+implement a car sell store.
+using hash table (two hash tables)
+ask about:
+most challenge project
+how to deal with a challenging work
+stack overflow reason and how to deal with it
+memory corruption
+
+code test 4:
+implement a array iterator, median iterator to find the median of a data stream
+
+
+
 
 
 graph common algorithm:
