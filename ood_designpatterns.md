@@ -19,6 +19,11 @@ similar design in our sonoquest:
 - concrete type (rect,fan fanfh)
 - use the same abstract type.
 
+Abstract factory creates a base class with abstract methods defining methods for the objects that should be created. Each factory class which derives the base class can create their own implementation of each object type.
+
+### factory method (virtual constructor)
+this is a virtual method to let derived class to alter the behaviour.
+
 ### builder:
 move the constructor to a builder class
 to avoid: a lot of subclasses, or constructor with a long list (some may be unused at all) of parameters
@@ -95,13 +100,13 @@ enet IO
 ...
 and they can be all treated the same using wrapper.
 
-### facade:
+### facade:外观
 a simple interface to a series moving objects
 only provide the necessary information where the customer cares.
 
 add a interface class to interact with the sophisticated library.
 
-### flyweight (also known cache)
+### flyweight (also known cache）轻量级，共享
 save common data in different objects instead to keep each data in each object.
 
 ### proxy (代理）
@@ -136,7 +141,7 @@ each handler pass the processed data to next handler.
 traverse elements of a collection without exposing its underlying representations.
 similar in sonoquest: using list::iterator to traverse the list of objects.
 
-### memento (snapshot)
+### memento (snapshot) 备忘录
 save and restore the previous state of an objec without revealing the details of its implementation.
 
 each object can store its state called momento (create the meta data of the object). We only interact with these momentos instead of original object (to protect the privacy).
