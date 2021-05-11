@@ -81,6 +81,37 @@ using an 1d vector to store each layer's rightmost elements
 tree node has a reference to parent. just use the definition to find parents.
 
 
+273. Integer to english words
+uses thousands 
+
+215. Kth largest element in an array
+simple pq.
+
+708. Insert into a sorted circular linked list. ***
+some edge case: all the same, and insert the same value.
+
+65. valid number
+a lot of edge cases.
+using find_first_of, find_first_not_of...
+exp must be int, the base shall be valid real number.
+
+125. valid palindrome
+278. first bad version- binary search
+297. serialize and deserialize binary tree ***
+using string/stringstream
+
+987. vertical order traversal of a binary tree
+270. closest binary search tree value
+find the node closest to target.
+
+986. Interval List Intersections
+two pointer merge
+
+721 account merge
+union find
+
+
+
 
 
 
