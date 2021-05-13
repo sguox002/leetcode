@@ -110,6 +110,130 @@ two pointer merge
 721 account merge
 union find
 
+249. group shifted strings
+hashmap, using the char difference
+
+158. read n characters givng read4 II- call multiple times
+using deque to store read outs
+
+1539. kth missing positive number
+binary search. it is a bit tricky
+
+543. Diameter of binary tree
+get left and right depth and max diameter at the same time.
+
+621. Task scheduler
+same task need have n cooldown periods. mx*(n-1) vs the task length.
+
+42. trapping rain water
+water is trapped by inner lower and left right taller so use stack to find next and previous larger.
+
+1382. Balance a binary search tree
+traverse and build
+
+29 divide two integers
+using subtract. and binary expansion.
+a lot of edge cases.
+
+282. expression add operators ***
+use +-* on numbers and get the result=target.
+backtracking: 
+- from size 1 to n try each prefix as the first number
+- skip leading zeros
+- apply different operators 
+
+298. random pick index
+array with duplicates, randomly output the index of a given number.
+(duplex shall have the same probability)
+[1,2,3,3,3]
+target 3: choose 2,3,4
+choose 2: 1*1/2*2/3=1/3
+choose 3: 1/2*2/3=1/3
+choose 4: 1/3 no-select:(1-1/3)
+
+reservoir sampling
+
+863. all nodes distance K in binary tree.
+convert tree to graph and then use bfs.
+
+140 word break II.
+string s and a list of dictionary words, return all possible combinations.
+use dp to find all possible segmentation and then use dfs to get all combinations.
+
+236. Lowest common ancestor in binary tree.
+recursive
+
+71. simplify path
+using stack
+
+670. max swap
+swap two digits at most once to get the max number.
+from left to right, compare current digits with its right max.
+
+317. shortest distance from all buildings
+grid: 0 empty, 1, building, 2: obstacle.
+find an empty land that reaches all buildings in the shortest distance.
+- each building do a bfs to get the shortest distance to each empty land, non-reachable is removed
+- get the shortest distance (by adding them altogether)
+
+266. Palindrome permutation
+check if permutation can be palindrome. 
+
+139. word break
+dp
+
+50. pow(x,n)
+binary power
+
+88. merge sorted array
+31. next permutation
+next greater permutation
+greedy: 
+- from right to left, find the first sorted pair position
+- on the right, find the smallest one > the position element
+- swap them and reverse the right.
+
+133. Clone graph
+node vs node hashmap
+
+24 longest substring with at most K distinct characters
+sliding window to find the max window.
+
+921. Min Add to make parentheses valid.
+save invalid into stack
+
+76. Min window substring
+sliding window (window shall contain all the given chars)
+using cnt as hashmap
+
+536. construct binary tree from string
+the string uses () to include the subnodes
+recursive. syntax parsing using stack.
+
+146. LRU cache.
+hashed linked list 
+
+339. nested list weight sum
+dfs to get the depth.
+
+496. diagnal traverse
+dealing with all boundary and keep dir changes
+
+314. binary tree vertical order traversal
+
+203. remove linked list elements
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
